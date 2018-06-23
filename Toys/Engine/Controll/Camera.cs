@@ -35,7 +35,18 @@ namespace Toys
 			this.game = game;
 			game.UpdateFrame += Movement;
 
-			r = R;
+            mouse.WheelChanged += (sender, e) =>
+            {
+                if (e.Delta > 0)
+                    r += speed * 1f;
+                else if (e.Delta < 0)
+                    r -= speed * 1f;
+
+                cameraPos = CalcPos(r, Phi, Theta);
+                CalcLook();
+            };
+
+            r = R;
 			cameraPos = CalcPos(r, Phi, Theta);
 
 			CalcLook();
@@ -104,23 +115,14 @@ namespace Toys
 			else
 				mousePressed = false;
 
-			mouse.WheelChanged += (sender, e) =>
-			{
-				if (e.Delta > 0)
-					r += speed * 0.02f;
-				else if (e.Delta < 0)
-					r -= speed * 0.02f;
-								cameraPos = CalcPos(r, Phi, Theta);
-                CalcLook();
-			};
 		}
 
 		//setuping camera movement
 		public void Movement(object sender, FrameEventArgs e) 
 		{
-			MouseOrbit();
-			// camera strafe
-			if (game.Keyboard[Key.Up])
+            MouseOrbit();
+            // camera strafe
+            if (game.Keyboard[Key.Up])
 			{
 				cameraWorld += speed * cameraUp;
                 CalcLook();
