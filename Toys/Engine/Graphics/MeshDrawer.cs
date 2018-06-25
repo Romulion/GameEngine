@@ -41,9 +41,11 @@ namespace Toys
 		// drawing model outline
 		public void DrawOutline()
 		{
+			Outline outline;
 			mesh.BindVAO();
 			foreach (var mat in mats)
 			{
+				//outline = mat.outline;
 				if (mat.dontDraw || !mat.hasEdge)
 					continue;
 				mat.ApplyOutline();

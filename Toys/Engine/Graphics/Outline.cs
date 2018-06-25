@@ -1,6 +1,6 @@
 ﻿using System;
 using OpenTK.Graphics.OpenGL;
-
+using OpenTK;
 
 namespace Toys
 {
@@ -8,6 +8,8 @@ namespace Toys
 	{
 		Shader outline;
 		public float size;
+		public Vector3 colour;
+		public bool active;
 
 		public Outline()
 		{

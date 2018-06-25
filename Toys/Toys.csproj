@@ -37,7 +37,6 @@
     <Compile Include="PMX\Header.cs" />
     <Compile Include="PMX\PmxReader.cs" />
     <Compile Include="PMX\Reader.cs" />
-    <Compile Include="Transform.cs" />
     <Compile Include="Engine\Animation\AnimController.cs" />
     <Compile Include="Engine\Animation\Bone.cs" />
     <Compile Include="Engine\Graphics\Mesh.cs" />
@@ -63,9 +62,10 @@
     <Compile Include="Engine\Graphics\PostProcessing.cs" />
     <Compile Include="Engine\Physics\RigitContainer.cs" />
     <Compile Include="Engine\Physics\PhysicsManager.cs" />
-    <Compile Include="MeshDrawer.cs" />
     <Compile Include="Engine\Materials\MaterialPMX.cs" />
-    <Compile Include="Outline.cs" />
+    <Compile Include="Engine\Graphics\MeshDrawer.cs" />
+    <Compile Include="Engine\Graphics\Outline.cs" />
+    <Compile Include="Engine\Objects\Transform.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
@@ -100,9 +100,6 @@
     <Folder Include="Engine\Physics\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="E:\Mascot exp\compiled_experimental\Mascot_Data\Managed\DesktopMascotMaker.dll">
-      <Link>assamble\DesktopMascotMaker.dll</Link>
-    </None>
     <None Include="packages.config" />
     <None Include="OpenTK.dll.config" />
     <None Include="VertexRigged.manifest" />
@@ -125,6 +122,5 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\AssimpNet.3.3.2\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" />
   <Import Project="..\packages\BulletSharp.0.10\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.10\build\net40-client\BulletSharp.targets')" />
 </Project>

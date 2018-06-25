@@ -20,13 +20,13 @@ namespace Toys
 		}
 
 
-
+		/*
 		public Model(Texture tex, Shader shdr)
 		{
 			//LoadPlane(shdr, tex);
 		}
-
-        Model(){}
+		*/
+        //Model(){}
 
 		//main drawing method
 		public void Draw()

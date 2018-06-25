@@ -38,9 +38,9 @@ namespace Toys
             mouse.WheelChanged += (sender, e) =>
             {
                 if (e.Delta > 0)
-                    r += speed * 1f;
+                    r += speed * 5f;
                 else if (e.Delta < 0)
-                    r -= speed * 1f;
+                    r -= speed * 5f;
 
                 cameraPos = CalcPos(r, Phi, Theta);
                 CalcLook();

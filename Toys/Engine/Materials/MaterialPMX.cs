@@ -9,7 +9,7 @@ namespace Toys
 	{
 		public Texture[] textures;
 
-		public string Name;
+
 		public string NameEng;
 		public Vector4 DiffuseColor = Vector4.One;
 		public Vector3 SpecularColour;
@@ -18,12 +18,13 @@ namespace Toys
 		public Vector4 EdgeColour;
 		public float EdgeScaler;
 		public bool dontDraw { get; set; }
-
+		public string Name { get; set; }
+		public Outline outline { get; set; }
 
 		//flags
+		public bool drawShadow { get; set; }
 		public bool noCull;
 		public bool groundShadow;
-		public bool drawShadow;
 		public bool receiveShadow;
 		public bool hasEdge;
 		public bool vertexColour;
@@ -31,12 +32,12 @@ namespace Toys
 		public bool lineDrawing;
 
 		Shader program;
-		Shader outline;
+		Shader outlin;
 
 		public MaterialPMX()
 		{
 			program = ShaderManager.GetInstance.GetShader("pmx");
-			outline = ShaderManager.GetInstance.GetShader("outline");
+			outlin = ShaderManager.GetInstance.GetShader("outline");
 		}
 
 		public MaterialPMX(Shader shdr)
@@ -68,6 +69,8 @@ namespace Toys
 			get { return program;}
 		}
 
+
+
 		public void ApplyMaterial() 
 		{
 			
@@ -83,10 +86,11 @@ namespace Toys
 			}
 		}
 
+
 		public void ApplyOutline()
 		{
-			outline.SetUniform(EdgeColour, "EdgeColor");
-			outline.SetUniform(EdgeScaler, "EdgeScaler");
+			outlin.SetUniform(EdgeColour, "EdgeColor");
+			outlin.SetUniform(EdgeScaler, "EdgeScaler");
 		}
 
 

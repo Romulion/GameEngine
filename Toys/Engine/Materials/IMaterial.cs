@@ -3,9 +3,15 @@ namespace Toys
 {
 	public interface IMaterial
 	{
-		int count { get; }
-		int offset{ get; }
+		//indexed range
+		int count { get;}
+		int offset{ get;}
+
+		bool drawShadow { get; set; }
 		bool dontDraw { get; set; }
 		void ApplyMaterial();
+		Shader GetShader { get; }
+		string Name { get; set; }
+		Outline outline { get; set; }
 	}
 }

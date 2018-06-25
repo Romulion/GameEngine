@@ -120,6 +120,7 @@ namespace Toys
 
 		}
 
+		//updating mesh for vertex morph and skinning
 		void UpdateMesh()
 		{
 			vert[100].position.X += 0.01f;

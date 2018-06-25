@@ -15,7 +15,7 @@ namespace Toys
 
 		SceneManager Scene;
 		Shader pp;
-		Model screen;
+		//Model screen;
 		bool trigger = false;
 
 		int FBO;
@@ -45,7 +45,7 @@ namespace Toys
                 FBO = GL.GenFramebuffer();
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBO);
 				Texture texture = Texture.LoadFrameBufer(Width, Height, "postprocess");
-				screen = new Model(texture,pp);
+				//screen = new Model(texture,pp);
 
 				//allocation custom framebuffer buffers
                 int RBO = GL.GenRenderbuffer();
