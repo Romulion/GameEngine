@@ -66,6 +66,8 @@
     <Compile Include="Engine\Graphics\MeshDrawer.cs" />
     <Compile Include="Engine\Graphics\Outline.cs" />
     <Compile Include="Engine\Objects\Transform.cs" />
+    <Compile Include="Engine\Objects\ModelManager.cs" />
+    <Compile Include="Engine\Graphics\ModelRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
@@ -81,6 +83,9 @@
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="BulletSharp">
       <HintPath>..\packages\BulletSharp.0.10\lib\net40-client\BulletSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="INIFileParser">
+      <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

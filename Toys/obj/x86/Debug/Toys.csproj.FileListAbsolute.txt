@@ -41,3 +41,5 @@ D:\vp\C#\Toys\Toys\bin\Debug\normnfkd.nlp
 D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.csprojResolveAssemblyReference.cache
 D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.exe
 D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.pdb
+D:\vp\C#\Toys\Toys\bin\Debug\INIFileParser.dll
+D:\vp\C#\Toys\Toys\bin\Debug\INIFileParser.xml

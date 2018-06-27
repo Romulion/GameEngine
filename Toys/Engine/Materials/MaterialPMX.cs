@@ -40,11 +40,6 @@ namespace Toys
 			outlin = ShaderManager.GetInstance.GetShader("outline");
 		}
 
-		public MaterialPMX(Shader shdr)
-		{
-			program = shdr;
-		}
-
 		public int offset { get; set; }
 		public int count { get; set; }
 
@@ -73,7 +68,7 @@ namespace Toys
 
 		public void ApplyMaterial() 
 		{
-			
+			program.ApplyShader();
 			if (textures != null)
 			{
 				TextureUnit unit = TextureUnit.Texture0;
