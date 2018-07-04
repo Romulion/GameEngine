@@ -22,6 +22,7 @@ D:\vp\C#\Toys\Toys\bin\Debug\BulletSharp.dll
 D:\vp\C#\Toys\Toys\bin\Debug\gdk-sharp.dll
 D:\vp\C#\Toys\Toys\bin\Debug\glib-sharp.dll
 D:\vp\C#\Toys\Toys\bin\Debug\gtk-sharp.dll
+D:\vp\C#\Toys\Toys\bin\Debug\INIFileParser.dll
 D:\vp\C#\Toys\Toys\bin\Debug\Mono.Posix.dll
 D:\vp\C#\Toys\Toys\bin\Debug\mscorlib.dll
 D:\vp\C#\Toys\Toys\bin\Debug\OpenTK.dll
@@ -30,6 +31,7 @@ D:\vp\C#\Toys\Toys\bin\Debug\atk-sharp.dll
 D:\vp\C#\Toys\Toys\bin\Debug\OpenTK.xml
 D:\vp\C#\Toys\Toys\bin\Debug\gdk-sharp.pdb
 D:\vp\C#\Toys\Toys\bin\Debug\glib-sharp.pdb
+D:\vp\C#\Toys\Toys\bin\Debug\INIFileParser.xml
 D:\vp\C#\Toys\Toys\bin\Debug\pango-sharp.pdb
 D:\vp\C#\Toys\Toys\bin\Debug\atk-sharp.pdb
 D:\vp\C#\Toys\Toys\bin\Debug\ru\mscorlib.resources.dll
@@ -38,8 +40,7 @@ D:\vp\C#\Toys\Toys\bin\Debug\normnfc.nlp
 D:\vp\C#\Toys\Toys\bin\Debug\normnfd.nlp
 D:\vp\C#\Toys\Toys\bin\Debug\normnfkc.nlp
 D:\vp\C#\Toys\Toys\bin\Debug\normnfkd.nlp
-D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.csprojResolveAssemblyReference.cache
 D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.exe
 D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.pdb
-D:\vp\C#\Toys\Toys\bin\Debug\INIFileParser.dll
-D:\vp\C#\Toys\Toys\bin\Debug\INIFileParser.xml
+D:\Coding\GameEngine\Toys\bin\Debug\INIFileParser.dll
+D:\Coding\GameEngine\Toys\bin\Debug\INIFileParser.xml

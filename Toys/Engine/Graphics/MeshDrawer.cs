@@ -1,32 +1,51 @@
 ﻿using System;
 using OpenTK.Graphics.OpenGL;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Toys
 {
 	public class MeshDrawer
 	{
 		Mesh mesh;
-		public MaterialPMX[] mats;
+		public MaterialPMX[] mats { get; private set; }
+		Shader shaderMain;
+
 
 		public bool OutlineDrawing;
 		public bool CastShadow;
 
+
 		public MeshDrawer(Mesh mesh, MaterialPMX[] mats)
 		{
+
 			this.mesh = mesh;
 			this.mats = mats;
+			shaderMain = mats[0].GetShader;
+
 		}
 
+		//for single material mesh
 		public MeshDrawer(Mesh mesh, MaterialPMX mat) : this(mesh, new MaterialPMX[] { mat })
 		{
 			mat.count = mesh.indexes.Length;
 		}
 
+		public Shader GetShader
+		{
+			get
+			{
+				return shaderMain;
+			}
+		}
+
+
 		/*
-		 * method for colored drawing
+		 * main drawing
 		*/
 		public void Draw()
 		{
+			shaderMain.ApplyShader();
 			mesh.BindVAO();
 			foreach (var mat in mats)
 			{
@@ -38,24 +57,30 @@ namespace Toys
 			mesh.ReleaseVAO();
 		}
 
-		// drawing model outline
+		//drawing model outline
 		public void DrawOutline()
 		{
-			Outline outline;
+			
 			mesh.BindVAO();
+
 			foreach (var mat in mats)
 			{
+				IOutline otl;
+				if (mat is IOutline)
+					otl = (IOutline)mat;
+				else 
+					otl = new Outline();
 				//outline = mat.outline;
-				if (mat.dontDraw || !mat.hasEdge)
+				if (mat.dontDraw || !otl.hasEdge)
 					continue;
-				mat.ApplyOutline();
+				otl.ApplyOutline();
 				mesh.Draw(mat.offset, mat.count);
 			}
 			mesh.ReleaseVAO();
 		}
 
 		//for shadow mapping
-		public void DrawShadow()
+		public void DrawSimple()
 		{
 			mesh.BindVAO();
 			foreach (var mat in mats)
@@ -66,5 +91,6 @@ namespace Toys
 			}
 			mesh.ReleaseVAO();
 		}
+
 	}
 }

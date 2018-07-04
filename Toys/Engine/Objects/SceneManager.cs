@@ -12,8 +12,8 @@ namespace Toys
 
 		UniformBuffer skeleton;
 		Shader shdr;
-		Outline outline;
 		Matrix4 projection, viev;
+		ModelRenderer renderer;
 
 		int i = 0;
 
@@ -51,10 +51,12 @@ namespace Toys
 			projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (30 / 180f), 640 / (float)480, 0.1f, 10.0f);
 			// projection = Matrix4.CreateOrthographic(game.Width / (float)game.Height * 2f, 2.0f, 0.1f, 100.0f);
 			shdr = shdmMgmt.GetShader("pmx");
-			outline = new Outline();
-			outline.size = 0.03f;
+			//outline = new Outline();
+			//outline.size = 0.03f;
 			skeleton = new UniformBuffer(19200,"skeleton");
 			shadow = new LightSource(models,skeleton);
+
+			renderer = new ModelRenderer(shadow,camera);
 		}
 
 		public void AddModel(Model model)
@@ -69,6 +71,7 @@ namespace Toys
 			shadow.Resize(Width,Height);
 			this.Width = Width;
 			this.Height = Height;
+			renderer.projection = projection;
 		}
 
 		//singleton
@@ -87,33 +90,14 @@ namespace Toys
 		//scene rendering
 		public void Render()
 		{
-			//shadow.RenderShadow();
 
-			viev = camera.GetLook;
-			shdr.ApplyShader();
-			shdr.SetUniform(shadow.GetMat, "lightSpacePos");
-			shdr.SetUniform(shadow.GetPos, "LightPos");
-			//shdr.SetUniform(camera.GetPos, "viewPos");
+			renderer.viev = camera.GetLook;
 
-			shadow.BindShadowMap();
 			//timer.Start();
 			foreach (var model in models)
 			{
-				//Console.WriteLine(model.anim.GetSkeleton[0]);
-				//render model
-				//shdr.ApplyShader();
-				Matrix4 pvm = model.WorldSpace * viev * projection;
-				//ubo.SetMatrix(pvm);
+				renderer.Render(model);
 				skeleton.SetBones(model.anim.GetSkeleton);
-				shdr.SetUniform(pvm, "pvm");
-				Matrix4 norm = model.WorldSpace.Inverted();
-				norm.Transpose();
-				shdr.SetUniform(norm, "NormalMat");
-				shdr.SetUniform(model.WorldSpace, "model");
-				model.Draw();
-
-				//render outlines
-				outline.Draw(model, pvm);
 
 			}
 			/*

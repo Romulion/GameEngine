@@ -5,39 +5,42 @@ using System.Collections;
 
 namespace Toys
 {
-	public class MaterialPMX : IMaterial
+	public class MaterialPMX : IMaterial, IOutline
 	{
 		public Texture[] textures;
-
 
 		public string NameEng;
 		public Vector4 DiffuseColor = Vector4.One;
 		public Vector3 SpecularColour;
 		public float Specular;
 		public Vector3 AmbientColour;
-		public Vector4 EdgeColour;
-		public float EdgeScaler;
+
+		//IOutline
+		public Vector4 EdgeColour{ get; set;}
+		public float EdgeScaler { get; set;}
+		public bool hasEdge { get; set;}
+
+		//IMaterial
 		public bool dontDraw { get; set; }
 		public string Name { get; set; }
-		public Outline outline { get; set; }
+		public bool drawShadow { get; set; }
+
 
 		//flags
-		public bool drawShadow { get; set; }
 		public bool noCull;
 		public bool groundShadow;
 		public bool receiveShadow;
-		public bool hasEdge;
 		public bool vertexColour;
 		public bool pointDrawing;
 		public bool lineDrawing;
 
 		Shader program;
-		Shader outlin;
+		Shader outline;
 
 		public MaterialPMX()
 		{
 			program = ShaderManager.GetInstance.GetShader("pmx");
-			outlin = ShaderManager.GetInstance.GetShader("outline");
+			outline = ShaderManager.GetInstance.GetShader("outline");
 		}
 
 		public int offset { get; set; }
@@ -84,8 +87,8 @@ namespace Toys
 
 		public void ApplyOutline()
 		{
-			outlin.SetUniform(EdgeColour, "EdgeColor");
-			outlin.SetUniform(EdgeScaler, "EdgeScaler");
+			outline.SetUniform(EdgeColour, "EdgeColor");
+			outline.SetUniform(EdgeScaler, "EdgeScaler");
 		}
 
 

@@ -69,7 +69,7 @@ namespace Toys
 				Matrix4 pvm = model.WorldSpace * lightdir * projection;
 				ubo.SetBones(model.anim.GetSkeleton);
 				shdr.SetUniform(pvm, "pvm");
-				model.DrawSimple();
+				model.meshes.DrawSimple();
 			}
 			//GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 			//
