@@ -17,11 +17,10 @@ namespace Toys
             CoreEngine core = new CoreEngine();
 			var scene = SceneManager.GetInstance;
 			//string str = "";
-			//PmxReader pmx = new PmxReader("model/Aoba/Aoba Suzukaze Ver. 1.01.pmx");
 			PmxReader pmx = new PmxReader(args[0]);
 			Model model = pmx.GetRiggedModel;
 			IMaterial[] mats = model.GetMaterials;
-			model.WorldSpace = Matrix4.CreateTranslation(0.0f, 0.0f, 0f);
+			model.WorldSpace = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
 
 			scene.AddModel(model);
 
@@ -35,7 +34,6 @@ namespace Toys
 			task.Start();
 
 			core.Run(60);
-
 		}
 
    }

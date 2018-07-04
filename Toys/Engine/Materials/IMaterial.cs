@@ -12,6 +12,5 @@ namespace Toys
 		void ApplyMaterial();
 		Shader GetShader { get; }
 		string Name { get; set; }
-		Outline outline { get; set; }
 	}
 }

@@ -472,6 +472,7 @@ namespace Toys
 			get 
 			{ 
 				MeshDrawer md = new MeshDrawer(mesh, mats);
+				md.OutlineDrawing = true;
 				return new Model(md, bones); 
 			}
 		}
@@ -481,6 +482,7 @@ namespace Toys
 			get 
 			{
 				MeshDrawer md = new MeshDrawer(meshRigged, mats);
+				md.OutlineDrawing = true;
 				return new Model(md, bones); 
 			}
 		}

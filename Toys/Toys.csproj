@@ -64,10 +64,12 @@
     <Compile Include="Engine\Physics\PhysicsManager.cs" />
     <Compile Include="Engine\Materials\MaterialPMX.cs" />
     <Compile Include="Engine\Graphics\MeshDrawer.cs" />
-    <Compile Include="Engine\Graphics\Outline.cs" />
     <Compile Include="Engine\Objects\Transform.cs" />
     <Compile Include="Engine\Objects\ModelManager.cs" />
     <Compile Include="Engine\Graphics\ModelRenderer.cs" />
+    <Compile Include="Engine\Materials\IOutline.cs" />
+    <Compile Include="Engine\Materials\Outline.cs" />
+    <Compile Include="SMD\ReaderSMD.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
@@ -85,7 +87,7 @@
       <HintPath>..\packages\BulletSharp.0.10\lib\net40-client\BulletSharp.dll</HintPath>
     </Reference>
     <Reference Include="INIFileParser">
-      <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
+      <HintPath>..\packages\ini-parser.3.4.0\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +105,7 @@
     <Folder Include="Engine\Objects\" />
     <Folder Include="Window\" />
     <Folder Include="Engine\Physics\" />
+    <Folder Include="SMD\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

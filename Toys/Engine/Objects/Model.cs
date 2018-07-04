@@ -7,7 +7,7 @@ namespace Toys
 {
 	public class Model
 	{
-		List<MeshDrawer> meshes = new List<MeshDrawer>();
+		public MeshDrawer meshes;
 		public Matrix4 WorldSpace;
 		public AnimController anim;
 		public MorphVertex morph;
@@ -15,7 +15,7 @@ namespace Toys
 
 		public Model(MeshDrawer mesh, Bone[] bones)
 		{
-			meshes.Add(mesh);
+			meshes = mesh;
 			anim = new AnimController(bones);
 		}
 
@@ -29,6 +29,7 @@ namespace Toys
         //Model(){}
 
 		//main drawing method
+/*
 		public void Draw()
 		{
 			foreach (var mesh in meshes)
@@ -41,7 +42,7 @@ namespace Toys
 		{
 			foreach (var mesh in meshes)
 			{
-				mesh.DrawShadow();
+				mesh.DrawSimple();
 			}
 		}
 
@@ -64,7 +65,7 @@ namespace Toys
 			return model;
 
 		}
-
+*/
 		/*
 		void LoadPlane(Texture txtr)
 		{
@@ -85,8 +86,7 @@ namespace Toys
 		{
 			get {
 				List<IMaterial> mats = new List<IMaterial>();
-				foreach (var mesh in meshes)
-					mats.AddRange(mesh.mats);
+				mats.AddRange(meshes.mats);
 
 				return mats.ToArray();
 			}
