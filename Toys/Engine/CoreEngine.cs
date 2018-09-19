@@ -46,7 +46,7 @@ namespace Toys
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBO);
 				Texture texture = Texture.LoadFrameBufer(Width, Height, "postprocess");
 				//screen = new Model(texture,pp);
-
+				//Console.WriteLine(GL.GetInteger(GetPName.MaxUniformBlockSize));
 				//allocation custom framebuffer buffers
                 int RBO = GL.GenRenderbuffer();
                 GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, RBO);

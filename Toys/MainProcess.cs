@@ -11,6 +11,10 @@ namespace Toys
 		public static void Main(params string[] args)
 		{
 
+			int f = 2;
+
+			Console.WriteLine(Convert.ToString(f,2));
+
 			if (args.Length == 0)
 				return;
 			//Console.WriteLine(args[0]);
@@ -28,7 +32,6 @@ namespace Toys
 				{
 				Application.Init();
 				Window wndw = new Window(mats);
-
 				Application.Run(); 
 			});
 			task.Start();

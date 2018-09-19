@@ -25,6 +25,7 @@ namespace Toys
 
 		public void Render(Model model) 
 		{
+			model.anim.SkinMesh();
 			MeshDrawer msrd = model.meshes;
 			Shader shader = msrd.GetShader;
 			shader.ApplyShader();

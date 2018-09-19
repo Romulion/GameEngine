@@ -6,13 +6,14 @@ namespace Toys
 {
 	public class AnimController
 	{
+		Mesh mesh;
 		Bone[] bones;
 		Matrix4[] skeleton;
 
-		public AnimController(Bone[] bones)
+		public AnimController(Bone[] bones,Mesh mesh)
 		{
 			this.bones = bones;
-
+			this.mesh = mesh;
 			//making skeleton matrix
 			skeleton = new Matrix4[bones.Length];
 			DefaultPos();
@@ -52,7 +53,6 @@ namespace Toys
 				return;
 			Matrix4 rotation = Matrix4.CreateFromQuaternion(quat);
 			//rotation.Invert();
-
 			Matrix4 rot = Matrix4.CreateTranslation(-bone.Position);
 			if (bone.LocalCoordinate || bone.FixedAxis)
 				rot *= bone.localSpace.Inverted() * rotation * bone.localSpace;
@@ -67,10 +67,35 @@ namespace Toys
 
 		}
 
+		public void Rotate(int boneID, Quaternion quat)
+		{
+			if (boneID >= bones.Length)
+				return;
+			Bone bone = bones[boneID];
+			Matrix4 rotation = Matrix4.CreateFromQuaternion(quat);
+			//rotation.Invert();
+			Matrix4 rot = Matrix4.CreateTranslation(-bone.Position);
+			if (bone.LocalCoordinate || bone.FixedAxis)
+				rot *= bone.localSpace.Inverted() * rotation * bone.localSpace;
+			else
+				rot *= rotation;
+			rot *= Matrix4.CreateTranslation(bone.Position);
+			//update skeleton
+			skeleton[bone.Index] = rot;
+			var childs = bone.childs;
+			foreach (var child in childs)
+				skeleton[child] = rot;
+		}
+
 		public void DefaultPos()
 		{
 			for (int n = 0; n<skeleton.Length; n++)
 				skeleton[n] = Matrix4.Identity;
+		}
+
+		public void SkinMesh()
+		{
+			
 		}
 	}
 }

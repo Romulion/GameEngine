@@ -7,7 +7,7 @@ namespace Toys
 {
 	public class MeshDrawer
 	{
-		Mesh mesh;
+		public Mesh mesh { get; private set; }
 		public MaterialPMX[] mats { get; private set; }
 		Shader shaderMain;
 

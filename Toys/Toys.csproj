@@ -70,6 +70,7 @@
     <Compile Include="Engine\Materials\IOutline.cs" />
     <Compile Include="Engine\Materials\Outline.cs" />
     <Compile Include="SMD\ReaderSMD.cs" />
+    <Compile Include="Engine\Animation\ModelSkinning.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />

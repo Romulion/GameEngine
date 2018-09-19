@@ -14,7 +14,7 @@ namespace Toys
 		int VAO, VBO, EBO;
 		int vertexCount;
 
-		VertexRigged[] vert;
+		public VertexRigged[] vert;
 		/*
 		public Mesh(Vertex[] vertices, int[] indexes, IMaterial[] mat)
 		{

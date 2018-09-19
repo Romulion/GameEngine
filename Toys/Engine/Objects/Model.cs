@@ -16,7 +16,7 @@ namespace Toys
 		public Model(MeshDrawer mesh, Bone[] bones)
 		{
 			meshes = mesh;
-			anim = new AnimController(bones);
+			anim = new AnimController(bones,mesh.mesh);
 		}
 
 

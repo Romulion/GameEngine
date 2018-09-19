@@ -7,7 +7,7 @@ layout (location = 4) in vec4 Weights;
 
 layout (std140) uniform skeleton
 {
-    mat4 gBones[300];
+    mat4 gBones[500];
 };
 
 uniform mat4 model;

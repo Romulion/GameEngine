@@ -23,7 +23,7 @@ namespace Toys
 			GL.BindBufferBase(BufferRangeTarget.UniformBuffer, 0, UBO);
 		}
 
-		//rebinding buffer to new shaders
+		//binding buffer to shaders
 		public void Rebind()
 		{
 			ShaderManager.GetInstance.SetBinding(0, name);

@@ -43,5 +43,26 @@ namespace Toys
 		{
 			return string.Format("({0},{1},{2},{3})",bone1,bone2,bone3,bone4);
 		}
+
+		public int this[int i]
+		{
+			get
+			{
+					
+				switch (i)
+				{
+					case 0:
+						return bone1;
+					case 1:
+						return bone2;
+					case 2:
+						return bone3;
+					case 3:
+						return bone4;
+				}
+
+				return 0;
+			}
+		}
 	}
 }
