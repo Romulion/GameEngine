@@ -72,7 +72,6 @@ namespace Toys
 			int meshSize = file.ReadInt32();
 			VertexRigged [] verticesR = new VertexRigged[meshSize];
 			Vertex[] vertices = new Vertex[meshSize];
-
 			for (int i = 0; i < meshSize; i++)
 			{
 				Vector3 pos = reader.readVector3() * multipler;

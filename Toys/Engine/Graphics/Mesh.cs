@@ -15,17 +15,7 @@ namespace Toys
 		int vertexCount;
 
 		public VertexRigged[] vert;
-		/*
-		public Mesh(Vertex[] vertices, int[] indexes, IMaterial[] mat)
-		{
-			this.indexes = indexes;
-			mats = mat;
-			Console.WriteLine(mats.Length);
-			SetupMesh(vertices);
-		}
-*//*
-		public Mesh(Vertex[] vertices, int[] indexes, IMaterial mat) : this(vertices, indexes, new IMaterial[] { mat }) { }
-*/
+
 		public Mesh(Vertex[] vertices, int[] indexes)
 		{
 			this.indexes = indexes;
@@ -121,7 +111,7 @@ namespace Toys
 		}
 
 		//updating mesh for vertex morph and skinning
-		void UpdateMesh()
+		void UpdateMeshRigged()
 		{
 			vert[100].position.X += 0.01f;
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
@@ -144,6 +134,11 @@ namespace Toys
 		internal void Draw(int offset, int count)
 		{
 			GL.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, offset * sizeof(int));
+		}
+
+		internal void Draw()
+		{
+			GL.DrawElements(PrimitiveType.Triangles, vertexCount, DrawElementsType.UnsignedInt, 0);
 		}
 
 		/// <summary>
