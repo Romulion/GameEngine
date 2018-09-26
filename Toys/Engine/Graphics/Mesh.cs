@@ -14,6 +14,9 @@ namespace Toys
 		int VAO, VBO, EBO;
 		int vertexCount;
 
+		int SSB0;
+
+		internal int vSize = 0;
 		public VertexRigged[] vert;
 
 		public Mesh(Vertex[] vertices, int[] indexes)
@@ -25,6 +28,7 @@ namespace Toys
 		public Mesh(VertexRigged[] vertices, int[] indexes)
 		{
 			this.indexes = indexes;
+			vSize = Marshal.SizeOf(typeof(Vertex));
 			SetupMeshRigged(vertices);
 		}
 
@@ -70,6 +74,40 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 		}
 
+		void SetupMesh(int SSB1)
+		{
+			/*
+			vertexCount = vertices.Length;
+			int vertSize = Marshal.SizeOf(typeof(Vertex));
+			VAO = GL.GenVertexArray();
+			VBO = GL.GenBuffer();
+			EBO = GL.GenBuffer();
+			//bind buffers
+			GL.BindVertexArray(VAO);
+			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+			//load vertexes to 
+			//GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
+			GL.BufferData(BufferTarget.ArrayBuffer, Marshal.SizeOf(typeof(Vertex)) * vertexCount, vertices, BufferUsageHint.StreamDraw);
+
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
+			GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indexes.Length, indexes, BufferUsageHint.StaticDraw);
+
+			//position
+			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "position"));
+			GL.EnableVertexAttribArray(0);
+			//normal
+			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "normal"));
+			GL.EnableVertexAttribArray(1);
+			//uv coord
+			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "uvtex"));
+			GL.EnableVertexAttribArray(2);
+
+			//unbind
+			GL.BindVertexArray(0);
+			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+			*/
+		}
+
 		void SetupMeshRigged(VertexRigged[] vertices)
 		{
 
@@ -107,7 +145,19 @@ namespace Toys
 			GL.BindVertexArray(0);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
+			//generating shared storage buffer
 
+		}
+
+		internal void MakeSSBO(int index)
+		{
+			int vertSize = Marshal.SizeOf(typeof(VertexRigged));
+			SSB0 = GL.GenBuffer();
+			GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB0);
+			GL.BufferData(BufferTarget.ShaderStorageBuffer, vertSize* vertexCount, vert, BufferUsageHint.DynamicDraw);
+			GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, index, SSB0);
+			//cshader.SetSSBO(index, "Input");
+			GL.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
 		}
 
 		//updating mesh for vertex morph and skinning
@@ -117,6 +167,14 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 			int vertSize = Marshal.SizeOf(typeof(VertexRigged));
 			GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, vertSize * vertexCount, vert);
+			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+		}
+
+		internal void ApplySkin(int SSBoutput)
+		{
+			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+			int size = Marshal.SizeOf(typeof(Vertex)) * vertexCount;
+			GL.CopyBufferSubData(BufferTarget.ShaderStorageBuffer, BufferTarget.ArrayBuffer, IntPtr.Zero,IntPtr.Zero, size);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 		}
 
@@ -130,6 +188,10 @@ namespace Toys
 			GL.BindVertexArray(0);
 		}
 
+		internal void BindSSBO()
+		{
+			GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB0);
+		}
 
 		internal void Draw(int offset, int count)
 		{

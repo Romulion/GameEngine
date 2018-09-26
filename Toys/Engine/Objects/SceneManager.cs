@@ -39,6 +39,7 @@ namespace Toys
 				shdmMgmt.LoadShader("pmx");
 				shdmMgmt.LoadShader("shadow");
 				shdmMgmt.LoadShader("outline");
+				shdmMgmt.LoadShader("compute","skin.glsl");
 			}
 			catch (Exception e)
 			{

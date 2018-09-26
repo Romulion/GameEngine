@@ -9,6 +9,7 @@ namespace Toys
 		Mesh mesh;
 		Bone[] bones;
 		Matrix4[] skeleton;
+		ModelSkinning skinner;
 
 		public AnimController(Bone[] bones,Mesh mesh)
 		{
@@ -17,6 +18,8 @@ namespace Toys
 			//making skeleton matrix
 			skeleton = new Matrix4[bones.Length];
 			DefaultPos();
+
+			skinner = new ModelSkinning(mesh);
 		}
 
 		public Bone[] GetBones
@@ -95,7 +98,7 @@ namespace Toys
 
 		public void SkinMesh()
 		{
-			
+			skinner.Skin();
 		}
 	}
 }

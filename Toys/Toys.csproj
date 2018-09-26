@@ -40,7 +40,7 @@
     <Compile Include="Engine\Animation\AnimController.cs" />
     <Compile Include="Engine\Animation\Bone.cs" />
     <Compile Include="Engine\Graphics\Mesh.cs" />
-    <Compile Include="Engine\Graphics\Shader.cs" />
+    <Compile Include="Engine\Graphics\ShaderMain.cs" />
     <Compile Include="Engine\Graphics\Texture.cs" />
     <Compile Include="Engine\Graphics\VertexRigged.cs" />
     <Compile Include="Engine\Graphics\Vertrex.cs" />
@@ -71,6 +71,8 @@
     <Compile Include="Engine\Materials\Outline.cs" />
     <Compile Include="SMD\ReaderSMD.cs" />
     <Compile Include="Engine\Animation\ModelSkinning.cs" />
+    <Compile Include="Engine\Graphics\Shader.cs" />
+    <Compile Include="Engine\Graphics\ShaderCompute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
@@ -129,6 +131,7 @@
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resourses\shaders\skin.glsl" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\BulletSharp.0.10\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.10\build\net40-client\BulletSharp.targets')" />
