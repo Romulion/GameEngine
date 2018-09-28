@@ -39,6 +39,7 @@ namespace Toys
 				shdmMgmt.LoadShader("pmx");
 				shdmMgmt.LoadShader("shadow");
 				shdmMgmt.LoadShader("outline");
+				shdmMgmt.LoadShader("compute","skin.glsl");
 			}
 			catch (Exception e)
 			{
@@ -53,7 +54,7 @@ namespace Toys
 			shdr = shdmMgmt.GetShader("pmx");
 			//outline = new Outline();
 			//outline.size = 0.03f;
-			skeleton = new UniformBuffer(19200,"skeleton");
+			skeleton = new UniformBuffer(32000,"skeleton");
 			shadow = new LightSource(models,skeleton);
 
 			renderer = new ModelRenderer(shadow,camera);
@@ -115,7 +116,7 @@ namespace Toys
 			if (models.Count > 0)
 			{
 				float angle = (float)Math.Sin(radians(i * 3)) * radians(40) - radians(20);
-				models[0].anim.Rotate("頭", new Quaternion(0f, angle, 0f) );
+				models[0].anim.Rotate(5, new Quaternion(0f, angle, 0f) );
 				//models[0].anim.Rotate("上半身", new Quaternion(0f, angle, 0f) );
 				i++;
 			}

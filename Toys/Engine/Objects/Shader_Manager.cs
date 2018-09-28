@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
@@ -19,7 +19,7 @@ namespace Toys
 			string vert = ReadFromStream(assembly.GetManifestResourceStream(defPath + "def.vs"));
 
 			shaders = new Dictionary<string, Shader>();
-			Shader def = new Shader(vert, frag);
+			Shader def = new ShaderMain(vert, frag);
 			shaders.Add("def", def);
 		}
 
@@ -51,7 +51,7 @@ namespace Toys
 		{
 			if (shaders.ContainsKey(name))
 				return;
-			Shader shdr = new Shader(vert, frag);
+			Shader shdr = new ShaderMain(vert, frag);
 			shdr.ApplyShader();
 			shdr.SetUniform(0, "material.texture_difuse");
 			shdr.SetUniform(1, "material.texture_toon");
@@ -59,6 +59,19 @@ namespace Toys
 			shdr.SetUniform(10, "shadowMap");
 
 			shaders.Add(name, shdr);
+		}
+
+		public Shader LoadShader(string name, string compute)
+		{
+			if (shaders.ContainsKey(name))
+				return shaders[name];
+			var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
+			var names = assembly.GetManifestResourceNames();
+			string cmp = ReadFromStream(assembly.GetManifestResourceStream(defPath + compute));
+			Shader shdr = new ShaderCompute(cmp);
+
+			shaders.Add(name, shdr);
+			return shdr;
 		}
 
 		public Shader GetShader(string name)

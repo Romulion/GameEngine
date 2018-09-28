@@ -72,13 +72,14 @@ namespace Toys
 			int meshSize = file.ReadInt32();
 			VertexRigged [] verticesR = new VertexRigged[meshSize];
 			Vertex[] vertices = new Vertex[meshSize];
-
 			for (int i = 0; i < meshSize; i++)
 			{
-				
 				Vector3 pos = reader.readVector3() * multipler;
 				Vector3 normal = reader.readVector3() * multipler;
 				Vector2 uv = reader.readVector2();
+				//mirroring x axis
+				pos.X = -pos.X;
+				normal.X = -normal.X;
 				int[] bonesIndexes = {0,0,0,0};
 				Vector4 bonesWeigth = new Vector4(0f);
 
@@ -91,7 +92,6 @@ namespace Toys
 
 				//bones
 				byte Weigth = file.ReadByte();
-
 				switch (Weigth)
 				{
 					case 0: //BDEF
@@ -147,7 +147,15 @@ namespace Toys
 			int[] indexes = new int[indexSize];
 			for (int i = 0; i < indexSize; i++)
 			{
-				indexes[i] = reader.readVal(header.GetVertexIndexSize);
+				//invering triangles
+				int res = i % 3;
+				if (res == 0)
+					indexes[i + 1] = reader.readVal(header.GetVertexIndexSize);
+				else if (res == 1)
+					indexes[i - 1] = reader.readVal(header.GetVertexIndexSize);
+				else 
+					indexes[i] = reader.readVal(header.GetVertexIndexSize);
+			
 			}
 
 			mesh = new Mesh(vertices, indexes);

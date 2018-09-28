@@ -38,6 +38,7 @@ namespace Toys
 					tex1 = Paloma.TargaImage.LoadTargaImage(path);
 				else
 					tex1 = new Bitmap(path);
+				
                 LoadTexture(tex1);
 			}
 			catch (Exception)
@@ -75,9 +76,22 @@ namespace Toys
 
 		void LoadTexture(Bitmap texture)
 		{
+
+			//for rare 8bpp formats 
+			if (texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
+			{
+				Bitmap clone = new Bitmap(texture.Width, texture.Height,	System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+
+				using (Graphics gr = Graphics.FromImage(clone))
+				{
+					gr.DrawImage(texture, new Rectangle(0, 0, clone.Width, clone.Height));
+				}
+
+				texture = clone;
+			}
+
 			//inverting y axis			
 			//texture.RotateFlip(RotateFlipType.Rotate180FlipX);
-
 			GL.BindTexture(TextureTarget.Texture2D,texture_id);
 
 			//setting wrapper
@@ -90,9 +104,9 @@ namespace Toys
 
             //load to static memory
             System.Drawing.Imaging.BitmapData data =
-			texture.LockBits(new Rectangle(0, 0, texture.Width, texture.Height),
-	  		System.Drawing.Imaging.ImageLockMode.ReadOnly, texture.PixelFormat);
-
+				texture.LockBits(new Rectangle(0, 0, texture.Width, texture.Height),
+	  				System.Drawing.Imaging.ImageLockMode.ReadOnly, texture.PixelFormat);
+			
 			//recognithing pixel format type
 			PixelFormat format;
 			if (Image.IsAlphaPixelFormat(texture.PixelFormat) || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppRgb)

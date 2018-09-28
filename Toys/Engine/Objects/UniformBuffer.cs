@@ -23,7 +23,7 @@ namespace Toys
 			GL.BindBufferBase(BufferRangeTarget.UniformBuffer, 0, UBO);
 		}
 
-		//rebinding buffer to new shaders
+		//binding buffer to shaders
 		public void Rebind()
 		{
 			ShaderManager.GetInstance.SetBinding(0, name);
@@ -43,7 +43,7 @@ namespace Toys
 		{
 			int size = Marshal.SizeOf(typeof(Matrix4));
 			//restrict skeleton size
-			int count = (mat.Length > 300) ? 300 : mat.Length;
+			int count = (mat.Length > 500) ? 500 : mat.Length;
 			GL.BindBuffer(BufferTarget.UniformBuffer, UBO);
 			GL.BufferSubData(BufferTarget.UniformBuffer, IntPtr.Zero, count * size, mat);
 			GL.BindBuffer(BufferTarget.UniformBuffer, 0);

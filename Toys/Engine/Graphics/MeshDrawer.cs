@@ -7,7 +7,7 @@ namespace Toys
 {
 	public class MeshDrawer
 	{
-		Mesh mesh;
+		public Mesh mesh { get; private set; }
 		public MaterialPMX[] mats { get; private set; }
 		Shader shaderMain;
 
@@ -83,13 +83,17 @@ namespace Toys
 		public void DrawSimple()
 		{
 			mesh.BindVAO();
+
+
 			foreach (var mat in mats)
 			{
 				if (mat.dontDraw)
 					continue;
 				mesh.Draw(mat.offset, mat.count);
 			}
+
 			mesh.ReleaseVAO();
+
 		}
 
 	}

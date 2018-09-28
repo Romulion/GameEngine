@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -9,8 +8,6 @@
     <AssemblyName>Toys</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <ApplicationManifest>VertexRigged.manifest</ApplicationManifest>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,7 +40,7 @@
     <Compile Include="Engine\Animation\AnimController.cs" />
     <Compile Include="Engine\Animation\Bone.cs" />
     <Compile Include="Engine\Graphics\Mesh.cs" />
-    <Compile Include="Engine\Graphics\Shader.cs" />
+    <Compile Include="Engine\Graphics\ShaderMain.cs" />
     <Compile Include="Engine\Graphics\Texture.cs" />
     <Compile Include="Engine\Graphics\VertexRigged.cs" />
     <Compile Include="Engine\Graphics\Vertrex.cs" />
@@ -73,6 +70,9 @@
     <Compile Include="Engine\Materials\IOutline.cs" />
     <Compile Include="Engine\Materials\Outline.cs" />
     <Compile Include="SMD\ReaderSMD.cs" />
+    <Compile Include="Engine\Animation\ModelSkinning.cs" />
+    <Compile Include="Engine\Graphics\Shader.cs" />
+    <Compile Include="Engine\Graphics\ShaderCompute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
@@ -86,9 +86,29 @@
     <Reference Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="BulletSharp">
+      <HintPath>..\packages\BulletSharp.0.10\lib\net40-client\BulletSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="INIFileParser">
+      <HintPath>..\packages\ini-parser.3.4.0\lib\net20\INIFileParser.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assamble\" />
+    <Folder Include="PMX\" />
+    <Folder Include="Resourses\" />
+    <Folder Include="Resourses\shaders\" />
+    <Folder Include="Resourses\textures\" />
+    <Folder Include="Engine\" />
+    <Folder Include="Engine\Animation\" />
+    <Folder Include="Engine\Graphics\" />
+    <Folder Include="Engine\Controll\" />
+    <Folder Include="Engine\Morph\" />
+    <Folder Include="Engine\Materials\" />
+    <Folder Include="Engine\Objects\" />
+    <Folder Include="Window\" />
+    <Folder Include="Engine\Physics\" />
+    <Folder Include="SMD\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -111,6 +131,8 @@
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resourses\shaders\skin.glsl" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\BulletSharp.0.10\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.10\build\net40-client\BulletSharp.targets')" />
 </Project>

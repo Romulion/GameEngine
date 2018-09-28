@@ -28,7 +28,6 @@ namespace Toys
 				{
 				Application.Init();
 				Window wndw = new Window(mats);
-
 				Application.Run(); 
 			});
 			task.Start();

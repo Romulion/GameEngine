@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
 
@@ -7,36 +6,10 @@ namespace Toys
 {
 	public class Shader
 	{
-		int shaderProgram;
-		
-		public Shader(string vertex, string fragment)
+		protected int shaderProgram;
+		public Shader()
 		{
-			int vertexShader, fragmentShader;
-
-			vertexShader = CompileShader(vertex, ShaderType.VertexShader);
-			fragmentShader = CompileShader(fragment, ShaderType.FragmentShader);
-			shaderProgram = GL.CreateProgram();
-			GL.AttachShader(shaderProgram, vertexShader);
-			GL.AttachShader(shaderProgram, fragmentShader);
-			GL.LinkProgram(shaderProgram);
-			GL.DeleteShader(vertexShader);
-			GL.DeleteShader(fragmentShader);
 		}
-
-
-		void GetTextureNames()
-		{
-			int m, length, size;
-			StringBuilder name = new StringBuilder(16);
-			ActiveUniformType type;
-			GL.GetProgram(shaderProgram, GetProgramParameterName.ActiveUniforms, out m);
-			for (int i = 0; i < m; i++)
-			{
-				GL.GetActiveUniform(shaderProgram, i, 16, out length, out size, out type, name);
-				Console.WriteLine("{0}  {1}",type, name);
-			}
-		}
-
 
 		public void ApplyShader()
 		{
@@ -80,11 +53,11 @@ namespace Toys
 		{
 			for (int i = 0; i < value.Length; i++)
 			{
-				GL.UniformMatrix4(GL.GetUniformLocation(shaderProgram, name + "[" + i + "]"), false,ref value[i]);
-			}	
+				GL.UniformMatrix4(GL.GetUniformLocation(shaderProgram, name + "[" + i + "]"), false, ref value[i]);
+			}
 		}
 
-		int CompileShader(string source, ShaderType st)
+		protected int CompileShader(string source, ShaderType st)
 		{
 
 			int compShader = GL.CreateShader(st);
@@ -100,8 +73,8 @@ namespace Toys
 				throw new Exception();
 			}
 
-			return compShader;
-		}
+			return compShader;		}
+
 
 		public void SetUBO(int index, string name)
 		{
@@ -111,7 +84,8 @@ namespace Toys
 				//Console.WriteLine("uniform buffer '{0}' not found", name);
 				return;
 			}
-			GL.UniformBlockBinding(shaderProgram,indx,index);
+			GL.UniformBlockBinding(shaderProgram, indx, index);
 		}
+
 	}
 }
