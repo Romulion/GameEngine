@@ -116,7 +116,7 @@ namespace Toys
 			if (models.Count > 0)
 			{
 				float angle = (float)Math.Sin(radians(i * 3)) * radians(40) - radians(20);
-				models[0].anim.Rotate(4, new Quaternion(0f, angle, 0f) );
+				models[0].anim.Rotate(5, new Quaternion(0f, angle, 0f) );
 				//models[0].anim.Rotate("上半身", new Quaternion(0f, angle, 0f) );
 				i++;
 			}

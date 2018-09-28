@@ -12,12 +12,13 @@ namespace Toys
 		//public IMaterial[] mats;
 
 		int VAO, VBO, EBO;
-		int vertexCount;
+		internal int vertexCount;
 
 		int SSB0;
 
 		internal int vSize = 0;
-		public VertexRigged[] vert;
+		VertexRigged[] vert;
+		public Vertex[] vertTest;
 
 		public Mesh(Vertex[] vertices, int[] indexes)
 		{
@@ -29,7 +30,17 @@ namespace Toys
 		{
 			this.indexes = indexes;
 			vSize = Marshal.SizeOf(typeof(Vertex));
-			SetupMeshRigged(vertices);
+			//old
+			//SetupMeshRigged(vertices);
+
+			//new
+			vert = vertices;
+			vertTest = new Vertex[vertices.Length];
+			for (int i = 0; i < vertices.Length; i++)
+				vertTest[i] = (Vertex)vertices[i];
+
+			SetupMesh(vertTest);
+
 		}
 
 
@@ -43,7 +54,7 @@ namespace Toys
 
 		void SetupMesh(Vertex[] vertices)
 		{
-
+			Console.WriteLine(vertices[0].position.X);
 			vertexCount = vertices.Length;
 			int vertSize = Marshal.SizeOf(typeof(Vertex));
 			VAO = GL.GenVertexArray();
@@ -54,11 +65,12 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 			//load vertexes to 
 			//GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
-			GL.BufferData(BufferTarget.ArrayBuffer, Marshal.SizeOf(typeof(Vertex)) * vertexCount, vertices, BufferUsageHint.StreamDraw);
+			GL.BufferData(BufferTarget.ArrayBuffer, vertSize * vertexCount, vertices, BufferUsageHint.StreamDraw);
 
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
 			GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indexes.Length, indexes, BufferUsageHint.StaticDraw);
 
+			Console.WriteLine(Marshal.OffsetOf(typeof(Vertex), "uvtex"));
 			//position
 			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "position"));
 			GL.EnableVertexAttribArray(0);
@@ -72,40 +84,6 @@ namespace Toys
 			//unbind
 			GL.BindVertexArray(0);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-		}
-
-		void SetupMesh(int SSB1)
-		{
-			/*
-			vertexCount = vertices.Length;
-			int vertSize = Marshal.SizeOf(typeof(Vertex));
-			VAO = GL.GenVertexArray();
-			VBO = GL.GenBuffer();
-			EBO = GL.GenBuffer();
-			//bind buffers
-			GL.BindVertexArray(VAO);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-			//load vertexes to 
-			//GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
-			GL.BufferData(BufferTarget.ArrayBuffer, Marshal.SizeOf(typeof(Vertex)) * vertexCount, vertices, BufferUsageHint.StreamDraw);
-
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-			GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indexes.Length, indexes, BufferUsageHint.StaticDraw);
-
-			//position
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "position"));
-			GL.EnableVertexAttribArray(0);
-			//normal
-			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "normal"));
-			GL.EnableVertexAttribArray(1);
-			//uv coord
-			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "uvtex"));
-			GL.EnableVertexAttribArray(2);
-
-			//unbind
-			GL.BindVertexArray(0);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-			*/
 		}
 
 		void SetupMeshRigged(VertexRigged[] vertices)
@@ -146,17 +124,51 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
 			//generating shared storage buffer
-
 		}
 
+		void SetupMesh()
+		{
+			
+			//Delete();
+			vertexCount = vertTest.Length;
+			int vertSize = Marshal.SizeOf(typeof(Vertex));
+			VAO = GL.GenVertexArray();
+			VBO = GL.GenBuffer();
+			EBO = GL.GenBuffer();
+			//bind buffers
+			GL.BindVertexArray(VAO);
+			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+			//load vertexes to buffer
+			//GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
+			GL.BufferData(BufferTarget.ArrayBuffer, vertSize * vertexCount, vertTest, BufferUsageHint.StreamDraw);
+
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
+			GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indexes.Length, indexes, BufferUsageHint.StaticDraw);
+
+			//position
+			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "position"));
+			GL.EnableVertexAttribArray(0);
+			//normal
+			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "normal"));
+			GL.EnableVertexAttribArray(1);
+			//uv coord
+			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "uvtex"));
+			GL.EnableVertexAttribArray(2);
+
+			//unbind
+			GL.BindVertexArray(0);
+			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+		}
+
+		//create shader storage buffer for mesh
 		internal void MakeSSBO(int index)
 		{
+			
 			int vertSize = Marshal.SizeOf(typeof(VertexRigged));
 			SSB0 = GL.GenBuffer();
 			GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB0);
 			GL.BufferData(BufferTarget.ShaderStorageBuffer, vertSize* vertexCount, vert, BufferUsageHint.DynamicDraw);
 			GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, index, SSB0);
-			//cshader.SetSSBO(index, "Input");
 			GL.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
 		}
 
@@ -170,11 +182,12 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 		}
 
-		internal void ApplySkin(int SSBoutput)
+		internal void ApplySkin()
 		{
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 			int size = Marshal.SizeOf(typeof(Vertex)) * vertexCount;
-			GL.CopyBufferSubData(BufferTarget.ShaderStorageBuffer, BufferTarget.ArrayBuffer, IntPtr.Zero,IntPtr.Zero, size);
+
+			GL.CopyBufferSubData(BufferTarget.ShaderStorageBuffer, BufferTarget.ArrayBuffer, (IntPtr)0,(IntPtr)0, size);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 		}
 
@@ -191,6 +204,10 @@ namespace Toys
 		internal void BindSSBO()
 		{
 			GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB0);
+		}
+		internal void BindSSBO1()
+		{
+			GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, SSB0);
 		}
 
 		internal void Draw(int offset, int count)

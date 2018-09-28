@@ -23,7 +23,6 @@ namespace Toys
 			GL.DeleteShader(vertexShader);
 			GL.DeleteShader(fragmentShader);
 
-
 		}
 
 

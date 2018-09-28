@@ -1,9 +1,12 @@
 ﻿#version 430
 
+//dont work without
+layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
 struct VertexRigged
 {
- 	vec3 aPos;
-	vec3 aNormal;
+ 	vec4 aPos;
+	vec4 aNormal;
 	vec2 aTexcord;
 	ivec4 BoneIDs;
 	vec4 Weights;
@@ -26,14 +29,21 @@ layout(std430, binding = 1) buffer Output
 	Vertex model [];
 };
 
+layout(std430, binding = 2) buffer test
+{
+	vec4 vector;
+};
+
 layout (std140) uniform skeleton
 {
-    mat4 gBones[500];
+    mat4 gBones[];
 };
 
 void main() {
 
+	
 	uint vIndex = gl_GlobalInvocationID.x;
+	//test
 
 	VertexRigged vert = modelRigged[vIndex];
 
@@ -42,7 +52,12 @@ void main() {
     BoneTransform += gBones[vert.BoneIDs[2]] * vert.Weights[2];
     BoneTransform += gBones[vert.BoneIDs[3]] * vert.Weights[3];
 
-    model[vIndex].aPos = (BoneTransform * vec4(vert.aPos, 1.0)).xyz;
-    model[vIndex].aNormal = (BoneTransform * vec4(vert.aNormal, 1.0)).xyz;
+   	model[vIndex].aPos = (BoneTransform * vert.aPos).xyz;
+    model[vIndex].aNormal = (BoneTransform * vert.aNormal).xyz;
+    //model[vIndex].aPos = (vert.aPos).xyz;
+    //model[vIndex].aNormal = (vert.aNormal).xyz;
+    //model[vIndex].aPos = vert.aPos;
+    //model[vIndex].aNormal = (vert.aNormal);
     model[vIndex].aTexcord = vert.aTexcord;
+    //model[vIndex].aPos.x = vIndex;
 }

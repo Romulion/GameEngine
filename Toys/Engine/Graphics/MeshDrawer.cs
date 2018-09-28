@@ -83,13 +83,17 @@ namespace Toys
 		public void DrawSimple()
 		{
 			mesh.BindVAO();
+
+
 			foreach (var mat in mats)
 			{
 				if (mat.dontDraw)
 					continue;
 				mesh.Draw(mat.offset, mat.count);
 			}
+
 			mesh.ReleaseVAO();
+
 		}
 
 	}
