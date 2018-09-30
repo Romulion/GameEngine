@@ -17,7 +17,7 @@ namespace Toys
 		int SSB0;
 
 		internal int vSize = 0;
-		VertexRigged[] vert;
+		public VertexRigged[] vert;
 		public Vertex[] vertTest;
 
 		public Mesh(Vertex[] vertices, int[] indexes)
@@ -31,8 +31,10 @@ namespace Toys
 			this.indexes = indexes;
 			vSize = Marshal.SizeOf(typeof(Vertex));
 			//old
-			//SetupMeshRigged(vertices);
+			SetupMeshRigged(vertices);
+            //end old
 
+            /*
 			//new
 			vert = vertices;
 			vertTest = new Vertex[vertices.Length];
@@ -40,7 +42,8 @@ namespace Toys
 				vertTest[i] = (Vertex)vertices[i];
 
 			SetupMesh(vertTest);
-
+            //end new
+            */
 		}
 
 
@@ -54,10 +57,10 @@ namespace Toys
 
 		void SetupMesh(Vertex[] vertices)
 		{
-			Console.WriteLine(vertices[0].position.X);
 			vertexCount = vertices.Length;
 			int vertSize = Marshal.SizeOf(typeof(Vertex));
-			VAO = GL.GenVertexArray();
+            Console.WriteLine(vertSize);
+            VAO = GL.GenVertexArray();
 			VBO = GL.GenBuffer();
 			EBO = GL.GenBuffer();
 			//bind buffers
@@ -188,7 +191,7 @@ namespace Toys
 			int size = Marshal.SizeOf(typeof(Vertex)) * vertexCount;
 
 			GL.CopyBufferSubData(BufferTarget.ShaderStorageBuffer, BufferTarget.ArrayBuffer, (IntPtr)0,(IntPtr)0, size);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 		}
 
 		internal void BindVAO()

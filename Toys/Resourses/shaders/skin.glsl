@@ -29,19 +29,14 @@ layout(std430, binding = 1) buffer Output
 	Vertex model [];
 };
 
-layout(std430, binding = 2) buffer test
-{
-	vec4 vector;
-};
 
 layout (std140) uniform skeleton
 {
-    mat4 gBones[];
+    mat4 gBones[500];
 };
 
 void main() {
 
-	
 	uint vIndex = gl_GlobalInvocationID.x;
 	//test
 
@@ -59,5 +54,4 @@ void main() {
     //model[vIndex].aPos = vert.aPos;
     //model[vIndex].aNormal = (vert.aNormal);
     model[vIndex].aTexcord = vert.aTexcord;
-    //model[vIndex].aPos.x = vIndex;
 }

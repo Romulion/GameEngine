@@ -110,9 +110,10 @@ namespace Toys
 
 		public void Update()
 		{
-			//shadow.pos = new Vector3(2 * (float)Math.Cos(radians(i)), 1.5f, 2 * (float)Math.Sin(radians(i)));
-			//i++;
-			/*
+            //shadow.pos = new Vector3(2 * (float)Math.Cos(radians(i)), 1.5f, 2 * (float)Math.Sin(radians(i)));
+            /*
+			i++;
+			
 			if (models.Count > 0)
 			{
 				float angle = (float)Math.Sin(radians(i * 3)) * radians(40) - radians(20);
@@ -120,7 +121,7 @@ namespace Toys
 				//models[0].anim.Rotate("上半身", new Quaternion(0f, angle, 0f) );
 				i++;
 			}
-*/
+            */
 		}
 
 

@@ -33,7 +33,8 @@ namespace Toys
 			//uvtex = tex;
 			boneIndexes = indexes;
 			this.weigth = weigth;
-		}
+		}
+
 	
 	}
 
