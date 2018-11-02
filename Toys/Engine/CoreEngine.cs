@@ -41,8 +41,11 @@ namespace Toys
 				pp = mgr.GetShader("pp");
 
 
+				Console.WriteLine("buffers");
+				Console.WriteLine(GL.GetInteger(GetPName.MaxUniformBufferBindings));
+
 				//setting aditional buffer
-                FBO = GL.GenFramebuffer();
+				FBO = GL.GenFramebuffer();
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBO);
 				Texture texture = Texture.LoadFrameBufer(Width, Height, "postprocess");
 				//screen = new Model(texture,pp);

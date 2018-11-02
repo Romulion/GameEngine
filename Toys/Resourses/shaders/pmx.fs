@@ -9,11 +9,20 @@ in VS_OUT {
 	vec4 lightSpace;
 } fs_in;
 
+layout (std140) uniform light {
+	vec3 LightPos;
+	vec3 viewPos;
+	float near_plane;
+	float far_plane;
+};
+
+/*
 uniform vec3 LightPos;
 uniform vec3 viewPos;
-uniform sampler2D shadowMap;
 uniform float near_plane;
 uniform float far_plane;
+*/
+uniform sampler2D shadowMap;
 
 struct Material{
     sampler2D texture_diffuse;

@@ -89,6 +89,7 @@ namespace Toys
 			{
 				if (mat.dontDraw)
 					continue;
+				//mat.GetShader.ApplyShader();
 				mesh.Draw(mat.offset, mat.count);
 			}
 

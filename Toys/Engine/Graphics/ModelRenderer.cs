@@ -13,34 +13,37 @@ namespace Toys
 		LightSource light;
 		Camera camera;
 		Shader outline;
+		UniformBufferSpace ubs;
 
 		public ModelRenderer(LightSource ls, Camera cam)
 		{
 			light = ls;
 			camera = cam;
 			outline = ShaderManager.GetInstance.GetShader("outline");
+			ubs = (UniformBufferSpace) UniformBufferManager.GetInstance.GetBuffer("space");
 		}
 
 
 
 		public void Render(Model model) 
 		{
+
 			model.anim.SkinMesh();
 			MeshDrawer msrd = model.meshes;
 			Shader shader = msrd.GetShader;
 			shader.ApplyShader();
 			//setting light
-			shader.SetUniform(light.GetMat, "lightSpacePos");
-			shader.SetUniform(light.GetPos, "LightPos");
 			light.BindShadowMap();
 
 			Matrix4 pvm = model.WorldSpace * viev * projection;
 			Matrix4 norm = model.WorldSpace.Inverted();
-
-			shader.SetUniform(pvm, "pvm");
 			norm.Transpose();
-			shader.SetUniform(norm, "NormalMat");
-			shader.SetUniform(model.WorldSpace, "model");
+
+			ubs.SetLightSpace(light.GetMat);
+			ubs.SetNormalSpace(norm);
+			ubs.SetPVMSpace(pvm);
+			ubs.SetModelSpace(model.WorldSpace);
+
 			msrd.Draw();
 
 			if (msrd.OutlineDrawing)

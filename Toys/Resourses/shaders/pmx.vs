@@ -10,10 +10,16 @@ layout (std140) uniform skeleton
     mat4 gBones[500];
 };
 
-uniform mat4 model;
-uniform mat4 pvm;
-uniform mat4 NormalMat;
-uniform mat4 lightSpacePos;
+layout (std140) uniform space {
+	mat4 model;
+	mat4 pvm;
+	mat4 NormalMat;
+	mat4 lightSpacePos;
+};
+
+//uniform mat4 pvm;
+//uniform mat4 NormalMat;
+//uniform mat4 lightSpacePos;
 
 out VS_OUT {
 	vec2 Texcord;

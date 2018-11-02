@@ -82,6 +82,7 @@ namespace Toys
 			mat.textures = new Texture[] {txtr};
 		}
 */
+
 		public IMaterial[] GetMaterials
 		{
 			get {
@@ -91,6 +92,5 @@ namespace Toys
 				return mats.ToArray();
 			}
 		}
-
     }
 }

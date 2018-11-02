@@ -10,7 +10,8 @@ namespace Toys
 		public Camera camera = new Camera();
 		LightSource shadow;
 
-		UniformBuffer skeleton;
+		UniformBufferSkeleton skeleton;
+		UniformBufferLight ubl;
 		Shader shdr;
 		Matrix4 projection, viev;
 		ModelRenderer renderer;
@@ -39,7 +40,7 @@ namespace Toys
 				shdmMgmt.LoadShader("pmx");
 				shdmMgmt.LoadShader("shadow");
 				shdmMgmt.LoadShader("outline");
-				shdmMgmt.LoadShader("compute","skin.glsl");
+				//shdmMgmt.LoadShader("compute","skin.glsl");
 			}
 			catch (Exception e)
 			{
@@ -54,9 +55,12 @@ namespace Toys
 			shdr = shdmMgmt.GetShader("pmx");
 			//outline = new Outline();
 			//outline.size = 0.03f;
-			skeleton = new UniformBuffer(32000,"skeleton");
-			shadow = new LightSource(models,skeleton);
-
+			UniformBufferManager ubm = UniformBufferManager.GetInstance;
+			skeleton = (UniformBufferSkeleton)ubm.GetBuffer("skeleton");
+			shadow = new LightSource(models);
+			ubl = (UniformBufferLight)ubm.GetBuffer("light");
+			ubl.SetNearPlane(0.1f);
+			ubl.SetFarPlane(10.0f);
 			renderer = new ModelRenderer(shadow,camera);
 		}
 
@@ -93,13 +97,14 @@ namespace Toys
 		{
 
 			renderer.viev = camera.GetLook;
+			ubl.SetLightPos(shadow.GetPos);
+			ubl.SetViewPos(camera.GetPos);
 
 			//timer.Start();
 			foreach (var model in models)
 			{
 				renderer.Render(model);
 				skeleton.SetBones(model.anim.GetSkeleton);
-
 			}
 			/*
 			timer.Stop();

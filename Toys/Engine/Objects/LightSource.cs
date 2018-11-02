@@ -8,7 +8,7 @@ namespace Toys
 	public class LightSource
 	{
 		List<Model> models;
-		UniformBuffer ubo;
+		UniformBufferSkeleton ubo;
 		public Vector3 pos;
 		Vector3 look;
 		int shadowBuffer;
@@ -23,7 +23,7 @@ namespace Toys
 		int SWidth = 640;
 		int SHeigth = 480;
 
-		public LightSource(List<Model> models,UniformBuffer ubo)
+		public LightSource(List<Model> models)
 		{
 			shadowBuffer = GL.GenFramebuffer();
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, shadowBuffer);
@@ -44,7 +44,8 @@ namespace Toys
 			projection = Matrix4.CreateOrthographic(5f, 5f, 0.1f, 5f);
 			//projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (30 / 180f), Width / (float)Heigth, 1f, 100.0f);
 			lightdir = Matrix4.LookAt(pos, look, new Vector3(0f, 1f, 0f));
-			this.ubo = ubo;
+
+            ubo = (UniformBufferSkeleton) UniformBufferManager.GetInstance.GetBuffer("skeleton");
 			this.models = models;
 		}
 

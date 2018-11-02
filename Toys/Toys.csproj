@@ -51,7 +51,6 @@
     <Compile Include="Engine\Materials\MaterialSimple.cs" />
     <Compile Include="Engine\Morph\MorphVertex.cs" />
     <Compile Include="Engine\Objects\SceneManager.cs" />
-    <Compile Include="Engine\Objects\UniformBuffer.cs" />
     <Compile Include="Engine\Objects\Shader_Manager.cs" />
     <Compile Include="Engine\CoreEngine.cs" />
     <Compile Include="TargaImage.cs" />
@@ -73,6 +72,11 @@
     <Compile Include="Engine\Animation\ModelSkinning.cs" />
     <Compile Include="Engine\Graphics\Shader.cs" />
     <Compile Include="Engine\Graphics\ShaderCompute.cs" />
+    <Compile Include="Engine\Buffers\UniformBufferSkeleton.cs" />
+    <Compile Include="Engine\Buffers\UniformBufferLight.cs" />
+    <Compile Include="Engine\Buffers\UniformBufferManager.cs" />
+    <Compile Include="Engine\Buffers\UniformBufferSpace.cs" />
+    <Compile Include="Engine\Buffers\UniformBuffer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
@@ -109,6 +113,7 @@
     <Folder Include="Window\" />
     <Folder Include="Engine\Physics\" />
     <Folder Include="SMD\" />
+    <Folder Include="Engine\Buffers\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
