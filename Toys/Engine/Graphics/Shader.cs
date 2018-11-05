@@ -87,5 +87,10 @@ namespace Toys
 			GL.UniformBlockBinding(shaderProgram, indx, index);
 		}
 
+		public void DeleteShader()
+		{
+			GL.DeleteProgram(shaderProgram);
+		}
+
 	}
 }

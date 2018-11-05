@@ -6,10 +6,10 @@ namespace Toys
 {
 	public enum TextureType
 	{
-		diffuse,
-		toon,
-		specular,
-		shadow
+		diffuse = 0,
+		toon = 1,
+		specular = 2,
+		shadow = 10,
 	};
 
 	public class Texture
@@ -31,7 +31,7 @@ namespace Toys
 			//check texture
 			try
 			{
-				///cause .NET cant tga natievly
+				///cause .NET cant read tga natievly
 				/// still need to load .spa textures
 				///png , jpg, bmp is ok
 				if (path.EndsWith("tga",StringComparison.OrdinalIgnoreCase))
@@ -180,7 +180,8 @@ namespace Toys
 
 		public TextureType GetTextureType
 		{
-			get { return type; }
+			get { return type; } 
+			set { type = value;}
 		}
 		public string GetName
 		{

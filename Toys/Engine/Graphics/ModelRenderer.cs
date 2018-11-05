@@ -30,10 +30,10 @@ namespace Toys
 
 			model.anim.SkinMesh();
 			MeshDrawer msrd = model.meshes;
-			Shader shader = msrd.GetShader;
-			shader.ApplyShader();
+			//Shader shader = msrd.GetShader;
+			//shader.ApplyShader();
 			//setting light
-			light.BindShadowMap();
+			//light.BindShadowMap();
 
 			Matrix4 pvm = model.WorldSpace * viev * projection;
 			Matrix4 norm = model.WorldSpace.Inverted();

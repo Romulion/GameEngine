@@ -14,7 +14,7 @@ namespace Toys
 	{
 		protected readonly int UBO;
 		readonly string name;
-		int bufferIndex;
+		public readonly int bufferIndex;
 
 		public UniformBuffer(int size, string bindingName, int bindingPoint)
 		{

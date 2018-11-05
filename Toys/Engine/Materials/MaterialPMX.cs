@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace Toys
 {
-	public class MaterialPMX : IMaterial, IOutline
+	public class MaterialPMX : IOutline
 	{
 		public Texture[] textures;
 

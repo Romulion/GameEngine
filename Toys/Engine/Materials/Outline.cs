@@ -5,7 +5,7 @@ using OpenTK;
 namespace Toys
 {
 	//default outline class
-	public class Outline: IOutline
+	public class Outline : IOutline
 	{
 		Shader outline;
 		public Vector4 EdgeColour { get; set; }

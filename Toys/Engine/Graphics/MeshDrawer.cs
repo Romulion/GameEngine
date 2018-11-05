@@ -8,7 +8,7 @@ namespace Toys
 	public class MeshDrawer
 	{
 		public Mesh mesh { get; private set; }
-		public MaterialPMX[] mats { get; private set; }
+		public IMaterial[] mats { get; private set; }
 		Shader shaderMain;
 
 
@@ -16,17 +16,16 @@ namespace Toys
 		public bool CastShadow;
 
 
-		public MeshDrawer(Mesh mesh, MaterialPMX[] mats)
+		public MeshDrawer(Mesh mesh, IMaterial[] mats)
 		{
 
 			this.mesh = mesh;
 			this.mats = mats;
-			shaderMain = mats[0].GetShader;
 
 		}
 
 		//for single material mesh
-		public MeshDrawer(Mesh mesh, MaterialPMX mat) : this(mesh, new MaterialPMX[] { mat })
+		public MeshDrawer(Mesh mesh, IMaterial mat) : this(mesh, new IMaterial[] { mat })
 		{
 			mat.count = mesh.indexes.Length;
 		}
@@ -45,12 +44,13 @@ namespace Toys
 		*/
 		public void Draw()
 		{
-			shaderMain.ApplyShader();
 			mesh.BindVAO();
 			foreach (var mat in mats)
 			{
-				if (mat.dontDraw)
+				var rdirs = mat.rndrDirrectives;
+				if (!rdirs.render)
 					continue;
+				
 				mat.ApplyMaterial();
 				mesh.Draw(mat.offset, mat.count);
 			}
@@ -65,13 +65,10 @@ namespace Toys
 
 			foreach (var mat in mats)
 			{
-				IOutline otl;
-				if (mat is IOutline)
-					otl = (IOutline)mat;
-				else 
-					otl = new Outline();
+				var	otl = ((Material)mat).outln;
+				var rndr = mat.rndrDirrectives;
 				//outline = mat.outline;
-				if (mat.dontDraw || !otl.hasEdge)
+				if (!rndr.render || !rndr.hasEdges)
 					continue;
 				otl.ApplyOutline();
 				mesh.Draw(mat.offset, mat.count);
@@ -87,7 +84,8 @@ namespace Toys
 
 			foreach (var mat in mats)
 			{
-				if (mat.dontDraw)
+				
+				if (!mat.rndrDirrectives.render)
 					continue;
 				//mat.GetShader.ApplyShader();
 				mesh.Draw(mat.offset, mat.count);

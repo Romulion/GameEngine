@@ -3,7 +3,7 @@ using OpenTK;
 
 namespace Toys
 {
-	public class MaterialSimple: IMaterial
+	public class MaterialSimple
 	{
 		public Texture[] textures;
 		public int offset { get; set; }
