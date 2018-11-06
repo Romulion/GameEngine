@@ -34,9 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="MainProcess.cs" />
-    <Compile Include="PMX\Header.cs" />
-    <Compile Include="PMX\PmxReader.cs" />
-    <Compile Include="PMX\Reader.cs" />
     <Compile Include="Engine\Animation\AnimController.cs" />
     <Compile Include="Engine\Animation\Bone.cs" />
     <Compile Include="Engine\Graphics\Mesh.cs" />
@@ -68,7 +65,6 @@
     <Compile Include="Engine\Graphics\ModelRenderer.cs" />
     <Compile Include="Engine\Materials\IOutline.cs" />
     <Compile Include="Engine\Materials\Outline.cs" />
-    <Compile Include="SMD\ReaderSMD.cs" />
     <Compile Include="Engine\Animation\ModelSkinning.cs" />
     <Compile Include="Engine\Graphics\Shader.cs" />
     <Compile Include="Engine\Graphics\ShaderCompute.cs" />
@@ -77,6 +73,19 @@
     <Compile Include="Engine\Buffers\UniformBufferManager.cs" />
     <Compile Include="Engine\Buffers\UniformBufferSpace.cs" />
     <Compile Include="Engine\Buffers\UniformBuffer.cs" />
+    <Compile Include="Engine\Materials\Material.cs" />
+    <Compile Include="Engine\Materials\ShaderSettings.cs" />
+    <Compile Include="Engine\Graphics\ShaderConstructor.cs" />
+    <Compile Include="Engine\Materials\RenderDirectives.cs" />
+    <Compile Include="Engine\ModelLoader\DAE\ReaderDAE.cs" />
+    <Compile Include="Engine\ModelLoader\PMX\Header.cs" />
+    <Compile Include="Engine\ModelLoader\PMX\MaterialFlags.cs" />
+    <Compile Include="Engine\ModelLoader\PMX\PmxReader.cs" />
+    <Compile Include="Engine\ModelLoader\PMX\Reader.cs" />
+    <Compile Include="Engine\ModelLoader\SMD\ReaderSMD.cs" />
+    <Compile Include="Engine\ModelLoader\ModelLoader.cs" />
+    <Compile Include="Engine\ModelLoader\IModelLoader.cs" />
+    <Compile Include="Engine\ModelLoader\DAE\DAEMaterial.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
@@ -96,10 +105,10 @@
     <Reference Include="INIFileParser">
       <HintPath>..\packages\ini-parser.3.4.0\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assamble\" />
-    <Folder Include="PMX\" />
     <Folder Include="Resourses\" />
     <Folder Include="Resourses\shaders\" />
     <Folder Include="Resourses\textures\" />
@@ -112,8 +121,11 @@
     <Folder Include="Engine\Objects\" />
     <Folder Include="Window\" />
     <Folder Include="Engine\Physics\" />
-    <Folder Include="SMD\" />
     <Folder Include="Engine\Buffers\" />
+    <Folder Include="Engine\ModelLoader\" />
+    <Folder Include="Engine\ModelLoader\DAE\" />
+    <Folder Include="Engine\ModelLoader\PMX\" />
+    <Folder Include="Engine\ModelLoader\SMD\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

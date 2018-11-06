@@ -5,7 +5,7 @@ using Gtk;
 
 namespace Toys
 {
-	public class EmptyClass
+	public class MainProcess
 	{
 
 		public static void Main(params string[] args)
@@ -17,7 +17,9 @@ namespace Toys
             CoreEngine core = new CoreEngine();
 			var scene = SceneManager.GetInstance;
 			//string str = "";
-			PmxReader pmx = new PmxReader(args[0]);
+			IModelLoader pmx = ModelLoader.Load(args[0]);
+			//Console.ReadLine();
+			//return;
 			Model model = pmx.GetRiggedModel;
 			IMaterial[] mats = model.GetMaterials;
 			model.WorldSpace = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);

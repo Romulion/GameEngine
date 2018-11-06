@@ -33,17 +33,19 @@ namespace Toys
 			foreach (var mat in mats)
 			{
 				Button btn = new Button();
-				btn.Label = ((MaterialPMX)mat).Name;
+				btn.Label = mat.Name;
 				btn.Name = "btn";
 				btn.ModifyBg(StateType.Normal, disable);
 
 				btn.Clicked += (sender, e) =>
 				{
-					mat.dontDraw = !mat.dontDraw;
-					if (mat.dontDraw)
+					var renderDir = mat.rndrDirrectives;
+					renderDir.render = !renderDir.render;
+					if (renderDir.render)
 						btn.ModifyBg(StateType.Normal, disable);
 					else 
-						btn.ModifyBg(StateType.Normal, enable);	
+						btn.ModifyBg(StateType.Active, enable);	
+					
 				};
 				/*
 				if (mat.dontDraw)

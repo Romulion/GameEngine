@@ -18,6 +18,7 @@ D:\Coding\GameEngine\Toys\obj\x86\Debug\Toys.pdb
 D:\Coding\GameEngine\Toys\bin\Debug\INIFileParser.dll
 D:\Coding\GameEngine\Toys\bin\Debug\INIFileParser.xml
 D:\Coding\GameEngine\Toys\obj\x86\Debug\Toys.csprojResolveAssemblyReference.cache
+D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.csprojResolveAssemblyReference.cache
 D:\vp\C#\Toys\Toys\bin\Debug\Toys.exe
 D:\vp\C#\Toys\Toys\bin\Debug\Toys.pdb
 D:\vp\C#\Toys\Toys\bin\Debug\BulletSharp.dll
