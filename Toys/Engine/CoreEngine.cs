@@ -40,10 +40,6 @@ namespace Toys
 				mgr.LoadShader("pp");
 				pp = mgr.GetShader("pp");
 
-
-				Console.WriteLine("buffers");
-				Console.WriteLine(GL.GetInteger(GetPName.MaxUniformBufferBindings));
-
 				//setting aditional buffer
 				FBO = GL.GenFramebuffer();
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBO);

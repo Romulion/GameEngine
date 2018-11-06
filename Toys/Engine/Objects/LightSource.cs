@@ -78,7 +78,7 @@ namespace Toys
 
 		public void BindShadowMap()
 		{
-			GL.ActiveTexture(TextureUnit.Texture10);
+			GL.ActiveTexture(TextureUnit.Texture0 + (int)TextureType.shadow);
 			shadowMap.BindTexture();
 		}
 

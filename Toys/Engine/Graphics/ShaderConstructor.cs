@@ -22,7 +22,7 @@ namespace Toys
 
 		Shader Creator()
 		{
-			
+
 			GenerateVertex();
 			GenerateFragment();
 			Shader shdr = new ShaderMain(rawVertex, rawFragment);
@@ -42,13 +42,16 @@ namespace Toys
 			//bind textures
 			shdr.ApplyShader();
 			if (setting.TextureDiffuse)
-				shdr.SetUniform((float)TextureType.diffuse, "material.texture_diffuse");
+				shdr.SetUniform((int)TextureType.diffuse, "material.texture_diffuse");
 			if (setting.toonShadow)
-				shdr.SetUniform((float)TextureType.toon, "material.texture_toon");
+			{
+				shdr.SetUniform((int)TextureType.toon, "material.texture_toon");
+				SceneManager.GetInstance.GetLight.BindShadowMap();
+			}
 			if (setting.recieveShadow)
-				shdr.SetUniform((float)TextureType.shadow, "shadowMap");
+				shdr.SetUniform((int)TextureType.shadow, "shadowMap");
 			if (setting.TextureSpecular)
-				shdr.SetUniform((float)TextureType.specular, "texture_specular");
+				shdr.SetUniform((int)TextureType.specular, "texture_specular");
 
 			return shdr;
 		}
@@ -159,8 +162,6 @@ namespace Toys
 				if (setting.discardInvisible)
 					rawFragment += "if (texcolor.a < 0.05)\n\t\tdiscard;\n";
 			}
-
-
 
 			//shadowing section
 			if (setting.recieveShadow)

@@ -59,35 +59,24 @@ namespace Toys
 			}
 		}
 
-		public void SetTexture(Texture txtr)
+		public void SetTexture(Texture txtr, TextureType type)
 		{
 
 
-			var type = txtr.GetTextureType;
+			//var type = txtr.GetTextureType;
 
-			//MessageBox.Show(Name + " : " + textures.Count);
+
 			if (textures.ContainsKey(type))
 			{
 				textures[type] = txtr;
-				shdr.ApplyShader();
-				TextureUnit unit = TextureUnit.Texture0 + (int)type;
-				GL.ActiveTexture(unit);
-				txtr.BindTexture();
 			}
+
 		}
 
 		public void UpdateMaterial()
 		{
 			shdr.DeleteShader();
 			CreateShader();
-
-			shdr.ApplyShader();
-			TextureUnit unit = TextureUnit.Texture0;
-			foreach (var kv in textures)
-			{ 
-				GL.ActiveTexture(unit + (int) kv.Key);
-				kv.Value.BindTexture();
-			}
 		}
 
 		public void ApplyMaterial()

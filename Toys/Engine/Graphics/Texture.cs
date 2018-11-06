@@ -77,6 +77,7 @@ namespace Toys
 		void LoadTexture(Bitmap texture)
 		{
 
+
 			//for rare 8bpp formats 
 			if (texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
 			{
