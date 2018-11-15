@@ -86,6 +86,12 @@
     <Compile Include="Engine\ModelLoader\ModelLoader.cs" />
     <Compile Include="Engine\ModelLoader\IModelLoader.cs" />
     <Compile Include="Engine\ModelLoader\DAE\DAEMaterial.cs" />
+    <Compile Include="Engine\ModelLoader\DAE\DAEMeshLoader.cs" />
+    <Compile Include="Engine\ModelLoader\DAE\DAEGeometryContainer.cs" />
+    <Compile Include="Engine\Extrensions.cs" />
+    <Compile Include="Engine\ModelLoader\DAE\DAEBoneContainer.cs" />
+    <Compile Include="Engine\ModelLoader\DAE\StringParser.cs" />
+    <Compile Include="Engine\ModelLoader\DAE\DAEMaterialReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />

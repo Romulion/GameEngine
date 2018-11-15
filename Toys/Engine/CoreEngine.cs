@@ -136,7 +136,7 @@ namespace Toys
 
 			//render scene to buffer
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-            GL.ClearColor(0.0f, 0f, 0.0f, 1.0f);
+            GL.ClearColor(0.0f, 0.1f, 0.1f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit |  ClearBufferMask.DepthBufferBit);
 			Scene.Render();
 

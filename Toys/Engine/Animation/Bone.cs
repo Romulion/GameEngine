@@ -47,6 +47,13 @@ namespace Toys
 			SetFlags(flags);
 		}
 
+		public Bone(string name, Matrix4 pos, int parent)
+		{
+			localSpace = pos;
+			Name = name;
+			ParentIndex = parent;
+		}
+
 		void SetFlags(byte[] bytes)
 		{
 			BitArray flags = new BitArray(bytes);

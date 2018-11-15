@@ -221,7 +221,7 @@ namespace Toys
 
 			rawFragment += "}\n";
 
-			//MessageBox.Show(rawFragment);
+			//MessageBox.Show(rawVertex);
 			//Console.WriteLine(rawFragment);
 
 		}

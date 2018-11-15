@@ -19,7 +19,7 @@ namespace Toys
 			skeleton = new Matrix4[bones.Length];
 			DefaultPos();
 
-			skinner = new ModelSkinning(mesh);
+			//skinner = new ModelSkinning(mesh);
 		}
 
 		public Bone[] GetBones
