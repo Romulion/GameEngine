@@ -15,6 +15,7 @@ namespace Toys
 		public IVector4[] boneIndeces;
 		public int[] indeces;
 		public string mat;
+		public int offset;
 
 		public DAEGeometryContainer(uint vertCount)
 		{

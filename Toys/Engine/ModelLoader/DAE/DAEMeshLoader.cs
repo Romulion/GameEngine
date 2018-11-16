@@ -94,6 +94,7 @@ namespace Toys
 			gc.name = geometry.Attributes.GetNamedItem("name").Value;
 			gc.mat = mat;
 			//vertices
+
 			XmlNode vertS = mesh.FindId(vertID);
 			var inpts = vertS.FindNodes("input");
 			if (inpts[0].Attributes != null && inpts[0].Attributes.GetNamedItem("semantic") != null)
@@ -122,30 +123,45 @@ namespace Toys
 
 			}
 
-
-			//get normals
-			XmlNode norm = mesh.FindId(normID);
-			var fl = norm.FindNodes("float_array");
-			float[] fls = StringParser.readFloat(fl[0].InnerText);
 			int i = 0;
-			for (int n = 0; n < fls.Length && i < gc.normals.Length; n += 3)
+			//get normals
+			if (normID != "")
 			{
-				gc.normals[i] = new Vector3(fls[n], fls[n + 1], fls[n + 2]);
-				gc.normals[i].Normalize();
-				i++;
+				XmlNode norm = mesh.FindId(normID);
+				var fl = norm.FindNodes("float_array");
+
+				float[] fls = StringParser.readFloat(fl[0].InnerText);
+
+				for (int n = 0; n < fls.Length && i < gc.normals.Length; n += 3)
+				{
+					gc.normals[i] = new Vector3(fls[n], fls[n + 1], fls[n + 2]);
+					gc.normals[i].Normalize();
+					i++;
+				}
+			}
+			else 
+			{
+				for (int n = 0; i<gc.normals.Length; n += 3)
+				{
+					gc.normals[i] = Vector3.Zero;
+					i++;
+				}
 			}
 
 			//get texcoord
+			//Console.WriteLine(textID);
 			XmlNode uvtex = mesh.FindId(textID);
-			fl = norm.FindNodes("float_array");
-			fls = StringParser.readFloat(fl[0].InnerText);
-			i = 0;
-			for (int n = 0; n < fls.Length && i < gc.uvcord.Length; n += 2)
+			var fluv = uvtex.FindNodes("float_array");
+			float[] fls1 = StringParser.readFloat(fluv[0].InnerText);
+			 i = 0;
+			//Console.WriteLine(fls1.Length);
+
+			for (int n = 0; n < fls1.Length && i < gc.uvcord.Length; n += 2)
 			{
-				//Console.WriteLine("{0}  {1}", fls[n], fls[n + 1]);
-				gc.uvcord[i] = new Vector2(fls[n] , fls[n + 1]);
+				gc.uvcord[i] = new Vector2(fls1[n] * 2f, (1 - fls1[n + 1]));    
 				i++;
 			}
+
 		}
 
 
@@ -217,28 +233,26 @@ namespace Toys
 			List<int> indeces = new List<int>();
 
 			int offset = 0;
+			int vertsOffset = 0;
 			foreach (var gc in dgc)
 			{
 				for (int n = 0; n < gc.position.Length; n++)
 				{
 					verts.Add(new VertexRigged(gc.position[n], gc.normals[n], gc.uvcord[n], gc.boneIndeces[n], gc.weigth[n]));
-					Console.WriteLine(gc.uvcord[n]);
 				}
 				foreach (int index in gc.indeces)
 				{
-					indeces.Add(index + offset);
+					indeces.Add(index + vertsOffset);
 				}
 
-
-				offset += gc.position.Length;
+				gc.offset = offset;
+				vertsOffset += gc.position.Length;
+				offset += gc.indeces.Length;
 			}
-
 
 			Mesh mesh = new Mesh(verts.ToArray(), indeces.ToArray());
 			return mesh;
 		}
-
-
 
 	}
 }

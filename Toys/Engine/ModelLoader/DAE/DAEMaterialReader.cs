@@ -101,7 +101,6 @@ namespace Toys
 			if (mat.textureName.IndexOf("_id", 0) > 0)
 			{
 				mat.textureName = mat.textureName.Remove(mat.textureName.IndexOf("_id", 0));
-				Console.WriteLine(mat.textureName.Remove(mat.textureName.Length - 3));
 			}
 			mat.textureName += "." + surf.FindNodes("format")[0].InnerText.ToLower();
 			mat.txtr = new Texture(mat.textureName, TextureType.diffuse, mat.textureName);
@@ -128,7 +127,7 @@ namespace Toys
 				shdrst.recieveShadow = true;
 				shdrst.affectedByLight = true;
 				rddir.castShadow = true;
-				rddir.hasEdges = true;
+				rddir.hasEdges = false;
 				shdrst.TextureDiffuse = true;
 				mats[i] = new Material(shdrst, rddir);
 				mats[i].Name = mts[i].Name;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using System.Collections.Generic;
+
 using OpenTK;
 
 namespace Toys
@@ -35,25 +36,24 @@ namespace Toys
 			// обход всех узлов в корневом элементе
 
 
+			Console.WriteLine("start parsing");
 			var meshreader = new DAEMeshLoader(xRoot);
 			mesh = meshreader.LoadMesh();
 
-
+			Console.WriteLine("mesh ok");
 			//bones
 			LoadBones(xRoot);
-
-			var daemats = new DAEMaterialReader(xRoot);
+			Console.WriteLine("bones ok");
 			//materials
+			var daemats = new DAEMaterialReader(xRoot);
 			mats = daemats.GetMaterials();
-			int offset = 0;
+			Console.WriteLine("mats ok");
 			for (int i = 0; i < mats.Length; i++)
 			{
-				Console.WriteLine("{0}  {1}", meshreader.dgc[i].mat, mats[i].Name);
-				mats[i].count = meshreader.dgc[i].indeces.Length;
-				mats[i].offset = offset;
-				offset += meshreader.dgc[i].indeces.Length;
+				var materialMesh = meshreader.dgc.Find( (mat) => mat.mat + "_mat" == mats[i].Name);
+				mats[i].count = materialMesh.indeces.Length;
+				mats[i].offset = materialMesh.offset;
 			}
-
 		}
 
 		void LoadBones(XmlElement xRoot)
