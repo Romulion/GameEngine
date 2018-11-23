@@ -8,46 +8,39 @@ namespace Toys
 	{
 
 		public int[] indexes;
-		//public Texture[] textures;
-		//public IMaterial[] mats;
 
-		int VAO, VBO, EBO;
+		protected int VAO, VBO, EBO;
 		internal int vertexCount;
-
 		int SSB0;
 
-		internal int vSize = 0;
-		public VertexRigged[] vert;
-		public Vertex[] vertTest;
+		//for vertex morphing
+		//stride 
+		internal int vSize;
+		//elements array
+		public Vertex3D[] vert { get; private set; }
 
-		public Mesh(Vertex[] vertices, int[] indexes)
+		public Mesh(Vertex3D[] vertices, int[] indexes)
 		{
-			this.indexes = indexes;
+            this.indexes = indexes;
+			vSize = Marshal.SizeOf(typeof(Vertex3D));
+			vert = vertices;
 			SetupMesh(vertices);
 		}
 
-		public Mesh(VertexRigged[] vertices, int[] indexes)
+		public Mesh(VertexRigged3D[] vertices, int[] indexes)
 		{
 			this.indexes = indexes;
-			vSize = Marshal.SizeOf(typeof(Vertex));
-			//old
+			vSize = Marshal.SizeOf(typeof(VertexRigged3D));
+
+			vert = new Vertex3D[vertices.Length];
+			for (int i = 0; i < vert.Length; i++)
+				vert[i] = (Vertex3D)vertices[i];
+
 			SetupMeshRigged(vertices);
-            //end old
-
-            /*
-			//new
-			vert = vertices;
-			vertTest = new Vertex[vertices.Length];
-			for (int i = 0; i < vertices.Length; i++)
-				vertTest[i] = (Vertex)vertices[i];
-
-			SetupMesh(vertTest);
-            //end new
-            */
 		}
 
 
-
+		//clearing resources
 		public void Delete()
 		{
 			GL.DeleteVertexArray(VAO);
@@ -55,46 +48,58 @@ namespace Toys
 			GL.DeleteBuffer(VBO);
 		}
 
-		void SetupMesh(Vertex[] vertices)
+		/// <summary>
+		/// Setups the Vertex array buffer.
+		/// For 3d vertex position normals uv
+		/// </summary>
+		/// <param name="vertices">Vertices.</param>
+		void SetupMesh(Vertex3D[] vertices)
 		{
 			vertexCount = vertices.Length;
-			int vertSize = Marshal.SizeOf(typeof(Vertex));
-            Console.WriteLine(vertSize);
-            VAO = GL.GenVertexArray();
+			int vertSize = Marshal.SizeOf(typeof(Vertex3D));
+
+			//generate buffers
+			VAO = GL.GenVertexArray();
 			VBO = GL.GenBuffer();
 			EBO = GL.GenBuffer();
+
 			//bind buffers
 			GL.BindVertexArray(VAO);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-			//load vertexes to 
-			//GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
-			GL.BufferData(BufferTarget.ArrayBuffer, vertSize * vertexCount, vertices, BufferUsageHint.StreamDraw);
+
+			//load vertex array to memmory
+			GL.BufferData(BufferTarget.ArrayBuffer, vertSize * vertexCount, vertices, BufferUsageHint.StaticDraw);
+
 
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
 			GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indexes.Length, indexes, BufferUsageHint.StaticDraw);
 
-			Console.WriteLine(Marshal.OffsetOf(typeof(Vertex), "uvtex"));
+			//assign binding points
 			//position
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "position"));
+			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex3D), "position"));
 			GL.EnableVertexAttribArray(0);
 			//normal
-			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "normal"));
+			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex3D), "normal"));
 			GL.EnableVertexAttribArray(1);
 			//uv coord
-			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "uvtex"));
+			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex3D), "uvtex"));
 			GL.EnableVertexAttribArray(2);
 
 			//unbind
-			GL.BindVertexArray(0);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+			GL.BindVertexArray(0);
 		}
 
-		void SetupMeshRigged(VertexRigged[] vertices)
+
+		/// <summary>
+		/// Setups the Vertex array buffer.
+		/// </summary>
+		/// <param name="vertices">Vertices.</param>
+		void SetupMeshRigged(VertexRigged3D[] vertices)
 		{
 
-			vert = vertices;
 			vertexCount = vertices.Length;
-			int vertSize = Marshal.SizeOf(typeof(VertexRigged));
+			int vertSize = Marshal.SizeOf(typeof(VertexRigged3D));
 			VAO = GL.GenVertexArray();
 			VBO = GL.GenBuffer();
 			EBO = GL.GenBuffer();
@@ -107,67 +112,35 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
 			GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indexes.Length, indexes, BufferUsageHint.StaticDraw);
 
+
+
 			//position
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged), "position"));
+			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "position"));
 			GL.EnableVertexAttribArray(0);
 			//normal
-			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged), "normal"));
+			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "normal"));
 			GL.EnableVertexAttribArray(1);
 			//uv coord
-			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged), "uvtex"));
+			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "uvtex"));
 			GL.EnableVertexAttribArray(2);
 			//bones indexes
-			GL.VertexAttribIPointer(3, 4, VertexAttribIntegerType.Int, vertSize, Marshal.OffsetOf(typeof(VertexRigged), "boneIndexes"));
+			GL.VertexAttribIPointer(3, 4, VertexAttribIntegerType.Int, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "boneIndexes"));
 			GL.EnableVertexAttribArray(3);
 			//bones weigth
-			GL.VertexAttribPointer(4, 4, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged), "weigth"));
+			GL.VertexAttribPointer(4, 4, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "weigth"));
 			GL.EnableVertexAttribArray(4);
 			//unbind
-			GL.BindVertexArray(0);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
+			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+			GL.BindVertexArray(0);
 			//generating shared storage buffer
-		}
-
-		void SetupMesh()
-		{
-			
-			//Delete();
-			vertexCount = vertTest.Length;
-			int vertSize = Marshal.SizeOf(typeof(Vertex));
-			VAO = GL.GenVertexArray();
-			VBO = GL.GenBuffer();
-			EBO = GL.GenBuffer();
-			//bind buffers
-			GL.BindVertexArray(VAO);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-			//load vertexes to buffer
-			//GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
-			GL.BufferData(BufferTarget.ArrayBuffer, vertSize * vertexCount, vertTest, BufferUsageHint.StreamDraw);
-
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-			GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indexes.Length, indexes, BufferUsageHint.StaticDraw);
-
-			//position
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "position"));
-			GL.EnableVertexAttribArray(0);
-			//normal
-			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "normal"));
-			GL.EnableVertexAttribArray(1);
-			//uv coord
-			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex), "uvtex"));
-			GL.EnableVertexAttribArray(2);
-
-			//unbind
-			GL.BindVertexArray(0);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 		}
 
 		//create shader storage buffer for mesh
 		internal void MakeSSBO(int index)
 		{
 			
-			int vertSize = Marshal.SizeOf(typeof(VertexRigged));
+			int vertSize = Marshal.SizeOf(typeof(VertexRigged3D));
 			SSB0 = GL.GenBuffer();
 			GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB0);
 			GL.BufferData(BufferTarget.ShaderStorageBuffer, vertSize* vertexCount, vert, BufferUsageHint.DynamicDraw);
@@ -176,11 +149,11 @@ namespace Toys
 		}
 
 		//updating mesh for vertex morph and skinning
-		void UpdateMeshRigged()
+		public void UpdateMeshRigged()
 		{
 			vert[100].position.X += 0.01f;
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-			int vertSize = Marshal.SizeOf(typeof(VertexRigged));
+			int vertSize = Marshal.SizeOf(typeof(VertexRigged3D));
 			GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, vertSize * vertexCount, vert);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 		}
@@ -188,7 +161,7 @@ namespace Toys
 		internal void ApplySkin()
 		{
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-			int size = Marshal.SizeOf(typeof(Vertex)) * vertexCount;
+			int size = Marshal.SizeOf(typeof(Vertex3D)) * vertexCount;
 
 			GL.CopyBufferSubData(BufferTarget.ShaderStorageBuffer, BufferTarget.ArrayBuffer, (IntPtr)0,(IntPtr)0, size);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
@@ -204,6 +177,8 @@ namespace Toys
 			GL.BindVertexArray(0);
 		}
 
+
+		//for compute shader morphs
 		internal void BindSSBO()
 		{
 			GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB0);
@@ -213,6 +188,13 @@ namespace Toys
 			GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, SSB0);
 		}
 
+		/// <summary>
+		/// Draw the part of mesh.
+		/// For meshes splitted by material
+		/// </summary>
+		///
+		/// <param name="offset">Offset.</param>
+		/// <param name="count">Count.</param>
 		internal void Draw(int offset, int count)
 		{
 			GL.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, offset * sizeof(int));
@@ -223,55 +205,7 @@ namespace Toys
 			GL.DrawElements(PrimitiveType.Triangles, vertexCount, DrawElementsType.UnsignedInt, 0);
 		}
 
-		/// <summary>
-		/// old methods
-		/// </summary>
-#region old
-		/*
-		public void Draw()
-		{
-			//UpdateMesh();
-			//draw materials
-			GL.BindVertexArray(VAO);
-			foreach (var mat in mats)
-			{
-				if (mat.dontDraw)
-					continue;
-				mat.ApplyMaterial();
-				GL.DrawElements(PrimitiveType.Triangles, mat.count, DrawElementsType.UnsignedInt, mat.offset * sizeof(int));
 
-			}
-			GL.BindVertexArray(0);
-		}
-
-		//for drawing mesh in one call for shadow map etc
-		public void DrawSimple()
-		{
-			GL.BindVertexArray(VAO);
-			GL.DrawElements(PrimitiveType.Triangles, indexes.Length, DrawElementsType.UnsignedInt, 0);
-			GL.BindVertexArray(0);
-		}
-
-		public void DrawOutline()
-		{
-			GL.CullFace(CullFaceMode.Front);
-			GL.Enable(EnableCap.CullFace);
-			GL.BindVertexArray(VAO);
-			foreach (var mat in mats)
-			{
-				MaterialPMX matp = mat as MaterialPMX;
-				if (matp == null || mat.dontDraw || !matp.hasEdge)
-					continue;
-				matp.ApplyOutline();
-
-				GL.DrawElements(PrimitiveType.Triangles, mat.count, DrawElementsType.UnsignedInt, mat.offset * sizeof(int));
-
-			}
-			GL.BindVertexArray(0);
-			GL.Disable(EnableCap.CullFace);
-		}
-		*/
-#endregion
 
 	}
 }

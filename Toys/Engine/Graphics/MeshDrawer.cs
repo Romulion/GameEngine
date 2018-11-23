@@ -9,7 +9,6 @@ namespace Toys
 	{
 		public Mesh mesh { get; private set; }
 		public IMaterial[] mats { get; private set; }
-		Shader shaderMain;
 
 
 		public bool OutlineDrawing;
@@ -28,14 +27,6 @@ namespace Toys
 		public MeshDrawer(Mesh mesh, IMaterial mat) : this(mesh, new IMaterial[] { mat })
 		{
 			mat.count = mesh.indexes.Length;
-		}
-
-		public Shader GetShader
-		{
-			get
-			{
-				return shaderMain;
-			}
 		}
 
 

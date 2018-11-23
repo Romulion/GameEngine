@@ -183,9 +183,9 @@ namespace Toys
 				else
 				{
 					if (setting.recieveShadow)
-						rawFragment += "vec4 shadowcolor  = vec4(vec3(max(diffuse,shadow)),1.0);\n";
+						rawFragment += "vec4 shadowcolor  = vec4(vec3(max(1-diffuse,1-shadow) * 0.6 + 0.4),1.0);\n";
 					else
-						rawFragment += "vec4 shadowcolor  = vec4(vec3(diffuse),1.0);\n";
+						rawFragment += "vec4 shadowcolor  = vec4(vec3(diffuse * 0.6 + 0.4),1.0);\n";
 				}
 			}
 			else
@@ -221,7 +221,7 @@ namespace Toys
 
 			rawFragment += "}\n";
 
-			//MessageBox.Show(rawVertex);
+			//MessageBox.Show(rawFragment);
 			//Console.WriteLine(rawFragment);
 
 		}

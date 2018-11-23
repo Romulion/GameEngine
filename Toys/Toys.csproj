@@ -39,8 +39,6 @@
     <Compile Include="Engine\Graphics\Mesh.cs" />
     <Compile Include="Engine\Graphics\ShaderMain.cs" />
     <Compile Include="Engine\Graphics\Texture.cs" />
-    <Compile Include="Engine\Graphics\VertexRigged.cs" />
-    <Compile Include="Engine\Graphics\Vertrex.cs" />
     <Compile Include="Engine\Controll\Camera.cs" />
     <Compile Include="Engine\Morph\Morph.cs" />
     <Compile Include="Engine\Materials\IMaterial.cs" />
@@ -92,6 +90,9 @@
     <Compile Include="Engine\ModelLoader\DAE\DAEBoneContainer.cs" />
     <Compile Include="Engine\ModelLoader\DAE\StringParser.cs" />
     <Compile Include="Engine\ModelLoader\DAE\DAEMaterialReader.cs" />
+    <Compile Include="Engine\ModelLoader\DAE\ErrorClasses.cs" />
+    <Compile Include="Engine\Graphics\VertexContainers\VertexRigged3D.cs" />
+    <Compile Include="Engine\Graphics\VertexContainers\Vertrex3D.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
@@ -132,6 +133,7 @@
     <Folder Include="Engine\ModelLoader\DAE\" />
     <Folder Include="Engine\ModelLoader\PMX\" />
     <Folder Include="Engine\ModelLoader\SMD\" />
+    <Folder Include="Engine\Graphics\VertexContainers\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

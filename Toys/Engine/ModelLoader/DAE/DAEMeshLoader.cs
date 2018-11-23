@@ -229,7 +229,7 @@ namespace Toys
 
 		public Mesh LoadMesh()
 		{
-			List<VertexRigged> verts = new List<VertexRigged>();
+			List<VertexRigged3D> verts = new List<VertexRigged3D>();
 			List<int> indeces = new List<int>();
 
 			int offset = 0;
@@ -238,7 +238,7 @@ namespace Toys
 			{
 				for (int n = 0; n < gc.position.Length; n++)
 				{
-					verts.Add(new VertexRigged(gc.position[n], gc.normals[n], gc.uvcord[n], gc.boneIndeces[n], gc.weigth[n]));
+					verts.Add(new VertexRigged3D(gc.position[n], gc.normals[n], gc.uvcord[n], gc.boneIndeces[n], gc.weigth[n]));
 				}
 				foreach (int index in gc.indeces)
 				{

@@ -16,8 +16,8 @@ namespace Toys
 		{
 			outline = ShaderManager.GetInstance.GetShader("outline");
 			hasEdge = true;
-			EdgeScaler = 1f;
-			EdgeColour = new Vector4(0);
+			EdgeScaler = 0.2f;
+			EdgeColour = new Vector4(Vector3.Zero, 1f);
 		}
 
 		public void ApplyOutline()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using OpenTK;
 using System.Windows.Forms;
@@ -70,8 +70,8 @@ namespace Toys
 		{
 			
 			int meshSize = file.ReadInt32();
-			VertexRigged [] verticesR = new VertexRigged[meshSize];
-			Vertex[] vertices = new Vertex[meshSize];
+			VertexRigged3D [] verticesR = new VertexRigged3D[meshSize];
+			Vertex3D[] vertices = new Vertex3D[meshSize];
 			for (int i = 0; i < meshSize; i++)
 			{
 				Vector3 pos = reader.readVector3() * multipler;
@@ -138,8 +138,8 @@ namespace Toys
 						throw new Exception("Not suppornet weigth code " + Weigth);
 				}
 
-				verticesR[i] = new VertexRigged(pos, normal, uv,new IVector4(bonesIndexes),bonesWeigth);
-				vertices[i] = new Vertex(pos, normal, uv);
+				verticesR[i] = new VertexRigged3D(pos, normal, uv,new IVector4(bonesIndexes),bonesWeigth);
+				vertices[i] = new Vertex3D(pos, normal, uv);
 				float outline = file.ReadSingle();
 
 			}

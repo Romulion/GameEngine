@@ -33,26 +33,26 @@ namespace Toys
 		void LoadLibraries()
 		{
 			XmlElement xRoot = xDoc.DocumentElement;
-			// обход всех узлов в корневом элементе
 
-
-			Console.WriteLine("start parsing");
 			var meshreader = new DAEMeshLoader(xRoot);
 			mesh = meshreader.LoadMesh();
 
-			Console.WriteLine("mesh ok");
 			//bones
 			LoadBones(xRoot);
-			Console.WriteLine("bones ok");
 			//materials
 			var daemats = new DAEMaterialReader(xRoot);
-			mats = daemats.GetMaterials();
-			Console.WriteLine("mats ok");
-			for (int i = 0; i < mats.Length; i++)
+			var matsList = daemats.GetMaterials();
+
+			mats = new Material[meshreader.dgc.Count];
+
+			for (int i = 0; i < meshreader.dgc.Count; i++)
 			{
-				var materialMesh = meshreader.dgc.Find( (mat) => mat.mat + "_mat" == mats[i].Name);
-				mats[i].count = materialMesh.indeces.Length;
-				mats[i].offset = materialMesh.offset;
+				var meshItem = meshreader.dgc[i];
+				var matTemplate = matsList.Find((obj) => obj.Name == meshItem.mat + "_mat" );
+				mats[i] = matTemplate.Clone();
+				mats[i].Name = meshItem.name;
+				mats[i].count = meshItem.indeces.Length;
+				mats[i].offset = meshItem.offset;
 			}
 		}
 

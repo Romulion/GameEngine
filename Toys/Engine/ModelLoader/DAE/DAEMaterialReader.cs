@@ -114,9 +114,9 @@ namespace Toys
 			return new Vector4(vector[0],vector[1],vector[2],vector[3]);
 		}
 
-		public Material[] GetMaterials()
+		public List<Material> GetMaterials()
 		{
-			Material[] mats = new Material[mts.Count];
+			List<Material> mats = new List<Material>(mts.Count);
 
 			for (int i = 0; i < mts.Count; i++)
 			{
@@ -127,11 +127,14 @@ namespace Toys
 				shdrst.recieveShadow = true;
 				shdrst.affectedByLight = true;
 				rddir.castShadow = true;
-				rddir.hasEdges = false;
+				rddir.hasEdges = true;
 				shdrst.TextureDiffuse = true;
-				mats[i] = new Material(shdrst, rddir);
-				mats[i].Name = mts[i].Name;
-				mats[i].SetTexture(mts[i].txtr, TextureType.diffuse);
+				shdrst.discardInvisible = true;
+				var mat  = new Material(shdrst, rddir);
+				mat.Name = mts[i].Name;
+				mat.SetTexture(mts[i].txtr, TextureType.diffuse);
+
+				mats.Add(mat);
 			}
 			return mats;
 		}

@@ -89,5 +89,14 @@ namespace Toys
 				kv.Value.BindTexture();
 			}
 		}
+
+		public Material Clone()
+		{
+			var material = new Material(shdrSettings, rndrDirrectives);
+			foreach (var texture in textures)
+				material.SetTexture(texture.Value,texture.Key);
+
+			return material;
+		}
 	}
 }
