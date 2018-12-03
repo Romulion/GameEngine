@@ -9,6 +9,8 @@ namespace Toys
 
 		public int[] indexes;
 
+		private MeshMorper morpher = null;
+
 		protected int VAO, VBO, EBO;
 		internal int vertexCount;
 		int SSB0;
@@ -148,6 +150,16 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
 		}
 
+		public MeshMorper GetMorpher
+		{
+			get
+			{
+				if (morpher == null)
+					morpher = new MeshMorper(vert, VBO, vSize);
+				
+				return morpher; 
+			}
+		}
 		//updating mesh for vertex morph and skinning
 		public void UpdateMeshRigged()
 		{

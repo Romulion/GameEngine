@@ -116,7 +116,7 @@ namespace Toys
 		public void Update()
 		{
 			
-            shadow.pos = new Vector3(2 * (float)Math.Cos(radians(i)), 1.5f, 2 * (float)Math.Sin(radians(i)));
+            //shadow.pos = new Vector3(2 * (float)Math.Cos(radians(i)), 1.5f, 2 * (float)Math.Sin(radians(i)));
 			i++;
             /*
 			if (models.Count > 0)

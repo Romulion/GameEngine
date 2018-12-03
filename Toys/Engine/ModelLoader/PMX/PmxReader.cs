@@ -12,7 +12,7 @@ namespace Toys
 		Texture empty;
 		IMaterial[] mats;
 		Bone[] bones;
-		Morph[] morphs;
+		public Morph[] morphs;
 		float multipler = 0.1f;
 		RigitContainer[] rigitbodies;
 
@@ -405,7 +405,7 @@ namespace Toys
 						case 1: //vertex
 							int index = reader.readVal(header.GetVertexIndexSize);
 							Vector3 pos = reader.readVector3();
-							((MorphVertex)morphs[i]).AddVertex(pos, index);
+							((MorphVertex)morphs[i]).AddVertex(pos * multipler, index);
 							//vertex_morph = new Vector4(pos, index);
 							break;
 						case 2:  //bone morph

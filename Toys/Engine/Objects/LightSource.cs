@@ -13,8 +13,8 @@ namespace Toys
 		Vector3 look;
 		int shadowBuffer;
 		//shadow texture resolution
-		int Width = 1024;
-		int Heigth = 1024;
+		int Width = 4096;
+		int Heigth = 4096;
 
 		Texture shadowMap;
 		Shader shdr;

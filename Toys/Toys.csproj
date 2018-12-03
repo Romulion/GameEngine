@@ -93,6 +93,7 @@
     <Compile Include="Engine\ModelLoader\DAE\ErrorClasses.cs" />
     <Compile Include="Engine\Graphics\VertexContainers\VertexRigged3D.cs" />
     <Compile Include="Engine\Graphics\VertexContainers\Vertrex3D.cs" />
+    <Compile Include="Engine\Morph\MeshMorper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />

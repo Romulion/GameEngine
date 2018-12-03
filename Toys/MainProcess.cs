@@ -21,6 +21,14 @@ namespace Toys
 			//Console.ReadLine();
 			//return;
 			Model model = pmx.GetRiggedModel;
+
+			var morph = model.meshes.mesh.GetMorpher;
+			var morphdata = ((PmxReader)pmx).GetMorphs;
+			morph.Morph((MorphVertex)morphdata[10], 1f);
+			Console.WriteLine(morphdata[10].type);
+			System.Windows.Forms.MessageBox.Show(morphdata[10].Name);
+
+
 			IMaterial[] mats = model.GetMaterials;
 			model.WorldSpace = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
 
