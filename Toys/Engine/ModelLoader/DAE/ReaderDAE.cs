@@ -133,5 +133,15 @@ namespace Toys
 
 			}
 		}
-	}
+
+        //no morphes support
+        public Morph[] GetMorphes
+        {
+            get
+            {
+                return new Morph[0];
+            }
+        }
+
+    }
 }

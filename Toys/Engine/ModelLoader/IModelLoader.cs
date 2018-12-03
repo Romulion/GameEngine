@@ -5,5 +5,6 @@ namespace Toys
 	{
 		Model GetModel { get; }
 		Model GetRiggedModel { get; }
-	}
+        Morph[] GetMorphes { get; }
+    }
 }

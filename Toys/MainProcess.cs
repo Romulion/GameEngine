@@ -23,13 +23,13 @@ namespace Toys
 			Model model = pmx.GetRiggedModel;
 
 			var morph = model.meshes.mesh.GetMorpher;
-			var morphdata = ((PmxReader)pmx).GetMorphs;
-			morph.Morph((MorphVertex)morphdata[10], 1f);
-			Console.WriteLine(morphdata[10].type);
-			System.Windows.Forms.MessageBox.Show(morphdata[10].Name);
+			var morphdata = pmx.GetMorphes;
+            Console.WriteLine(morphdata.Length);
+			//morph.Morph((MorphVertex)morphdata[146], 1f);
+           // System.Windows.Forms.MessageBox.Show(morphdata[146].Name);
 
 
-			IMaterial[] mats = model.GetMaterials;
+            IMaterial[] mats = model.GetMaterials;
 			model.WorldSpace = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
 
 			scene.AddModel(model);

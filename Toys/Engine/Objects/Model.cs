@@ -10,7 +10,7 @@ namespace Toys
 		public MeshDrawer meshes;
 		public Matrix4 WorldSpace;
 		public AnimController anim;
-		public MorphVertex morph;
+		public Morph morph;
 
 
 		public Model(MeshDrawer mesh, Bone[] bones)

@@ -404,8 +404,8 @@ namespace Toys
 							break;
 						case 1: //vertex
 							int index = reader.readVal(header.GetVertexIndexSize);
-							Vector3 pos = reader.readVector3();
-							((MorphVertex)morphs[i]).AddVertex(pos * multipler, index);
+							Vector3 pos = reader.readVector3() * multipler;
+							((MorphVertex)morphs[i]).AddVertex(new Vector3(-pos.X, pos.Y, pos.Z), index);
 							//vertex_morph = new Vector4(pos, index);
 							break;
 						case 2:  //bone morph
@@ -569,7 +569,7 @@ namespace Toys
 			}
 		}
 
-		public Morph[] GetMorphs
+		public Morph[] GetMorphes
 		{
 			get 
 			{ 
