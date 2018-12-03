@@ -19,9 +19,8 @@ namespace Toys
 		}
 
 
-		public void Morph(MorphVertex mv, float degree)
+		public void Morph(Vector4[] morphData, float degree)
 		{
-			var morphData = mv.GetMorph;
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 			IntPtr point = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);

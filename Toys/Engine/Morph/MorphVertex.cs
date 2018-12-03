@@ -7,6 +7,8 @@ namespace Toys
 	{
 		Vector4[] morph;
 		int offset = 0;
+        public MeshMorper meshMorpher { set; private get; }
+        float degree = 0f;
 
 		public MorphVertex(string Name, string NameEng, int count)
 		{
@@ -15,6 +17,8 @@ namespace Toys
 			base.NameEng = NameEng;
 			type = MorphType.Vertex;
 		}
+
+
 
 		public void AddVertex(Vector3 pos, int index)
 		{
@@ -26,5 +30,28 @@ namespace Toys
 		{
 			get { return morph; }
 		}
-	}
+
+        public override float morphDegree {
+            get
+            {
+                return degree;
+            }
+            set
+            {
+                if (value == degree)
+                    return;
+
+                PerformMorph(value);
+                degree = value;
+            }
+        }
+
+        private void PerformMorph(float degree)
+        {
+            if (meshMorpher == null)
+                return;
+
+            meshMorpher.Morph(morph,degree);
+        }
+    }
 }

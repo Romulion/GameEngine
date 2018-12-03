@@ -406,8 +406,9 @@ namespace Toys
 							int index = reader.readVal(header.GetVertexIndexSize);
 							Vector3 pos = reader.readVector3() * multipler;
 							((MorphVertex)morphs[i]).AddVertex(new Vector3(-pos.X, pos.Y, pos.Z), index);
-							//vertex_morph = new Vector4(pos, index);
-							break;
+                            ((MorphVertex)morphs[i]).meshMorpher = meshRigged.GetMorpher;
+                            //vertex_morph = new Vector4(pos, index);
+                            break;
 						case 2:  //bone morph
 							reader.readVal(header.GetBoneIndexSize);
 							reader.readVector3();
@@ -555,7 +556,7 @@ namespace Toys
 			{ 
 				MeshDrawer md = new MeshDrawer(mesh, mats);
 				md.OutlineDrawing = true;
-				return new Model(md, bones); 
+				return new Model(md, bones, morphs); 
 			}
 		}
 
@@ -565,7 +566,7 @@ namespace Toys
 			{
 				MeshDrawer md = new MeshDrawer(meshRigged, mats);
 				md.OutlineDrawing = true;
-				return new Model(md, bones); 
+				return new Model(md, bones, morphs); 
 			}
 		}
 

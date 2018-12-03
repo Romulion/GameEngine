@@ -10,7 +10,7 @@ namespace Toys
 		public MeshDrawer meshes;
 		public Matrix4 WorldSpace;
 		public AnimController anim;
-		public Morph morph;
+		public Morph[] morph;
 
 
 		public Model(MeshDrawer mesh, Bone[] bones)
@@ -19,8 +19,13 @@ namespace Toys
 			anim = new AnimController(bones,mesh.mesh);
 		}
 
-
-		/*
+        public Model(MeshDrawer mesh, Bone[] bones, Morph[] morphes)
+        {
+            morph = morphes;
+            meshes = mesh;
+            anim = new AnimController(bones, mesh.mesh);
+        }
+        /*
 		public Model(Texture tex, Shader shdr)
 		{
 			//LoadPlane(shdr, tex);
@@ -28,45 +33,45 @@ namespace Toys
 		*/
         //Model(){}
 
-		//main drawing method
-/*
-		public void Draw()
-		{
-			foreach (var mesh in meshes)
-			{
-				mesh.Draw();
-			}
-		}
+        //main drawing method
+        /*
+                public void Draw()
+                {
+                    foreach (var mesh in meshes)
+                    {
+                        mesh.Draw();
+                    }
+                }
 
-		public void DrawSimple()
-		{
-			foreach (var mesh in meshes)
-			{
-				mesh.DrawSimple();
-			}
-		}
+                public void DrawSimple()
+                {
+                    foreach (var mesh in meshes)
+                    {
+                        mesh.DrawSimple();
+                    }
+                }
 
-		public void DrawOutline()
-		{
-			foreach (var mesh in meshes)
-			{
-				mesh.DrawOutline();
-			}	
-		}
+                public void DrawOutline()
+                {
+                    foreach (var mesh in meshes)
+                    {
+                        mesh.DrawOutline();
+                    }	
+                }
 
 
-		public Model Copy()
-		{
-			
-			Model model = new Model(meshes[0],anim.GetBones);
-			model.meshes = meshes;
-			model.WorldSpace = WorldSpace;
+                public Model Copy()
+                {
 
-			return model;
+                    Model model = new Model(meshes[0],anim.GetBones);
+                    model.meshes = meshes;
+                    model.WorldSpace = WorldSpace;
 
-		}
-*/
-		/*
+                    return model;
+
+                }
+        */
+        /*
 		void LoadPlane(Texture txtr)
 		{
 			Vertex[] Vertices = {
@@ -83,7 +88,7 @@ namespace Toys
 		}
 */
 
-		public IMaterial[] GetMaterials
+        public IMaterial[] GetMaterials
 		{
 			get {
 				List<IMaterial> mats = new List<IMaterial>();

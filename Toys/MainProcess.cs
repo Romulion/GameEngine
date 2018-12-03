@@ -22,11 +22,11 @@ namespace Toys
 			//return;
 			Model model = pmx.GetRiggedModel;
 
-			var morph = model.meshes.mesh.GetMorpher;
-			var morphdata = pmx.GetMorphes;
-            Console.WriteLine(morphdata.Length);
-			//morph.Morph((MorphVertex)morphdata[146], 1f);
-           // System.Windows.Forms.MessageBox.Show(morphdata[146].Name);
+            if (model.morph != null)
+                model.morph[0].morphDegree = 1f;
+
+            //morph.Morph((MorphVertex)morphdata[146], 1f);
+            // System.Windows.Forms.MessageBox.Show(morphdata[146].Name);
 
 
             IMaterial[] mats = model.GetMaterials;

@@ -17,12 +17,12 @@ namespace Toys
 		Impulse
 	}
 
-	public class Morph
+	public abstract class Morph
 	{
 		public string Name;
 		public string NameEng;
 		public MorphType type;
 		public int count;
-
+        public abstract float morphDegree {  get; set; }
 	}
 }
