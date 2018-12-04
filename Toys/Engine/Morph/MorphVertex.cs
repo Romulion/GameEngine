@@ -38,10 +38,7 @@ namespace Toys
             }
             set
             {
-                if (value == degree)
-                    return;
-
-                PerformMorph(value);
+                PerformMorph(value - degree);
                 degree = value;
             }
         }

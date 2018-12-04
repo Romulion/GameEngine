@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
@@ -10,8 +8,11 @@ using OpenTK.Graphics;
 
 namespace Toys
 {
-    class CoreEngine : GameWindow
+	public delegate void queue();
+	public class CoreEngine : GameWindow
     {
+		
+		queue task;
 
 		SceneManager Scene;
 		Shader pp;
@@ -91,6 +92,13 @@ namespace Toys
         //
         void Update(object sender, FrameEventArgs e)
         {
+			//mesh morpher
+			if (task != null)
+			{
+				task();
+				task = null;
+			}
+
 			Scene.Update();
             if (Keyboard[Key.Escape])
             {
@@ -125,6 +133,7 @@ namespace Toys
 				GL.CullFace(CullFaceMode.Back);
 				GL.Disable(EnableCap.Multisample);
 
+				
 				Scene.GetLight.RenderShadow();
 				
 				GL.Enable(EnableCap.Multisample);
@@ -158,5 +167,15 @@ namespace Toys
         }
 
 
+		public queue addTask
+		{
+			set
+			{
+				if (task == null)
+					task = value;
+				else
+					task += value;
+			}
+		}
     }
 }

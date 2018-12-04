@@ -117,7 +117,8 @@ namespace Toys
 		{
 			
             //shadow.pos = new Vector3(2 * (float)Math.Cos(radians(i)), 1.5f, 2 * (float)Math.Sin(radians(i)));
-			i++;
+			//i++;
+			//models[0].morph[20].morphDegree = Math.Abs((float)Math.Sin(radians(i * 2)));
             /*
 			if (models.Count > 0)
 			{

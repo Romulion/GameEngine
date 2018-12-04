@@ -10,7 +10,9 @@ namespace Toys
 
 		private global::Gtk.Fixed fixed2;
 
-		private global::Gtk.EventBox eventbox2;
+		private global::Gtk.ScrolledWindow scrolledwindow2;
+
+		private global::Gtk.Fixed fixed3;
 
 		protected virtual void Build()
 		{
@@ -26,7 +28,7 @@ namespace Toys
 			// Container child fixed1.Gtk.Fixed+FixedChild
 			this.scrolledwindow1 = new global::Gtk.ScrolledWindow();
 			this.scrolledwindow1.WidthRequest = 154;
-			this.scrolledwindow1.HeightRequest = 296;
+			this.scrolledwindow1.HeightRequest = 300;
 			this.scrolledwindow1.CanFocus = true;
 			this.scrolledwindow1.Name = "scrolledwindow1";
 			this.scrolledwindow1.VscrollbarPolicy = ((global::Gtk.PolicyType)(0));
@@ -43,14 +45,25 @@ namespace Toys
 			this.scrolledwindow1.Add(w1);
 			this.fixed1.Add(this.scrolledwindow1);
 			// Container child fixed1.Gtk.Fixed+FixedChild
-			this.eventbox2 = new global::Gtk.EventBox();
-			this.eventbox2.WidthRequest = 141;
-			this.eventbox2.HeightRequest = 98;
-			this.eventbox2.Name = "eventbox2";
-			this.fixed1.Add(this.eventbox2);
-			global::Gtk.Fixed.FixedChild w5 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.eventbox2]));
-			w5.X = 199;
-			w5.Y = 25;
+			this.scrolledwindow2 = new global::Gtk.ScrolledWindow();
+			this.scrolledwindow2.WidthRequest = 200;
+			this.scrolledwindow2.HeightRequest = 300;
+			this.scrolledwindow2.CanFocus = true;
+			this.scrolledwindow2.Name = "scrolledwindow2";
+			this.scrolledwindow2.HscrollbarPolicy = ((global::Gtk.PolicyType)(2));
+			this.scrolledwindow2.ShadowType = ((global::Gtk.ShadowType)(1));
+			// Container child scrolledwindow2.Gtk.Container+ContainerChild
+			global::Gtk.Viewport w5 = new global::Gtk.Viewport();
+			w5.ShadowType = ((global::Gtk.ShadowType)(0));
+			// Container child GtkViewport1.Gtk.Container+ContainerChild
+			this.fixed3 = new global::Gtk.Fixed();
+			this.fixed3.Name = "fixed3";
+			this.fixed3.HasWindow = false;
+			w5.Add(this.fixed3);
+			this.scrolledwindow2.Add(w5);
+			this.fixed1.Add(this.scrolledwindow2);
+			global::Gtk.Fixed.FixedChild w8 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.scrolledwindow2]));
+			w8.X = 165;
 			this.Add(this.fixed1);
 			if ((this.Child != null))
 			{
