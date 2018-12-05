@@ -24,7 +24,7 @@ namespace Toys
 		public void Morph(Vector4[] morphData, float degree)
 		{
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-			IntPtr point = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.ReadOnly);
+			IntPtr point = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);
 
 			foreach (var vertex in morphData)
 			{

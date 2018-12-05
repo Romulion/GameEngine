@@ -171,9 +171,9 @@ namespace Toys
 			{
 				string texture = reader.readString();
 				if (texture.Contains("toon"))
-					textures[i] = new Texture(dir + texture, TextureType.toon, texture);
+					textures[i] = new Texture(dir + texture, TextureType.Toon, texture);
 				else
-					textures[i] = new Texture(dir + texture, TextureType.diffuse, texture);
+					textures[i] = new Texture(dir + texture, TextureType.Diffuse, texture);
 			}
 		}
 
@@ -212,9 +212,19 @@ namespace Toys
 				outln.EdgeColour = reader.readVector4();
 				outln.EdgeScaler = file.ReadSingle();
 
-				int texture = reader.readVal(header.GetTextureIndexSize);
-				reader.readVal(header.GetTextureIndexSize);
-				int blend = file.ReadByte();
+				int difTexIndex = reader.readVal(header.GetTextureIndexSize);
+
+				//sphericar texture for false light sources effect
+				int envTexIndex = reader.readVal(header.GetTextureIndexSize);
+				int envBlend = file.ReadByte();
+				shdrs.envType = (EnvironmentMode)envBlend;
+				Texture envTex = empty;
+				if (envTexIndex != 255 && envBlend > 0)
+				{
+					envTex = textures[envTexIndex];
+				}
+
+
 				byte toonType = file.ReadByte();
 				
 				Texture toon = empty;
@@ -244,15 +254,16 @@ namespace Toys
                 reader.readString();
 				int count = file.ReadInt32();
 				Texture tex = empty;
-				if (texture != 255)
+				if (difTexIndex != 255)
 				{
-					tex = textures[texture];
+					tex = textures[difTexIndex];
 				}
 				var mat = new Material(shdrs, rndr);
 				mat.Name = name;
 				mat.outln = outln;
-				mat.SetTexture(tex,TextureType.diffuse);
-				mat.SetTexture(toon, TextureType.toon);
+				mat.SetTexture(tex,TextureType.Diffuse);
+				mat.SetTexture(toon, TextureType.Toon);
+				mat.SetTexture(envTex, TextureType.Sphere);
 				/* old material class
 				MaterialPMX mat = new MaterialPMX();
 				mat.Name = reader.readString();

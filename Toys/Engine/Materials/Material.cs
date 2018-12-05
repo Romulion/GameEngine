@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
 using System.Windows.Forms;
@@ -41,20 +41,26 @@ namespace Toys
 			shdr.ApplyShader();
 			if (shdrSettings.TextureDiffuse)
 			{
-				textures.Add(TextureType.diffuse, txtr);
-				GL.ActiveTexture(unit + (int)TextureType.diffuse);
+				textures.Add(TextureType.Diffuse, txtr);
+				GL.ActiveTexture(unit + (int)TextureType.Diffuse);
 				txtr.BindTexture();
 			}
 			if (shdrSettings.TextureSpecular)
 			{
-				textures.Add(TextureType.specular, txtr);
-				GL.ActiveTexture(unit + (int)TextureType.specular);
+				textures.Add(TextureType.Specular, txtr);
+				GL.ActiveTexture(unit + (int)TextureType.Specular);
 				txtr.BindTexture();
 			}
 			if (shdrSettings.toonShadow)
 			{
-				textures.Add(TextureType.toon, txtr);
-				GL.ActiveTexture(unit + (int)TextureType.toon);
+				textures.Add(TextureType.Toon, txtr);
+				GL.ActiveTexture(unit + (int)TextureType.Toon);
+				txtr.BindTexture();
+			}
+			if (shdrSettings.envType > 0)
+			{
+				textures.Add(TextureType.Sphere, txtr);
+				GL.ActiveTexture(unit + (int)TextureType.Sphere);
 				txtr.BindTexture();
 			}
 		}

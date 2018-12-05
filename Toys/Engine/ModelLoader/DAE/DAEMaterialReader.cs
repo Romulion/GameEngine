@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Xml;
 using System.Collections.Generic;
 using OpenTK;
@@ -103,7 +103,7 @@ namespace Toys
 				mat.textureName = mat.textureName.Remove(mat.textureName.IndexOf("_id", 0));
 			}
 			mat.textureName += "." + surf.FindNodes("format")[0].InnerText.ToLower();
-			mat.txtr = new Texture(mat.textureName, TextureType.diffuse, mat.textureName);
+			mat.txtr = new Texture(mat.textureName, TextureType.Diffuse, mat.textureName);
 			mts.Add(mat);
 		}
 
@@ -132,7 +132,7 @@ namespace Toys
 				shdrst.discardInvisible = true;
 				var mat  = new Material(shdrst, rddir);
 				mat.Name = mts[i].Name;
-				mat.SetTexture(mts[i].txtr, TextureType.diffuse);
+				mat.SetTexture(mts[i].txtr, TextureType.Diffuse);
 
 				mats.Add(mat);
 			}

@@ -6,10 +6,11 @@ namespace Toys
 {
 	public enum TextureType
 	{
-		diffuse = 0,
-		toon = 1,
-		specular = 2,
-		shadow = 10,
+		Diffuse = 0,
+		Toon = 1,
+		Specular = 2,
+		Sphere = 5,
+		ShadowMap = 10,
 	};
 
 	public class Texture
@@ -158,7 +159,7 @@ namespace Toys
 			{
 				var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture)).Assembly;
 				Bitmap pic = new Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.empty.png"));
-				def = new Texture(pic, TextureType.toon, "empty");
+				def = new Texture(pic, TextureType.Toon, "empty");
 			}
 
 			return def;
@@ -179,6 +180,8 @@ namespace Toys
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.ClampToEdge);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.ClampToEdge);
 			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, texture_id, 0);
+			//for shadow aa
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureCompareMode, (int)All.CompareRefToTexture);
 			return new Texture(texture_id, type);
 		}
 

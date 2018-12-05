@@ -13,8 +13,8 @@ namespace Toys
 		Vector3 look;
 		int shadowBuffer;
 		//shadow texture resolution
-		int Width = 4096;
-		int Heigth = 4096;
+		int Width = 2048;
+		int Heigth = 2048;
 
 		Texture shadowMap;
 		Shader shdr;
@@ -78,7 +78,7 @@ namespace Toys
 
 		public void BindShadowMap()
 		{
-			GL.ActiveTexture(TextureUnit.Texture0 + (int)TextureType.shadow);
+			GL.ActiveTexture(TextureUnit.Texture0 + (int)TextureType.ShadowMap);
 			shadowMap.BindTexture();
 		}
 

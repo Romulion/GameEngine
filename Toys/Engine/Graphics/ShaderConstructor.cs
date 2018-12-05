@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace Toys
@@ -25,7 +25,15 @@ namespace Toys
 
 			GenerateVertex();
 			GenerateFragment();
-			Shader shdr = new ShaderMain(rawVertex, rawFragment);
+			Shader shdr = null;
+			try
+			{
+				shdr = new ShaderMain(rawVertex, rawFragment);
+			}
+			catch (Exception e)
+			{
+				
+			}
 
 			//binding buffers
 			var ubm = UniformBufferManager.GetInstance;
@@ -42,16 +50,19 @@ namespace Toys
 			//bind textures
 			shdr.ApplyShader();
 			if (setting.TextureDiffuse)
-				shdr.SetUniform((int)TextureType.diffuse, "material.texture_diffuse");
+				shdr.SetUniform((int)TextureType.Diffuse, "material.texture_diffuse");
 			if (setting.toonShadow)
 			{
-				shdr.SetUniform((int)TextureType.toon, "material.texture_toon");
+				shdr.SetUniform((int)TextureType.Toon, "material.texture_toon");
 				SceneManager.GetInstance.GetLight.BindShadowMap();
 			}
 			if (setting.recieveShadow)
-				shdr.SetUniform((int)TextureType.shadow, "shadowMap");
+				shdr.SetUniform((int)TextureType.ShadowMap, "shadowMap");
 			if (setting.TextureSpecular)
-				shdr.SetUniform((int)TextureType.specular, "texture_specular");
+				shdr.SetUniform((int)TextureType.Specular, "material.texture_specular");
+
+			if (setting.envType > 0)
+				shdr.SetUniform((int)TextureType.Sphere, "material.texture_spere");
 
 			return shdr;
 		}
@@ -77,7 +88,7 @@ namespace Toys
 			rawVertex += "layout (std140) uniform space {\n\tmat4 model;\n\tmat4 pvm;\n\tmat4 NormalMat;\n\tmat4 lightSpacePos;\n};\n";
 
 			//setting out structure
-			rawVertex += "out VS_OUT {\n\tvec2 Texcord;\n\tvec3 FragPos;\n\tvec3 Normal;\n\tvec4 lightSpace;\n} vs_out;\n";
+			rawVertex += "out VS_OUT {\n\tvec2 Texcord;\n\tvec3 FragPos;\n\tvec3 Normal;\n\tvec4 lightSpace;\n\tvec3 NormalLocal;\n} vs_out;\n";
 
 			//main body
 			rawVertex += "void main()\n{\n";
@@ -99,6 +110,9 @@ namespace Toys
 			rawVertex += "vs_out.Normal = mat3(NormalMat"+ applySkeleton +") * aNormal;\n";
 			rawVertex += "vs_out.lightSpace = lightSpacePos * vec4(vs_out.FragPos,1.0);\n";
 
+			if (setting.envType > 0)
+				rawVertex += "vs_out.NormalLocal = mat3(pvm"+ applySkeleton +") * aNormal;\n";
+
 			rawVertex += "}\n";
 		}
 
@@ -108,7 +122,7 @@ namespace Toys
 			rawFragment += "#version 330 core\n";
 			rawFragment += "out vec4 FragColor;\n";
 
-			rawFragment += "in VS_OUT {\n\tvec2 Texcord;\n\tvec3 FragPos;\n\tvec3 Normal;\n\tvec4 lightSpace;\n} fs_in;\n";
+			rawFragment += "in VS_OUT {\n\tvec2 Texcord;\n\tvec3 FragPos;\n\tvec3 Normal;\n\tvec4 lightSpace;\n\tvec3 NormalLocal;\n} fs_in;\n";
 
 			rawFragment += "layout (std140) uniform light {\n\tvec3 LightPos;\n\tvec3 viewPos;\n\tfloat near_plane;\n\tfloat far_plane;\n};\n";
 
@@ -123,32 +137,38 @@ namespace Toys
 
 			if (setting.toonShadow)
 				rawFragment += "\tsampler2D texture_toon;\n";
+			
+			if (setting.envType > 0)
+				rawFragment += "\tsampler2D texture_spere;\n";
 
 			rawFragment += "};\n";
 
 			rawFragment += "uniform Material material;\n";
 
 			if (setting.recieveShadow)
-				rawFragment += "uniform sampler2D shadowMap;\n";
+				rawFragment += "uniform sampler2DShadow shadowMap;\n";
 
 			if (setting.recieveShadow)
 			{
+				/*
 				rawFragment += "float LinearizeDepth(float depth)\n"
 					+ "{\n"
 					+ "\tfloat z = depth * 2.0 - 1.0;\n"
 					+ "\treturn (2.0 * near_plane * far_plane) / (far_plane + near_plane - z * (far_plane - near_plane));\n"
 					+ "}\n";
-
+				*/
 				rawFragment += "float ShadowCalculation(vec4 fragPosLightSpace)\n"
 					+ "{\n"
 					+ "\tfloat bias = 0.005;\n"
 					+ "\tvec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;\n"
 					+ "\tprojCoords = projCoords * 0.5 + 0.5;\n"
+					+ "\tprojCoords.z -= bias;"
+					+ "\tfloat shadow = 1 - texture(shadowMap, projCoords);\n"
+					/*
 					+ "\tfloat closestDepth = texture(shadowMap, projCoords.xy).r;\n"
-					//+"\t//float closestDepth = LinearizeDepth(texture(shadowMap, projCoords.xy).r); \n"
 					+ "float currentDepth = projCoords.z;\n"
 					+ "\tfloat shadow = currentDepth - bias > closestDepth  ? 0.98 : 0.02;\n"
-					/*+"\t/* disabled shadow smoothing\n\tfloat shadow = 0.0;\n\tvec2 texelSize = 1.0 / textureSize(shadowMap, 0);\n\tfor(int x = -1; x <= 1; ++x)\n\t{\n\t\tfor(int y = -1; y <= 1; ++y)\n\t\t{\n\t\t\tfloat pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; \n\t\t\tshadow += currentDepth - bias > pcfDepth ? 0.98 : 0.02;        \n\t\t}    \n\t}\n\tshadow /= 9.0;\n\t
+					//+"\t/* disabled shadow smoothing\n\tfloat shadow = 0.0;\n\tvec2 texelSize = 1.0 / textureSize(shadowMap, 0);\n\tfor(int x = -1; x <= 1; ++x)\n\t{\n\t\tfor(int y = -1; y <= 1; ++y)\n\t\t{\n\t\t\tfloat pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; \n\t\t\tshadow += currentDepth - bias > pcfDepth ? 0.98 : 0.02;        \n\t\t}    \n\t}\n\tshadow /= 9.0;\n\t
 					 */
 					+ "\treturn shadow;\n}";
 			}
@@ -163,9 +183,11 @@ namespace Toys
 					rawFragment += "if (texcolor.a < 0.05)\n\t\tdiscard;\n";
 			}
 
+
 			//shadowing section
 			if (setting.recieveShadow)
 				rawFragment += "float shadow = ShadowCalculation(fs_in.lightSpace);\n";
+
 
 			if (setting.affectedByLight)
 			{
@@ -207,7 +229,8 @@ namespace Toys
 
 			}
 
-
+			if (setting.envType > 0)
+				rawFragment += "vec4 envLight = texture(material.texture_spere,(normalize(fs_in.NormalLocal).xy * 0.5 + vec2(0.5)));";
 
 				
 
@@ -217,7 +240,10 @@ namespace Toys
 			else if (!setting.TextureDiffuse)
 				output = "shadowcolor";
 
-				rawFragment += "FragColor = " + output + ";\n";
+			if (setting.envType > 0)
+				output += " + envLight";
+
+			rawFragment += "FragColor = " + output + ";\n";
 
 			rawFragment += "}\n";
 
