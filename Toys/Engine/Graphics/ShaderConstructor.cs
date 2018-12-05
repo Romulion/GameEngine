@@ -230,7 +230,11 @@ namespace Toys
 			}
 
 			if (setting.envType > 0)
-				rawFragment += "vec4 envLight = texture(material.texture_spere,(normalize(fs_in.NormalLocal).xy * 0.5 + vec2(0.5)));";
+			{
+				rawFragment += "vec4 envLight = texture(material.texture_spere,(normalize(fs_in.NormalLocal).xy * 0.5 + vec2(0.5)));\n";
+				if (setting.envType == EnvironmentMode.Additive)
+					rawFragment += "envLight.w = 0f;\n";
+			}
 
 				
 
