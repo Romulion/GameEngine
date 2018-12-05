@@ -210,7 +210,7 @@ namespace Toys
 
 				var outln = new Outline();
 				outln.EdgeColour = reader.readVector4();
-				outln.EdgeScaler = file.ReadSingle();
+				outln.EdgeScaler = file.ReadSingle() * 0.3f;
 
 				int difTexIndex = reader.readVal(header.GetTextureIndexSize);
 

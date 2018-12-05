@@ -17,7 +17,7 @@ namespace Toys
 		public static IModelLoader Load(string filename)
 		{
 			string extension = filename.Substring( filename.LastIndexOf('.') + 1);
-			extension.ToLower();
+            extension = extension.ToLower();
 
 			ModelFormat format = 0;
 			switch (extension)
