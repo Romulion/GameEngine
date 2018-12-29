@@ -10,7 +10,7 @@ Features
 
 TODO
 1) Add physics (bullet physics)
-2) Make add support for fbx, obj, dae(partially working) model formats
+2) Support fbx, obj, dae(partially exist) model formats
 3) Add uniforms to material & support material morph
 4) Support different graphic engines (DX and Vulcan)
 5) Animation engine
