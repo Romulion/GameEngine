@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -33,6 +34,9 @@
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Engine\GraphicsEngine.cs" />
+    <Compile Include="Engine\Objects\SceneNode.cs" />
+    <Compile Include="Engine\Objects\Transformation.cs" />
     <Compile Include="MainProcess.cs" />
     <Compile Include="Engine\Animation\AnimController.cs" />
     <Compile Include="Engine\Animation\Bone.cs" />
@@ -45,7 +49,7 @@
     <Compile Include="Engine\Objects\LightSource.cs" />
     <Compile Include="Engine\Materials\MaterialSimple.cs" />
     <Compile Include="Engine\Morph\MorphVertex.cs" />
-    <Compile Include="Engine\Objects\SceneManager.cs" />
+    <Compile Include="Engine\Objects\Scene.cs" />
     <Compile Include="Engine\Objects\Shader_Manager.cs" />
     <Compile Include="Engine\CoreEngine.cs" />
     <Compile Include="TargaImage.cs" />
@@ -58,7 +62,6 @@
     <Compile Include="Engine\Physics\PhysicsManager.cs" />
     <Compile Include="Engine\Materials\MaterialPMX.cs" />
     <Compile Include="Engine\Graphics\MeshDrawer.cs" />
-    <Compile Include="Engine\Objects\Transform.cs" />
     <Compile Include="Engine\Objects\ModelManager.cs" />
     <Compile Include="Engine\Graphics\ModelRenderer.cs" />
     <Compile Include="Engine\Materials\IOutline.cs" />
@@ -117,24 +120,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assamble\" />
-    <Folder Include="Resourses\" />
-    <Folder Include="Resourses\shaders\" />
-    <Folder Include="Resourses\textures\" />
-    <Folder Include="Engine\" />
-    <Folder Include="Engine\Animation\" />
-    <Folder Include="Engine\Graphics\" />
-    <Folder Include="Engine\Controll\" />
-    <Folder Include="Engine\Morph\" />
-    <Folder Include="Engine\Materials\" />
-    <Folder Include="Engine\Objects\" />
-    <Folder Include="Window\" />
-    <Folder Include="Engine\Physics\" />
-    <Folder Include="Engine\Buffers\" />
-    <Folder Include="Engine\ModelLoader\" />
-    <Folder Include="Engine\ModelLoader\DAE\" />
-    <Folder Include="Engine\ModelLoader\PMX\" />
-    <Folder Include="Engine\ModelLoader\SMD\" />
-    <Folder Include="Engine\Graphics\VertexContainers\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

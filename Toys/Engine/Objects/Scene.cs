@@ -4,11 +4,13 @@ using System.Collections.Generic;
 
 namespace Toys
 {
-	public class SceneManager
+	public class Scene
 	{
+
 		List<Model> models = new List<Model>();
-		public Camera camera = new Camera();
-		LightSource shadow;
+        List<SceneNode> nodes = new List<SceneNode>();
+        public Camera camera = new Camera();
+		LightSource light;
 
 		UniformBufferSkeleton skeleton;
 		UniformBufferLight ubl;
@@ -16,20 +18,13 @@ namespace Toys
 		Matrix4 projection, viev;
 		ModelRenderer renderer;
 
-		int i = 0;
-
-		System.Diagnostics.Stopwatch timer;
-
-		static SceneManager sceneMgmr;
-
 		int Width = 640;
 		int Height = 480;
 
-		SceneManager()
+		public Scene()
 		{
 			Instalize();
-			timer = new System.Diagnostics.Stopwatch();
-		}
+        }
 
 		void Instalize()
 		{
@@ -51,44 +46,36 @@ namespace Toys
 			viev = Matrix4.CreateTranslation(0.0f, 0.0f, -1f);
 			//set projection
 			projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (30 / 180f), 640 / (float)480, 0.1f, 10.0f);
-			// projection = Matrix4.CreateOrthographic(game.Width / (float)game.Height * 2f, 2.0f, 0.1f, 100.0f);
 			shdr = shdmMgmt.GetShader("pmx");
-			//outline = new Outline();
-			//outline.size = 0.03f;
-			UniformBufferManager ubm = UniformBufferManager.GetInstance;
+
+            //outline = new Outline();
+            //outline.size = 0.03f;
+            UniformBufferManager ubm = UniformBufferManager.GetInstance;
 			skeleton = (UniformBufferSkeleton)ubm.GetBuffer("skeleton");
-			shadow = new LightSource(models);
-			ubl = (UniformBufferLight)ubm.GetBuffer("light");
+            light = new LightSource(models);
+
+            ubl = (UniformBufferLight)ubm.GetBuffer("light");
 			ubl.SetNearPlane(0.1f);
 			ubl.SetFarPlane(10.0f);
-			renderer = new ModelRenderer(shadow,camera);
-		}
+			renderer = new ModelRenderer(light, camera);
+
+        }
 
 		public void AddModel(Model model)
 		{
-			models.Add(model);
+            var node = new SceneNode();
+            node.model = model;
+            nodes.Add(node);
+            models.Add(model);
 		}
-
 
 		public void Resize(int Width, int Height)
 		{
 			projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (30 / 180f), Width / (float)Height, 0.1f, 10.0f);
-			shadow.Resize(Width,Height);
+            light.Resize(Width,Height);
 			this.Width = Width;
 			this.Height = Height;
 			renderer.projection = projection;
-		}
-
-		//singleton
-		public static SceneManager GetInstance
-		{
-			get
-			{
-				if (sceneMgmr == null)
-					sceneMgmr = new SceneManager();
-
-				return sceneMgmr;
-			}
 		}
 
 
@@ -96,8 +83,8 @@ namespace Toys
 		public void Render()
 		{
 
-			renderer.viev = camera.GetLook;
-			ubl.SetLightPos(shadow.GetPos);
+            renderer.viev = camera.GetLook;
+			ubl.SetLightPos(light.GetPos);
 			ubl.SetViewPos(camera.GetPos);
 
 			//timer.Start();
@@ -138,12 +125,14 @@ namespace Toys
 
 		public LightSource GetLight
 		{
-			get { return shadow; } 
+			get { return light; } 
 		}
 
 		float radians(float angle)
 		{
 			return (float)Math.PI * angle / 360.0f;
 		}
+
+        //void AddObject( )
 	}
 }

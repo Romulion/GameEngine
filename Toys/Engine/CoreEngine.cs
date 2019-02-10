@@ -11,21 +11,15 @@ namespace Toys
 	public delegate void queue();
 	public class CoreEngine : GameWindow
     {
-		
-		queue task;
 
-		SceneManager Scene;
-		Shader pp;
-		//Model screen;
-		bool trigger = false;
+        GraphicsEngine gEngine;
+        queue task;
 
-		int FBO;
+        public Scene mainScene;
 
 		public CoreEngine() : base (640,480, new GraphicsMode(32,8,8,4))
         {
             Instalize();
-			Scene = SceneManager.GetInstance;
-
         }
 
         void Instalize()
@@ -34,31 +28,9 @@ namespace Toys
 
             try
             {
-				
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-
-				ShaderManager mgr = ShaderManager.GetInstance;
-				mgr.LoadShader("pp");
-				pp = mgr.GetShader("pp");
-
-				//setting aditional buffer
-				FBO = GL.GenFramebuffer();
-                GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBO);
-				Texture texture = Texture.LoadFrameBufer(Width, Height, "postprocess");
-				//screen = new Model(texture,pp);
-				//Console.WriteLine(GL.GetInteger(GetPName.MaxComputeImageUniforms));
-				//allocation custom framebuffer buffers
-                int RBO = GL.GenRenderbuffer();
-                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, RBO);
-                GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, Width, Height);
-                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
-				GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, RBO);
-				//Console.WriteLine(GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer));
-                GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-
-				GL.Enable(EnableCap.Blend);
-				GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-
+                mainScene = new Scene();
+                gEngine = new GraphicsEngine();
+                gEngine.Scene = mainScene;
 
                 Load += OnLoad;
                 UpdateFrame += Update;
@@ -75,17 +47,11 @@ namespace Toys
         //
         void OnLoad(object sender, EventArgs e)
         {
-			Scene.camera = new Camera(this);
             VSync = VSyncMode.On;
 
             Resize += (s, ev) => {
-				
-				GL.Viewport(Size);
-				Scene.Resize(Width,Height);
+                gEngine.Resize(Width,Height);
             };
-
-			GL.Enable(EnableCap.DepthTest);
-            GL.DepthFunc(DepthFunction.Less);
             
         }
 
@@ -99,7 +65,7 @@ namespace Toys
 				task = null;
 			}
 
-			Scene.Update();
+            mainScene.Update();
             if (Keyboard[Key.Escape])
             {
                 Exit();
@@ -121,48 +87,7 @@ namespace Toys
 
         void OnRender (object sender, FrameEventArgs e)
         {
-			// render graphics
-			//GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBO);
-			//	GL.Enable(EnableCap.DepthTest);
-
-			//reducing draw calls
-			//if (!trigger)
-			//{
-				//drawing shadow
-				GL.Enable(EnableCap.CullFace);
-				GL.CullFace(CullFaceMode.Back);
-				GL.Disable(EnableCap.Multisample);
-
-				
-				Scene.GetLight.RenderShadow();
-				
-				GL.Enable(EnableCap.Multisample);
-				GL.Disable(EnableCap.CullFace);
-				//resize viev to normal size
-				GL.Viewport(0, 0, Width, Height);
-			//}
-			//trigger = !trigger;
-
-			//render scene to buffer
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-            GL.ClearColor(0.0f, 0.1f, 0.1f, 1.0f);
-            GL.Clear(ClearBufferMask.ColorBufferBit |  ClearBufferMask.DepthBufferBit);
-			Scene.Render();
-
-			/*
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-			GL.Clear(ClearBufferMask.ColorBufferBit);
-			pp.ApplyShader();
-			screen.Draw();
-*/
-			//		pp.ApplyShader();
-			//pp.SetUniform(0);
-			//			screen.Draw();
-			//shdr1.ApplyShader();
-			//plane.Draw(shdr1);
-
-
-
+            gEngine.Render();
             SwapBuffers();
         }
 

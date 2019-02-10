@@ -54,11 +54,14 @@ namespace Toys
 			if (setting.toonShadow)
 			{
 				shdr.SetUniform((int)TextureType.Toon, "material.texture_toon");
-				SceneManager.GetInstance.GetLight.BindShadowMap();
-			}
-			if (setting.recieveShadow)
-				shdr.SetUniform((int)TextureType.ShadowMap, "shadowMap");
-			if (setting.TextureSpecular)
+               
+            }
+            if (setting.recieveShadow)
+            {
+                shdr.SetUniform((int)TextureType.ShadowMap, "shadowMap");
+                //SceneManager.GetInstance.GetLight.BindShadowMap();
+            }
+            if (setting.TextureSpecular)
 				shdr.SetUniform((int)TextureType.Specular, "material.texture_specular");
 
 			if (setting.envType > 0)

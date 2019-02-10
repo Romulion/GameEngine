@@ -318,6 +318,7 @@ namespace Toys
 		void ReadBones()
 		{
 			int bonesCount = file.ReadInt32();
+            Console.WriteLine(bonesCount);
 			bones = new Bone[bonesCount];
 			for (int i = 0; i < bonesCount; i++)
 			{

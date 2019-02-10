@@ -27,7 +27,10 @@ namespace Toys
 
 		public Camera()
 		{
-		}
+            r = R;
+            cameraPos = CalcPos(r, Phi, Theta);
+            CalcLook();
+        }
 
 		public Camera(GameWindow game)
 		{
@@ -118,7 +121,7 @@ namespace Toys
 		}
 
 		//setuping camera movement
-		public void Movement(object sender, FrameEventArgs e) 
+		void Movement(object sender, FrameEventArgs e) 
 		{
             MouseOrbit();
             // camera strafe
@@ -191,7 +194,7 @@ namespace Toys
 		void CalcLook()
 		{
 			look = Matrix4.LookAt(cameraWorld + cameraPos, cameraWorld, cameraUp);
-		}
+        }
 
 		float radians(float degrees)
 		{

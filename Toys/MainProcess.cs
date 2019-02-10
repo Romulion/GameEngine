@@ -16,7 +16,7 @@ namespace Toys
 			//Console.WriteLine(args[0]);
             CoreEngine core = new CoreEngine();
 
-			var scene = SceneManager.GetInstance;
+            var scene = core.mainScene;
 			//string str = "";
 			IModelLoader pmx = ModelLoader.Load(args[0]);
 			//Console.ReadLine();
@@ -26,7 +26,7 @@ namespace Toys
             IMaterial[] mats = model.GetMaterials;
 			model.WorldSpace = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
 
-			scene.AddModel(model);
+            scene.AddModel(model);
 
 			var task = new Task(() =>
 				{
