@@ -25,10 +25,10 @@ namespace Toys
         void Instalize()
         {
             Title = "MMD Test";
-
             try
             {
                 mainScene = new Scene();
+                mainScene.camera.Control(this);
                 gEngine = new GraphicsEngine();
                 gEngine.Scene = mainScene;
 

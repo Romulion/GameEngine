@@ -27,7 +27,9 @@ namespace Toys
 
         public void SetParent(SceneNode node)
         {
-            parent.RemoveChild(this);
+            if (parent != null)
+                parent.RemoveChild(this);
+
             parent = node;
 
             UpdateTransform();

@@ -20,6 +20,7 @@ namespace Toys
 
 		int Width = 640;
 		int Height = 480;
+        int i = 0;
 
 		public Scene()
 		{
@@ -53,12 +54,12 @@ namespace Toys
             UniformBufferManager ubm = UniformBufferManager.GetInstance;
 			skeleton = (UniformBufferSkeleton)ubm.GetBuffer("skeleton");
             light = new LightSource(models);
-
+            
             ubl = (UniformBufferLight)ubm.GetBuffer("light");
 			ubl.SetNearPlane(0.1f);
 			ubl.SetFarPlane(10.0f);
 			renderer = new ModelRenderer(light, camera);
-
+            
         }
 
 		public void AddModel(Model model)
@@ -72,17 +73,19 @@ namespace Toys
 		public void Resize(int Width, int Height)
 		{
 			projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (30 / 180f), Width / (float)Height, 0.1f, 10.0f);
+            //need for fix
             light.Resize(Width,Height);
-			this.Width = Width;
+            light.BindShadowMap();
+            this.Width = Width;
 			this.Height = Height;
 			renderer.projection = projection;
-		}
+        }
 
 
 		//scene rendering
 		public void Render()
 		{
-
+            
             renderer.viev = camera.GetLook;
 			ubl.SetLightPos(light.GetPos);
 			ubl.SetViewPos(camera.GetPos);
@@ -102,8 +105,8 @@ namespace Toys
 
 		public void Update()
 		{
-			
-            //shadow.pos = new Vector3(2 * (float)Math.Cos(radians(i)), 1.5f, 2 * (float)Math.Sin(radians(i)));
+
+            //light.pos = new Vector3(2 * (float)Math.Cos(radians(i)), 1.5f, 2 * (float)Math.Sin(radians(i)));
 			//i++;
 			//models[0].morph[20].morphDegree = Math.Abs((float)Math.Sin(radians(i * 2)));
             /*

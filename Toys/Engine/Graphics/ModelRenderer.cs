@@ -27,26 +27,19 @@ namespace Toys
 
 		public void Render(Model model) 
 		{
-
-			//model.anim.SkinMesh();
 			MeshDrawer msrd = model.meshes;
-            //Shader shader = msrd.GetShader;
-            //shader.ApplyShader();
-            //setting light
-            //light.BindShadowMap();
 
             Matrix4 pvm = model.WorldSpace * viev * projection;
-            Matrix4 norm = model.WorldSpace.Inverted();            
-
+            Matrix4 norm = model.WorldSpace.Inverted();
             norm.Transpose();
 			ubs.SetLightSpace(light.GetMat);
 			ubs.SetNormalSpace(norm);
 			ubs.SetPVMSpace(pvm);
 			ubs.SetModelSpace(model.WorldSpace);
-
-			msrd.Draw();
-
-			if (msrd.OutlineDrawing)
+            
+            msrd.Draw();
+            
+            if (msrd.OutlineDrawing)
 			{
 				GL.CullFace(CullFaceMode.Front);
 				GL.Enable(EnableCap.CullFace);

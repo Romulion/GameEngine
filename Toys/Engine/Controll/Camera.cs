@@ -32,11 +32,11 @@ namespace Toys
             CalcLook();
         }
 
-		public Camera(GameWindow game)
-		{
-			mouse = game.Mouse;
-			this.game = game;
-			game.UpdateFrame += Movement;
+        public void Control(GameWindow game)
+        {
+            mouse = game.Mouse;
+            this.game = game;
+            game.UpdateFrame += Movement;
 
             mouse.WheelChanged += (sender, e) =>
             {
@@ -48,36 +48,7 @@ namespace Toys
                 cameraPos = CalcPos(r, Phi, Theta);
                 CalcLook();
             };
-
-            r = R;
-			cameraPos = CalcPos(r, Phi, Theta);
-
-			CalcLook();
-		}
-		/*
-		//setuping mouse controll
-		void MouseControll(object sender, FrameEventArgs e)
-		{
-			if (!mouse.GetState().IsButtonDown(MouseButton.Left))
-				return;
-			//track mouse
-			float xoffset = (mouse.X - lastX) * sensitivity;
-			float yoffset = (lastY - mouse.Y) * sensitivity;
-
-			yaw   += xoffset;
-			pitch += yoffset;  
-			if(pitch > 89.0f)
-				pitch =  89.0f;
-			if(pitch< -89.0f)
-				pitch = -89.0f;
-			//set direction
-			Vector3 front = Vector3.One;
-			front.X = (float)Math.Cos(radians(pitch)) * (float)Math.Cos(radians(yaw));
-			front.Y = (float)Math.Sin(radians(pitch));
-			front.Z = (float)Math.Cos(radians(pitch)) * (float)Math.Sin(radians(yaw));
-			cameraFront = front.Normalized();
-		}
-		*/
+        }
 
 		void MouseOrbit()
 		{

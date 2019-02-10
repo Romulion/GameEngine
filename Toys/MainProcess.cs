@@ -15,7 +15,6 @@ namespace Toys
 				return;
 			//Console.WriteLine(args[0]);
             CoreEngine core = new CoreEngine();
-
             var scene = core.mainScene;
 			//string str = "";
 			IModelLoader pmx = ModelLoader.Load(args[0]);
