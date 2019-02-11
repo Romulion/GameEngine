@@ -4,10 +4,13 @@ using OpenTK;
 namespace Toys
 {
 
-    class Transformation
+    public class Transformation
     {
         private Matrix4 localT;
         private SceneNode basenode;
+		Vector3 rotation = new Vector3();
+		Vector3 position = new Vector3();
+
         // public Vector3 scale;
         public Matrix4 globalTransform
         {
@@ -65,7 +68,7 @@ namespace Toys
             set
             {
                 var rot = localT.ClearRotation();
-                localT = rot * Matrix4.CreateFromQuaternion(Quaternion.FromEulerAngles(value));
+                localT = Matrix4.CreateFromQuaternion(Quaternion.FromEulerAngles(value)) * rot;
                 basenode.UpdateTransform();
             }
         }

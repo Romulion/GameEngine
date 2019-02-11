@@ -114,7 +114,7 @@ namespace Toys
 			
 		}
 
-		public Model GetModel
+		public SceneNode GetModel
 		{
 			get
 			{
@@ -122,14 +122,17 @@ namespace Toys
 			}
 		}
 
-		public Model GetRiggedModel
+		public SceneNode GetRiggedModel
 		{
 			get
 			{
 				
 				MeshDrawer md = new MeshDrawer(mesh, mats);
 				md.OutlineDrawing = true;
-				return new Model(md, bones.ToArray()); 
+				var node = new SceneNode();
+				node.model = md;
+				node.anim = new AnimController(bones.ToArray());
+				return node; 
 
 			}
 		}

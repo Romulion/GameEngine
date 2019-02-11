@@ -3,8 +3,8 @@ namespace Toys
 {
 	public interface IModelLoader
 	{
-		Model GetModel { get; }
-		Model GetRiggedModel { get; }
+		SceneNode GetModel { get; }
+		SceneNode GetRiggedModel { get; }
         Morph[] GetMorphes { get; }
     }
 }

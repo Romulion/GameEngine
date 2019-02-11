@@ -20,17 +20,16 @@ namespace Toys
 			IModelLoader pmx = ModelLoader.Load(args[0]);
 			//Console.ReadLine();
 			//return;
-			Model model = pmx.GetRiggedModel;
-
-            IMaterial[] mats = model.GetMaterials;
-			model.WorldSpace = Matrix4.CreateTranslation(0.0f, 0.0f, 0.0f);
-
-            scene.AddModel(model);
+			SceneNode node = pmx.GetRiggedModel;
+			node.Name = "Model1";
+			IMaterial[] mats = node.model.mats;
+			node.GetTransform.Position = new Vector3(0.0f, 0.0f, 0.0f);
+			scene.AddObject(node);
 
 			var task = new Task(() =>
 				{
 				Application.Init();
-				Window wndw = new Window(mats,model.morph,core);
+				Window wndw = new Window(mats,node.morph,core);
 				Application.Run(); 
 			});
 			task.Start();

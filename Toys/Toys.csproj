@@ -53,7 +53,6 @@
     <Compile Include="Engine\Objects\Shader_Manager.cs" />
     <Compile Include="Engine\CoreEngine.cs" />
     <Compile Include="TargaImage.cs" />
-    <Compile Include="Engine\Objects\Model.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="Window\Window.cs" />
     <Compile Include="gtk-gui\Toys.Window.cs" />
@@ -62,7 +61,6 @@
     <Compile Include="Engine\Physics\PhysicsManager.cs" />
     <Compile Include="Engine\Materials\MaterialPMX.cs" />
     <Compile Include="Engine\Graphics\MeshDrawer.cs" />
-    <Compile Include="Engine\Objects\ModelManager.cs" />
     <Compile Include="Engine\Graphics\ModelRenderer.cs" />
     <Compile Include="Engine\Materials\IOutline.cs" />
     <Compile Include="Engine\Materials\Outline.cs" />
@@ -97,35 +95,42 @@
     <Compile Include="Engine\Graphics\VertexContainers\VertexRigged3D.cs" />
     <Compile Include="Engine\Graphics\VertexContainers\Vertrex3D.cs" />
     <Compile Include="Engine\Morph\MeshMorper.cs" />
+    <Compile Include="Engine\MainRenderer.cs" />
+    <Compile Include="Engine\Systen\Settings\Settings.cs" />
+    <Compile Include="Engine\Systen\Settings\SettingsSystem.cs" />
+    <Compile Include="Engine\Systen\Settings\SettingsGraphics.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
-    <Reference Include="OpenTK">
-      <HintPath>..\packages\OpenTK.2.0.0\lib\net20\OpenTK.dll</HintPath>
-    </Reference>
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="BulletSharp">
-      <HintPath>..\packages\BulletSharp.0.10\lib\net40-client\BulletSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="INIFileParser">
-      <HintPath>..\packages\ini-parser.3.4.0\lib\net20\INIFileParser.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="BulletSharp">
+      <HintPath>..\packages\BulletSharp.0.11.1\lib\net40-client\BulletSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="INIFileParser">
+      <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK">
+      <HintPath>..\packages\OpenTK.2.0.0\lib\net20\OpenTK.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assamble\" />
+    <Folder Include="Engine\Systen\" />
+    <Folder Include="Engine\Systen\Settings\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="OpenTK.dll.config" />
     <None Include="VertexRigged.manifest" />
     <None Include="Resourses\textures\toon_blank.bmp" />
+    <None Include="OpenTK.dll.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resourses\shaders\def.fs" />
@@ -145,5 +150,5 @@
     <EmbeddedResource Include="Resourses\shaders\skin.glsl" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\BulletSharp.0.10\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.10\build\net40-client\BulletSharp.targets')" />
+  <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />
 </Project>

@@ -10,32 +10,28 @@ namespace Toys
 		public Matrix4 projection;
 		public Matrix4 viev;
 
-		LightSource light;
-		Camera camera;
 		Shader outline;
 		UniformBufferSpace ubs;
 
-		public ModelRenderer(LightSource ls, Camera cam)
+		public ModelRenderer()
 		{
-			light = ls;
-			camera = cam;
 			outline = ShaderManager.GetInstance.GetShader("outline");
 			ubs = (UniformBufferSpace) UniformBufferManager.GetInstance.GetBuffer("space");
 		}
 
 
 
-		public void Render(Model model) 
+		public void Render(SceneNode node) 
 		{
-			MeshDrawer msrd = model.meshes;
+			MeshDrawer msrd = node.model;
 
-            Matrix4 pvm = model.WorldSpace * viev * projection;
-            Matrix4 norm = model.WorldSpace.Inverted();
+			Matrix4 pvm = node.GetTransform.globalTransform * viev * projection;
+            Matrix4 norm = node.GetTransform.globalTransform.Inverted();
             norm.Transpose();
-			ubs.SetLightSpace(light.GetMat);
+
 			ubs.SetNormalSpace(norm);
 			ubs.SetPVMSpace(pvm);
-			ubs.SetModelSpace(model.WorldSpace);
+			ubs.SetModelSpace(node.GetTransform.globalTransform);
             
             msrd.Draw();
             

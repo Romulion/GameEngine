@@ -1,6 +1,4 @@
-using System;
-using System.Linq;
-using System.Text;
+﻿using System;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
@@ -28,9 +26,7 @@ namespace Toys
             try
             {
                 mainScene = new Scene();
-                mainScene.camera.Control(this);
-                gEngine = new GraphicsEngine();
-                gEngine.Scene = mainScene;
+                gEngine = new GraphicsEngine(mainScene);
 
                 Load += OnLoad;
                 UpdateFrame += Update;
@@ -48,7 +44,8 @@ namespace Toys
         void OnLoad(object sender, EventArgs e)
         {
             VSync = VSyncMode.On;
-
+			gEngine.OnLoad();
+			mainScene.camera.Control(this);
             Resize += (s, ev) => {
                 gEngine.Resize(Width,Height);
             };
@@ -64,21 +61,21 @@ namespace Toys
 				task();
 				task = null;
 			}
-
             mainScene.Update();
-            if (Keyboard[Key.Escape])
+			var keystate = Keyboard.GetState();
+            if (keystate[Key.Escape])
             {
                 Exit();
             }
-            if (Keyboard[Key.F])
+            if (keystate[Key.F])
             {
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             }
-            if (Keyboard[Key.L])
+            if (keystate[Key.L])
             {
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             }
-            if (Keyboard[Key.P])
+            if (keystate[Key.P])
             {
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
             }
@@ -87,50 +84,9 @@ namespace Toys
 
         void OnRender (object sender, FrameEventArgs e)
         {
-<<<<<<< HEAD
-            gEngine.Render();
-=======
-			// render graphics
-			//GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBO);
-			//	GL.Enable(EnableCap.DepthTest);
-
-
-			//drawing shadow
-			GL.Enable(EnableCap.CullFace);
-			GL.CullFace(CullFaceMode.Back);
-			GL.Disable(EnableCap.Multisample);
-
-				
-			Scene.GetLight.RenderShadow();
-				
-			GL.Enable(EnableCap.Multisample);
-			GL.Disable(EnableCap.CullFace);
-			//resize viev to normal size
-			GL.Viewport(0, 0, Width, Height);
-
-			//render scene to buffer
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-            GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            GL.Clear(ClearBufferMask.ColorBufferBit |  ClearBufferMask.DepthBufferBit);
-			Scene.Render();
-
-			/*
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-			GL.Clear(ClearBufferMask.ColorBufferBit);
-			pp.ApplyShader();
-			screen.Draw();
-*/
-			//		pp.ApplyShader();
-			//pp.SetUniform(0);
-			//			screen.Draw();
-			//shdr1.ApplyShader();
-			//plane.Draw(shdr1);
-
-
-
->>>>>>> ee1f77d... small code cleaning
-            SwapBuffers();
-        }
+			gEngine.Render();
+			SwapBuffers();
+		}
 
 
 		public queue addTask

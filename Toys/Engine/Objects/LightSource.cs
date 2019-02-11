@@ -1,14 +1,15 @@
 using System;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using System.Collections.Generic;
 
 namespace Toys
 {
 	public class LightSource
 	{
-		List<Model> models;
 		UniformBufferSkeleton ubo;
+		UniformBufferLight ubl;
+		UniformBufferSpace ubs;
+
 		public Vector3 pos;
 		Vector3 look;
 		int shadowBuffer;
@@ -20,10 +21,8 @@ namespace Toys
 		Shader shdr;
 		Matrix4 lightdir;
 		Matrix4 projection;
-		int SWidth = 640;
-		int SHeigth = 480;
 
-		public LightSource(List<Model> models)
+		public LightSource()
 		{
 			shadowBuffer = GL.GenFramebuffer();
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, shadowBuffer);
@@ -42,38 +41,32 @@ namespace Toys
 
 
 			projection = Matrix4.CreateOrthographic(5f, 5f, 0.1f, 5f);
-			//projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (30 / 180f), Width / (float)Heigth, 1f, 100.0f);
 			lightdir = Matrix4.LookAt(pos, look, new Vector3(0f, 1f, 0f));
 
-            ubo = (UniformBufferSkeleton) UniformBufferManager.GetInstance.GetBuffer("skeleton");
-			this.models = models;
-		}
-
-		//for resizing on runtime
-		public void Resize(int Width, int Heigth)
-		{
-			SWidth = Width;
-			SHeigth = Heigth;
+			UniformBufferManager ubm = UniformBufferManager.GetInstance;
+            ubo = (UniformBufferSkeleton) ubm.GetBuffer("skeleton");
+			ubs = (UniformBufferSpace)ubm.GetBuffer("space");
+            ubl = (UniformBufferLight)ubm.GetBuffer("light");
 		}
 
 		//shadow rendering
-		public void RenderShadow()
+		public void RenderShadow(SceneNode[] nodes)
 		{
+			SetLightVars();
+
 			lightdir = Matrix4.LookAt(pos, look, new Vector3(0f, 1f, 0f));
 			GL.Viewport(0, 0, Width, Heigth);
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, shadowBuffer);
 			GL.Clear(ClearBufferMask.DepthBufferBit);
 			shdr.ApplyShader();
 
-			foreach (var model in models)
+			foreach (var node in nodes)
 			{
-				Matrix4 pvm = model.WorldSpace * lightdir * projection;
-				ubo.SetBones(model.anim.GetSkeleton);
+				Matrix4 pvm = node.GetTransform.globalTransform * lightdir * projection;
+				ubo.SetBones(node.anim.GetSkeleton);
 				shdr.SetUniform(pvm, "pvm");
-				model.meshes.DrawSimple();
+				node.model.DrawSimple();
 			}
-			//GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-			//
 		}
 
 		public void BindShadowMap()
@@ -82,6 +75,11 @@ namespace Toys
 			shadowMap.BindTexture();
 		}
 
+		public void SetLightVars()
+		{
+			ubs.SetLightSpace(GetMat);
+			ubl.SetLightPos(GetPos);
+		}
 		//depth matrix
 		public Matrix4 GetMat
 		{

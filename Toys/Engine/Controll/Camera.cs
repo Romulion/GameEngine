@@ -4,9 +4,14 @@ using OpenTK.Input;
 
 namespace Toys
 {
+	public enum ProjectionType
+	{ 
+		Perspective,
+		Orthographic
+	}
+
 	public class Camera
 	{
-		MouseDevice mouse;
 		GameWindow game;
 
 		//mouse controll variables;
@@ -22,8 +27,9 @@ namespace Toys
 		Vector3 cameraWorld = new Vector3(0f, 1f, 0f);
 		Vector3 cameraUp = new Vector3(0.0f, 1.0f, 0.0f);
 		Vector3 cameraPos;
-
 		Matrix4 look;
+
+		public Matrix4 projection;
 
 		public Camera()
 		{
@@ -34,11 +40,10 @@ namespace Toys
 
         public void Control(GameWindow game)
         {
-            mouse = game.Mouse;
             this.game = game;
             game.UpdateFrame += Movement;
 
-            mouse.WheelChanged += (sender, e) =>
+			game.MouseWheel += (sender, e) =>
             {
                 if (e.Delta > 0)
                     r += speed * 5f;
@@ -52,23 +57,24 @@ namespace Toys
 
 		void MouseOrbit()
 		{
-			if (mousePressed && mouse.GetState().IsButtonDown(MouseButton.Left))
+			var mouseState = Mouse.GetState();
+			if (mousePressed && mouseState.IsButtonDown(MouseButton.Left))
 			{
 
-				if (mouse.X - lastX > angleThresold)
+				if (mouseState.X - lastX > angleThresold)
 				{
 					Phi += angleStep;
 				}
-				else if (mouse.X - lastX < -angleThresold)
+				else if (mouseState.X - lastX < -angleThresold)
 				{
 					Phi -= angleStep;
 				}
 
-				if (mouse.Y - lastY > angleThresold && Theta < ThetaMax)
+				if (mouseState.Y - lastY > angleThresold && Theta < ThetaMax)
 				{
 					Theta += angleStep;
 				}
-				else if (mouse.Y - lastY < -angleThresold && Theta > ThetaMin)
+				else if (mouseState.Y - lastY < -angleThresold && Theta > ThetaMin)
 				{
 					Theta -= angleStep;
 				}
@@ -77,14 +83,14 @@ namespace Toys
 
 				CalcLook();
 
-				lastY = mouse.Y;
-				lastX = mouse.X;
+				lastY = mouseState.Y;
+				lastX = mouseState.X;
 			}
 			else if (!mousePressed)
 			{
 				mousePressed = true;
-				lastX = mouse.X;
-				lastY = mouse.Y;
+				lastX = mouseState.X;
+				lastY = mouseState.Y;
 			}
 			else
 				mousePressed = false;
@@ -95,14 +101,15 @@ namespace Toys
 		void Movement(object sender, FrameEventArgs e) 
 		{
             MouseOrbit();
+			var keyState = Keyboard.GetState();
             // camera strafe
-            if (game.Keyboard[Key.Up])
+            if (keyState[Key.Up])
 			{
 				cameraWorld += speed * cameraUp;
                 CalcLook();
 			}
 			                   
-			if (game.Keyboard[Key.Down])
+			if (keyState[Key.Down])
             {
 				cameraWorld -= speed * cameraUp;
                 CalcLook();
@@ -122,7 +129,7 @@ namespace Toys
             }
             */
 
-			if (game.Keyboard[Key.R])
+			if (keyState[Key.R])
             {
 				cameraWorld = new Vector3(0f, 1f, 0f);
 

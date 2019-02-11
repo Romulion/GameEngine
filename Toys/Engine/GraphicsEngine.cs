@@ -1,8 +1,6 @@
 ﻿using System;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
-using OpenTK.Graphics;
+using OpenTK;
 
 namespace Toys
 {
@@ -11,12 +9,22 @@ namespace Toys
         int Width = 640, Height = 480;
         int FBO;
 
-        public GraphicsEngine()
+		MainRenderer mainRender;
+
+		public Scene renderScene { get; private set; }
+
+		public GraphicsEngine(Scene scene)
         {
+			renderScene = scene;
             Instalize();
         }
 
-
+		public void OnLoad()
+		{
+			renderScene.OnLoad();
+			mainRender = new MainRenderer(renderScene.camera, renderScene);
+			renderScene.GetLight.BindShadowMap();
+		}
 
         public void Instalize()
         {
@@ -32,7 +40,7 @@ namespace Toys
                 //setting aditional buffer
                 FBO = GL.GenFramebuffer();
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBO);
-                Texture texture = Texture.LoadFrameBufer(Width, Height, "postprocess");
+                //Texture texture = Texture.LoadFrameBufer(Width, Height, "postprocess");
                 //screen = new Model(texture,pp);
                 //Console.WriteLine(GL.GetInteger(GetPName.MaxComputeImageUniforms));
                 //allocation custom framebuffer buffers
@@ -46,6 +54,7 @@ namespace Toys
 
                 GL.Enable(EnableCap.Blend);
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+				//GL.BlendFunc(BlendingFactor.Src1Alpha,BlendingFactor.OneMinusSrcAlpha);
 
                 GL.Enable(EnableCap.DepthTest);
                 GL.DepthFunc(DepthFunction.Less);
@@ -57,54 +66,43 @@ namespace Toys
                 Console.ReadKey();
             }
 
-
+			//Loading essential shaders
+			ShaderManager shdmMgmt = ShaderManager.GetInstance;
+			try
+			{
+				shdmMgmt.LoadShader("pmx");
+				shdmMgmt.LoadShader("shadow");
+				shdmMgmt.LoadShader("outline");
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
         }
 
-        public Scene Scene { get; set; }
+        
 
 
         public void Render()
         {
-            // render graphics
-            //GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBO);
-            //	GL.Enable(EnableCap.DepthTest);
-
-            //reducing draw calls
-            //if (!trigger)
-            //{
-            //drawing shadow
+            //shadow pass
             
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(CullFaceMode.Back);
             GL.Disable(EnableCap.Multisample);
 
-            Scene.GetLight.RenderShadow();
+			renderScene.GetLight.RenderShadow(renderScene.GetNodes());
 
             GL.Enable(EnableCap.Multisample);
             GL.Disable(EnableCap.CullFace);
-            //resize viev to normal size
-            GL.Viewport(0, 0, Width, Height);
-            //}
-            //trigger = !trigger;
-            
-
-            //render scene to buffer
+			GL.Viewport(0, 0, Width, Height);
+                       
+			//render scene to primary buffer
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             GL.ClearColor(0.0f, 0.1f, 0.1f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            Scene.Render();
 
-            /*
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-			GL.Clear(ClearBufferMask.ColorBufferBit);
-			pp.ApplyShader();
-			screen.Draw();
-*/
-            //		pp.ApplyShader();
-            //pp.SetUniform(0);
-            //			screen.Draw();
-            //shdr1.ApplyShader();
-            //plane.Draw(shdr1);
+			mainRender.Render();
         }
 
         public void Resize(int newWidth, int newHeight)
@@ -112,7 +110,9 @@ namespace Toys
             Width = newWidth;
             Height = newHeight;
             GL.Viewport(0,0,Width,Height);
-            Scene.Resize(Width, Height);
+			renderScene.camera.projection =  Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (30 / 180f), Width / (float)Height, 0.1f, 10.0f);
+			mainRender.Resize();
+			//renderScene.Resize(Width, Height);
 
         }
     }

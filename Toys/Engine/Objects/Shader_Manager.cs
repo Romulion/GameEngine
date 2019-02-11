@@ -66,7 +66,6 @@ namespace Toys
 			if (shaders.ContainsKey(name))
 				return shaders[name];
 			var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
-			var names = assembly.GetManifestResourceNames();
 			string cmp = ReadFromStream(assembly.GetManifestResourceStream(defPath + compute));
 			Shader shdr = new ShaderCompute(cmp);
 

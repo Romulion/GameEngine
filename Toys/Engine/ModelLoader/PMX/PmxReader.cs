@@ -562,23 +562,31 @@ namespace Toys
 			get { return mats; }
 		}
 
-		public Model GetModel
+		public SceneNode GetModel
 		{
 			get 
 			{ 
 				MeshDrawer md = new MeshDrawer(mesh, mats);
 				md.OutlineDrawing = true;
-				return new Model(md, bones, morphs); 
+				var node = new SceneNode();
+				node.model = md;
+
+				return node; 
 			}
 		}
 
-		public Model GetRiggedModel
+		public SceneNode GetRiggedModel
 		{
 			get 
 			{
+				
 				MeshDrawer md = new MeshDrawer(meshRigged, mats);
 				md.OutlineDrawing = true;
-				return new Model(md, bones, morphs); 
+				var node = new SceneNode();
+				node.model = md;
+				node.anim = new AnimController(bones);
+				node.morph = morphs;
+				return node; 
 			}
 		}
 

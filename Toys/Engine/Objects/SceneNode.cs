@@ -3,12 +3,16 @@ using System.Collections.Generic;
 
 namespace Toys
 {
-    class SceneNode
+    public class SceneNode
     {
         List<SceneNode> childs;
         public SceneNode parent;
         Transformation transform;
-        public Model model = null;
+		public MeshDrawer model = null;
+		public AnimController anim = null;
+		public Morph[] morph = null;
+		public string Name;
+		public bool Active = true;
 
         public SceneNode()
         {
