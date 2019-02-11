@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text;
 using OpenTK;
@@ -87,7 +87,48 @@ namespace Toys
 
         void OnRender (object sender, FrameEventArgs e)
         {
+<<<<<<< HEAD
             gEngine.Render();
+=======
+			// render graphics
+			//GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBO);
+			//	GL.Enable(EnableCap.DepthTest);
+
+
+			//drawing shadow
+			GL.Enable(EnableCap.CullFace);
+			GL.CullFace(CullFaceMode.Back);
+			GL.Disable(EnableCap.Multisample);
+
+				
+			Scene.GetLight.RenderShadow();
+				
+			GL.Enable(EnableCap.Multisample);
+			GL.Disable(EnableCap.CullFace);
+			//resize viev to normal size
+			GL.Viewport(0, 0, Width, Height);
+
+			//render scene to buffer
+			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            GL.Clear(ClearBufferMask.ColorBufferBit |  ClearBufferMask.DepthBufferBit);
+			Scene.Render();
+
+			/*
+			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+			GL.Clear(ClearBufferMask.ColorBufferBit);
+			pp.ApplyShader();
+			screen.Draw();
+*/
+			//		pp.ApplyShader();
+			//pp.SetUniform(0);
+			//			screen.Draw();
+			//shdr1.ApplyShader();
+			//plane.Draw(shdr1);
+
+
+
+>>>>>>> ee1f77d... small code cleaning
             SwapBuffers();
         }
 
