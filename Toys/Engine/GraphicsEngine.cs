@@ -6,7 +6,7 @@ namespace Toys
 {
     class GraphicsEngine
     {
-        int Width = 640, Height = 480;
+        int Width, Height;
         int FBO;
 
 		MainRenderer mainRender;
@@ -28,6 +28,9 @@ namespace Toys
 
         public void Instalize()
         {
+			var settings = Settings.GetInstance();
+			Width = settings.Graphics.Width;
+			Height = settings.Graphics.Height;
             try
             {
 

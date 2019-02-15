@@ -5,5 +5,6 @@ namespace Toys
 	public class SettingsSystem
 	{
 		public string ConfigPath = "settings.ini";
+		public Logger.Output LogOutput = Logger.Output.Console;
 	}
 }

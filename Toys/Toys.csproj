@@ -99,6 +99,8 @@
     <Compile Include="Engine\Systen\Settings\Settings.cs" />
     <Compile Include="Engine\Systen\Settings\SettingsSystem.cs" />
     <Compile Include="Engine\Systen\Settings\SettingsGraphics.cs" />
+    <Compile Include="Engine\Systen\Logger\Logger.cs" />
+    <Compile Include="Engine\Systen\Logger\LogEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
@@ -125,6 +127,7 @@
     <Folder Include="assamble\" />
     <Folder Include="Engine\Systen\" />
     <Folder Include="Engine\Systen\Settings\" />
+    <Folder Include="Engine\Systen\Logger\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
