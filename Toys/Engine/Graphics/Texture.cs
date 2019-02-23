@@ -22,7 +22,7 @@ namespace Toys
 		//default texture
 		static Texture def;
 
-		public Texture(string path, TextureType type,string name)
+		public Texture(string path, TextureType type,string name, bool mirror = true)
 		{
 			texture_id = GL.GenTexture();
 			this.type = type;
@@ -40,7 +40,7 @@ namespace Toys
 				else
 					tex1 = new Bitmap(path);
 				
-                LoadTexture(tex1);
+                LoadTexture(tex1, mirror);
 			}
 			catch (Exception)
 			{
@@ -70,12 +70,12 @@ namespace Toys
 			texture_id = GL.GenTexture();
             this.type = type;
             this.name = name;
-			LoadTexture(tex);
+			LoadTexture(tex, true);
 
 		}
 
 
-		void LoadTexture(Bitmap texture)
+		void LoadTexture(Bitmap texture, bool mirror)
 		{
 
 
@@ -96,11 +96,17 @@ namespace Toys
 			//texture.RotateFlip(RotateFlipType.Rotate180FlipX);
 			GL.BindTexture(TextureTarget.Texture2D,texture_id);
 
-
-			//setting wrapper
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.MirroredRepeat);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.MirroredRepeat);
-
+            if (mirror)
+            {
+                //setting wrapper
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.MirroredRepeat);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.MirroredRepeat);
+            }
+            else
+            {
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.Repeat);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.Repeat);
+            }
 			//setting interpolation
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);

@@ -173,7 +173,7 @@ namespace Toys
 				if (texture.Contains("toon"))
 					textures[i] = new Texture(dir + texture, TextureType.Toon, texture);
 				else
-					textures[i] = new Texture(dir + texture, TextureType.Diffuse, texture);
+					textures[i] = new Texture(dir + texture, TextureType.Diffuse, texture, false);
 			}
 		}
 
