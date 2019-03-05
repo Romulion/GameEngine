@@ -22,6 +22,14 @@ namespace Toys
 		//default texture
 		static Texture def;
 
+        public enum Wrapper
+        {
+            MirrorRepeat = All.MirroredRepeat,
+            Repeat = All.Repeat,
+            ClampToBorder = All.ClampToBorder,
+            ClampToEdge = All.ClampToEdge,
+        }
+
 		public Texture(string path, TextureType type,string name, bool mirror = true)
 		{
 			texture_id = GL.GenTexture();
@@ -107,6 +115,7 @@ namespace Toys
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.Repeat);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.Repeat);
             }
+
 			//setting interpolation
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
@@ -143,6 +152,13 @@ namespace Toys
 			texture.Dispose();
 		}
 
+        public void ChangeWrapper(Wrapper wrap)
+        {
+            GL.BindTexture(TextureTarget.Texture2D, texture_id);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)wrap);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)wrap);
+        }
 
 		//for postprocessing framebuffer
 		public static Texture LoadFrameBufer(int Width, int Height, string type)

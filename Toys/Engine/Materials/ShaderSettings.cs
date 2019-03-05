@@ -19,5 +19,6 @@ namespace Toys
 		public bool TextureSpecular;
 		public bool TextureAmbient;
 		public bool discardInvisible;
+        public bool DifuseColor;
 	}
 }

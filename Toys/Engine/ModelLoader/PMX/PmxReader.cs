@@ -190,13 +190,17 @@ namespace Toys
 				shdrs.hasSkeleton = true;
 				shdrs.discardInvisible = true;
 				shdrs.affectedByLight = true;
+                shdrs.DifuseColor = true;
 
 
-				shdrs.TextureDiffuse = true;
+                shdrs.TextureDiffuse = true;
 				string name = reader.readString();
 				reader.readString(); //eng name
-				if (reader.readVector4().W == 0)//diffuse color
+
+                Vector4 difColor = reader.readVector4();
+                if (difColor.W == 0)//diffuse color
 					rndr.render = false;
+
 				reader.readVector3(); //specular color
 				file.ReadSingle(); //specular
 				reader.readVector3(); //ambient color
@@ -234,7 +238,8 @@ namespace Toys
 					if (text != 255)
 					{
 						shdrs.toonShadow = true;
-						toon = textures[text];
+                        textures[text].ChangeWrapper(Texture.Wrapper.ClampToEdge);
+                        toon = textures[text];
 						//toon.GetTextureType = TextureType.toon;
 
 					}
@@ -264,7 +269,10 @@ namespace Toys
 				mat.SetTexture(tex,TextureType.Diffuse);
 				mat.SetTexture(toon, TextureType.Toon);
 				mat.SetTexture(envTex, TextureType.Sphere);
-				/* old material class
+
+                mat.UniManager.Set("diffuse_color", difColor);
+                //mat.SetValue(difColor,"diffuse_color");
+                /* old material class
 				MaterialPMX mat = new MaterialPMX();
 				mat.Name = reader.readString();
 				mat.NameEng = reader.readString();
@@ -306,7 +314,7 @@ namespace Toys
 
 				*/
 
-				mat.offset = offset;
+                mat.offset = offset;
 				mat.count = count;
 				mats[i] = mat;
 				offset += count;
@@ -392,7 +400,7 @@ namespace Toys
 		{
 			int morphCount = file.ReadInt32();
 			morphs = new Morph[morphCount];
-			//Vector4 vertex_morphs = new Vector4();
+
 			for (int i = 0; i < morphCount; i++)
 			{
 				//List<Vector4> vertex_morph = new List<Vector4>();
@@ -403,10 +411,12 @@ namespace Toys
 				int type = file.ReadByte();
 				int size = file.ReadInt32();
 
-				if (type == 1)
+				if (type == (int)MorphType.Vertex)
 					morphs[i] = new MorphVertex(name, nameEng, size);
+                else if (type == (int)MorphType.Material)
+                    morphs[i] = new MorphMaterial(name, nameEng, size);
 
-				for (int n = 0; n < size; n++)
+                for (int n = 0; n < size; n++)
 				{
 					switch (type)
 					{
@@ -431,9 +441,16 @@ namespace Toys
 							reader.readVector4();
 							break;
 						case 8: //material
-							reader.readVal(header.GetMaterialIndexSize);
-							file.ReadByte();
-							reader.readVector4();
+                            
+							int idx = reader.readVal(header.GetMaterialIndexSize);
+                            Material mat = null;
+                            if (idx == 255)
+                                mat = (Material)mats[0];
+                            else
+                                mat = (Material)mats[idx];
+                            var MMorpher = new MaterialMorpher(mat);
+                            MMorpher.mode = file.ReadByte();
+							MMorpher.diffuse = reader.readVector4();
 							reader.readVector3();
 							file.ReadSingle();
 							reader.readVector3();
@@ -442,7 +459,9 @@ namespace Toys
 							reader.readVector4();
 							reader.readVector4();
 							reader.readVector4();
-							break;
+                            ((MorphMaterial)morphs[i]).matMorpher.Add(MMorpher);
+
+                            break;
 						case 9: //flip
 							reader.readVal(header.GetMaterialIndexSize);
 							file.ReadSingle();

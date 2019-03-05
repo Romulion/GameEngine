@@ -7,11 +7,14 @@ namespace Toys
 	public class Shader
 	{
 		protected int shaderProgram;
+
+        public ShaderUniform[] uniforms { get; protected set; }
+
 		public Shader()
 		{
 		}
 
-		public void ApplyShader()
+        public void ApplyShader()
 		{
 			GL.UseProgram(shaderProgram);
 		}
@@ -73,7 +76,8 @@ namespace Toys
 				throw new Exception();
 			}
 
-			return compShader;		}
+			return compShader;
+		}
 
 
 		public void SetUBO(int index, string name)

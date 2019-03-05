@@ -63,7 +63,7 @@ namespace Toys
 			foreach (var morph in morphs)
 			{
 				//skip non vertex morphs
-				if (!(morph is MorphVertex))
+				if (!(morph is MorphVertex) && !(morph is MorphMaterial))
 					continue;
 
 

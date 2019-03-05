@@ -4,7 +4,7 @@ namespace Toys
 	//base class for morphs
 	public enum MorphType
 	{
-		Group = 1,
+		Group = 0,
 		Vertex,
 		Bone,
 		Uv,

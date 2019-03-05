@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace Toys
 {
@@ -14,8 +15,10 @@ namespace Toys
 		public string Name { get; set; }
 		public int offset { get; set; }
 		public int count { get; set; }
+        public ShaderUniform[] variables { get; private set; }
+        public ShaderUniformManager UniManager { get; private set; }
 
-		Dictionary<TextureType, Texture> textures;
+        Dictionary<TextureType, Texture> textures;
 		//Dictionary<string, float> uniforms;
 		Shader shdr;
 
@@ -38,6 +41,9 @@ namespace Toys
 			TextureUnit unit = TextureUnit.Texture0;
 
 			shdr = ShaderConstructor.CreateShader(shdrSettings);
+            variables = shdr.uniforms;
+            UniManager = new ShaderUniformManager(shdr.uniforms,this);
+
 			shdr.ApplyShader();
 			if (shdrSettings.TextureDiffuse)
 			{
@@ -64,6 +70,18 @@ namespace Toys
 				txtr.BindTexture();
 			}
 		}
+
+        //passing value to uniform
+        
+        public void SetValue(object val, string Name)
+        {
+            var query = from v in variables
+                        where v.Name == Name
+                        select v;
+
+            query.First().SetValue(val);
+        }
+       
 
 		public void SetTexture(Texture txtr, TextureType type)
 		{

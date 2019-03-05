@@ -143,7 +143,10 @@ namespace Toys
 			if (setting.envType > 0)
 				rawFragment += "\tsampler2D texture_spere;\n";
 
-			rawFragment += "};\n";
+            if (setting.DifuseColor)
+                rawFragment += "\tvec4 diffuse_color;\n";
+
+            rawFragment += "};\n";
 
 			rawFragment += "uniform Material material;\n";
 
@@ -238,9 +241,8 @@ namespace Toys
 					rawFragment += "envLight.w = 0f;\n";
 			}
 
-				
 
-			string output = "";
+            string output = "";
 			if (setting.TextureDiffuse)
 				output = "texcolor * shadowcolor";
 			else if (!setting.TextureDiffuse)
@@ -255,15 +257,18 @@ namespace Toys
             else if (setting.envType == EnvironmentMode.Multiply)
                 mul += " * envLight";
 
+            if (setting.DifuseColor)
+                mul += " * material.diffuse_color";
 
             rawFragment += "FragColor = (" + output + ") " + mul  + ";\n";
 
 			rawFragment += "}\n";
 
 			//MessageBox.Show(rawFragment);
-			//Console.WriteLine(rawFragment);
+            //Console.ReadKey();
+            //Console.WriteLine(rawFragment);
 
-		}
+        }
 
 	}
 }
