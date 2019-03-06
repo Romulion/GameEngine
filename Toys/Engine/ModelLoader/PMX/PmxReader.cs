@@ -179,6 +179,7 @@ namespace Toys
 
 		void ReadMaterial()
 		{
+			string txt = "";
 			int materiaCount = file.ReadInt32();
 			int offset = 0;
 			mats = new IMaterial[materiaCount];
@@ -197,9 +198,9 @@ namespace Toys
 				string name = reader.readString();
 				reader.readString(); //eng name
 
-                Vector4 difColor = reader.readVector4();
-                if (difColor.W == 0)//diffuse color
-					rndr.render = false;
+				Vector4 difColor = reader.readVector4();
+                //if (difColor.W == 0)//diffuse color
+				//	rndr.render = false;
 
 				reader.readVector3(); //specular color
 				file.ReadSingle(); //specular
@@ -319,7 +320,6 @@ namespace Toys
 				mats[i] = mat;
 				offset += count;
 			}
-
 
 		}
 

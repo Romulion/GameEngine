@@ -49,8 +49,9 @@ namespace Toys
             Resize += (s, ev) => {
                 gEngine.Resize(Width,Height);
             };
-            
         }
+
+
 
         //
         void Update(object sender, FrameEventArgs e)

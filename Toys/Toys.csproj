@@ -35,16 +35,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Engine\GraphicsEngine.cs" />
-    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniform.cs" />
-    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformFloat.cs" />
-    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformInt.cs" />
-    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformManager.cs" />
-    <AdditionalFiles Include="Engine\Graphics\ShaderUniforms\ShaderUniformTyped.cs" />
-    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector4.cs" />
-    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector3.cs" />
-    <Compile Include="Engine\Graphics\ShaderUniforms\UniformModifier.cs" />
-    <Compile Include="Engine\Morph\MaterialMorpher.cs" />
-    <Compile Include="Engine\Morph\MorphMaterial.cs" />
     <Compile Include="Engine\Objects\SceneNode.cs" />
     <Compile Include="Engine\Objects\Transformation.cs" />
     <Compile Include="MainProcess.cs" />
@@ -111,6 +101,15 @@
     <Compile Include="Engine\Systen\Settings\SettingsGraphics.cs" />
     <Compile Include="Engine\Systen\Logger\Logger.cs" />
     <Compile Include="Engine\Systen\Logger\LogEntry.cs" />
+    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniform.cs" />
+    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformFloat.cs" />
+    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformInt.cs" />
+    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformManager.cs" />
+    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector3.cs" />
+    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector4.cs" />
+    <Compile Include="Engine\Graphics\ShaderUniforms\UniformModifier.cs" />
+    <Compile Include="Engine\Morph\MaterialMorpher.cs" />
+    <Compile Include="Engine\Morph\MorphMaterial.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
@@ -135,12 +134,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assamble\" />
+    <Folder Include="Engine\Systen\" />
+    <Folder Include="Engine\Systen\Settings\" />
+    <Folder Include="Engine\Systen\Logger\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="VertexRigged.manifest" />
     <None Include="Resourses\textures\toon_blank.bmp" />
     <None Include="OpenTK.dll.config" />
+    <None Include="Engine\Graphics\ShaderUniforms\ShaderUniformTyped.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resourses\shaders\def.fs" />

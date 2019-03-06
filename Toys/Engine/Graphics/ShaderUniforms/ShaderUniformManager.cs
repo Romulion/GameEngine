@@ -65,7 +65,7 @@ namespace Toys
         {
             if (name == "diffuse_color")
             {
-                if (((Vector4)uni.GetValue()).Z == 0)
+				if (((Vector4)uni.GetValue()).W < 0.01f)
                     material.rndrDirrectives.render = false;
                 else
                     material.rndrDirrectives.render = true;
