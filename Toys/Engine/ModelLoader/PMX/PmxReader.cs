@@ -412,9 +412,17 @@ namespace Toys
 				int size = file.ReadInt32();
 
 				if (type == (int)MorphType.Vertex)
+				{
 					morphs[i] = new MorphVertex(name, nameEng, size);
-                else if (type == (int)MorphType.Material)
-                    morphs[i] = new MorphMaterial(name, nameEng, size);
+					((MorphVertex)morphs[i]).meshMorpher = meshRigged.GetMorpher;
+				}
+				else if (type == (int)MorphType.Material)
+					morphs[i] = new MorphMaterial(name, nameEng, size);
+				else if (type == (int)MorphType.Uv)
+				{
+					morphs[i] = new MorphUV(name, nameEng, size);
+					((MorphUV)morphs[i]).meshMorpher = meshRigged.GetMorpher;
+				}
 
                 for (int n = 0; n < size; n++)
 				{
@@ -428,7 +436,6 @@ namespace Toys
 							int index = reader.readVal(header.GetVertexIndexSize);
 							Vector3 pos = reader.readVector3() * multipler;
 							((MorphVertex)morphs[i]).AddVertex(new Vector3(-pos.X, pos.Y, pos.Z), index);
-                            ((MorphVertex)morphs[i]).meshMorpher = meshRigged.GetMorpher;
                             //vertex_morph = new Vector4(pos, index);
                             break;
 						case 2:  //bone morph
@@ -437,8 +444,9 @@ namespace Toys
 							reader.readVector4();
 							break;
 						case 3:  //uv
-							reader.readVal(header.GetVertexIndexSize);
-							reader.readVector4();
+							int vIndex = reader.readVal(header.GetVertexIndexSize);
+							var value = reader.readVector4();
+							((MorphUV)morphs[i]).AddVertex(new Vector2(value.X, value.Y), vIndex);
 							break;
 						case 8: //material
                             

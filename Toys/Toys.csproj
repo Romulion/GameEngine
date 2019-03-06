@@ -110,6 +110,7 @@
     <Compile Include="Engine\Graphics\ShaderUniforms\UniformModifier.cs" />
     <Compile Include="Engine\Morph\MaterialMorpher.cs" />
     <Compile Include="Engine\Morph\MorphMaterial.cs" />
+    <Compile Include="Engine\Morph\MorphUV.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />

@@ -9,7 +9,6 @@ namespace Toys
 	{
 		private int VBO;
 		private Vertex3D[] verts;
-		private Vertex3D[] vertOriginal;
 		private int vertStride;
 
 		public MeshMorper(Vertex3D[] vertex, int bufferObject, int vertexSize)
@@ -36,6 +35,24 @@ namespace Toys
 				Marshal.WriteInt32(point, offset + 4, BitConverter.ToInt32(BitConverter.GetBytes(morphed.Y), 0));
 				Marshal.WriteInt32(point, offset + 8, BitConverter.ToInt32(BitConverter.GetBytes(morphed.Z), 0));
 
+			}
+
+			GL.UnmapBuffer(BufferTarget.ArrayBuffer);
+		}
+
+		public void Morph(Vector3[] morphData, float degree)
+		{
+			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+			IntPtr point = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);
+
+			foreach (var vertex in morphData)
+			{
+				int index = (int)vertex.Z;
+				int offset = index * vertStride;
+				Vector2 morphed = vertex.Xy * degree + verts[index].uvtex;
+				verts[index].uvtex = morphed;
+				Marshal.WriteInt32(point, offset + 24, BitConverter.ToInt32(BitConverter.GetBytes(morphed.X), 0));
+				Marshal.WriteInt32(point, offset + 28, BitConverter.ToInt32(BitConverter.GetBytes(morphed.Y), 0));
 			}
 
 			GL.UnmapBuffer(BufferTarget.ArrayBuffer);
