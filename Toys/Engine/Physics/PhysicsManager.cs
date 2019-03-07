@@ -5,75 +5,65 @@ using BulletSharp.Math;
 
 namespace Toys
 {
-	public enum PhysPrimitiveType
-	{
-		Sphere,
-		Box,
-		Capsule,
-	}
-
-
 	public class PhysicsManager
 	{
-		RigitContainer[] rigitBodies;
-		CollisionShape[] collisionShapes;
+		public delegate void BoneBodySyncer(Matrix world);
+		RigitBodyBone[] rigitBodies;
+		Bone[] bones;
+		Joint[] joints;
+		public BoneBodySyncer prePhysics;
+		public BoneBodySyncer postPhysics;
+		Matrix world = Matrix.Identity;
 
-		CollisionDispatcher dispatcher;
-		DbvtBroadphase broadphase;
-		CollisionConfiguration collisionConf;
 		public DiscreteDynamicsWorld World { get; set; }
 
-		public PhysicsManager(RigitContainer[] rigits)
+		public PhysicsManager(RigitContainer[] rigits, JointContainer[] jcons, Bone[] bons)
 		{
 			//setup world physics
-			collisionConf = new DefaultCollisionConfiguration();
-			dispatcher = new CollisionDispatcher(collisionConf);
-			broadphase = new DbvtBroadphase();
-			World = new DiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConf);
-			World.Gravity = new Vector3(0, -10, 0);
+			bones = bons;
+			//instalize delegates
+			prePhysics = (m) => { };
+			postPhysics = (m) => { };
 
-			rigitBodies = rigits;
-			collisionShapes = new CollisionShape[rigits.Length];
-			for (int i = 0; i < rigits.Length; i++)
+			InstalizeRigitBody(rigits);
+			InstalizeJoints(jcons);
+		}
+
+		void InstalizeRigitBody(RigitContainer[] rigits)
+		{
+			rigitBodies = new RigitBodyBone[rigits.Length];
+			for (int i = 0; i<rigits.Length; i++)
 			{
-				var rigit = rigits[i];
-				CollisionShape shape = null;
-				switch (rigit.primitive)
-				{
-					case PhysPrimitiveType.Box:
-						shape = new BoxShape(GetVec3(rigit.Size));
-						break;
-					case PhysPrimitiveType.Capsule:
-						shape = new CapsuleShape(rigit.Size.X, rigit.Size.Y);
-						break;
-					case PhysPrimitiveType.Sphere:
-						shape = new SphereShape(rigit.Size.X);
-						break;
-				}
-				collisionShapes[i] = shape;
-
-				Vector3 inertia = shape.CalculateLocalInertia(rigit.Mass);
-
-				var rbInfo = new RigidBodyConstructionInfo(rigit.Mass, null, shape, inertia);
-				rbInfo.MotionState = new DefaultMotionState(Matrix.Translation(GetVec3(rigit.Position)));
-				RigidBody body = new RigidBody(rbInfo);
-				body.Friction = rigit.Friction;
-				body.SetDamping(0f, rigit.RotationDamping);
-                World.AddRigidBody(body);
-				rbInfo.Dispose();
-				//HingeConstraint joint = new HingeConstraint(
+				rigitBodies[i] = new RigitBodyBone(rigits[i]);
+				rigitBodies[i].bone = bones[rigits[i].BoneIndex];
+				World.AddRigidBody(rigitBodies[i].Body, rigits[i].GroupId, rigits[i].NonCollisionGroup);
+				if (rigits[i].Phys == PhysType.FollowBone)
+					prePhysics += rigitBodies[i].SyncBone2Body;
+				else if (rigits[i].Phys == PhysType.GravityBone)
+					prePhysics += rigitBodies[i].SyncBody2Bone;
 			}
 		}
 
-
-		public virtual void Update(float elapsedTime)
+		void InstalizeJoints(JointContainer[] jcons)
 		{
-			World.StepSimulation(elapsedTime);
+			joints = new Joint[jcons.Length];
+			for (int i = 0; i < jcons.Length; i++)
+			{
+				joints[i] = new Joint(jcons[i], rigitBodies);
+				World.AddConstraint(joints[i].joint);
+			}
 		}
 
-		private Vector3 GetVec3(OpenTK.Vector3 vec3)
+		public void Update()
 		{
-			return new Vector3(vec3.X, vec3.Y, vec3.Z);
+			prePhysics(world);
+		}
+
+		public void PostUpdate()
+		{
+			var worldInverted = world;
+			worldInverted.Invert();
+			postPhysics(world);
 		}
 	}
 }

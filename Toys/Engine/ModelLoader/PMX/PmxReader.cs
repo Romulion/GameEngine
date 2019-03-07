@@ -15,6 +15,7 @@ namespace Toys
 		public Morph[] morphs;
 		float multipler = 0.1f;
 		RigitContainer[] rigitbodies;
+		JointContainer[] joints;
 
 		BinaryReader file;
 
@@ -546,24 +547,25 @@ namespace Toys
 		void ReadJoints()
 		{
 			int jointCount = file.ReadInt32();
+			joints = new JointContainer[jointCount];
 
 			for (int i = 0; i<jointCount; i++)
 			{
-				reader.readString();
-				reader.readString();
-				file.ReadByte();
-				reader.readVal(header.GetRigidBodyIndexSize);
-				reader.readVal(header.GetRigidBodyIndexSize);
-
-				reader.readVector3();
-				reader.readVector3();
-				reader.readVector3();
-				reader.readVector3();
-				reader.readVector3();
-				reader.readVector3();
-				reader.readVector3();
-				reader.readVector3();
-
+				JointContainer joint = new JointContainer();
+				joint.Name = reader.readString();
+				joint.NameEng = reader.readString();
+				joint.jType =  (JointType)file.ReadByte();
+				joint.RigitBody1 =  reader.readVal(header.GetRigidBodyIndexSize);
+				joint.RigitBody2 =  reader.readVal(header.GetRigidBodyIndexSize);
+				joint.Position = reader.readVector3();
+				joint.Rotation = reader.readVector3();
+				joint.PosMin = reader.readVector3();
+				joint.PosMax = reader.readVector3();
+				joint.RotMin = reader.readVector3();
+				joint.RotMax = reader.readVector3();
+				joint.PosSpring = reader.readVector3();
+				joint.RotSpring = reader.readVector3();
+				joints[i] = joint;
 			}
 
 		}

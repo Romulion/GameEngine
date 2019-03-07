@@ -25,9 +25,5 @@ namespace Toys
 		public float Friction;
 		public PhysType Phys;
 
-		public RigitContainer()
-		{
-		}
-
 	}
 }

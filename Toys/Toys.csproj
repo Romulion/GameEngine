@@ -111,6 +111,10 @@
     <Compile Include="Engine\Morph\MaterialMorpher.cs" />
     <Compile Include="Engine\Morph\MorphMaterial.cs" />
     <Compile Include="Engine\Morph\MorphUV.cs" />
+    <Compile Include="Engine\Physics\PhysicsEngine.cs" />
+    <Compile Include="Engine\Physics\JointContainer.cs" />
+    <Compile Include="Engine\Physics\RigitBodyBone.cs" />
+    <Compile Include="Engine\Physics\Joint.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
