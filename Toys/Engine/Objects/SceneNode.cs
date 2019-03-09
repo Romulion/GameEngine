@@ -10,6 +10,7 @@ namespace Toys
         Transformation transform;
 		public MeshDrawer model = null;
 		public AnimController anim = null;
+        public PhysicsManager phys = null;
 		public Morph[] morph = null;
 		public string Name;
 		public bool Active = true;

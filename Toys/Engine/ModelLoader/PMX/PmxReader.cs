@@ -79,8 +79,8 @@ namespace Toys
 				Vector3 normal = reader.readVector3() * multipler;
 				Vector2 uv = reader.readVector2();
 				//mirroring x axis
-				pos.X = -pos.X;
-				normal.X = -normal.X;
+				//pos.X = -pos.X;
+				//normal.X = -normal.X;
 				int[] bonesIndexes = {0,0,0,0};
 				Vector4 bonesWeigth = new Vector4(0f);
 
@@ -148,7 +148,9 @@ namespace Toys
 			int[] indexes = new int[indexSize];
 			for (int i = 0; i < indexSize; i++)
 			{
-				//invering triangles
+                indexes[i] = reader.readVal(header.GetVertexIndexSize);
+                //invering triangles
+                /*
 				int res = i % 3;
 				if (res == 0)
 					indexes[i + 1] = reader.readVal(header.GetVertexIndexSize);
@@ -156,8 +158,8 @@ namespace Toys
 					indexes[i - 1] = reader.readVal(header.GetVertexIndexSize);
 				else 
 					indexes[i] = reader.readVal(header.GetVertexIndexSize);
-			
-			}
+			    */
+            }
 
 			mesh = new Mesh(vertices, indexes);
 			meshRigged = new Mesh(verticesR, indexes);
@@ -368,6 +370,12 @@ namespace Toys
 					bone.localSpace = new Matrix4(local);
 				}
 
+                //set if not set
+                if (bone.localSpace == default(Matrix4))
+                {
+                    bone.localSpace = Matrix4.CreateTranslation(bone.Position);
+                }
+
 				if (bone.ExternalPdeform)
 				{
 					reader.readVal(header.GetBoneIndexSize);
@@ -387,12 +395,13 @@ namespace Toys
 							reader.readVector3();
 							reader.readVector3();
 						}
-
 					}
 						
 				}
 
-				bones[i] = bone;
+                //if (i == 75 || i == 221)
+                //    Console.WriteLine(bone.Position);
+                bones[i] = bone;
 			}
 			Bone.MakeChilds(bones);
 		}
@@ -436,7 +445,9 @@ namespace Toys
 						case 1: //vertex
 							int index = reader.readVal(header.GetVertexIndexSize);
 							Vector3 pos = reader.readVector3() * multipler;
-							((MorphVertex)morphs[i]).AddVertex(new Vector3(-pos.X, pos.Y, pos.Z), index);
+                            ((MorphVertex)morphs[i]).AddVertex(pos, index);
+                            //invert x axis
+                            //((MorphVertex)morphs[i]).AddVertex(new Vector3(-pos.X, pos.Y, pos.Z), index);
                             //vertex_morph = new Vector4(pos, index);
                             break;
 						case 2:  //bone morph
@@ -525,22 +536,38 @@ namespace Toys
 			for (int i = 0; i<readCount; i++)
 			{
 				rigit = new RigitContainer();
-				reader.readString();
-				reader.readString();
+				rigit.Name = reader.readString();
+                rigit.NameEng = reader.readString();
 				rigit.BoneIndex = reader.readVal(header.GetBoneIndexSize);
 				rigit.GroupId = file.ReadByte();
-				rigit.NonCollisionGroup =  file.ReadInt16();
+                rigit.NonCollisionGroup =  file.ReadInt16();
 				rigit.primitive = (PhysPrimitiveType)file.ReadByte();
-				rigit.Size = reader.readVector3();
+				rigit.Size = reader.readVector3() * multipler;
 				rigit.Position = reader.readVector3() * multipler;
 				rigit.Rotation = reader.readVector3();
 				rigit.Mass = file.ReadSingle();
-				rigit.MassAttenuation = file.ReadSingle();
-				rigit.RotationDamping = file.ReadSingle();
+				rigit.MassAttenuation = file.ReadSingle() ;
+				rigit.RotationDamping = file.ReadSingle() * multipler;
 				rigit.Repulsion = file.ReadSingle();
 				rigit.Friction = file.ReadSingle();
 				rigit.Phys = (PhysType)file.ReadByte();
-				rigitbodies[i] = rigit;
+
+                //inverting x axis
+                //rigit.Position = new Vector3(-rigit.Position.X, rigit.Position.Y, rigit.Position.Z);
+                if (i >= 113 && i < 123)
+                {
+
+                    // Console.WriteLine(rigit.Size);
+                   // Console.WriteLine(rigit.Position);
+                    //rigit.NonCollisionGroup = -1;
+                }
+                else
+                {
+                   // rigit.Mass = 0;
+                   // rigit.Size = new Vector3(0.01f);
+                }
+
+                rigitbodies[i] = rigit;
 			}
 		}
 
@@ -557,15 +584,23 @@ namespace Toys
 				joint.jType =  (JointType)file.ReadByte();
 				joint.RigitBody1 =  reader.readVal(header.GetRigidBodyIndexSize);
 				joint.RigitBody2 =  reader.readVal(header.GetRigidBodyIndexSize);
-				joint.Position = reader.readVector3();
+				joint.Position = reader.readVector3() * multipler;
 				joint.Rotation = reader.readVector3();
-				joint.PosMin = reader.readVector3();
-				joint.PosMax = reader.readVector3();
+				joint.PosMin = reader.readVector3() * multipler;
+				joint.PosMax = reader.readVector3() * multipler;
 				joint.RotMin = reader.readVector3();
 				joint.RotMax = reader.readVector3();
-				joint.PosSpring = reader.readVector3();
+				joint.PosSpring = reader.readVector3() * multipler;
 				joint.RotSpring = reader.readVector3();
-				joints[i] = joint;
+
+                //inverting x axis
+                //joint.Position = new Vector3(-joint.Position.X, joint.Position.Y, joint.Position.Z);
+                if (i >= 90 && i < 100)
+                {
+                    //joint.Position += new Vector3(0,0,0.1f);
+                    //   Console.WriteLine(joint.Position);
+                }
+                    joints[i] = joint;
 			}
 
 		}
@@ -615,6 +650,7 @@ namespace Toys
 				node.model = md;
 				node.anim = new AnimController(bones);
 				node.morph = morphs;
+                node.phys = new PhysicsManager(rigitbodies, joints, node.anim, node.GetTransform);
 				return node; 
 			}
 		}

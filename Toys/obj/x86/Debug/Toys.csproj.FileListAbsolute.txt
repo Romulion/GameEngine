@@ -17,7 +17,6 @@ D:\Coding\GameEngine\Toys\bin\Debug\pango-sharp.pdb
 D:\Coding\GameEngine\Toys\bin\Debug\atk-sharp.pdb
 D:\Coding\GameEngine\Toys\obj\x86\Debug\Toys.exe
 D:\Coding\GameEngine\Toys\obj\x86\Debug\Toys.pdb
-D:\Coding\GameEngine\Toys\obj\x86\Debug\Toys.csprojResolveAssemblyReference.cache
 D:\vp\C#\Toys\Toys\bin\Debug\Toys.exe
 D:\vp\C#\Toys\Toys\bin\Debug\Toys.pdb
 D:\vp\C#\Toys\Toys\bin\Debug\BulletSharp.dll
@@ -45,3 +44,4 @@ D:\vp\C#\Toys\Toys\bin\Debug\normnfkd.nlp
 D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.csprojResolveAssemblyReference.cache
 D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.exe
 D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.pdb
+D:\Coding\GameEngine\Toys\obj\x86\Debug\Toys.csprojResolveAssemblyReference.cache

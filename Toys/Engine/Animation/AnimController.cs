@@ -44,7 +44,17 @@ namespace Toys
 			return bone;
 		}
 
-		public void Rotate(string name, Quaternion quat)
+        public Bone GetBone(int id)
+        {
+
+            if (id >= bones.Length)
+                return null;
+            
+
+            return bones[id];
+        }
+
+        public void Rotate(string name, Quaternion quat)
 		{
 			Bone bone = GetBone(name);
 			if (bone == null)
@@ -85,7 +95,23 @@ namespace Toys
 				skeleton[child] = rot;
 		}
 
-		public void DefaultPos()
+        public void SetTransform(int boneID, Matrix4 mat)
+        {
+            if (boneID >= bones.Length)
+                return;
+            Bone bone = bones[boneID];
+            //Console.WriteLine(bone.localSpace);
+            //Matrix4 localTransform = bone.localSpace * Matrix4.CreateTranslation(bone.Position);
+            Matrix4 chMat = mat;
+            skeleton[bone.Index] = chMat;
+            //Console.WriteLine(localTransform);
+            var childs = bone.childs;
+            foreach (var child in childs)
+                skeleton[child] = chMat;
+        }
+
+
+        public void DefaultPos()
 		{
 			for (int n = 0; n<skeleton.Length; n++)
 				skeleton[n] = Matrix4.Identity;

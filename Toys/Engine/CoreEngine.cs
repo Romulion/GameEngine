@@ -3,6 +3,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using OpenTK.Graphics;
+using System.Diagnostics;
 
 namespace Toys
 {
@@ -11,22 +12,30 @@ namespace Toys
     {
 
         GraphicsEngine gEngine;
+        public static PhysicsEngine pEngine;
         queue task;
+
+        //time controll
+        Stopwatch stopwatch;
+        float elapsed = 0.01f;
 
         public Scene mainScene;
 
 		public CoreEngine() : base (640,480, new GraphicsMode(32,8,8,4))
         {
             Instalize();
+            stopwatch = new Stopwatch();
         }
 
         void Instalize()
         {
+            
             Title = "MMD Test";
             try
             {
                 mainScene = new Scene();
                 gEngine = new GraphicsEngine(mainScene);
+                pEngine = new PhysicsEngine();
 
                 Load += OnLoad;
                 UpdateFrame += Update;
@@ -56,8 +65,9 @@ namespace Toys
         //
         void Update(object sender, FrameEventArgs e)
         {
-			//mesh morpher
-			if (task != null)
+            stopwatch.Start();
+            //mesh morpher
+            if (task != null)
 			{
 				task();
 				task = null;
@@ -80,6 +90,18 @@ namespace Toys
             {
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
             }
+            
+            //test physics
+            foreach (var node in mainScene.GetNodes())
+            {
+                node.phys.Update();
+            }
+            pEngine.Update(elapsed);
+            foreach (var node in mainScene.GetNodes())
+            {
+                node.phys.PostUpdate();
+            }
+            
         }
 
 
@@ -87,7 +109,10 @@ namespace Toys
         {
 			gEngine.Render();
 			SwapBuffers();
-		}
+
+            stopwatch.Stop();
+            elapsed = stopwatch.ElapsedMilliseconds;
+        }
 
 
 		public queue addTask

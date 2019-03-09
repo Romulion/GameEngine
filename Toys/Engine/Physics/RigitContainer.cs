@@ -7,11 +7,14 @@ namespace Toys
 	{
 		FollowBone,
 		Gravity,
-		GravityBone	}
+		GravityBone
+	}
 
 	public class RigitContainer
 	{
-		public int BoneIndex;
+        public string Name;
+        public string NameEng;
+        public int BoneIndex;
 		public byte GroupId;
 		public short NonCollisionGroup;
 		public PhysPrimitiveType primitive;
