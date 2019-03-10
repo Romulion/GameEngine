@@ -45,7 +45,10 @@ namespace Toys
 			Position = position;
 			ParentIndex = parent;
 			SetFlags(flags);
-		}
+
+            childs = new int[0];
+
+        }
 
 		public Bone(string name, Matrix4 pos, int parent)
 		{
@@ -84,6 +87,7 @@ namespace Toys
 		{
 			Vector3 pos = bones[Id].Position;
 			List<int> childs = new List<int>();
+
 			bones[Id].Index = Id;
 			for ( int i = 0; i<bones.Length ; i++ )
 			{
@@ -95,6 +99,7 @@ namespace Toys
 				}
 			}
 			bones[Id].childs = childs.ToArray();
+
 			return bones[Id].childs;
 		}
 
