@@ -39,24 +39,16 @@ namespace Toys
 					break;
 			}
 
-            startTransform = Matrix.RotationYawPitchRoll(rcon.Rotation.X, rcon.Rotation.Y, rcon.Rotation.Z) * Matrix.Translation(GetVec3(rcon.Position));
             if (rcon.Phys == PhysType.FollowBone)
                 rcon.Mass = 0;
-
-            //Body = LocalCreateRigidBody(rcon.Mass, startTransform, shape);
-
-            
-            //not working
             
             bool isDynamic = (rcon.Mass != 0.0f);
 
             Vector3 inertia = Vector3.Zero;
             if (isDynamic)
                 shape.CalculateLocalInertia(rcon.Mass, out inertia);
-
-            startTransform = Matrix.RotationYawPitchRoll(rcon.Rotation.X, rcon.Rotation.Y, rcon.Rotation.Z) * Matrix.Translation(GetVec3(rcon.Position));
+            startTransform = Matrix.RotationYawPitchRoll(rcon.Rotation.Y, rcon.Rotation.X, rcon.Rotation.Z) * Matrix.Translation(GetVec3(rcon.Position));
             var rbInfo = new RigidBodyConstructionInfo(rcon.Mass, new DefaultMotionState(startTransform), shape, inertia);
-			//rbInfo.MotionState = new DefaultMotionState(startTransform);
             Body = new RigidBody(rbInfo);
             rbInfo.Dispose();
 
