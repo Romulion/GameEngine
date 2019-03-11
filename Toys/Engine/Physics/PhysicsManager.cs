@@ -15,7 +15,7 @@ namespace Toys
         public BoneBodySyncer postPhysics;
         Transformation worldTrans;
 
-        public DiscreteDynamicsWorld World { get; set; }
+		public DiscreteDynamicsWorld World { get; private set; }
 
         public PhysicsManager(RigitContainer[] rigits, JointContainer[] jcons, AnimController bons, Transformation trans)
         {

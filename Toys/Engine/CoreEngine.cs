@@ -58,6 +58,8 @@ namespace Toys
             Resize += (s, ev) => {
                 gEngine.Resize(Width,Height);
             };
+
+			pEngine.World.DebugDrawer = new PhysicsDebugDraw(pEngine.World);
         }
 
 
@@ -107,7 +109,11 @@ namespace Toys
 
         void OnRender (object sender, FrameEventArgs e)
         {
+			//render main scene
 			gEngine.Render();
+			//render physics
+			(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
+
 			SwapBuffers();
 
             stopwatch.Stop();

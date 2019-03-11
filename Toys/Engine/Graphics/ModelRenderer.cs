@@ -32,6 +32,7 @@ namespace Toys
 			ubs.SetNormalSpace(norm);
 			ubs.SetPVMSpace(pvm);
 			ubs.SetModelSpace(node.GetTransform.globalTransform);
+			ubs.SetPvSpace(viev * projection);
             
             msrd.Draw();
             

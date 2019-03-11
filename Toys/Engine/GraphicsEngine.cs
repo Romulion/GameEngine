@@ -104,7 +104,6 @@ namespace Toys
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             GL.ClearColor(0.0f, 0.1f, 0.1f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
 			mainRender.Render();
         }
 
@@ -118,5 +117,6 @@ namespace Toys
 			//renderScene.Resize(Width, Height);
 
         }
+
     }
 }

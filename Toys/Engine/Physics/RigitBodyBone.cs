@@ -29,7 +29,7 @@ namespace Toys
 			switch (rcon.primitive)
 			{
 				case PhysPrimitiveType.Box:
-					shape = new BoxShape(GetVec3(rcon.Size));
+					shape = new BoxShape(GetVec3(rcon.Size) * 0.5f);
 					break;
 				case PhysPrimitiveType.Capsule:
 					shape = new CapsuleShape(rcon.Size.X, rcon.Size.Y);
@@ -64,6 +64,13 @@ namespace Toys
             Body.Friction = rcon.Friction;
             Body.SetDamping(rcon.MassAttenuation, rcon.MassAttenuation);
 
+			if (rcon.Phys == PhysType.FollowBone)
+				Body.SetCustomDebugColor (new Vector3(0,1,0));
+			else if (rcon.Phys == PhysType.Gravity)
+				Body.SetCustomDebugColor (new Vector3(1,0,0));
+			else if (rcon.Phys == PhysType.GravityBone)
+				Body.SetCustomDebugColor (new Vector3(0,0,1));
+			
             //Body.SetContactStiffnessAndDamping(0,0);
             //Body.SetContactStiffnessAndDamping(rcon.Repulsion, rcon.Repulsion);
             

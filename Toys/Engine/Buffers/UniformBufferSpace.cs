@@ -7,7 +7,7 @@ namespace Toys
 	public class UniformBufferSpace : UniformBuffer
 	{
 		const int matSize = 64;
-		const int size = 4 * matSize;
+		const int size = 5 * matSize;
 		public UniformBufferSpace() : base (size, "space",1)
 		{
 		}
@@ -30,6 +30,11 @@ namespace Toys
 		public void SetLightSpace(Matrix4 mat)
 		{
 			SetMatrix(mat, 3 * matSize);
+		}
+
+		public void SetPvSpace(Matrix4 mat)
+		{
+			SetMatrix(mat, 4 * matSize);
 		}
 	}
 }

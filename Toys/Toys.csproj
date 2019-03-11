@@ -9,8 +9,6 @@
     <AssemblyName>Toys</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <ApplicationManifest>VertexRigged.manifest</ApplicationManifest>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -117,12 +115,14 @@
     <Compile Include="Engine\Physics\JointContainer.cs" />
     <Compile Include="Engine\Physics\RigitBodyBone.cs" />
     <Compile Include="Engine\Physics\Joint.cs" />
+    <Compile Include="Engine\Physics\Debugger\BufferedDebugDraw.cs" />
+    <Compile Include="Engine\Physics\Debugger\PhysicsDebugDraw.cs" />
+    <Compile Include="Engine\Physics\Debugger\PrimitiveMeshFactory.cs" />
+    <Compile Include="Engine\Physics\Debugger\PrimitiveMeshProcessor.cs" />
+    <Compile Include="Engine\Physics\Debugger\PrimitiveData.cs" />
+    <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformMatrix4.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="BulletSharp, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\BulletSharp.0.11.1\lib\net40-client\BulletSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System" />
@@ -132,6 +132,9 @@
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="System.Xml" />
+    <Reference Include="BulletSharp">
+      <HintPath>..\packages\BulletSharp.0.11.1\lib\net40-client\BulletSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="INIFileParser">
       <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
@@ -142,6 +145,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assamble\" />
+    <Folder Include="Engine\Systen\" />
+    <Folder Include="Engine\Systen\Settings\" />
+    <Folder Include="Engine\Systen\Logger\" />
+    <Folder Include="Engine\Physics\Debugger\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -166,13 +173,9 @@
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resourses\shaders\skin.glsl" />
+    <EmbeddedResource Include="Resourses\shaders\phys.fs" />
+    <EmbeddedResource Include="Resourses\shaders\phys.vs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets'))" />
-  </Target>
 </Project>

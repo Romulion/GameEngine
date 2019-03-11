@@ -66,9 +66,9 @@ namespace Toys
                     case ActiveUniformType.FloatVec4:
                         uniforms.Add(new ShaderUniformVector4(uname, group, this));
                         break;
-                    //case ActiveUniformType.FloatMat4:
-                    //    uniforms.Add(new ShaderUniformTyped<Matrix4>(uname, group, typeof(Matrix4), this));
-                    //    break;
+                    case ActiveUniformType.FloatMat4:
+						uniforms.Add(new ShaderUniformMatrix4(uname, group, this));
+                        break;
                     default:
                         break;
                 }
