@@ -57,7 +57,7 @@
     <Compile Include="Window\Window.cs" />
     <Compile Include="gtk-gui\Toys.Window.cs" />
     <Compile Include="Engine\Graphics\PostProcessing.cs" />
-    <Compile Include="Engine\Physics\RigitContainer.cs" />
+    <Compile Include="Engine\Physics\RigidContainer.cs" />
     <Compile Include="Engine\Physics\PhysicsManager.cs" />
     <Compile Include="Engine\Materials\MaterialPMX.cs" />
     <Compile Include="Engine\Graphics\MeshDrawer.cs" />
@@ -113,7 +113,7 @@
     <Compile Include="Engine\Morph\MorphUV.cs" />
     <Compile Include="Engine\Physics\PhysicsEngine.cs" />
     <Compile Include="Engine\Physics\JointContainer.cs" />
-    <Compile Include="Engine\Physics\RigitBodyBone.cs" />
+    <Compile Include="Engine\Physics\RigidBodyBone.cs" />
     <Compile Include="Engine\Physics\Joint.cs" />
     <Compile Include="Engine\Physics\Debugger\BufferedDebugDraw.cs" />
     <Compile Include="Engine\Physics\Debugger\PhysicsDebugDraw.cs" />

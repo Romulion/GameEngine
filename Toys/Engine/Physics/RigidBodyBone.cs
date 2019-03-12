@@ -13,23 +13,24 @@ namespace Toys
 	}
 
 
-	public class RigitBodyBone
+	public class RigidBodyBone
 	{
         Matrix startTransform;
 
 		public int bone { get; set; }
 		public RigidBody Body { get; set; }
         public AnimController acon { get; set; }
-        public RigitContainer rigCon { get; set; }
+        public RigidContainer rigCon { get; set; }
+		RigidBodyConstructionInfo rbInfo;
 
-        public RigitBodyBone(RigitContainer rcon)
+		public RigidBodyBone(RigidContainer rcon)
 		{
             rigCon = rcon;
             CollisionShape shape = null;
 			switch (rcon.primitive)
 			{
 				case PhysPrimitiveType.Box:
-					shape = new BoxShape(GetVec3(rcon.Size) * 0.5f);
+					shape = new BoxShape(GetVec3(rcon.Size));
 					break;
 				case PhysPrimitiveType.Capsule:
 					shape = new CapsuleShape(rcon.Size.X, rcon.Size.Y);
@@ -47,10 +48,10 @@ namespace Toys
             Vector3 inertia = Vector3.Zero;
             if (isDynamic)
                 shape.CalculateLocalInertia(rcon.Mass, out inertia);
-            startTransform = Matrix.RotationYawPitchRoll(rcon.Rotation.Y, rcon.Rotation.X, rcon.Rotation.Z) * Matrix.Translation(GetVec3(rcon.Position));
-            var rbInfo = new RigidBodyConstructionInfo(rcon.Mass, new DefaultMotionState(startTransform), shape, inertia);
-            Body = new RigidBody(rbInfo);
-            rbInfo.Dispose();
+			startTransform = Matrix.RotationYawPitchRoll(rcon.Rotation.Y, rcon.Rotation.X, rcon.Rotation.Z) * Matrix.Translation(GetVec3(rcon.Position));
+            rbInfo = new RigidBodyConstructionInfo(rcon.Mass, new DefaultMotionState(startTransform), shape, inertia);
+			Body = new RigidBody(rbInfo);
+            //rbInfo.Dispose();
 
             Body.ActivationState = ActivationState.DisableDeactivation;
             Body.Friction = rcon.Friction;
@@ -87,7 +88,7 @@ namespace Toys
 		{
             
 
-            var mat = world * GetMat(startTransform).Inverted() * GetMat(Body.WorldTransform);
+            var mat = GetMat(startTransform).Inverted() * GetMat(Body.WorldTransform) * world;
 
             /*
             //math check
@@ -136,5 +137,14 @@ namespace Toys
             Marshal.FreeHGlobal(ptr);
             return mat1;
         }
+
+		public void Reinstalize(OpenTK.Matrix4 world)
+		{
+			Body.WorldTransform = startTransform * GetMat(world);
+			//Body.MotionState.WorldTransform = startTransform * GetMat(world);
+			Body.LinearVelocity = Vector3.Zero;
+			Body.AngularVelocity = Vector3.Zero;
+			Body.ClearForces();
+		}
     }
 }

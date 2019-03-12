@@ -23,7 +23,9 @@ namespace Toys
 			SceneNode node = pmx.GetRiggedModel;
 			node.Name = "Model1";
 			IMaterial[] mats = node.model.mats;
-			node.GetTransform.Position = new Vector3(0.0f, 0.0f, 0.0f);
+			//node.GetTransform.Position = new Vector3(1.0f, 0.0f, 0.0f);
+			//node.phys.ReinstalizeBodys();
+
 			scene.AddObject(node);
 
 			var task = new Task(() =>
@@ -33,6 +35,8 @@ namespace Toys
 				Application.Run(); 
 			});
 			task.Start();
+
+			//task.
 
 			core.Run(60);
 		}

@@ -14,7 +14,7 @@ namespace Toys
 		Bone[] bones;
 		public Morph[] morphs;
 		float multipler = 0.1f;
-		RigitContainer[] rigitbodies;
+		RigidContainer[] rigitbodies;
 		JointContainer[] joints;
 
 		BinaryReader file;
@@ -531,11 +531,11 @@ namespace Toys
 		void ReadRigit()
 		{
 			int readCount = file.ReadInt32();
-			rigitbodies = new RigitContainer[readCount];
-			RigitContainer rigit;
+			rigitbodies = new RigidContainer[readCount];
+			RigidContainer rigit;
 			for (int i = 0; i<readCount; i++)
 			{
-				rigit = new RigitContainer();
+				rigit = new RigidContainer();
 				rigit.Name = reader.readString();
                 rigit.NameEng = reader.readString();
 				rigit.BoneIndex = reader.readVal(header.GetBoneIndexSize);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BulletSharp;
 using System.Drawing;
 using System.Collections.Generic;
@@ -178,7 +178,7 @@ namespace Toys
 
 				InitShapeData(shape).Instances.Add(new InstanceData()
 				{
-					WorldTransform = RigitBodyBone.GetMat(transform),
+					WorldTransform = RigidBodyBone.GetMat(transform),
 					//WorldTransform = MathHelper.Convert(ref transform),
 					//Color = "Ground".Equals(colObj.UserObject) ? groundColor :
 					//	colObj.ActivationState == ActivationState.ActiveTag ? activeColor : passiveColor

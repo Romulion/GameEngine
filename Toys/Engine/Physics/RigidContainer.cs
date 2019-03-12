@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using OpenTK;
 
 namespace Toys
@@ -10,7 +10,7 @@ namespace Toys
 		GravityBone
 	}
 
-	public class RigitContainer
+	public class RigidContainer
 	{
         public string Name;
         public string NameEng;
