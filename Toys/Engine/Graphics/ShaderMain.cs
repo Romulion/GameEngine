@@ -51,23 +51,28 @@ namespace Toys
                 else
                     uname = grouping[0];
 
+				int id = GL.GetUniformLocation(shaderProgram, name.ToString());
+
+				//skip buffers
+				if (id < 0)
+					continue;
 
                 switch (type)
                 {
                     case ActiveUniformType.Float:
-                        uniforms.Add(new ShaderUniformFloat(uname, group, this));
+                        uniforms.Add(new ShaderUniformFloat(uname, group, this, id));
                         break;
                     case ActiveUniformType.Int:
-                        uniforms.Add(new ShaderUniformInt(uname, group, this));
+                        uniforms.Add(new ShaderUniformInt(uname, group, this, id));
                         break;
                     case ActiveUniformType.FloatVec3:
-                        uniforms.Add(new ShaderUniformVector3(uname, group, this));
+                        uniforms.Add(new ShaderUniformVector3(uname, group, this, id));
                         break;
                     case ActiveUniformType.FloatVec4:
-                        uniforms.Add(new ShaderUniformVector4(uname, group, this));
+                        uniforms.Add(new ShaderUniformVector4(uname, group, this, id));
                         break;
                     case ActiveUniformType.FloatMat4:
-						uniforms.Add(new ShaderUniformMatrix4(uname, group, this));
+						uniforms.Add(new ShaderUniformMatrix4(uname, group, this, id));
                         break;
                     default:
                         break;

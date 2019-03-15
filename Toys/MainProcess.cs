@@ -36,9 +36,8 @@ namespace Toys
 			});
 			task.Start();
 
-			//task.
-
 			core.Run(60);
+
 		}
 
    }

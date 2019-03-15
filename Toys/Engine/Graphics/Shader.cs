@@ -19,6 +19,7 @@ namespace Toys
 			GL.UseProgram(shaderProgram);
 		}
 
+		//by string
 		public void SetUniform(float value, string name)
 		{
 			GL.Uniform1(GL.GetUniformLocation(shaderProgram, name), value);
@@ -59,6 +60,33 @@ namespace Toys
 				GL.UniformMatrix4(GL.GetUniformLocation(shaderProgram, name + "[" + i + "]"), false, ref value[i]);
 			}
 		}
+
+		//by index
+		public void SetUniform(float value, int id)
+		{
+			GL.Uniform1(id, value);
+		}
+
+		public void SetUniform(int value, int id)
+		{
+			GL.Uniform1(id, value);
+		}
+
+		public void SetUniform(Matrix4 value, int id)
+		{
+			GL.UniformMatrix4(id, false, ref value);
+		}
+
+		public void SetUniform(Vector3 value, int id)
+		{
+			GL.Uniform3(id, ref value);
+		}
+
+		public void SetUniform(Vector4 value, int id)
+		{
+			GL.Uniform4(id, ref value);
+		}
+
 
 		protected int CompileShader(string source, ShaderType st)
 		{

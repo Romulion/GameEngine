@@ -12,10 +12,11 @@ namespace Toys
 
 
 
-        public ShaderUniformFloat(string name, string group, Shader program)
+        public ShaderUniformFloat(string name, string group, Shader program,int id)
         {
             Name = name;
             Group = group;
+			varId = id;
 
             if (group != "")
                 varName = group + "." + name;
@@ -33,7 +34,7 @@ namespace Toys
         public override void Assign()
         {
             program.ApplyShader();
-            program.SetUniform(value, varName);
+            program.SetUniform(value, varId);
         }
 
         public override object GetValue()

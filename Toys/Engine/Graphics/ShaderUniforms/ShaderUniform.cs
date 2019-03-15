@@ -10,6 +10,7 @@ namespace Toys
         public string Group { get; protected set; }
 
         protected Shader program;
+		protected int varId;
         
         public abstract void Assign();
         public abstract bool CheckCompability(object value);

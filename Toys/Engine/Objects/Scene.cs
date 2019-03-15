@@ -33,6 +33,7 @@ namespace Toys
             
 			//float angle = (float)Math.Sin(radians(i * 10)) * radians(80);
 			//nodes[0].anim.Rotate(75, new Quaternion(0f, angle, 0) );
+			//nodes[0].GetTransform.Rotation = new Vector3(0f, angle, 0);
 				//models[0].anim.Rotate("上半身", new Quaternion(0f, angle, 0f) );
 			//i++;
             

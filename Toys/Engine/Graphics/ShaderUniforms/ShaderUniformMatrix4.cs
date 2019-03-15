@@ -11,10 +11,11 @@ namespace Toys
 		string varName;
 		Matrix4 value = Matrix4.Identity;
 
-		public ShaderUniformMatrix4(string name, string group, Shader program)
+		public ShaderUniformMatrix4(string name, string group, Shader program, int id)
 		{
 			Name = name;
 			Group = group;
+			varId = id;
 
 			if (group != "")
 				varName = group + "." + name;
@@ -32,7 +33,7 @@ namespace Toys
 		public override void Assign()
 		{
 			program.ApplyShader();
-			program.SetUniform(value, varName);
+			program.SetUniform(value, varId);
 		}
 
 		public override object GetValue()

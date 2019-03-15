@@ -32,7 +32,9 @@ namespace Toys
 
 		static Logger()
 		{
-			type = Settings.GetInstance().System.LogOutput;
+			var settings = Settings.GetInstance().System;
+			type = settings.LogOutput;
+
 		}
 
 		public void Warning(string Message, string path)
