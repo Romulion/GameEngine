@@ -121,6 +121,9 @@
     <Compile Include="Engine\Physics\Debugger\PrimitiveMeshProcessor.cs" />
     <Compile Include="Engine\Physics\Debugger\PrimitiveData.cs" />
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformMatrix4.cs" />
+    <Compile Include="Engine\Systen\ResourcesManager.cs" />
+    <Compile Include="Engine\Systen\Resource.cs" />
+    <Compile Include="Engine\Systen\Component.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
