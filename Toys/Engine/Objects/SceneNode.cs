@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Toys
 {
-    public class SceneNode
+	public class SceneNode : Resource
     {
         List<SceneNode> childs;
         public SceneNode parent;
         Transformation transform;
-		public MeshDrawer model = null;
-		public AnimController anim = null;
+		//public MeshDrawer model = null;
+		//public BoneController anim = null;
         public PhysicsManager phys = null;
-		public Morph[] morph = null;
+		//public Morph[] morph = null;
 		public string Name;
 		public bool Active = true;
+		List<Component> components;
 
-        public SceneNode()
+		public SceneNode() : base (typeof(SceneNode))
         {
             childs = new List<SceneNode>();
+			components = new List<Component>();
             parent = null;
             transform = new Transformation(this);
         }
@@ -55,5 +58,41 @@ namespace Toys
         }
 
 
+		//component framework
+		public void AddComponent(Component comp)
+		{
+			//if (components.Exists((Component c) => c is ))
+			comp.node = this;
+			components.Add(comp);
+		}
+
+		public Component GetComponent(Type ctype)
+		{
+			//if (components.Exists((Component c) => c is ))
+			var result = from comp in components
+						 where comp.type == ctype
+						 select comp;
+
+			if (result.Count() == 0)
+				return null;
+			
+			return result.First();
+		}
+
+		public Component[] GetComponents(Type ctype)
+		{
+			//if (components.Exists((Component c) => c is ))
+			var result = from comp in components
+						 where comp.type == ctype
+						 select comp;
+
+			return result.ToArray();
+		}
+
+		internal override void Unload()
+		{
+			foreach (var comp in components)
+				comp.Unload();
+		}
     }
 }

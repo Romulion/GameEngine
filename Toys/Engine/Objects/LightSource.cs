@@ -62,10 +62,33 @@ namespace Toys
 
 			foreach (var node in nodes)
 			{
+				if (!node.Active)
+					continue;
+				MeshDrawer md = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
+				if (md == null)
+					continue;
+				
 				Matrix4 pvm = node.GetTransform.globalTransform * lightdir * projection;
-				ubo.SetBones(node.anim.GetSkeleton);
 				shdr.SetUniform(pvm, "pvm");
-				node.model.DrawSimple();
+				md.DrawSimple();
+			}
+		}
+
+		public void RenderShadow(MeshDrawer[] meshes)
+		{
+			SetLightVars();
+
+			lightdir = Matrix4.LookAt(pos, look, new Vector3(0f, 1f, 0f));
+			GL.Viewport(0, 0, Width, Heigth);
+			GL.BindFramebuffer(FramebufferTarget.Framebuffer, shadowBuffer);
+			GL.Clear(ClearBufferMask.DepthBufferBit);
+			shdr.ApplyShader();
+
+			foreach (var mesh in meshes)
+			{
+				Matrix4 pvm = mesh.node.GetTransform.globalTransform * lightdir * projection;
+				shdr.SetUniform(pvm, "pvm");
+				mesh.DrawSimple();;
 			}
 		}
 

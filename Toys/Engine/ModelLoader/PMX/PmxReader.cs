@@ -173,10 +173,18 @@ namespace Toys
 			for (int i = 0; i < texCount; i++)
 			{
 				string texture = reader.readString();
+				Texture tex = ResourcesManager.LoadAsset<Texture>(texture);
+
 				if (texture.Contains("toon"))
-					textures[i] = new Texture(dir + texture, TextureType.Toon, texture);
+					tex.ChangeType(TextureType.Toon);
+				//textures[i] = new Texture(dir + texture, TextureType.Toon, texture);
 				else
-					textures[i] = new Texture(dir + texture, TextureType.Diffuse, texture, false);
+				{
+					tex.ChangeType(TextureType.Diffuse);
+					tex.ChangeWrapper(Texture.Wrapper.Repeat);
+				}
+					//textures[i] = new Texture(dir + texture, TextureType.Diffuse, texture, false);
+				textures[i] = tex;
 			}
 		}
 
@@ -633,7 +641,7 @@ namespace Toys
 				MeshDrawer md = new MeshDrawer(mesh, mats);
 				md.OutlineDrawing = true;
 				var node = new SceneNode();
-				node.model = md;
+				node.AddComponent(md);
 
 				return node; 
 			}
@@ -641,24 +649,34 @@ namespace Toys
 
 		public SceneNode GetRiggedModel
 		{
-			get 
+			get
 			{
-				
+				/*
 				MeshDrawer md = new MeshDrawer(meshRigged, mats);
 				md.OutlineDrawing = true;
+
 				var node = new SceneNode();
 				node.model = md;
-				node.anim = new AnimController(bones);
+				node.anim = new BoneController(bones);
 				node.morph = morphs;
                 node.phys = new PhysicsManager(rigitbodies, joints, node.anim, node.GetTransform);
 				return node; 
+*/
+				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats,new BoneController(bones), morphs);
+				md.OutlineDrawing = true;
+
+				var node = new SceneNode();
+				node.AddComponent(md);
+				node.phys = (new PhysicsManager(rigitbodies, joints, md.skeleton, node.GetTransform));
+				return node;
+
 			}
 		}
 
 		public Morph[] GetMorphes
 		{
 			get 
-			{ 
+			{
 				return morphs; 
 			}
 		}

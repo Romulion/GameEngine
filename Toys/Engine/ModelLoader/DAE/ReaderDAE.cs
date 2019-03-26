@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Xml;
 using System.Collections.Generic;
 
@@ -122,16 +122,16 @@ namespace Toys
 			}
 		}
 
+
 		public SceneNode GetRiggedModel
 		{
 			get
 			{
 				
-				MeshDrawer md = new MeshDrawer(mesh, mats);
+				MeshDrawerRigged md = new MeshDrawerRigged(mesh, mats,new BoneController(bones.ToArray()));
 				md.OutlineDrawing = true;
 				var node = new SceneNode();
-				node.model = md;
-				node.anim = new AnimController(bones.ToArray());
+				node.AddComponent(md);
 				return node; 
 
 			}

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BulletSharp;
 using BulletSharp.Math;
 using System.Text;
@@ -9,7 +9,7 @@ namespace Toys
     {
         public delegate void BoneBodySyncer(OpenTK.Matrix4 world);
         RigidBodyBone[] rigitBodies;
-        AnimController bones;
+        BoneController bones;
         Joint[] joints;
         public BoneBodySyncer prePhysics;
         public BoneBodySyncer postPhysics;
@@ -17,7 +17,7 @@ namespace Toys
 
 		public DiscreteDynamicsWorld World { get; private set; }
 
-        public PhysicsManager(RigidContainer[] rigits, JointContainer[] jcons, AnimController bons, Transformation trans)
+        public PhysicsManager(RigidContainer[] rigits, JointContainer[] jcons, BoneController bons, Transformation trans)
         {
             //setup world physics
             bones = bons;

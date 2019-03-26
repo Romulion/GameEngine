@@ -15,14 +15,15 @@ namespace Toys
 				return;
 			//Console.WriteLine(args[0]);
             CoreEngine core = new CoreEngine();
+
             var scene = core.mainScene;
+
 			//string str = "";
-			IModelLoader pmx = ModelLoader.Load(args[0]);
-			//Console.ReadLine();
-			//return;
-			SceneNode node = pmx.GetRiggedModel;
+
+			SceneNode node = ResourcesManager.LoadAsset<SceneNode>(args[0]);
 			node.Name = "Model1";
-			IMaterial[] mats = node.model.mats;
+			MeshDrawer md = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
+			IMaterial[] mats = md.mats;
 			//node.GetTransform.Position = new Vector3(1.0f, 0.0f, 0.0f);
 			//node.phys.ReinstalizeBodys();
 
@@ -31,7 +32,7 @@ namespace Toys
 			var task = new Task(() =>
 				{
 				Application.Init();
-				Window wndw = new Window(mats,node.morph,core);
+				Window wndw = new Window(mats,md.morph,core);
 				Application.Run(); 
 			});
 			task.Start();

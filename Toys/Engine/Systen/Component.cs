@@ -1,10 +1,12 @@
 ﻿using System;
 namespace Toys
 {
-	public class Component
+	public abstract class Component : Resource
 	{
-		public Component()
-		{
-		}
+		//internal Component(Type t, string id) : base (t,id){ }
+
+		protected Component(Type t) : base(t) { }
+
+		internal SceneNode node;
 	}
 }

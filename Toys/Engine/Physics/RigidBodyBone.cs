@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using BulletSharp;
 using BulletSharp.Math;
 using System;
@@ -19,7 +19,7 @@ namespace Toys
 
 		public int bone { get; set; }
 		public RigidBody Body { get; set; }
-        public AnimController acon { get; set; }
+        public BoneController acon { get; set; }
         public RigidContainer rigCon { get; set; }
 		RigidBodyConstructionInfo rbInfo;
 

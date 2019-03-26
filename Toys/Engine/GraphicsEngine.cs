@@ -1,6 +1,8 @@
 ﻿using System;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Toys
 {
@@ -88,13 +90,15 @@ namespace Toys
 
         public void Render()
         {
+			//get render object list
+			MeshDrawer[] meshes = GetRenderObjects();
             //shadow pass
-            
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(CullFaceMode.Back);
             GL.Disable(EnableCap.Multisample);
 
-			renderScene.GetLight.RenderShadow(renderScene.GetNodes());
+			//renderScene.GetLight.RenderShadow(renderScene.GetNodes());
+			renderScene.GetLight.RenderShadow(meshes);
 
             GL.Enable(EnableCap.Multisample);
             GL.Disable(EnableCap.CullFace);
@@ -104,7 +108,7 @@ namespace Toys
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             GL.ClearColor(0.0f, 0.1f, 0.1f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-			mainRender.Render();
+			mainRender.Render(meshes);
         }
 
         public void Resize(int newWidth, int newHeight)
@@ -118,5 +122,18 @@ namespace Toys
 
         }
 
+		MeshDrawer[] GetRenderObjects()
+		{
+			List<MeshDrawer> meshes = new List<MeshDrawer>();
+			foreach (var node in renderScene.GetNodes())
+			{
+				if (!node.Active)
+					continue;
+				
+				meshes.Add((MeshDrawer) node.GetComponent(typeof(MeshDrawer)));
+			}
+
+			return meshes.ToArray();
+		}
     }
 }

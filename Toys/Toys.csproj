@@ -38,7 +38,7 @@
     <Compile Include="Engine\Objects\SceneNode.cs" />
     <Compile Include="Engine\Objects\Transformation.cs" />
     <Compile Include="MainProcess.cs" />
-    <Compile Include="Engine\Animation\AnimController.cs" />
+    <Compile Include="Engine\Animation\BoneController.cs" />
     <Compile Include="Engine\Animation\Bone.cs" />
     <Compile Include="Engine\Graphics\Mesh.cs" />
     <Compile Include="Engine\Graphics\ShaderMain.cs" />
@@ -124,6 +124,7 @@
     <Compile Include="Engine\Systen\ResourcesManager.cs" />
     <Compile Include="Engine\Systen\Resource.cs" />
     <Compile Include="Engine\Systen\Component.cs" />
+    <Compile Include="Engine\Graphics\MeshDrawerRigged.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />

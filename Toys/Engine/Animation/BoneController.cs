@@ -4,12 +4,12 @@ using System.Linq;
 
 namespace Toys
 {
-	public class AnimController
+	public class BoneController
 	{
 		Bone[] bones;
 		Matrix4[] skeleton;
 
-		public AnimController(Bone[] bones)
+		public BoneController(Bone[] bones)
 		{
 			this.bones = bones;
 			//making skeleton matrix
@@ -116,5 +116,6 @@ namespace Toys
 			for (int n = 0; n<skeleton.Length; n++)
 				skeleton[n] = Matrix4.Identity;
 		}
+
 	}
 }
