@@ -16,7 +16,7 @@ namespace Toys
 	public class Texture : Resource
 	{
 		int texture_id;
-		TextureType type;
+        new TextureType type;
 		string name;
 
 		//default texture
@@ -244,7 +244,8 @@ namespace Toys
 
 			//clear resources
 			texture.UnlockBits(data);
-			texture.Dispose();		}
+			texture.Dispose();
+		}
 
 
         public void ChangeWrapper(Wrapper wrap)

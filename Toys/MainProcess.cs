@@ -18,8 +18,7 @@ namespace Toys
 
             var scene = core.mainScene;
 
-			//string str = "";
-
+            //string str = "";
 			SceneNode node = ResourcesManager.LoadAsset<SceneNode>(args[0]);
 			node.Name = "Model1";
 			MeshDrawer md = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
