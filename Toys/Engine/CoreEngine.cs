@@ -1,4 +1,4 @@
-﻿#define PHYS
+﻿//#define PHYS
 
 using System;
 using OpenTK;
@@ -77,7 +77,7 @@ namespace Toys
 				task();
 				task = null;
 			}
-			mainScene.Update();
+			mainScene.Update(elapsed);
 			var keystate = Keyboard.GetState();
 			if (keystate[Key.Escape])
 			{
@@ -122,6 +122,7 @@ namespace Toys
 
             stopwatch.Stop();
             elapsed = stopwatch.ElapsedMilliseconds;
+			stopwatch.Reset();
         }
 
 

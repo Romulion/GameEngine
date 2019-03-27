@@ -124,9 +124,9 @@ namespace Toys
 				var shdrst = new ShaderSettings();
 				var rddir = new RenderDirectives();
 				shdrst.hasSkeleton = true;
-				shdrst.recieveShadow = true;
+				shdrst.recieveShadow = false;
 				shdrst.affectedByLight = true;
-				rddir.castShadow = true;
+				rddir.castShadow = false;
 				rddir.hasEdges = true;
 				shdrst.TextureDiffuse = true;
 				shdrst.discardInvisible = true;

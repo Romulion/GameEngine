@@ -29,7 +29,7 @@ namespace Toys
                         anim.ReadFrames(file);
                 }
 
-            return new Animation(anim.frames.ToArray());
+            return new Animation(anim.frames.ToArray(),anim.bones);
 
         }
 
@@ -54,10 +54,10 @@ namespace Toys
                     if (bones.ContainsKey(id))
                         name = bones[id];
 
-                    float[] coord = StringParser.readFloat(elements[1], 0.01f);
-                    Vector3 p = new Vector3(coord[0], coord[1], coord[2]);
+                    float[] coord = StringParser.readFloat(elements[1]);
+                    Vector3 p = new Vector3(coord[0], coord[1] , coord[2]);
                     Vector3 r = new Vector3(coord[3], coord[4], coord[5]);
-                    var bone = new BonePosition(p, r, name);
+                    var bone = new BonePosition(p * 0.01f, r, name);
                     bone.boneId = id;
                     pos.Add(bone);
                 }

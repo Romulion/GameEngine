@@ -14,7 +14,7 @@ namespace Toys
 		Mesh mesh;
 		Material[] mats;
 		List<Bone> bones = new List<Bone>();
-		const float multiplier = 0.1f;
+		const float multiplier = 0.01f;
 
 		public ReaderDAE(string filename)
 		{
@@ -98,13 +98,18 @@ namespace Toys
 			int parent = bones.Count;
 			string name = xmlnode.Attributes.GetNamedItem("sid").Value;
 			string matrtx = xmlnode.FindNodes("matrix")[0].InnerText;
-			float[] fls = StringParser.readFloat(matrtx,multiplier);
-			Matrix4 mat = Matrix4.Identity;
-			mat.Row0 = new Vector4(fls[0], fls[1], fls[2], fls[3]);
-			mat.Row1 = new Vector4(fls[4], fls[5], fls[6], fls[7]);
-			mat.Row2 = new Vector4(fls[8], fls[9], fls[10], fls[11]);
+			float[] fls = StringParser.readFloat(matrtx);
+			Matrix4 mat = Matrix4.Identity;/*
+			mat.Row0 = new Vector4(fls[0], fls[1], fls[2], fls[3] * multiplier);
+			mat.Row1 = new Vector4(fls[4], fls[5], fls[6], fls[7] * multiplier);
+			mat.Row2 = new Vector4(fls[8], fls[9], fls[10], fls[11] * multiplier);
 			mat.Row3 = new Vector4(fls[12], fls[13], fls[14], fls[15]);
-
+*/
+			mat.Row0 = new Vector4(fls[0], fls[1], fls[2], fls[12]);
+mat.Row1 = new Vector4(fls[4], fls[5], fls[6], fls[13]);
+mat.Row2 = new Vector4(fls[8], fls[9], fls[10], fls[14]);
+			mat.Row3 = new Vector4(fls[3] * multiplier, fls[7] * multiplier, fls[11] * multiplier, fls[15]);
+			//mat.Transpose();
 			Bone bone = new Bone(name, mat, index);
 			bones.Add(bone);
 
@@ -132,6 +137,7 @@ namespace Toys
 				md.OutlineDrawing = true;
 				var node = new SceneNode();
 				node.AddComponent(md);
+				node.AddComponent(new Animator(md.skeleton));
 				return node; 
 
 			}

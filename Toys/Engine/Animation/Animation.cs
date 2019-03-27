@@ -10,10 +10,12 @@ namespace Toys
     {
         public int framerate = 30;
         public readonly AnimationFrame[] frames;
+		Dictionary<int, string> bones = new Dictionary<int, string>();
 
-        public Animation (AnimationFrame[] frams)
+		public Animation (AnimationFrame[] frams, Dictionary<int, string> boneReference)
         {
             frames = frams;
+			bones = boneReference;
         }
     }
 }

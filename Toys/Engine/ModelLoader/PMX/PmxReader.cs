@@ -667,6 +667,7 @@ namespace Toys
 
 				var node = new SceneNode();
 				node.AddComponent(md);
+				node.AddComponent(new Animator(md.skeleton));
 				node.phys = (new PhysicsManager(rigitbodies, joints, md.skeleton, node.GetTransform));
 				return node;
 
