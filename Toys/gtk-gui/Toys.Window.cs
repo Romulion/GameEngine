@@ -14,6 +14,12 @@ namespace Toys
 
 		private global::Gtk.Fixed fixed3;
 
+		private global::Gtk.FileChooserButton filechooserbutton2;
+
+		private global::Gtk.Button button2;
+
+		private global::Gtk.Button button3;
+
 		protected virtual void Build()
 		{
 			global::Stetic.Gui.Initialize(this);
@@ -64,12 +70,42 @@ namespace Toys
 			this.fixed1.Add(this.scrolledwindow2);
 			global::Gtk.Fixed.FixedChild w8 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.scrolledwindow2]));
 			w8.X = 165;
+			// Container child fixed1.Gtk.Fixed+FixedChild
+			this.filechooserbutton2 = new global::Gtk.FileChooserButton(global::Mono.Unix.Catalog.GetString("Select a File"), ((global::Gtk.FileChooserAction)(0)));
+			this.filechooserbutton2.WidthRequest = 124;
+			this.filechooserbutton2.Name = "filechooserbutton2";
+			this.fixed1.Add(this.filechooserbutton2);
+			global::Gtk.Fixed.FixedChild w9 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.filechooserbutton2]));
+			w9.X = 379;
+			w9.Y = 19;
+			// Container child fixed1.Gtk.Fixed+FixedChild
+			this.button2 = new global::Gtk.Button();
+			this.button2.WidthRequest = 109;
+			this.button2.CanFocus = true;
+			this.button2.Name = "button2";
+			this.button2.UseUnderline = true;
+			this.button2.Label = global::Mono.Unix.Catalog.GetString("Play");
+			this.fixed1.Add(this.button2);
+			global::Gtk.Fixed.FixedChild w10 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.button2]));
+			w10.X = 379;
+			w10.Y = 63;
+			// Container child fixed1.Gtk.Fixed+FixedChild
+			this.button3 = new global::Gtk.Button();
+			this.button3.WidthRequest = 110;
+			this.button3.CanFocus = true;
+			this.button3.Name = "button3";
+			this.button3.UseUnderline = true;
+			this.button3.Label = global::Mono.Unix.Catalog.GetString("Stop");
+			this.fixed1.Add(this.button3);
+			global::Gtk.Fixed.FixedChild w11 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.button3]));
+			w11.X = 379;
+			w11.Y = 108;
 			this.Add(this.fixed1);
 			if ((this.Child != null))
 			{
 				this.Child.ShowAll();
 			}
-			this.DefaultWidth = 400;
+			this.DefaultWidth = 567;
 			this.DefaultHeight = 342;
 			this.Show();
 		}

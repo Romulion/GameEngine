@@ -180,6 +180,8 @@
     <EmbeddedResource Include="Resourses\shaders\skin.glsl" />
     <EmbeddedResource Include="Resourses\shaders\phys.fs" />
     <EmbeddedResource Include="Resourses\shaders\phys.vs" />
+    <EmbeddedResource Include="Resourses\shaders\defscreen.fs" />
+    <EmbeddedResource Include="Resourses\shaders\defscreen.vs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />

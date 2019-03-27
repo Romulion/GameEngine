@@ -12,6 +12,9 @@ namespace Toys
         int FBO;
 
 		MainRenderer mainRender;
+		//test
+		int VBO, VAO;
+		Shader sh;
 
 		public Scene renderScene { get; private set; }
 
@@ -26,6 +29,37 @@ namespace Toys
 			renderScene.OnLoad();
 			mainRender = new MainRenderer(renderScene.camera, renderScene);
 			renderScene.GetLight.BindShadowMap();
+
+			//TestTriangle();
+		}
+
+		void TestTriangle()
+		{
+			/*
+			Vertex3D[] vertices = {
+				new Vertex3D(new Vector3( -0.5f, -0.5f, 0.0f),Vector3.Zero,Vector2.Zero),
+				new Vertex3D(new Vector3( 0.5f, -0.5f, 0.0f),Vector3.Zero,Vector2.Zero),
+				new Vertex3D(new Vector3( 0.0f,  0.5f, 0.0f),Vector3.Zero,Vector2.Zero),
+			};
+			ms = new Mesh(vertices, new int[] { 0, 1, 2 });
+			*/
+			float[] vertices = {
+				-1.0f, -0.0f, 0.0f,
+				 0.0f, -1.0f, 0.0f,
+				 0.0f,  0.0f, 0.0f
+			};
+			VBO = GL.GenBuffer();
+			VAO = GL.GenVertexArray();
+			GL.BindVertexArray(VAO);
+			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+			GL.BufferData(BufferTarget.ArrayBuffer, 4 * vertices.Length, vertices, BufferUsageHint.StaticDraw);
+
+			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * 4, 0);
+			GL.EnableVertexAttribArray(0);
+			ShaderManager shdmMgmt = ShaderManager.GetInstance;
+			shdmMgmt.LoadShader("defscreen");
+			sh = shdmMgmt.GetShader("defscreen");
+
 		}
 
         public void Instalize()
@@ -109,6 +143,13 @@ namespace Toys
             GL.ClearColor(0.0f, 0.1f, 0.1f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 			mainRender.Render(meshes);
+
+			/*
+			//test
+			sh.ApplyShader();
+			GL.BindVertexArray(VAO);
+			GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+			*/
         }
 
         public void Resize(int newWidth, int newHeight)

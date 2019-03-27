@@ -106,8 +106,8 @@ namespace Toys
 			mat.Row3 = new Vector4(fls[12], fls[13], fls[14], fls[15]);
 */
 			mat.Row0 = new Vector4(fls[0], fls[1], fls[2], fls[12]);
-mat.Row1 = new Vector4(fls[4], fls[5], fls[6], fls[13]);
-mat.Row2 = new Vector4(fls[8], fls[9], fls[10], fls[14]);
+			mat.Row1 = new Vector4(fls[4], fls[5], fls[6], fls[13]);
+			mat.Row2 = new Vector4(fls[8], fls[9], fls[10], fls[14]);
 			mat.Row3 = new Vector4(fls[3] * multiplier, fls[7] * multiplier, fls[11] * multiplier, fls[15]);
 			//mat.Transpose();
 			Bone bone = new Bone(name, mat, index);

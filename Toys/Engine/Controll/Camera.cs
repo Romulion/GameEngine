@@ -22,7 +22,7 @@ namespace Toys
 		float speed = 0.01f;
 
 		//camera space
-		const float R = -3.5f;
+		const float R = 3.5f;
 		float r;
 		Vector3 cameraWorld = new Vector3(0f, 1f, 0f);
 		Vector3 cameraUp = new Vector3(0.0f, 1.0f, 0.0f);
@@ -46,9 +46,9 @@ namespace Toys
 			game.MouseWheel += (sender, e) =>
             {
                 if (e.Delta > 0)
-                    r += speed * 5f;
-                else if (e.Delta < 0)
                     r -= speed * 5f;
+                else if (e.Delta < 0)
+                    r += speed * 5f;
 
                 cameraPos = CalcPos(r, Phi, Theta);
                 CalcLook();
@@ -63,11 +63,11 @@ namespace Toys
 
 				if (mouseState.X - lastX > angleThresold)
 				{
-					Phi += angleStep;
+					Phi -= angleStep;
 				}
 				else if (mouseState.X - lastX < -angleThresold)
 				{
-					Phi -= angleStep;
+					Phi += angleStep;
 				}
 
 				if (mouseState.Y - lastY > angleThresold && Theta < ThetaMax)
@@ -165,13 +165,14 @@ namespace Toys
 
 			x = r * (float)Math.Sin(theta) * (float)Math.Cos(phi);
 			z = r * (float)Math.Sin(theta) * (float)Math.Sin(phi);
-			y = r * (float)Math.Cos(theta);
+			y = r * -(float)Math.Cos(theta);
 			return new Vector3(x, y, z);
 		}
 
 		void CalcLook()
 		{
 			look = Matrix4.LookAt(cameraWorld + cameraPos, cameraWorld, cameraUp);
+			//Console.WriteLine(look);
         }
 
 		float radians(float degrees)

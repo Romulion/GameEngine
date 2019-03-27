@@ -7,7 +7,7 @@
   <import>
     <widget-library name="../bin/Debug/Toys.exe" internal="true" />
   </import>
-  <widget class="Gtk.Window" id="Toys.Window" design-size="400 342">
+  <widget class="Gtk.Window" id="Toys.Window" design-size="567 342">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Window</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -64,6 +64,44 @@
           </widget>
           <packing>
             <property name="X">165</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.FileChooserButton" id="filechooserbutton2">
+            <property name="MemberName" />
+            <property name="WidthRequest">124</property>
+          </widget>
+          <packing>
+            <property name="X">379</property>
+            <property name="Y">19</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="button2">
+            <property name="MemberName" />
+            <property name="WidthRequest">109</property>
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Play</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">379</property>
+            <property name="Y">63</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="button3">
+            <property name="MemberName" />
+            <property name="WidthRequest">110</property>
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Stop</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">379</property>
+            <property name="Y">108</property>
           </packing>
         </child>
       </widget>

@@ -22,16 +22,28 @@ namespace Toys
 			SceneNode node = ResourcesManager.LoadAsset<SceneNode>(args[0]);
 			node.Name = "Model1";
 			MeshDrawer md = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
-			IMaterial[] mats = md.mats;
 			//node.GetTransform.Position = new Vector3(1.0f, 0.0f, 0.0f);
 			//node.phys.ReinstalizeBodys();
 
+			var tra = Matrix4.CreateTranslation(new Vector3 (3,0,0));
+			var rot = Matrix4.CreateRotationY((float)Math.PI / 2);
+			var pos = new Vector4(1, 0, 0, 1);
+
+			//var test = rot * tra;
+			//Console.WriteLine(test);
+			//Console.WriteLine(pos * rot * tra);
+
+			/*
+			tra.Transpose();
+			rot.Transpose();
+			Console.WriteLine(tra * rot * pos);
+			*/
 			scene.AddObject(node);
 
 			var task = new Task(() =>
 				{
 				Application.Init();
-				Window wndw = new Window(mats,md.morph,core);
+				Window wndw = new Window(node,core);
 				Application.Run(); 
 			});
 			task.Start();
