@@ -63,11 +63,11 @@ namespace Toys
 
 				if (mouseState.X - lastX > angleThresold)
 				{
-					Phi -= angleStep;
+					Phi += angleStep;
 				}
 				else if (mouseState.X - lastX < -angleThresold)
 				{
-					Phi += angleStep;
+					Phi -= angleStep;
 				}
 
 				if (mouseState.Y - lastY > angleThresold && Theta < ThetaMax)

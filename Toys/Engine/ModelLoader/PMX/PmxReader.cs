@@ -339,10 +339,12 @@ namespace Toys
 			int bonesCount = file.ReadInt32();
             Console.WriteLine(bonesCount);
 			bones = new Bone[bonesCount];
+
 			for (int i = 0; i < bonesCount; i++)
 			{
 				string Name = reader.readString();
 				string NameEng = reader.readString();
+
 				Vector3 Position = reader.readVector3() * multipler;
 				int ParentIndex = reader.readVal(header.GetBoneIndexSize);
 				int Layer = file.ReadInt32();

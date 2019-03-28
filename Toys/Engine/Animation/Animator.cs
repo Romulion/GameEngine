@@ -69,26 +69,35 @@ namespace Toys
 		void Instalize(AnimationFrame start)
 		{
 			
-			Matrix4 trans1 = Matrix4.CreateFromQuaternion(new Quaternion(start.bones[26].rotation)) * Matrix4.CreateTranslation(start.bones[26].position);
-			Console.WriteLine(trans1);
-			 var lt  = bones.GetBones[26].localSpace;
-			Console.WriteLine(lt);
-			Console.WriteLine(trans1 * lt.Inverted());
+			//Matrix4 trans1 = Matrix4.CreateFromQuaternion(new Quaternion(start.bones[26].rotation)) * Matrix4.CreateTranslation(start.bones[26].position);
+			//Console.WriteLine(trans1);
+			// var lt  = bones.GetBones[26].localSpace;
+			//Console.WriteLine(lt);
+			//Console.WriteLine(trans1 * lt.Inverted());
 
 			for (int i = 0; i < start.bones.Length; i++)
 			{
 				if (i < 26 || i > 26)
 					continue;
+				
 				Vector3 rot = start.bones[i].rotation;
 				Vector3 pos = start.bones[i].position;
-				Console.WriteLine(rot);
-
-				var quat = new Quaternion(rot.X, rot.Y, rot.Z);
-				Console.WriteLine(BulletSharp.Math.Matrix.RotationYawPitchRoll(rot.X, rot.Y, rot.Z));
+				var quat = new Quaternion(rot);
 				Matrix4 trans = Matrix4.CreateFromQuaternion(quat) * Matrix4.CreateTranslation(pos);
-				var local = bones.GetBones[i].localSpace;
+				//var mat = Matrix4.CreateRotationX(rot.X) * Matrix4.CreateRotationY(rot.Y) * Matrix4.CreateRotationZ(rot.Z);
+				//Matrix4 trans = mat * Matrix4.CreateTranslation(pos);
+
+				Matrix4 local = bones.GetBones[i].localSpace;
+;
 				bones.SetTransform(i, trans * local.Inverted());
-				Console.WriteLine("{0} : {1}", i, trans * local.Inverted());
+				/*
+				if (i == 26)
+				{
+					Console.WriteLine(local);
+					Console.WriteLine(trans);
+				Console.WriteLine("{0} : {1} \n{2}", i, bones.GetBones[i].Name,trans * local.Inverted());
+				}
+				*/
 				//bones.Rotate(i, quat);
 			}
 		}

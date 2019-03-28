@@ -88,14 +88,22 @@ namespace Toys
 			else
 				rot *= rotation;
 			rot *= Matrix4.CreateTranslation(bone.Position);
+
+			bone.localCoordinate = rot;
 			//update skeleton
-			skeleton[bone.Index] = rot;
-			var childs = bone.childs;
-			foreach (var child in childs)
-				skeleton[child] = rot;
+			Matrix4 model = Matrix4.Identity;
+			if (bone.ParentIndex >= 0)
+				model = rot * skeleton[bone.ParentIndex];
+			skeleton[bone.Index] = model;
+			UpdatePositionTree(bone, model);
 		}
 
-        public void SetTransform(int boneID, Matrix4 mat)
+		/// <summary>
+		/// for physics transformations
+		/// </summary>
+		/// <param name="boneID">Bone identifier.</param>
+		/// <param name="mat">Mat.</param>
+        public void SetTransformWorld(int boneID, Matrix4 mat)
         {
             if (boneID >= bones.Length)
                 return;
@@ -110,11 +118,38 @@ namespace Toys
                 skeleton[child] = chMat;
         }
 
+		public void SetTransform(int boneID, Matrix4 mat)
+		{
+			if (boneID >= bones.Length)
+				return;
+			Bone bone = bones[boneID];
+			//Console.WriteLine(bone.localSpace);
+			//Matrix4 localTransform = bone.localSpace * Matrix4.CreateTranslation(bone.Position);
+			Matrix4 chMat = mat;
+			if (bone.ParentIndex >= 0)
+				chMat *= skeleton[bone.ParentIndex];
+			
+			skeleton[bone.Index] = chMat;
+            UpdatePositionTree(bone, chMat);
+		}
 
         public void DefaultPos()
 		{
 			for (int n = 0; n<skeleton.Length; n++)
 				skeleton[n] = Matrix4.Identity;
+		}
+
+		void UpdatePositionTree(Bone bone, Matrix4 model)
+		{
+			var childs = bone.childs;
+			foreach (var child in childs)
+			{
+				if (child == bone.Index)
+					continue;
+				Matrix4 mat = bones[child].localCoordinate * model;
+				skeleton[child] = mat;
+				UpdatePositionTree(bones[child], mat);
+			}
 		}
 
 	}

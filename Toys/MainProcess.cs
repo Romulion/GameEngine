@@ -29,9 +29,12 @@ namespace Toys
 			var rot = Matrix4.CreateRotationY((float)Math.PI / 2);
 			var pos = new Vector4(1, 0, 0, 1);
 
+
+
 			//var test = rot * tra;
 			//Console.WriteLine(test);
-			//Console.WriteLine(pos * rot * tra);
+			//Console.WriteLine(pos * tra * test.Inverted());
+			//Console.WriteLine(pos * rot);
 
 			/*
 			tra.Transpose();

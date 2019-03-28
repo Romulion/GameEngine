@@ -17,6 +17,7 @@ namespace Toys
 		public int[] childs;
 		public Matrix4 localSpace;
 
+		public Matrix4 localCoordinate = Matrix4.Identity;
 		//unused values
 		public int Layer;
 
