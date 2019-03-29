@@ -337,7 +337,6 @@ namespace Toys
 		void ReadBones()
 		{
 			int bonesCount = file.ReadInt32();
-            Console.WriteLine(bonesCount);
 			bones = new Bone[bonesCount];
 
 			for (int i = 0; i < bonesCount; i++)
@@ -369,7 +368,7 @@ namespace Toys
 					Vector3 Z = Vector3.Cross(X, new Vector3(0f, 1f, 0f));
 					Vector3 Y = Vector3.Cross(Z, X);
 					Matrix3 local = new Matrix3(X,Y,Z);
-					bone.localSpace = new Matrix4(local);
+					bone.localSpace = new Matrix4(local) * Matrix4.CreateTranslation(Position);
 				}
 				if (bone.LocalCoordinate)
 				{
@@ -377,7 +376,7 @@ namespace Toys
 					Vector3 Z = reader.readVector3();
 					Vector3 Y = Vector3.Cross(Z, X);
 					Matrix3 local = new Matrix3(X, Y, Z);
-					bone.localSpace = new Matrix4(local);
+					bone.localSpace = new Matrix4(local) * Matrix4.CreateTranslation(Position);
 				}
 
                 //set if not set

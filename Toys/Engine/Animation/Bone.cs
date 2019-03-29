@@ -15,8 +15,22 @@ namespace Toys
 		public readonly int ParentIndex;
 		public int Index;
 		public int[] childs;
-		public Matrix4 localSpace;
 
+
+		public Matrix4 localSpace { 
+			get 
+			{
+				return local;
+			} 
+			internal set 
+			{
+				local = value;
+				localSpaceInverted = local.Inverted();
+			} 
+		}
+
+		Matrix4 local;
+		public Matrix4 localSpaceInverted { get; private set; }
 		public Matrix4 localCoordinate = Matrix4.Identity;
 		//unused values
 		public int Layer;

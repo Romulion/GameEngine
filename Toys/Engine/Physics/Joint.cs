@@ -87,29 +87,8 @@ namespace Toys
                     jointSpring6.LinearLowerLimit = GetVec3(jcon.PosMin);
 					jointSpring6.LinearUpperLimit = GetVec3(jcon.PosMax);
 
-                    //jointSpring6.SetEquilibriumPoint();
-                    //jointSpring6.BreakingImpulseThreshold = -1f;
-                    //jointSpring6.
                     joint = jointSpring6;
                    
-                    /*
-                    Console.WriteLine(jcon.Position);
-                    Console.WriteLine(rbodies[jcon.RigitBody1].rigCon.Position);
-                    Console.WriteLine(rbodies[jcon.RigitBody2].rigCon.Position);
-                    //Console.WriteLine(Matrix.RotationYawPitchRoll(0, 0, -(float)(Math.PI / 4) * 5) * Matrix.Translation(-0.18f, -0.18f, 0));
-                    */
-
-                    //jointSpring6.DebugDrawSize = 2f;
-                    /*
-                    Console.WriteLine(111);
-                    Console.WriteLine(Body1.WorldTransform);
-                    Console.WriteLine(Body2.WorldTransform);
-                    Console.WriteLine(Conn1);
-                    Console.WriteLine(Conn2);
-                    Console.WriteLine(jointSpring6.CalculatedTransformA.Row4);
-                    Console.WriteLine(jointSpring6.CalculatedTransformA.Row4);
-                    Console.WriteLine(222);
-                    */
                     break;
 			}
 

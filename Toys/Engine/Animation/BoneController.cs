@@ -35,7 +35,6 @@ namespace Toys
 
 		public Bone GetBone(string name)
 		{
-
 			var bone = Array.Find(bones, (obj) => obj.Name == name);
 
 			if (bone == null)
@@ -50,7 +49,6 @@ namespace Toys
             if (id >= bones.Length)
                 return null;
             
-
             return bones[id];
         }
 
@@ -59,20 +57,8 @@ namespace Toys
 			Bone bone = GetBone(name);
 			if (bone == null)
 				return;
-			Matrix4 rotation = Matrix4.CreateFromQuaternion(quat);
-			//rotation.Invert();
-			Matrix4 rot = Matrix4.CreateTranslation(-bone.Position);
-			if (bone.LocalCoordinate || bone.FixedAxis)
-				rot *= bone.localSpace.Inverted() * rotation * bone.localSpace;
-			else
-				rot *= rotation;
-			rot *= Matrix4.CreateTranslation(bone.Position);
-			//update skeleton
-			skeleton[bone.Index] = rot;
-			var childs = bone.childs;
-			foreach (var child in childs)
-				skeleton[child] = rot;
 
+			Rotate(bone.Index, quat);
 		}
 
 		public void Rotate(int boneID, Quaternion quat)
@@ -80,16 +66,10 @@ namespace Toys
 			if (boneID >= bones.Length)
 				return;
 			Bone bone = bones[boneID];
-			Matrix4 rotation = Matrix4.CreateFromQuaternion(quat);
-			//rotation.Invert();
-			Matrix4 rot = Matrix4.CreateTranslation(-bone.Position);
-			if (bone.LocalCoordinate || bone.FixedAxis)
-				rot *= bone.localSpace.Inverted() * rotation * bone.localSpace;
-			else
-				rot *= rotation;
-			rot *= Matrix4.CreateTranslation(bone.Position);
 
+			Matrix4 rot = bone.localSpaceInverted * Matrix4.CreateFromQuaternion(quat) * bone.localSpace;
 			bone.localCoordinate = rot;
+
 			//update skeleton
 			Matrix4 model = Matrix4.Identity;
 			if (bone.ParentIndex >= 0)
@@ -108,11 +88,10 @@ namespace Toys
             if (boneID >= bones.Length)
                 return;
             Bone bone = bones[boneID];
-            //Console.WriteLine(bone.localSpace);
-            //Matrix4 localTransform = bone.localSpace * Matrix4.CreateTranslation(bone.Position);
+
             Matrix4 chMat = mat;
             skeleton[bone.Index] = chMat;
-            //Console.WriteLine(localTransform);
+
             var childs = bone.childs;
             foreach (var child in childs)
                 skeleton[child] = chMat;
@@ -135,8 +114,11 @@ namespace Toys
 
         public void DefaultPos()
 		{
-			for (int n = 0; n<skeleton.Length; n++)
+			for (int n = 0; n < skeleton.Length; n++)
+			{
+				bones[n].localCoordinate = Matrix4.Identity;
 				skeleton[n] = Matrix4.Identity;
+			}
 		}
 
 		void UpdatePositionTree(Bone bone, Matrix4 model)

@@ -15,7 +15,6 @@ namespace Toys
 		{
 			collisionConf = new DefaultCollisionConfiguration();
             dispatcher = new CollisionDispatcher(collisionConf);
-            //dispatcher = new CollisionDispatcherMultiThreaded(collisionConf);
             broadphase = new DbvtBroadphase();
             var Solver = new SequentialImpulseConstraintSolver();
             World = new DiscreteDynamicsWorld(dispatcher, broadphase, Solver, collisionConf);

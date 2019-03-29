@@ -26,7 +26,7 @@ namespace Toys
 
 		public void Update(float time)
 		{
-			
+			/*
 			List<Animator> anims = new List<Animator>();
 
 			foreach (var node in nodes)
@@ -35,8 +35,7 @@ namespace Toys
 				if (an)
 					an.Update(time);
 			}
-
-
+*/
             //light.pos = new Vector3(2 * (float)Math.Cos(radians(i)), 1.5f, 2 * (float)Math.Sin(radians(i)));
             //i++;
             //nodes[0].morph[20].morphDegree = Math.Abs((float)Math.Sin(radians(i * 2)));

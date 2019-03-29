@@ -30,7 +30,9 @@ namespace Toys
 			var pos = new Vector4(1, 0, 0, 1);
 
 
-
+			var quat = new Quaternion(3.14159f, -0.349066f, 1E-06f);
+			//Console.WriteLine(quat.X);
+			//Console.WriteLine(Matrix4.CreateFromQuaternion(quat));
 			//var test = rot * tra;
 			//Console.WriteLine(test);
 			//Console.WriteLine(pos * tra * test.Inverted());

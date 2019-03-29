@@ -75,34 +75,13 @@ namespace Toys
 
         public void SyncBone2Body(OpenTK.Matrix4 world)
 		{
-            //Console.WriteLine(111);
-            //Console.WriteLine(Body.WorldTransform.Row4);
-            //Console.WriteLine(acon.GetSkeleton[bone]);
-            //Console.WriteLine(acon.GetBone(bone).localSpace);
             Body.WorldTransform = startTransform * GetMat(acon.GetSkeleton[bone]) * GetMat(world);
-            //Console.WriteLine(Body.WorldTransform.Row4);
-            //Console.WriteLine(222);
         }
 
 		public void SyncBody2Bone(OpenTK.Matrix4 world)
 		{
-            
-
             var mat = GetMat(startTransform).Inverted() * GetMat(Body.WorldTransform) * world;
-
-            /*
-            //math check
-            Console.WriteLine(1111);
-            if (bone == 221)
-            {
-                Console.WriteLine(GetMat(startTransform) * mat);
-                //Console.WriteLine(GetMat(Body.WorldTransform).Row3);
-                Console.WriteLine(GetMat(Body.WorldTransform));
-            }
-            */
-           // Console.WriteLine(GetMat(Body.WorldTransform).Row3);
-
-            acon.SetTransformWorld(bone, mat);
+			acon.SetTransformWorld(bone, mat);
         }
 
 
