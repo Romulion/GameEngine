@@ -16,8 +16,9 @@ namespace Toys
 		public int Index;
 		public int[] childs;
 
+        public Matrix4 localSpaceDefault;
 
-		public Matrix4 localSpace { 
+        public Matrix4 localSpace { 
 			get 
 			{
 				return local;
@@ -67,10 +68,10 @@ namespace Toys
 
 		public Bone(string name, Matrix4 pos, int parent)
 		{
-			localSpace = pos;
+            localSpaceDefault = pos;
 			Name = name;
 			ParentIndex = parent;
-		}
+        }
 
 		void SetFlags(byte[] bytes)
 		{

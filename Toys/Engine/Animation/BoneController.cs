@@ -112,6 +112,22 @@ namespace Toys
             UpdatePositionTree(bone, chMat);
 		}
 
+        public void SetTransformExperimantal(int boneID, Matrix4 mat)
+        {
+            if (boneID >= bones.Length)
+                return;
+            Bone bone = bones[boneID];
+            Matrix4 rot = bone.localSpaceInverted * mat * bone.localSpace;
+            bone.localCoordinate = rot;
+
+            Matrix4 chMat = rot;
+            if (bone.ParentIndex >= 0)
+                chMat *= skeleton[bone.ParentIndex];
+
+            skeleton[bone.Index] = chMat;
+            UpdatePositionTree(bone, chMat);
+        }
+
         public void DefaultPos()
 		{
 			for (int n = 0; n < skeleton.Length; n++)

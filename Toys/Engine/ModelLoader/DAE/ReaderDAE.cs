@@ -15,6 +15,7 @@ namespace Toys
 		Material[] mats;
 		List<Bone> bones = new List<Bone>();
 		const float multiplier = 0.01f;
+        int bonesCounter = 0;
 
 		public ReaderDAE(string filename)
 		{
@@ -74,7 +75,7 @@ namespace Toys
 
 			if (scene.Length > 0)
 			{
-				getBone(scene[0].FindNodes("node")[0],0);
+				getBone(scene[0].FindNodes("node")[0],-1);
 			}
 
 			//set childs
@@ -89,13 +90,15 @@ namespace Toys
 
 				bones[i].childs = childs.ToArray();
 			}
+            //set local to global space
+            SetGlobalLocalSpace(bones[0], Matrix4.Identity);
 
-		}
+        }
 
-		void getBone(XmlNode xmlnode, int index)
+		void getBone(XmlNode xmlnode, int parent)
 		{
 
-			int parent = bones.Count;
+			int index = bones.Count;
 			string name = xmlnode.Attributes.GetNamedItem("sid").Value;
 			string matrtx = xmlnode.FindNodes("matrix")[0].InnerText;
 			float[] fls = StringParser.readFloat(matrtx);
@@ -106,14 +109,25 @@ namespace Toys
 			mat.Row3 = new Vector4(fls[12], fls[13], fls[14], fls[15]);
 
 			mat.Transpose();
-			Bone bone = new Bone(name, mat, index);
-			bones.Add(bone);
-
-			var bonesNodes = xmlnode.FindNodes("node");
+			Bone bone = new Bone(name, mat, parent);
+            bone.Index = index;
+            bones.Add(bone);
+            var bonesNodes = xmlnode.FindNodes("node");
 			foreach (var node in bonesNodes)
-				getBone(node,parent);
-			
-		}
+				getBone(node,index);
+
+        }
+
+        void SetGlobalLocalSpace(Bone bone, Matrix4 parentalSpace)
+        {
+           
+            bone.localSpace = bone.localSpaceDefault * parentalSpace;
+
+            foreach (int child in bone.childs)
+                SetGlobalLocalSpace(bones[child], bone.localSpace);
+
+        }
+
 
 		public SceneNode GetModel
 		{

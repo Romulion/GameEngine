@@ -15,9 +15,18 @@ namespace Toys
         public Animator(BoneController bc) : base(typeof(Animator))
         {
             bones = bc;
-			//Console.WriteLine(bc.GetBones[4].localSpace);
-			//var qt = new Quaternion(0,0,(float)(Math.PI / 4));
-			//bc.Rotate(26,qt);
+            //Console.WriteLine(bc.GetBones[4].localSpace);
+            //var qt = new Quaternion(1.5923f, 0.4958346f, -1.504788f);
+            //var mat = Matrix4.CreateFromQuaternion(qt);
+            //var mat = Matrix4.CreateRotationX(-1.504788f) * Matrix4.CreateRotationY(-0.4958346f) * Matrix4.CreateRotationZ(1.5923f) ;
+            //Console.WriteLine(mat);
+            //bc.SetTransformExperimantal(26, mat);
+            //mat = Matrix4.CreateRotationY(-0.5448628f);
+            //bc.SetTransformExperimantal(27, mat);
+            var test = 6.1402908707f;
+            CycleDeltaCheck(ref test);
+            Console.WriteLine(test);
+
         }
 
 		internal void Update(float delta)
@@ -39,11 +48,20 @@ namespace Toys
 
 			for (int i = 0; i < frame1.bones.Length; i++)
 			{
-				Vector3 rot = frame1.bones[i].rotation + (frame2.bones[i].rotation - frame1.bones[i].rotation) * frameDelta;
+                var deltaRot = frame2.bones[i].rotation - frame1.bones[i].rotation;
+
+                CycleDeltaCheck(ref deltaRot.X);
+                CycleDeltaCheck(ref deltaRot.Y);
+                CycleDeltaCheck(ref deltaRot.Z); 
+
+                Vector3 rot = frame1.bones[i].rotation + deltaRot * frameDelta;
 				Vector3 pos = frame1.bones[i].position + (frame2.bones[i].position - frame1.bones[i].position) * frameDelta;
-				var quat = new Quaternion(rot);
-				Matrix4 trans = Matrix4.CreateFromQuaternion(quat) * Matrix4.CreateTranslation(pos);
-				bones.SetTransform(i, trans * bones.GetBones[i].localSpaceInverted);
+
+                //var quat = new Quaternion(rot);
+                //Matrix4 trans = Matrix4.CreateFromQuaternion(quat) * Matrix4.CreateTranslation(pos);
+                var mat = Matrix4.CreateRotationX(rot.X) * Matrix4.CreateRotationY(rot.Y) * Matrix4.CreateRotationZ(rot.Z);
+                Matrix4 trans = mat * Matrix4.CreateTranslation(pos);
+                bones.SetTransformExperimantal(i, trans * bones.GetBones[i].localSpaceDefault.Inverted());
 			}
 
         }
@@ -80,30 +98,23 @@ namespace Toys
 
 			for (int i = 0; i < start.bones.Length; i++)
 			{
-				if (i < 26 || i > 26)
-					continue;
+				//if (i < 26 || i > 26)
+				//	continue;
 
 
 				Vector3 rot = start.bones[i].rotation;
 				Vector3 pos = start.bones[i].position;
-				var quat = new Quaternion(rot);
-				Matrix4 trans = Matrix4.CreateFromQuaternion(quat) * Matrix4.CreateTranslation(pos);
-				//var mat = Matrix4.CreateRotationX(rot.X) * Matrix4.CreateRotationY(rot.Y) * Matrix4.CreateRotationZ(rot.Z);
-				//Matrix4 trans = mat * Matrix4.CreateTranslation(pos);
+				//var quat = new Quaternion(rot);
+				//Matrix4 trans = Matrix4.CreateFromQuaternion(quat) * Matrix4.CreateTranslation(pos);
+				var mat = Matrix4.CreateRotationX(rot.X) * Matrix4.CreateRotationY(rot.Y) * Matrix4.CreateRotationZ(rot.Z);
+				Matrix4 trans = mat * Matrix4.CreateTranslation(pos);
 
-				//convert smd to normal
-				/*
-				Matrix4 mat = Matrix4.CreateRotationX(-(float)(Math.PI / 2)) * Matrix4.CreateRotationZ((float)(Math.PI / 2));
-				Console.WriteLine(Matrix4.CreateTranslation(pos) * mat);
-				mat = Matrix4.CreateRotationY((float)(Math.PI / 2)) * Matrix4.CreateRotationX(-(float)(Math.PI / 2));
-				Console.WriteLine(Matrix4.CreateTranslation(pos) *  mat);
-				*/
-				Matrix4 localInv = bones.GetBones[i].localSpaceInverted;
+				Matrix4 localInv = bones.GetBones[i].localSpaceDefault.Inverted();
 
 				//var qt = new Quaternion(-1.504788f, -0.4958346f, 1.5923f);
 				//trans = Matrix4.CreateFromQuaternion(qt);
-				bones.SetTransform(i, trans * localInv);
-				Console.WriteLine(11111);
+				bones.SetTransformExperimantal(i, trans * localInv);
+
 				//Console.WriteLine(bones.GetBones[i].localSpace * mat);
 				/*
 				if (i == 26)
@@ -116,6 +127,25 @@ namespace Toys
 				//bones.Rotate(i, quat);
 			}
 		}
+
+        void CycleDeltaCheck(ref float delta)
+        {
+            //prevent unnessesery rotation
+            //4PI == -4PI
+            float pi2 = (float)Math.PI * 2;
+            //remove 2PI cycle
+            delta %= pi2;
+
+            //Console.WriteLine(delta - pi2);
+            //Console.WriteLine(delta);
+            //find closest rotation
+            if (delta < 0)
+                delta = ((delta + pi2) < -delta) ? delta + pi2 : delta;
+            else
+                delta = ((delta - pi2) > -delta) ? delta - pi2 : delta;
+
+            
+        }
 
         internal override void Unload()
         {

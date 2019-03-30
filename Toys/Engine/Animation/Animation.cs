@@ -6,11 +6,21 @@ using System.Threading.Tasks;
 
 namespace Toys
 {
+    
     class Animation
     {
-        public int framerate = 30;
+        public enum RotationType
+        {
+            Quaternion,
+            EulerXYZ,
+            EulerZXY,
+            EulerYZX,
+        }
+
+        public int framerate = 24;
         public readonly AnimationFrame[] frames;
 		Dictionary<int, string> bones = new Dictionary<int, string>();
+
 
 		public Animation (AnimationFrame[] frams, Dictionary<int, string> boneReference)
         {

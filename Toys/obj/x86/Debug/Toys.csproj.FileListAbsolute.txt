@@ -43,3 +43,4 @@ D:\vp\C#\Toys\Toys\bin\Debug\normnfkc.nlp
 D:\vp\C#\Toys\Toys\bin\Debug\normnfkd.nlp
 D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.exe
 D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.pdb
+D:\Coding\GameEngine\Toys\obj\x86\Debug\Toys.csprojResolveAssemblyReference.cache
