@@ -12,6 +12,7 @@ namespace Toys
         int FBO;
 
 		MainRenderer mainRender;
+		TextRenderer textRender;
 		//test
 		int VBO, VAO;
 		Shader sh;
@@ -28,6 +29,7 @@ namespace Toys
 		{
 			renderScene.OnLoad();
 			mainRender = new MainRenderer(renderScene.camera, renderScene);
+			textRender = new TextRenderer();
 			renderScene.GetLight.BindShadowMap();
 
 			//TestTriangle();
@@ -144,6 +146,7 @@ namespace Toys
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 			mainRender.Render(meshes);
 
+			textRender.RenderText("test niganiganiga shit!", 25, 25,1);
 			/*
 			//test
 			sh.ApplyShader();
@@ -159,6 +162,7 @@ namespace Toys
             GL.Viewport(0,0,Width,Height);
 			renderScene.camera.projection =  Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (30 / 180f), Width / (float)Height, 0.1f, 10.0f);
 			mainRender.Resize();
+			textRender.Resize(newWidth, newHeight);
 			//renderScene.Resize(Width, Height);
 
         }

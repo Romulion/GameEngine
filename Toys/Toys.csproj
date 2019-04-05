@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\SharpFont.4.0.1\build\SharpFont.props" Condition="Exists('..\packages\SharpFont.4.0.1\build\SharpFont.props')" />
+  <Import Project="..\packages\SharpFont.Dependencies.2.6\build\SharpFont.Dependencies.props" Condition="Exists('..\packages\SharpFont.Dependencies.2.6\build\SharpFont.Dependencies.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -130,6 +132,8 @@
     <Compile Include="Engine\Systen\Resource.cs" />
     <Compile Include="Engine\Systen\Component.cs" />
     <Compile Include="Engine\Graphics\MeshDrawerRigged.cs" />
+    <Compile Include="Engine\Graphics\TextRendering\TextRenderer.cs" />
+    <Compile Include="Engine\Graphics\TextRendering\Character.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows" />
@@ -151,9 +155,14 @@
     <Reference Include="OpenTK">
       <HintPath>..\packages\OpenTK.2.0.0\lib\net20\OpenTK.dll</HintPath>
     </Reference>
+    <Reference Include="SharpFont">
+      <HintPath>..\packages\SharpFont.4.0.1\lib\net45\SharpFont.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assamble\" />
+    <Folder Include="Engine\Graphics\TextRendering\" />
+    <Folder Include="Resourses\Fonts\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -182,6 +191,12 @@
     <EmbeddedResource Include="Resourses\shaders\phys.vs" />
     <EmbeddedResource Include="Resourses\shaders\defscreen.fs" />
     <EmbeddedResource Include="Resourses\shaders\defscreen.vs" />
+    <EmbeddedResource Include="Resourses\Fonts\BadScript-Regular.ttf" />
+    <EmbeddedResource Include="Resourses\Fonts\msgothic.ttc" />
+    <EmbeddedResource Include="Resourses\Fonts\Pecita.otf" />
+    <EmbeddedResource Include="Resourses\shaders\text.fs" />
+    <EmbeddedResource Include="Resourses\shaders\text.vs" />
+    <EmbeddedResource Include="Resourses\Fonts\ARIALUNI.TTF" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />

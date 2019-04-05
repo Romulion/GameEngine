@@ -22,11 +22,7 @@ namespace Toys
             //Console.WriteLine(mat);
             //bc.SetTransformExperimantal(26, mat);
             //mat = Matrix4.CreateRotationY(-0.5448628f);
-            //bc.SetTransformExperimantal(27, mat);
-            var test = 6.1402908707f;
-            CycleDeltaCheck(ref test);
-            Console.WriteLine(test);
-
+			//bc.SetTransformExperimantal(27, mat);
         }
 
 		internal void Update(float delta)
