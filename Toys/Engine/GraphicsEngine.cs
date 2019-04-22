@@ -146,7 +146,7 @@ namespace Toys
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 			mainRender.Render(meshes);
 
-			textRender.RenderText("test niganiganiga shit!", 25, 25,1);
+			//textRender.RenderText("test niganiganiga shit!", 25, 25,1);
 			/*
 			//test
 			sh.ApplyShader();

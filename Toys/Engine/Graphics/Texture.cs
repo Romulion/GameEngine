@@ -1,6 +1,7 @@
 ﻿using System;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
+using System.IO;
 
 namespace Toys
 {
@@ -17,7 +18,7 @@ namespace Toys
 	{
 		int texture_id;
         new TextureType type;
-		string name;
+		public string name { private set; get; }
 
 		//default texture
 		static Texture def;
@@ -30,7 +31,7 @@ namespace Toys
             ClampToEdge = All.ClampToEdge,
         }
 
-		public Texture(string path, TextureType type,string name, bool mirror = true) : base (typeof(Texture))
+		public Texture(string path, TextureType type,string name) : base (typeof(Texture))
 		{
 			texture_id = GL.GenTexture();
 			this.type = type;
@@ -45,10 +46,17 @@ namespace Toys
 				///png , jpg, bmp is ok
 				if (path.EndsWith("tga",StringComparison.OrdinalIgnoreCase))
 					tex1 = Paloma.TargaImage.LoadTargaImage(path);
+                //spa and sph is bmp or png images. steam to bypass filename extension check
+                else if (path.EndsWith("spa", StringComparison.OrdinalIgnoreCase) || path.EndsWith("sph", StringComparison.OrdinalIgnoreCase))
+                {
+                    Stream strm = File.OpenRead(path);
+                    tex1 = new Bitmap(strm);
+                    Console.WriteLine(path);
+                }
 				else
 					tex1 = new Bitmap(path);
 				
-                LoadTexture(tex1, mirror);
+                LoadTexture(tex1);
 			}
 			catch (Exception)
 			{
@@ -60,7 +68,7 @@ namespace Toys
 				texture_id = empty.texture_id;
 				this.type = empty.type;
 				this.name = empty.name;
-			}
+            }
 
 
 		}
@@ -78,21 +86,24 @@ namespace Toys
 				///png , jpg, bmp is ok
 				if (path.EndsWith("tga", StringComparison.OrdinalIgnoreCase))
 					tex1 = Paloma.TargaImage.LoadTargaImage(path);
+                else if (path.EndsWith("spa", StringComparison.OrdinalIgnoreCase) || path.EndsWith("sph", StringComparison.OrdinalIgnoreCase))
+                {
+                    Stream strm = File.OpenRead(path);
+                    tex1 = new Bitmap(strm);
+                }
 				else
 					tex1 = new Bitmap(path);
-
-
 				LoadTexture(tex1);
-			}
+            }
 			catch (Exception)
 			{
 				Console.Write("cant load texture  ");
-				Console.WriteLine(path);
 				//load default texture if fail
 				//without reloading to memory
 				Texture empty = LoadEmpty();
 				texture_id = empty.texture_id;
-			}
+                this.name = empty.name;
+            }
 		}
 
 		//for framebuffer
@@ -108,78 +119,8 @@ namespace Toys
 			texture_id = GL.GenTexture();
             this.type = type;
             this.name = name;
-			LoadTexture(tex, true);
+			LoadTexture(tex);
 
-		}
-
-
-		void LoadTexture(Bitmap texture, bool mirror)
-		{
-
-
-			//for rare 8bpp formats 
-			if (texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
-			{
-				Bitmap clone = new Bitmap(texture.Width, texture.Height,	System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-
-				using (Graphics gr = Graphics.FromImage(clone))
-				{
-					gr.DrawImage(texture, new Rectangle(0, 0, clone.Width, clone.Height));
-				}
-
-				texture = clone;
-			}
-
-			//inverting y axis			
-			//texture.RotateFlip(RotateFlipType.Rotate180FlipX);
-			GL.BindTexture(TextureTarget.Texture2D,texture_id);
-
-            if (mirror)
-            {
-                //setting wrapper
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.MirroredRepeat);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.MirroredRepeat);
-            }
-            else
-            {
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.Repeat);
-                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.Repeat);
-            }
-
-			//setting interpolation
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
-
-
-			/*
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.Repeat);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.MirroredRepeat);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.NearestMipmapLinear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.NearestMipmapNearest);
-			*/
-
-            //load to static memory
-            System.Drawing.Imaging.BitmapData data =
-				texture.LockBits(new Rectangle(0, 0, texture.Width, texture.Height),
-	  				System.Drawing.Imaging.ImageLockMode.ReadOnly, texture.PixelFormat);
-			
-			//recognithing pixel format type
-			PixelFormat format;
-			if (Image.IsAlphaPixelFormat(texture.PixelFormat) || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppRgb)
-				format = PixelFormat.Bgra;
-			else
-				format = PixelFormat.Bgr;
-
-			//loading to video memory
-            //GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
-			//              texture.Width, texture.Height, 0, format, PixelType.UnsignedByte, IntPtr.Zero);
-			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, 
-			              texture.Width, texture.Height, 0, format, PixelType.UnsignedByte, data.Scan0);
-			GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-
-			//clear resources
-			texture.UnlockBits(data);
-			texture.Dispose();
 		}
 
 
@@ -230,7 +171,7 @@ namespace Toys
 
 			//recognithing pixel format type
 			PixelFormat format;
-			if (Image.IsAlphaPixelFormat(texture.PixelFormat) || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppRgb)
+            if (Image.IsAlphaPixelFormat(texture.PixelFormat) || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppRgb)
 				format = PixelFormat.Bgra;
 			else
 				format = PixelFormat.Bgr;
@@ -282,7 +223,7 @@ namespace Toys
 			{
 				var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture)).Assembly;
 				Bitmap pic = new Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.empty.png"));
-				def = new Texture(pic, TextureType.Toon, "empty");
+				def = new Texture(pic, TextureType.Toon, "def");
 			}
 
 			return def;

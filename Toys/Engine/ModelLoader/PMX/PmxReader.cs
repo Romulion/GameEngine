@@ -185,7 +185,9 @@ namespace Toys
 				}
 					//textures[i] = new Texture(dir + texture, TextureType.Diffuse, texture, false);
 				textures[i] = tex;
-			}
+                //Console.WriteLine("{0}  {1}",i, texture);
+
+            }
 		}
 
 		void ReadMaterial()
@@ -235,13 +237,21 @@ namespace Toys
 				int envBlend = file.ReadByte();
 				shdrs.envType = (EnvironmentMode)envBlend;
 				Texture envTex = empty;
-				if (envTexIndex != 255 && envBlend > 0)
-				{
-					envTex = textures[envTexIndex];
-				}
+                if (envTexIndex != 255 && envBlend > 0)
+                {
+                    //Console.WriteLine("{0} {1}",i, envTexIndex);
+                    if (textures[envTexIndex].name != "def")
+                        envTex = textures[envTexIndex];
+                    else
+                        shdrs.envType = 0;
+
+                }
+                else
+                    shdrs.envType = 0;
 
 
-				byte toonType = file.ReadByte();
+
+                byte toonType = file.ReadByte();
 				
 				Texture toon = empty;
 				if (toonType == 0)

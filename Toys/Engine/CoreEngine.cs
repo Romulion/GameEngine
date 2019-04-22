@@ -1,4 +1,4 @@
-﻿//#define PHYS
+﻿#define PHYS
 
 using System;
 using OpenTK;
@@ -96,7 +96,7 @@ namespace Toys
 				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
 			}
 
-			//physics
+            //physics
 #if (PHYS)
 			foreach (var node in mainScene.GetNodes())
 			{
@@ -108,7 +108,7 @@ namespace Toys
 				node.phys.PostUpdate();
 			}
 #endif
-		}
+        }
 
 
         void OnRender (object sender, FrameEventArgs e)

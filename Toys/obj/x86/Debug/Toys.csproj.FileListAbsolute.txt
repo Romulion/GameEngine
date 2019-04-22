@@ -17,7 +17,6 @@ D:\Coding\GameEngine\Toys\bin\Debug\pango-sharp.pdb
 D:\Coding\GameEngine\Toys\bin\Debug\atk-sharp.pdb
 D:\Coding\GameEngine\Toys\obj\x86\Debug\Toys.exe
 D:\Coding\GameEngine\Toys\obj\x86\Debug\Toys.pdb
-D:\Coding\GameEngine\Toys\obj\x86\Debug\Toys.csprojResolveAssemblyReference.cache
 D:\vp\C#\Toys\Toys\bin\Debug\SharpFont.dll.config
 D:\vp\C#\Toys\Toys\bin\Debug\freetype6.dll
 D:\vp\C#\Toys\Toys\bin\Debug\Toys.exe
@@ -48,3 +47,7 @@ D:\vp\C#\Toys\Toys\bin\Debug\normnfkc.nlp
 D:\vp\C#\Toys\Toys\bin\Debug\normnfkd.nlp
 D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.exe
 D:\vp\C#\Toys\Toys\obj\x86\Debug\Toys.pdb
+D:\Coding\GameEngine\Toys\bin\Debug\SharpFont.dll.config
+D:\Coding\GameEngine\Toys\bin\Debug\freetype6.dll
+D:\Coding\GameEngine\Toys\bin\Debug\SharpFont.dll
+D:\Coding\GameEngine\Toys\bin\Debug\SharpFont.xml
