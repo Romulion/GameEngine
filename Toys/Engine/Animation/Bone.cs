@@ -15,6 +15,7 @@ namespace Toys
 		public readonly int ParentIndex;
 		public int Index;
 		public int[] childs;
+        public Vector3 Axis = Vector3.Zero;
 
         public Matrix4 localSpaceDefault;
 
@@ -26,13 +27,15 @@ namespace Toys
 			internal set 
 			{
 				local = value;
-				localSpaceInverted = local.Inverted();
+                localSpaceDefault = local;
+                localSpaceInverted = local.Inverted();
 			} 
 		}
 
 		Matrix4 local;
 		public Matrix4 localSpaceInverted { get; private set; }
 		public Matrix4 localCoordinate = Matrix4.Identity;
+        public BoneIK IKData;
 		//unused values
 		public int Layer;
 
@@ -53,6 +56,8 @@ namespace Toys
 		//
 		public int ParentInheritIndex;
 		public float ParentInfluence;
+
+        //public BoneIK IKData = null;
 
 		public Bone(string name, string engName, Vector3 position, int parent, byte[] flags)
 		{

@@ -5,16 +5,14 @@ namespace Toys
     internal struct BonePosition
     {
         internal readonly Vector3 position;
-        internal readonly Vector3 rotation;
-        internal int boneId;
-        internal readonly string BoneName;
+        internal readonly Vector4 rotation;
+        internal readonly int boneId;
 
-        internal BonePosition(Vector3 pos, Vector3 rot,string Name)
+        internal BonePosition(Vector3 pos, Vector4 rot,int id)
         {
             position = pos;
             rotation = rot;
-            BoneName = Name;
-            boneId = 0;
+            boneId = id;
         }
     }
 }

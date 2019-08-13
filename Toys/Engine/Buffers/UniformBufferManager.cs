@@ -8,7 +8,6 @@ namespace Toys
 		private static UniformBufferManager unfrmMgmr;
 
 		Dictionary<string, UniformBuffer> buffers = new Dictionary<string, UniformBuffer>();
-		int currIndex = 3;
 
 		public enum Target
 		{

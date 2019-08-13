@@ -1,15 +1,14 @@
 ﻿using System;
 using OpenTK;
-using System.Linq;
 
 namespace Toys
 {
 	public class BoneController
 	{
-		Bone[] bones;
+        BoneTransform[] bones;
 		Matrix4[] skeleton;
 
-		public BoneController(Bone[] bones)
+		public BoneController(BoneTransform[] bones)
 		{
 			this.bones = bones;
 			//making skeleton matrix
@@ -17,7 +16,19 @@ namespace Toys
 			DefaultPos();
 		}
 
-		public Bone[] GetBones
+        public BoneController(Bone[] bones)
+        {
+            this.bones = new BoneTransform[bones.Length];
+            for (int i = 0; i < bones.Length; i++)
+            {
+                this.bones[i] = new BoneTransform(bones[i]);
+            }
+
+            skeleton = new Matrix4[bones.Length];
+            DefaultPos();
+        }
+
+        public BoneTransform[] GetBones
 		{
 			get
 			{
@@ -33,9 +44,9 @@ namespace Toys
 			}
 		}
 
-		public Bone GetBone(string name)
+		public BoneTransform GetBone(string name)
 		{
-			var bone = Array.Find(bones, (obj) => obj.Name == name);
+			var bone = Array.Find(bones, (obj) => obj.Bone.Name == name);
 
 			if (bone == null)
 				Console.WriteLine("bone named '{0}' not found", name);
@@ -43,7 +54,7 @@ namespace Toys
 			return bone;
 		}
 
-        public Bone GetBone(int id)
+        public BoneTransform GetBone(int id)
         {
 
             if (id >= bones.Length)
@@ -52,20 +63,29 @@ namespace Toys
             return bones[id];
         }
 
+        public void DefaultPos()
+        {
+            for (int n = 0; n < skeleton.Length; n++)
+            {
+                skeleton[n] = Matrix4.Identity;
+                bones[n].ResetTransform(false);
+            }
+        }
+        /* obsolette
         public void Rotate(string name, Quaternion quat)
 		{
-			Bone bone = GetBone(name);
+            BoneTransform bone = GetBone(name);
 			if (bone == null)
 				return;
 
-			Rotate(bone.Index, quat);
+			Rotate(bone.Bone.Index, quat);
 		}
 
 		public void Rotate(int boneID, Quaternion quat)
 		{
 			if (boneID >= bones.Length)
 				return;
-			Bone bone = bones[boneID];
+            BoneTransform bone = bones[boneID];
 
 			Matrix4 rot = bone.localSpaceInverted * Matrix4.CreateFromQuaternion(quat) * bone.localSpace;
 			bone.localCoordinate = rot;
@@ -123,19 +143,24 @@ namespace Toys
             Matrix4 chMat = rot;
             if (bone.ParentIndex >= 0)
                 chMat *= skeleton[bone.ParentIndex];
-
             skeleton[bone.Index] = chMat;
             UpdatePositionTree(bone, chMat);
         }
+         
+        public void SetTransformDelayedUpdate(int boneID, Matrix4 mat)
+        {
+            if (boneID >= bones.Length)
+                return;
+            Bone bone = bones[boneID];
+            Matrix4 rot = bone.localSpaceInverted * mat * bone.localSpace;
+            bone.localCoordinate = rot;
 
-        public void DefaultPos()
-		{
-			for (int n = 0; n < skeleton.Length; n++)
-			{
-				bones[n].localCoordinate = Matrix4.Identity;
-				skeleton[n] = Matrix4.Identity;
-			}
-		}
+            Matrix4 chMat = rot;
+            if (bone.ParentIndex >= 0)
+                chMat *= skeleton[bone.ParentIndex];
+            skeleton[bone.Index] = chMat; 
+        }
+
 
 		void UpdatePositionTree(Bone bone, Matrix4 model)
 		{
@@ -150,5 +175,21 @@ namespace Toys
 			}
 		}
 
-	}
+        internal void UpdatePositionTreeDelayed(Bone bone)
+        {
+            var childs = bone.childs;
+            var model = bone.localCoordinate;
+
+            foreach (var child in childs)
+            {
+                if (child == bone.Index)
+                    continue;
+                Matrix4 mat = bones[child].localCoordinate * model;
+                skeleton[child] = mat;
+                UpdatePositionTree(bones[child], mat);
+            }
+        }
+        */
+
+    }
 }

@@ -140,9 +140,9 @@ namespace Toys
 				{
 					an = AnimationLoader.Load(filechooserbutton2.Filename);
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
-					Console.WriteLine("cant load animation");
+					Console.WriteLine("cant load animation\n{0}\n{1}",ex.Message,ex.StackTrace);
 				}
 			};
 

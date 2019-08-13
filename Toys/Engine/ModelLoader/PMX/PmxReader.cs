@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using OpenTK;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace Toys
 {
@@ -69,8 +70,10 @@ namespace Toys
 
 		void ReadMesh()
 		{
-			
+            
 			int meshSize = file.ReadInt32();
+            Console.WriteLine(meshSize);
+            
 			VertexRigged3D [] verticesR = new VertexRigged3D[meshSize];
 			Vertex3D[] vertices = new Vertex3D[meshSize];
 			for (int i = 0; i < meshSize; i++)
@@ -355,8 +358,16 @@ namespace Toys
 				string NameEng = reader.readString();
 
 				Vector3 Position = reader.readVector3() * multipler;
-				int ParentIndex = reader.readVal(header.GetBoneIndexSize);
-				int Layer = file.ReadInt32();
+
+                int ParentIndex = 0;
+                if (header.GetBoneIndexSize == 2)
+                {
+                    ParentIndex = unchecked((short)reader.readVal(header.GetBoneIndexSize));
+                }
+                else
+                    ParentIndex = reader.readVal(header.GetBoneIndexSize);
+
+                int Layer = file.ReadInt32();
 				byte[] flags = file.ReadBytes(2);
 				Bone bone = new Bone(Name, NameEng, Position, ParentIndex, flags);
 				bone.Layer = Layer;

@@ -283,8 +283,30 @@ namespace Toys
 			return texture;
 		}
 
+        public static Texture CreateCharMap(int width, int heigth)
+        {
+            GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
+            int texture_id = GL.GenTexture();
+            var texture = new Texture(texture_id,"charmap");
+            GL.BindTexture(TextureTarget.Texture2D, texture_id);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.R8,
+                          width, heigth, 0, PixelFormat.Red, PixelType.UnsignedByte, IntPtr.Zero);
 
-		internal override void Unload()
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
+            //setting wrapper
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.ClampToEdge);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            return texture;
+        }
+
+        internal void AddSubImage(IntPtr bitmap,int x, int y, int w, int h)
+        {
+            GL.TexSubImage2D(TextureTarget.Texture2D, 0, x, y, w, h, PixelFormat.Red, PixelType.UnsignedByte, bitmap);
+        }
+
+        internal override void Unload()
 		{
 			GL.DeleteTexture(texture_id);
 		}

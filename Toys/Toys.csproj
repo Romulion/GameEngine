@@ -37,11 +37,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Engine\Animation\Animation.cs" />
+    <Compile Include="Engine\Animation\AnimationFormats\AnimationSMD.cs" />
+    <Compile Include="Engine\Animation\AnimationFormats\AnimationVMD.cs" />
+    <Compile Include="Engine\Animation\AnimationFormats\IAnimationLoader.cs" />
     <Compile Include="Engine\Animation\AnimationFrame.cs" />
     <Compile Include="Engine\Animation\AnimationLoader.cs" />
     <Compile Include="Engine\Animation\Animator.cs" />
     <Compile Include="Engine\Animation\BonePosition.cs" />
+    <Compile Include="Engine\Animation\IK\BoneIK.cs" />
+    <Compile Include="Engine\Animation\IK\IKLink.cs" />
+    <Compile Include="Engine\Animation\IK\IKResolver.cs" />
+    <Compile Include="Engine\Animation\BoneTransform.cs" />
     <Compile Include="Engine\GraphicsEngine.cs" />
+    <Compile Include="Engine\Graphics\TextRendering\TextBox.cs" />
+    <Compile Include="Engine\Graphics\TextRendering\TextCanvas.cs" />
     <Compile Include="Engine\Objects\SceneNode.cs" />
     <Compile Include="Engine\Objects\Transformation.cs" />
     <Compile Include="MainProcess.cs" />
@@ -161,8 +170,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assamble\" />
-    <Folder Include="Engine\Graphics\TextRendering\" />
-    <Folder Include="Resourses\Fonts\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

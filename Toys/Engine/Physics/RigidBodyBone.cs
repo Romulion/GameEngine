@@ -81,7 +81,7 @@ namespace Toys
 		public void SyncBody2Bone(OpenTK.Matrix4 world)
 		{
             var mat = GetMat(startTransform).Inverted() * GetMat(Body.WorldTransform) * world;
-			acon.SetTransformWorld(bone, mat);
+			//acon.SetTransformWorld(bone, mat);
         }
 
 

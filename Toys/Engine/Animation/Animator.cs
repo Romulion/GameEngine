@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenTK;
+using System.Collections.Generic;
 
 namespace Toys
 {
@@ -12,17 +13,13 @@ namespace Toys
         float length = 0;
         float framelength = 0;
 
+        //model bone => anim bone reference
+        Dictionary<int, int> boneReference = new Dictionary<int, int>();
+        
+
         public Animator(BoneController bc) : base(typeof(Animator))
         {
             bones = bc;
-            //Console.WriteLine(bc.GetBones[4].localSpace);
-            //var qt = new Quaternion(1.5923f, 0.4958346f, -1.504788f);
-            //var mat = Matrix4.CreateFromQuaternion(qt);
-            //var mat = Matrix4.CreateRotationX(-1.504788f) * Matrix4.CreateRotationY(-0.4958346f) * Matrix4.CreateRotationZ(1.5923f) ;
-            //Console.WriteLine(mat);
-            //bc.SetTransformExperimantal(26, mat);
-            //mat = Matrix4.CreateRotationY(-0.5448628f);
-			//bc.SetTransformExperimantal(27, mat);
         }
 
 		internal void Update(float delta)
@@ -42,37 +39,58 @@ namespace Toys
 
 			AnimationFrame frame1 = anim.frames[prevFrame], frame2 = anim.frames[curFrame];
 
-			for (int i = 0; i < frame1.bones.Length; i++)
-			{
-                var deltaRot = frame2.bones[i].rotation - frame1.bones[i].rotation;
+            foreach (var pair in boneReference)
+            {
+                Matrix4 mat = Matrix4.Identity;
+                Matrix4 localInv = Matrix4.Identity;
 
-                CycleDeltaCheck(ref deltaRot.X);
-                CycleDeltaCheck(ref deltaRot.Y);
-                CycleDeltaCheck(ref deltaRot.Z); 
+                if (anim.Type == Animation.RotationType.Quaternion)
+                {
+                    Quaternion prevQuat = new Quaternion(frame1.bones[pair.Value].rotation.Xyz, frame1.bones[pair.Value].rotation.W);
+                    Quaternion nextQuat = new Quaternion(frame2.bones[pair.Value].rotation.Xyz, frame2.bones[pair.Value].rotation.W);
+                    var intQuat = Quaternion.Slerp(prevQuat, nextQuat, frameDelta);
+                    mat = Matrix4.CreateFromQuaternion(intQuat);
+                }
+                else
+                {
+                    var deltaRot = frame2.bones[pair.Value].rotation - frame1.bones[pair.Value].rotation;
+                    CycleDeltaCheck(ref deltaRot.X);
+                    CycleDeltaCheck(ref deltaRot.Y);
+                    CycleDeltaCheck(ref deltaRot.Z);
+                    Vector4 rot = frame1.bones[pair.Value].rotation + deltaRot * frameDelta;
+                    mat = Matrix4.CreateRotationX(rot.X) * Matrix4.CreateRotationY(rot.Y) * Matrix4.CreateRotationZ(rot.Z);
 
-                Vector3 rot = frame1.bones[i].rotation + deltaRot * frameDelta;
-				Vector3 pos = frame1.bones[i].position + (frame2.bones[i].position - frame1.bones[i].position) * frameDelta;
+                   // localInv = bones.GetBones[pair.Key].localSpaceDefault.Inverted();
+                }
+
+				Vector3 pos = frame1.bones[pair.Value].position + (frame2.bones[pair.Value].position - frame1.bones[pair.Value].position) * frameDelta;
 
                 //var quat = new Quaternion(rot);
                 //Matrix4 trans = Matrix4.CreateFromQuaternion(quat) * Matrix4.CreateTranslation(pos);
-                var mat = Matrix4.CreateRotationX(rot.X) * Matrix4.CreateRotationY(rot.Y) * Matrix4.CreateRotationZ(rot.Z);
+                
                 Matrix4 trans = mat * Matrix4.CreateTranslation(pos);
-                bones.SetTransformExperimantal(i, trans * bones.GetBones[i].localSpaceDefault.Inverted());
+                //bones.SetTransformDelayedUpdate(pair.Key, trans * localInv);
 			}
-
         }
 
         public void Play(Animation anim)
         {
+            
             this.anim = anim;
-            isPlaing = true;
-			length = (anim.frames.Length - 1) / (float)anim.framerate;
-            framelength = 1 / (float)anim.framerate;
-			Instalize(anim.frames[0]);
-			//bones.GetBones[0].Name;
-			//foreach (var id in anim.frames[0].bones)
-			//	Console.WriteLine("{0} : {1} - {2}", id.boneId, id.position, id.rotation);
+            UpdateBoneReference();
 
+            isPlaing = true;
+            try
+            {
+                length = (anim.frames.Length - 1) / (float)anim.framerate;
+                framelength = 1 / (float)anim.framerate;
+                Instalize(anim.frames[0]);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
         }
 
 		public void Stop()
@@ -82,46 +100,52 @@ namespace Toys
 			bones.DefaultPos();
 		}
 
+        void UpdateBoneReference()
+        {
+            boneReference.Clear();
+            var boneRefNew = anim.bones;
+            foreach (var bone in bones.GetBones)
+            {
+                /*
+                if (boneRefNew.ContainsKey(bone.Name))
+                {
+                    boneReference.Add(bone.Index, boneRefNew[bone.Name]);
+                    //Console.WriteLine("{0} => {1}", bone.Index, boneRefNew[bone.Name]);
+                }
+                */
+            }
+        }
+
 		void Instalize(AnimationFrame start)
 		{
-			
-			//Matrix4 trans1 = Matrix4.CreateFromQuaternion(new Quaternion(start.bones[26].rotation)) 
-			//* Matrix4.CreateTranslation(start.bones[26].position);
-			//Console.WriteLine(trans1);
-			// var lt  = bones.GetBones[26].localSpace;
-			//Console.WriteLine(lt);
-			//Console.WriteLine(trans1 * lt.Inverted());
-
-			for (int i = 0; i < start.bones.Length; i++)
+			foreach (var pair in boneReference)
 			{
-				//if (i < 26 || i > 26)
-				//	continue;
+                /*
+                if (pair.Key < 198 || pair.Key < 201)
+                    continue;
+                    */
+                Vector4 rot = start.bones[pair.Value].rotation;
+                Vector3 pos = start.bones[pair.Value].position;
+                Matrix4 mat = Matrix4.Identity;
+                Matrix4 localInv = Matrix4.Identity;
 
+                if (anim.Type == Animation.RotationType.Quaternion)
+                {
+                    mat = Matrix4.CreateFromQuaternion(new Quaternion(rot.Xyz,rot.W));
+                }
+                else
+                {
+                    mat = Matrix4.CreateRotationX(rot.X) * Matrix4.CreateRotationY(rot.Y) * Matrix4.CreateRotationZ(rot.Z);
+                    //localInv = bones.GetBones[pair.Key].localSpaceDefault.Inverted();
+                }
 
-				Vector3 rot = start.bones[i].rotation;
-				Vector3 pos = start.bones[i].position;
-				//var quat = new Quaternion(rot);
-				//Matrix4 trans = Matrix4.CreateFromQuaternion(quat) * Matrix4.CreateTranslation(pos);
-				var mat = Matrix4.CreateRotationX(rot.X) * Matrix4.CreateRotationY(rot.Y) * Matrix4.CreateRotationZ(rot.Z);
-				Matrix4 trans = mat * Matrix4.CreateTranslation(pos);
+                
+                Matrix4 trans = mat * Matrix4.CreateTranslation(pos);
+                //if ()
+                Console.WriteLine(trans);
 
-				Matrix4 localInv = bones.GetBones[i].localSpaceDefault.Inverted();
-
-				//var qt = new Quaternion(-1.504788f, -0.4958346f, 1.5923f);
-				//trans = Matrix4.CreateFromQuaternion(qt);
-				bones.SetTransformExperimantal(i, trans * localInv);
-
-				//Console.WriteLine(bones.GetBones[i].localSpace * mat);
-				/*
-				if (i == 26)
-				{
-					Console.WriteLine(localInv * mat);
-					Console.WriteLine(trans * mat);
-				Console.WriteLine("{0} : {1} \n{2}", i, bones.GetBones[i].Name,trans * localInv);
-				}
-*/
-				//bones.Rotate(i, quat);
-			}
+                //bones.SetTransformDelayedUpdate(pair.Key, trans * localInv);
+            }
 		}
 
         void CycleDeltaCheck(ref float delta)
@@ -132,8 +156,6 @@ namespace Toys
             //remove 2PI cycle
             delta %= pi2;
 
-            //Console.WriteLine(delta - pi2);
-            //Console.WriteLine(delta);
             //find closest rotation
             if (delta < 0)
                 delta = ((delta + pi2) < -delta) ? delta + pi2 : delta;

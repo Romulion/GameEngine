@@ -19,11 +19,13 @@ namespace Toys
 
         public int framerate = 24;
         public readonly AnimationFrame[] frames;
-		Dictionary<int, string> bones = new Dictionary<int, string>();
+		public readonly Dictionary<string, int> bones = new Dictionary<string, int>();
+        public readonly RotationType Type;
 
 
-		public Animation (AnimationFrame[] frams, Dictionary<int, string> boneReference)
+        public Animation (AnimationFrame[] frams, Dictionary<string, int> boneReference, RotationType type)
         {
+            Type = type;
             frames = frams;
 			bones = boneReference;
         }

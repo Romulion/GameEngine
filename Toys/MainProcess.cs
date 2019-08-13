@@ -11,9 +11,10 @@ namespace Toys
 		public static void Main(params string[] args)
 		{
 
-			if (args.Length == 0)
-				return;
-			//Console.WriteLine(args[0]);
+            if (args.Length == 0)
+            	return;
+
+           // string path = "D:/3d/3d/Models/Animu/BGHS onigiridojo/JC2_綿木ミシェルver3.2x/ミシェル制服ver3.pmx";
             CoreEngine core = new CoreEngine();
 
             var scene = core.mainScene;
@@ -22,28 +23,17 @@ namespace Toys
 			SceneNode node = ResourcesManager.LoadAsset<SceneNode>(args[0]);
 			node.Name = "Model1";
 			MeshDrawer md = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
-			//node.GetTransform.Position = new Vector3(1.0f, 0.0f, 0.0f);
-			//node.phys.ReinstalizeBodys();
+            //node.GetTransform.Position = new Vector3(1.0f, 0.0f, 0.0f);
+            //node.phys.ReinstalizeBodys();
 
-			var tra = Matrix4.CreateTranslation(new Vector3 (3,0,0));
-			var rot = Matrix4.CreateRotationY((float)Math.PI / 2);
-			var pos = new Vector4(1, 0, 0, 1);
+            //need sync
+            /*
+            var tb = new TextBox();
+            node.AddComponent(tb);
+            tb.SetText("牡丹制服高校(アニメ版)ver3");
+            */
 
-
-			var quat = new Quaternion(3.14159f, -0.349066f, 1E-06f);
-			//Console.WriteLine(quat.X);
-			//Console.WriteLine(Matrix4.CreateFromQuaternion(quat));
-			//var test = rot * tra;
-			//Console.WriteLine(test);
-			//Console.WriteLine(pos * tra * test.Inverted());
-			//Console.WriteLine(pos * rot);
-
-			/*
-			tra.Transpose();
-			rot.Transpose();
-			Console.WriteLine(tra * rot * pos);
-			*/
-			scene.AddObject(node);
+            scene.AddObject(node);
 
 			var task = new Task(() =>
 				{

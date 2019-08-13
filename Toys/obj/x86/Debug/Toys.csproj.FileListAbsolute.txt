@@ -51,3 +51,4 @@ D:\Coding\GameEngine\Toys\bin\Debug\SharpFont.dll.config
 D:\Coding\GameEngine\Toys\bin\Debug\freetype6.dll
 D:\Coding\GameEngine\Toys\bin\Debug\SharpFont.dll
 D:\Coding\GameEngine\Toys\bin\Debug\SharpFont.xml
+D:\Coding\GameEngine\Toys\obj\x86\Debug\Toys.csprojResolveAssemblyReference.cache
