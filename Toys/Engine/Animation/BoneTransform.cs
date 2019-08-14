@@ -1,29 +1,35 @@
 ﻿using OpenTK;
+using System;
 
 namespace Toys
 {
     public class BoneTransform
     {
-        public Bone Bone;
-        Matrix4 TransformMatrix;
-        Matrix4 LocalSpace;
-        Matrix4 LocalSpaceInverted;
+        public readonly Bone Bone;
+        public Matrix4 TransformMatrix;
+        public Matrix4 LocalSpace;
+
+        //initial bone space coordinetes for reference
+        public Matrix4 LocalSpaceDefault;
+        //inverted initial bone space coordinetes for calculating tranform
+        public Matrix4 LocalSpaceInverted;
+
         public Matrix4 LocalMatrix;
         Matrix4 BoneMatrix;
-        Vector3 InitialOffset;
+        public Vector3 InitialOffset;
 
         Vector3 Translation;
-        Vector3 Rotation;
+        Quaternion Rotation;
         Vector3 Scale;
 
         Vector3 LocalTranslation;
-        Vector3 LocalRotation;
+        //Quaternion LocalRotation;
         Vector3 LocalScale;
 
         //IK Variables
         public Quaternion IKRotation;
-        public Quaternion LocalRotationIKLink;
-        Vector3 LocalTranslationIKLink;
+        public Quaternion LocalRotationForIKLink;
+        Vector3 LocalTranslationForIKLink;
 
         public bool IsIK;
         public bool IsIKLink;
@@ -34,7 +40,9 @@ namespace Toys
         public bool LocalRotationFlag;
 
         public BoneTransform Parent;
-        IKResolver IK;
+        public BoneTransform AddParent;
+        public float AddRation;
+        public IKResolver IK;
         
         bool changed;
 
@@ -42,8 +50,8 @@ namespace Toys
         {
             Bone = b;
             LocalMatrix = Matrix4.Identity;
-            LocalSpace = Matrix4.CreateTranslation(-Bone.Position);
-            LocalSpaceInverted = Matrix4.CreateTranslation(Bone.Position);
+            LocalSpaceDefault = Matrix4.Identity;
+            LocalSpaceInverted = Matrix4.Identity;
             IsIK = Bone.IK;
             IKRotation = Quaternion.Identity;
             ResetTransform(false);
@@ -51,44 +59,49 @@ namespace Toys
 
         public void UpdateLocalMatrix(bool ik = true)
         {
-            Quaternion rot = Quaternion.FromEulerAngles(Rotation);
+            Quaternion rot = Rotation;
             Vector3 trans = Translation;
-
-           
-           if (IsIKLink)
+            if (IsIKLink)
             {
-                LocalRotationIKLink = rot;
-                LocalTranslationIKLink = trans;
+                LocalRotationForIKLink = rot;
+                LocalTranslationForIKLink = trans;
                 rot *= IKRotation;
             }
            
             LocalMatrix = Matrix4.CreateFromQuaternion(rot);
 
+            if (Bone.Index == 266)Console.WriteLine(LocalMatrix);
+
             if (Scale.X != 1f || Scale.Y != 1f || Scale.Z != 1f)
                 LocalMatrix *= Matrix4.CreateScale(Scale);
 
-            LocalMatrix += Matrix4.CreateTranslation(trans);
+            LocalMatrix *= Matrix4.CreateTranslation(trans);
+            LocalMatrix *= Matrix4.CreateTranslation(InitialOffset);
             BoneMatrix = LocalMatrix;
-            LocalMatrix += Matrix4.CreateTranslation(InitialOffset);
+            //LocalMatrix = LocalSpaceInverted * LocalMatrix * LocalSpaceDefault;
+            if (Bone.Index == 266)Console.WriteLine( Parent.LocalMatrix);
 
             if (Parent != null)
             {
                 LocalScale = Vector3.Multiply(Parent.LocalScale, Scale);
-                LocalMatrix *= Parent.LocalMatrix;
+                LocalMatrix = Parent.LocalMatrix * LocalMatrix;
             }
             else
             {
                 LocalScale = Scale;
             }
+            
             if (ik && IsIK && IK != null && (!PhysicsIKSkip || !IK.IsPhysicsAllLink))
             {
-                IK.Transform();
+               //IK.Transform();
             }
+if (Bone.Index == 266)Console.WriteLine( LocalMatrix);
+            
         }
 
         public void UpdateLocalMatrixIKLink()
         {
-            Quaternion rot = LocalRotationIKLink * IKRotation;
+            Quaternion rot = LocalRotationForIKLink * IKRotation;
             LocalMatrix = Matrix4.CreateFromQuaternion(rot);
             if (Scale.X != 1f || Scale.Y != 1f || Scale.Z != 1f)
             {
@@ -102,9 +115,9 @@ namespace Toys
                 LocalMatrix.M32 = LocalMatrix.M32 * Scale.Z;
                 LocalMatrix.M33 = LocalMatrix.M33 * Scale.Z;
             }
-            LocalMatrix.M41 = LocalMatrix.M41 + LocalTranslationIKLink.X;
-            LocalMatrix.M42 = LocalMatrix.M42 + LocalTranslationIKLink.Y;
-            LocalMatrix.M43 = LocalMatrix.M43 + LocalTranslationIKLink.Z;
+            LocalMatrix.M41 = LocalMatrix.M41 + LocalTranslationForIKLink.X;
+            LocalMatrix.M42 = LocalMatrix.M42 + LocalTranslationForIKLink.Y;
+            LocalMatrix.M43 = LocalMatrix.M43 + LocalTranslationForIKLink.Z;
             BoneMatrix = LocalMatrix;
             LocalMatrix.M41 = LocalMatrix.M41 + InitialOffset.X;
             LocalMatrix.M42 = LocalMatrix.M42 + InitialOffset.Y;
@@ -113,6 +126,8 @@ namespace Toys
             {
                 LocalMatrix *= Parent.LocalMatrix;
             }
+            //if (Bone.Index == 161)
+            //    Console.WriteLine(LocalMatrix);
         }
 
         public void ResetTransform(bool link)
@@ -122,27 +137,28 @@ namespace Toys
             TransformMatrix = Matrix4.Identity;
 
             LocalScale = new Vector3(1f);
-            LocalRotation = Vector3.Zero;
+            //LocalRotation = Quaternion.Identity;
 
             Scale = Vector3.One;
-            Rotation = Vector3.Zero;
+            Rotation = Quaternion.Identity;
             Translation = Vector3.Zero;
 
-            LocalRotationIKLink = Quaternion.Identity;
-            LocalTranslationIKLink = Vector3.Zero;
+            //IK
+            LocalRotationForIKLink = Quaternion.Identity;
+            LocalTranslationForIKLink = Vector3.Zero;
             if (link)
                 IKRotation = Quaternion.Identity;
         }
 
 
-        public void SetTransform(Vector3 scale, Vector3 rot, Vector3 trans)
+        public void SetTransform(Vector3 scale, Quaternion rot, Vector3 trans)
         {
             Scale = scale;
             Rotation = rot;
             Translation = trans;
         }
 
-        public void SetTransform(Vector3 rot, Vector3 trans)
+        public void SetTransform(Quaternion rot, Vector3 trans)
         {
             Rotation = rot;
             Translation = trans;
@@ -150,18 +166,20 @@ namespace Toys
 
         public void UpdateTransformMatrix()
         {
-            TransformMatrix = LocalSpace * LocalMatrix;
+            TransformMatrix =  LocalMatrix * LocalSpaceInverted;
         }
 
+        /*
         public void UpdateLocalRotation()
         {
             if (!LocalRotationFlag)
             {
-                LocalMatrix = Matrix4.CreateFromQuaternion(new Quaternion(LocalRotation));
+                LocalMatrix = Matrix4.CreateFromQuaternion(LocalRotation);
                 LocalRotation.Normalize();
                 LocalRotationFlag = true;
             }
         }
+        */
 
         public Vector3 GetTransformedBonePosition()
         {

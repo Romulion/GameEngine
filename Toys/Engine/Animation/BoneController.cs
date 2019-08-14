@@ -19,13 +19,24 @@ namespace Toys
         public BoneController(Bone[] bones)
         {
             this.bones = new BoneTransform[bones.Length];
-            for (int i = 0; i < bones.Length; i++)
-            {
-                this.bones[i] = new BoneTransform(bones[i]);
-            }
+            Initialize(bones);
 
             skeleton = new Matrix4[bones.Length];
             DefaultPos();
+            
+            //this.bones[247].SetTransform(new Quaternion(0f,0f,0f),new Vector3(1f,0f,0));
+            this.bones[266].SetTransform(new Quaternion(90 * (float)Math.PI / 180 ,0f,0),Vector3.Zero);
+            UpdateSkeleton();
+            Console.WriteLine(this.bones[266].Parent.LocalMatrix);
+            Console.WriteLine(this.bones[266].TransformMatrix);
+            Console.WriteLine(this.bones[266].LocalMatrix);
+            //Console.WriteLine(this.bones[266].LocalSpaceInverted);
+            //skeleton[159] = Matrix4.CreateTranslation(new Vector3(1,-1.5f,1));
+            //for(int i = 0; i < skeleton.Length; i++){
+            //   if (skeleton[i] != Matrix4.Identity) {Console.WriteLine(i); Console.WriteLine(skeleton[i]);}
+//}
+           // Console.WriteLine(this.bones[10].LocalSpaceDefault);
+           // Console.WriteLine(this.bones[10].LocalSpaceInverted);   
         }
 
         public BoneTransform[] GetBones
@@ -44,6 +55,8 @@ namespace Toys
 			}
 		}
 
+
+
 		public BoneTransform GetBone(string name)
 		{
 			var bone = Array.Find(bones, (obj) => obj.Bone.Name == name);
@@ -61,6 +74,83 @@ namespace Toys
                 return null;
             
             return bones[id];
+        }
+
+        void Initialize(Bone[] bones){
+            this.bones = new BoneTransform[bones.Length];
+            for (int i = 0; i < bones.Length; i++)
+            {
+                Bone boneData = bones[i];
+                this.bones[i] = new BoneTransform(bones[i]);
+            }
+            for (int i = 0; i < bones.Length; i++)
+            {
+                Bone boneData = bones[i];
+                boneData.Index = i;
+                BoneTransform boneTransform = this.bones[i];
+                boneTransform.InitialOffset = boneData.Position;
+                if (boneData.ParentIndex < this.bones.Length && boneData.ParentIndex >= 0)
+                {
+                    boneTransform.Parent = this.bones[boneData.ParentIndex];
+                    boneTransform.LocalSpaceDefault = boneTransform.Parent.LocalSpaceDefault * Matrix4.CreateTranslation(boneTransform.Bone.Position);
+                    boneTransform.LocalSpaceInverted = boneTransform.LocalSpaceDefault.Inverted();
+                }
+                else
+                    boneTransform.Parent = null;
+                    
+                boneTransform.IsAddLocal = boneData.IsAddLocal;
+                boneTransform.IsRotateAdd = boneData.InheritRotation;
+                boneTransform.IsTranslateAdd = boneData.InheritTranslation;
+                if (boneTransform.IsRotateAdd || boneTransform.IsTranslateAdd)
+                {
+                    if (this.bones.Length > boneData.ParentInheritIndex)
+                    {
+                        boneTransform.AddParent = this.bones[boneData.ParentInheritIndex];
+                        boneTransform.AddRation = boneData.ParentInfluence;
+                    }
+                    else 
+                    {
+                        boneTransform.AddParent = null;
+                    }
+                }
+                
+                if (boneData.IK)
+                {
+                    boneTransform.IsIK = true;
+			        boneTransform.IK = new IKResolver(this.bones, i);
+                    
+			        if (boneData.IKData != null)
+			        {
+				        bool isPhysicsAllLink = true;
+                        /*
+				        foreach (PmxIK.IKLink link in pmxBone2.IK.LinkList)
+				        {
+					        if (!dictionary.ContainsKey(link.Bone))
+					        {
+						        isPhysicsAllLink = false;
+						        break;
+					        }
+				        }
+                        */
+				        boneTransform.IK.IsPhysicsAllLink = isPhysicsAllLink;
+			        }
+                    
+                }
+                this.bones[i] = boneTransform;
+            }
+        }
+
+        public void UpdateSkeleton()
+        {
+            for(int i = 0; i < bones.Length; i++)
+            {
+                bones[i].UpdateLocalMatrix();
+            }
+            for(int i = 0; i < bones.Length; i++)
+            {
+                bones[i].UpdateTransformMatrix();
+                skeleton[i] = bones[i].TransformMatrix;
+            }
         }
 
         public void DefaultPos()

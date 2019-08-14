@@ -127,6 +127,11 @@ namespace Toys
         {
 			//get render object list
 			MeshDrawer[] meshes = GetRenderObjects();
+
+            //preparing models to rendering
+            //foreach (var mesh in meshes)
+            //    mesh.Prepare();
+
             //shadow pass
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(CullFaceMode.Back);

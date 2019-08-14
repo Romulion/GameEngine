@@ -24,7 +24,10 @@
 			mat.count = mesh.indexes.Length;
 		}
 
+        public virtual void Prepare()
+        {
 
+        }
 		/*
 		 * main drawing
 		*/

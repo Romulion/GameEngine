@@ -8,18 +8,16 @@ namespace Toys
 {
     public class BoneIK
     {
-        public readonly int Target;
-
+        public int Target;
         public int LoopCount;
         public float AngleLimit;
-        public readonly IKLink[] Links;
+        public IKLink[] Links;
 
-        public BoneIK(int targ, IKLink[] lnks)
+        public BoneIK()
         {
-            Target = targ;
-            Links = lnks;
         }
 
+        
         
     }
 }

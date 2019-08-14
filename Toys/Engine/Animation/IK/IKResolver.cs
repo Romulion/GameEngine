@@ -140,6 +140,7 @@ namespace Toys
             }
             Target.UpdateLocalMatrix(false);
             m_targetPosition = Target.GetTransformedBonePosition();
+            //if (IK.Bone.Index == 162){Console.WriteLine(link);Console.WriteLine(m_ikPosition); Console.WriteLine(m_targetPosition);}
         }
 
         public void Transform()
@@ -152,7 +153,7 @@ namespace Toys
             m_ikPosition = IK.GetTransformedBonePosition();
             Target.UpdateLocalMatrix(true);
             m_targetPosition = Target.GetTransformedBonePosition();
-
+            
             if ( (m_ikPosition - m_targetPosition).LengthSquared < 1E-08f)
                 return;
 
@@ -162,7 +163,6 @@ namespace Toys
 
             int loopCount = LoopCount;
             int num = loopCount / 2;
-            Vector3 zero = Vector3.Zero;
             for (int i = 0; i < loopCount; i++)
             {
                 for (int j = 0; j < IKLinksBones.Length; j++)
@@ -235,15 +235,18 @@ namespace Toys
                 axis.Normalize();
             }
 
+            //if (IK.Bone.Index == 162){Console.WriteLine(linkNum);Console.WriteLine(IKLinks[linkNum].Bone);}
+
             float angleTargetIK = (float)Math.Acos(Vector3.Dot(vectLinkTarget, vectLinkIK));
             float angleMaxRotation = LimitOnce * (float)(linkNum + 1);
             angleTargetIK = Math.Min(angleTargetIK, angleMaxRotation);
-            Quaternion quaternion = Quaternion.FromAxisAngle(axis, angleTargetIK);
+
+            Quaternion quaternion = Quaternion.FromAxisAngle(axis, -angleTargetIK);
             transformBone.IKRotation *= quaternion;
             if (IKLinks[linkNum].IsLimit)
             {
                 Vector3 angle = Vector3.Zero;
-                Matrix4 matrixIKRotation = Matrix4.CreateFromQuaternion(transformBone.LocalRotationIKLink * transformBone.IKRotation);
+                Matrix4 matrixIKRotation = Matrix4.CreateFromQuaternion(transformBone.LocalRotationForIKLink * transformBone.IKRotation);
 
                 //determine angles from rotation matrix acording to rotation sequence
                 switch (IKLinks[linkNum].Euler)
@@ -289,7 +292,7 @@ namespace Toys
                         }
                 }
 
-                transformBone.IKRotation = Quaternion.Invert(transformBone.LocalRotationIKLink) * transformBone.IKRotation;
+                transformBone.IKRotation = Quaternion.Invert(transformBone.LocalRotationForIKLink) * transformBone.IKRotation;
             }
 
             CalcBonePosition_Link(linkNum);

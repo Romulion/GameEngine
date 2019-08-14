@@ -86,6 +86,7 @@ namespace Toys
                 //dummy
                 offset += 4;
 
+                //normals
                 offset += 4;
                 val = Marshal.ReadInt32(point, offset);
                 if (mesh.vert[n].normal.X != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
@@ -102,6 +103,8 @@ namespace Toys
                     break;
                 //dummy
                 offset += 4;
+
+                //textures
                 offset += 4;
                 val = Marshal.ReadInt32(point, offset);
                 if (mesh.vert[n].uvtex.X != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))

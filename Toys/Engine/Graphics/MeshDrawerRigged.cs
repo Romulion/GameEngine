@@ -1,10 +1,16 @@
 ﻿using System;
+using OpenTK;
+
 namespace Toys
 {
 	public class MeshDrawerRigged : MeshDrawer
 	{
 		public BoneController skeleton { get; private set; }
 		UniformBufferSkeleton ubs;
+
+        //test
+        int test = 0;
+        //end test
 
 		public MeshDrawerRigged(Mesh mesh, IMaterial[] mats, BoneController skelet, Morph[] mor = null) : base(mesh, mats, mor)
 		{
@@ -27,7 +33,17 @@ namespace Toys
 				mat.ApplyMaterial();
 				mesh.Draw(mat.offset, mat.count);
 			}
-			mesh.ReleaseVAO();		}
+			mesh.ReleaseVAO();
+		}
+
+        public override void Prepare()
+        {
+            //test  
+            //skeleton.GetBone(0).SetTransform(new Quaternion(0f,test * (float)Math.PI / 180 ,0f),Vector3.Zero);
+            //test += 3;
+            //end test
+            skeleton.UpdateSkeleton();
+        }
 
 		public override void DrawSimple()
 		{

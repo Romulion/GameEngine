@@ -413,27 +413,42 @@ namespace Toys
 
 				if (bone.IK)
 				{
-					reader.readVal(header.GetBoneIndexSize);
-					file.ReadInt32();
-					file.ReadSingle();
+                    BoneIK bik = new BoneIK();
+					bik.Target = reader.readVal(header.GetBoneIndexSize);
+					bik.LoopCount = file.ReadInt32();
+					bik.AngleLimit = file.ReadSingle();
 					int count = file.ReadInt32();
+                    IKLink[] links = new IKLink[count];
 					for (int n = 0; n < count; n++)
 					{
-						reader.readVal(header.GetBoneIndexSize);
+                        IKLink link = new IKLink();
+						link.Bone = reader.readVal(header.GetBoneIndexSize);
 						if (file.ReadByte() == 1)
 						{
-							reader.readVector3();
-							reader.readVector3();
+                            link.IsLimit = true;
+							link.LimitMin = reader.readVector3();
+							link.LimitMax = reader.readVector3();
 						}
+                        links[n] = link;
 					}
-						
+                    bik.Links = links;
+				    bone.IKData = bik;
 				}
 
                 //if (i == 75 || i == 221)
                 //    Console.WriteLine(bone.Position);
                 bones[i] = bone;
 			}
-			Bone.MakeChilds(bones);
+
+            //convert position from model to parent bone
+            for (int i = bones.Length - 1; i > -1; i--)
+            {
+                Bone bone = bones[i];
+                if (bone.ParentIndex > 0 && bone.ParentIndex < bones.Length){
+                    bone.Position -= bones[bone.ParentIndex].Position;
+                }
+            }
+			//Bone.MakeChilds(bones);
 		}
 
 		void ReadMorhps()
@@ -534,6 +549,9 @@ namespace Toys
 
 		}
 
+        /*
+         * not used
+         */
 		void ReadPanel()
 		{
 			int panelCount = file.ReadInt32();

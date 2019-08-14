@@ -11,7 +11,7 @@ namespace Toys
 		public readonly string NameEng;
 
 		//common transform data
-		public readonly Vector3 Position;
+		public Vector3 Position;
 		public readonly int ParentIndex;
 		public int Index;
 		public int[] childs;
@@ -46,6 +46,7 @@ namespace Toys
 		public bool IsVisible;
 		public bool Enabled;
 		public bool IK;
+        public bool IsAddLocal;
 		public bool InheritRotation;
 		public bool InheritTranslation;
 		public bool FixedAxis;
@@ -88,6 +89,7 @@ namespace Toys
 			IsVisible = flags[3];
 			Enabled = flags[4];
 			IK = flags[5];
+            IsAddLocal = flags[7];
 			InheritRotation = flags[8];
 			InheritTranslation = flags[9];
 			FixedAxis = flags[10];
