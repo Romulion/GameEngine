@@ -130,7 +130,7 @@ namespace Toys
 
             //preparing models to rendering
             //foreach (var mesh in meshes)
-            //    mesh.Prepare();
+             //  mesh.Prepare();
 
             //shadow pass
             GL.Enable(EnableCap.CullFace);

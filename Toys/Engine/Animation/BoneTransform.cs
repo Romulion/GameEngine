@@ -114,7 +114,8 @@ namespace Toys
                 LocalTranslationForIKLink = trans;
                 rot *= IKRotation;
             }
-           
+
+            
             LocalMatrix = Matrix4.CreateFromQuaternion(rot);
             
             if (Scale.X != 1f || Scale.Y != 1f || Scale.Z != 1f)
@@ -122,13 +123,11 @@ namespace Toys
             LocalMatrix *= Matrix4.CreateTranslation(trans);
             BoneMatrix = LocalMatrix;
             LocalMatrix *= Matrix4.CreateTranslation(InitialOffset);
-            //LocalMatrix = LocalSpaceInverted * LocalMatrix * LocalSpaceDefault;
-            
-            //LocalMatrix = LocalSpaceInverted * LocalMatrix * LocalSpaceDefault;
+
             if (Parent != null)
             {
                 LocalScale = Vector3.Multiply(Parent.LocalScale, Scale);
-                LocalMatrix = LocalMatrix * Parent.LocalMatrix;
+                LocalMatrix *= Parent.LocalMatrix;
             }
             else
             {
@@ -146,6 +145,7 @@ namespace Toys
         {
             Quaternion rot = LocalRotationForIKLink * IKRotation;
             LocalMatrix = Matrix4.CreateFromQuaternion(rot);
+            //if (Bone.Index == 163) { Console.WriteLine(LocalMatrix); }
             if (Scale.X != 1f || Scale.Y != 1f || Scale.Z != 1f)
             {
                 LocalMatrix.M11 = LocalMatrix.M11 * Scale.X;
@@ -212,7 +212,8 @@ namespace Toys
 
         public void UpdateTransformMatrix()
         {
-            //TransformMatrix = LocalSpaceInverted * LocalMatrix;
+            //TransformMatrix = LocalMatrix * LocalSpaceInverted;
+            //TransformMatrix.Transpose();
             BoneMatrix = LocalSpaceInverted * BoneMatrix * LocalSpaceDefault;
             TransformMatrix = (Parent == null) ? BoneMatrix : BoneMatrix * Parent.TransformMatrix;
         }
