@@ -21,6 +21,8 @@ namespace Toys
         Vector3 Translation;
         Quaternion Rotation;
         Vector3 Scale;
+        Quaternion AddRotation;
+        Vector3 AddTranslation;
 
         Vector3 LocalTranslation;
         //Quaternion LocalRotation;
@@ -41,7 +43,7 @@ namespace Toys
 
         public BoneTransform Parent;
         public BoneTransform AddParent;
-        public float AddRation;
+        public float AddRatio;
         public IKResolver IK;
         
         bool changed;
@@ -61,6 +63,51 @@ namespace Toys
         {
             Quaternion rot = Rotation;
             Vector3 trans = Translation;
+
+            //additional parent bone
+            if (IsRotateAdd && AddParent != null)
+	        {
+		        var addRotation = Quaternion.Identity;
+
+		        if (!IsAddLocal)
+		        {
+			        addRotation = ((!AddParent.IsRotateAdd) ? AddParent.Rotation : AddRotation);
+		        }
+		        else
+		        {
+			        addRotation = AddParent.LocalMatrix.ExtractRotation();
+		        }
+		        if (AddParent.IsIKLink && !IsAddLocal)
+		        {
+			        addRotation *= AddParent.IKRotation;
+		        }
+		        if (AddRatio != 1f)
+		        {
+			        addRotation = Quaternion.Slerp(Quaternion.Identity, addRotation, AddRatio);
+		        }
+		        rot = (AddRotation = addRotation * rot);
+	        }
+	        if (IsTranslateAdd && AddParent != null)
+	        {
+		        Vector3 left = Vector3.Zero;
+		        if (!IsAddLocal)
+		        {
+			        left = ((!AddParent.IsTranslateAdd) ? (AddParent.Translation) :AddTranslation);
+		        }
+		        else
+		        {
+			        left.X = AddParent.LocalMatrix.M41 - AddParent.Bone.Position.X;
+			        left.Y = AddParent.LocalMatrix.M42 - AddParent.Bone.Position.Y;
+			        left.Z = AddParent.LocalMatrix.M43 - AddParent.Bone.Position.Z;
+		        }
+		        if (AddRatio != 1f)
+		        {
+			        left *= AddRatio;
+		        }
+		        trans = (AddTranslation = left + trans);
+	        }
+
+
             if (IsIKLink)
             {
                 LocalRotationForIKLink = rot;
@@ -69,22 +116,19 @@ namespace Toys
             }
            
             LocalMatrix = Matrix4.CreateFromQuaternion(rot);
-
-            if (Bone.Index == 266)Console.WriteLine(LocalMatrix);
-
+            
             if (Scale.X != 1f || Scale.Y != 1f || Scale.Z != 1f)
                 LocalMatrix *= Matrix4.CreateScale(Scale);
-
             LocalMatrix *= Matrix4.CreateTranslation(trans);
-            LocalMatrix *= Matrix4.CreateTranslation(InitialOffset);
             BoneMatrix = LocalMatrix;
+            LocalMatrix *= Matrix4.CreateTranslation(InitialOffset);
             //LocalMatrix = LocalSpaceInverted * LocalMatrix * LocalSpaceDefault;
-            if (Bone.Index == 266)Console.WriteLine( Parent.LocalMatrix);
-
+            
+            //LocalMatrix = LocalSpaceInverted * LocalMatrix * LocalSpaceDefault;
             if (Parent != null)
             {
                 LocalScale = Vector3.Multiply(Parent.LocalScale, Scale);
-                LocalMatrix = Parent.LocalMatrix * LocalMatrix;
+                LocalMatrix = LocalMatrix * Parent.LocalMatrix;
             }
             else
             {
@@ -93,9 +137,8 @@ namespace Toys
             
             if (ik && IsIK && IK != null && (!PhysicsIKSkip || !IK.IsPhysicsAllLink))
             {
-               //IK.Transform();
+               IK.Transform();
             }
-if (Bone.Index == 266)Console.WriteLine( LocalMatrix);
             
         }
 
@@ -148,6 +191,9 @@ if (Bone.Index == 266)Console.WriteLine( LocalMatrix);
             LocalTranslationForIKLink = Vector3.Zero;
             if (link)
                 IKRotation = Quaternion.Identity;
+
+            AddTranslation = Vector3.Zero;
+            AddRotation = Quaternion.Identity;
         }
 
 
@@ -166,7 +212,9 @@ if (Bone.Index == 266)Console.WriteLine( LocalMatrix);
 
         public void UpdateTransformMatrix()
         {
-            TransformMatrix =  LocalMatrix * LocalSpaceInverted;
+            //TransformMatrix = LocalSpaceInverted * LocalMatrix;
+            BoneMatrix = LocalSpaceInverted * BoneMatrix * LocalSpaceDefault;
+            TransformMatrix = (Parent == null) ? BoneMatrix : BoneMatrix * Parent.TransformMatrix;
         }
 
         /*

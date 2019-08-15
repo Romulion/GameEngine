@@ -24,19 +24,13 @@ namespace Toys
             skeleton = new Matrix4[bones.Length];
             DefaultPos();
             
-            //this.bones[247].SetTransform(new Quaternion(0f,0f,0f),new Vector3(1f,0f,0));
-            this.bones[266].SetTransform(new Quaternion(90 * (float)Math.PI / 180 ,0f,0),Vector3.Zero);
-            UpdateSkeleton();
-            Console.WriteLine(this.bones[266].Parent.LocalMatrix);
-            Console.WriteLine(this.bones[266].TransformMatrix);
-            Console.WriteLine(this.bones[266].LocalMatrix);
-            //Console.WriteLine(this.bones[266].LocalSpaceInverted);
-            //skeleton[159] = Matrix4.CreateTranslation(new Vector3(1,-1.5f,1));
-            //for(int i = 0; i < skeleton.Length; i++){
-            //   if (skeleton[i] != Matrix4.Identity) {Console.WriteLine(i); Console.WriteLine(skeleton[i]);}
-//}
-           // Console.WriteLine(this.bones[10].LocalSpaceDefault);
-           // Console.WriteLine(this.bones[10].LocalSpaceInverted);   
+            //for tests
+            this.bones[158].SetTransform(new Quaternion(0f,0f,0f),new Vector3(0f,0.3f,0));
+            //this.bones[247].SetTransform(new Quaternion(0,0, -45 * (float)Math.PI / 180),Vector3.Zero);
+            //this.bones[248].SetTransform(new Quaternion(0,0, -90 * (float)Math.PI / 180),Vector3.Zero);
+            //UpdateSkeleton();
+            //Console.WriteLine(this.bones[247].LocalSpaceDefault);
+            //Console.WriteLine(this.bones[247].TransformMatrix);
         }
 
         public BoneTransform[] GetBones
@@ -106,7 +100,7 @@ namespace Toys
                     if (this.bones.Length > boneData.ParentInheritIndex)
                     {
                         boneTransform.AddParent = this.bones[boneData.ParentInheritIndex];
-                        boneTransform.AddRation = boneData.ParentInfluence;
+                        boneTransform.AddRatio = boneData.ParentInfluence;
                     }
                     else 
                     {
