@@ -55,7 +55,8 @@ namespace Toys
 
             Body.ActivationState = ActivationState.DisableDeactivation;
             Body.Friction = rcon.Friction;
-            Body.SetDamping(rcon.MassAttenuation, rcon.MassAttenuation);
+            Body.SetDamping(rcon.MassAttenuation, rcon.RotationDamping);
+            Body.Restitution = rcon.Repulsion;
 
 			if (rcon.Phys == PhysType.FollowBone)
 				Body.SetCustomDebugColor (new Vector3(0,1,0));
@@ -75,13 +76,15 @@ namespace Toys
 
         public void SyncBone2Body(OpenTK.Matrix4 world)
 		{
-            Body.WorldTransform = startTransform * GetMat(acon.GetSkeleton[bone]) * GetMat(world);
+            //Body.WorldTransform = startTransform * GetMat(acon.GetSkeleton[bone]) * GetMat(world);
+            Body.WorldTransform = startTransform * GetMat(acon.GetBone(bone).TransformMatrix);
         }
 
 		public void SyncBody2Bone(OpenTK.Matrix4 world)
 		{
             var mat = GetMat(startTransform).Inverted() * GetMat(Body.WorldTransform) * world;
 			//acon.SetTransformWorld(bone, mat);
+            acon.GetBones[bone].PhysTransform = mat;
         }
 
 

@@ -18,7 +18,7 @@ namespace Toys
             broadphase = new DbvtBroadphase();
             var Solver = new SequentialImpulseConstraintSolver();
             World = new DiscreteDynamicsWorld(dispatcher, broadphase, Solver, collisionConf);
-			World.Gravity = new Vector3(0, -10f, 0);
+			World.Gravity = new Vector3(0, -9.8f, 0);
 			CreateFloor();
 		}
 

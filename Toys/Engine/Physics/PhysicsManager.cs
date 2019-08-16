@@ -37,9 +37,6 @@ namespace Toys
             for (int i = 0; i < rigits.Length; i++)
             {
 
-                //if (i != 2 && (i < 103 || i > 104))
-                //    continue;
-
 				rigitBodies[i] = new RigidBodyBone(rigits[i]);
 
                 //skipping bone binding for no index riggs (ushort indexes only)
@@ -47,12 +44,14 @@ namespace Toys
                 {
                     rigitBodies[i].bone = rigits[i].BoneIndex;
                     rigitBodies[i].acon = bones;
-                    
                     if (rigits[i].Phys == PhysType.FollowBone || rigits[i].Phys == PhysType.GravityBone)
                         prePhysics += rigitBodies[i].SyncBone2Body;
 
                     if (rigits[i].Phys == PhysType.GravityBone || rigits[i].Phys == PhysType.Gravity)
+                    {
                         postPhysics += rigitBodies[i].SyncBody2Bone;
+                        bones.GetBone(rigits[i].BoneIndex).Phys = true;
+                    }
                        
                 }
                 //World.AddRigidBody(rigitBodies[i].Body, rigits[i].GroupId, (short)(-1 ^ rigits[i].NonCollisionGroup));

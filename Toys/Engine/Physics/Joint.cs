@@ -50,6 +50,7 @@ namespace Toys
 			var temp1 = Body1.WorldTransform;
 			temp1.Invert();
 			var Conn1 = JointSpace * temp1;
+            //var Conn1 = Matrix.Translation(GetVec3(rbodies[jcon.RigitBody1].rigCon.Position - jcon.Position));
 
 			Matrix Conn2 = Matrix.Identity;
 			if (Body2 != null)
@@ -58,6 +59,7 @@ namespace Toys
 				var temp2 = Body2.WorldTransform;
 				temp2.Invert();
 				Conn2 = JointSpace* temp2;
+                //Conn2 = Matrix.Translation(GetVec3(rbodies[jcon.RigitBody2].rigCon.Position - jcon.Position));
 
 				//for the older version of BulletSharp
 				//temp1 = RigitBodyBone.GetMat(RigitBodyBone.GetMat(temp1).Inverted());
@@ -86,7 +88,23 @@ namespace Toys
                     
                     jointSpring6.LinearLowerLimit = GetVec3(jcon.PosMin);
 					jointSpring6.LinearUpperLimit = GetVec3(jcon.PosMax);
+                    
+                    jointSpring6.EnableSpring(0,false);
+                    jointSpring6.EnableSpring(1,false);
+                    jointSpring6.EnableSpring(2,false);
+                    
+                    jointSpring6.SetStiffness(0,jcon.PosSpring.X);
+                    jointSpring6.SetStiffness(1,jcon.PosSpring.X);
+                    jointSpring6.SetStiffness(2,jcon.PosSpring.X);
+                    /*
+                    jointSpring6.SetBounce(0,jcon.PosSpring.X);
+                    jointSpring6.SetBounce(1,jcon.PosSpring.Y);
+                    jointSpring6.SetBounce(2,jcon.PosSpring.Z);
 
+                    jointSpring6.SetDamping(0,jcon.RotSpring.X);
+                    jointSpring6.SetDamping(1,jcon.RotSpring.Y);
+                    jointSpring6.SetDamping(2,jcon.RotSpring.Z);
+                    */
                     joint = jointSpring6;
                    
                     break;

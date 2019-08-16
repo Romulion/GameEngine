@@ -39,10 +39,11 @@ namespace Toys
         public override void Prepare()
         {
             //test  
-            //skeleton.GetBone(0).SetTransform(new Quaternion(0f,test * (float)Math.PI / 180 ,0f),Vector3.Zero);
-            //test += 3;
+            //skeleton.GetBone(1).SetTransform(new Quaternion(0f,0f ,0f),new Vector3(0, (float)(-0.2 + 0.2 * Math.Cos(test * Math.PI / 180)),0));
+            //test += 2;
             //end test
             skeleton.UpdateSkeleton();
+
         }
 
 		public override void DrawSimple()

@@ -148,20 +148,20 @@ namespace Toys
                 return;
 
             InitializeAngle();
-
+            CalcBonePosition(IKLinksBones.Length - 1);
 
             m_ikPosition = IK.GetTransformedBonePosition();
             Target.UpdateLocalMatrix(true);
             m_targetPosition = Target.GetTransformedBonePosition();
-
-            if (IK.Bone.Index == 162)
+            /*
+            if (IK.Bone.Index == 165)
             {
-                Console.WriteLine("link");
+                Console.WriteLine("IK");
                 Console.WriteLine(m_targetPosition);
                 Console.WriteLine(m_ikPosition);
                 Console.WriteLine((m_targetPosition - m_ikPosition).LengthSquared);
             }
-
+            */
             if ( (m_ikPosition - m_targetPosition).LengthSquared < 1E-08f)
                 return;
 
@@ -180,6 +180,14 @@ namespace Toys
                         IKProc_Link(j, i < num);
                     }
                 }
+                
+                if (IK.Bone.Index == 165)
+                {
+                   // Console.WriteLine("iter end");
+                   // Console.WriteLine(i < num);
+                   // Console.WriteLine((m_ikPosition - m_targetPosition).LengthSquared);
+                }
+                
                 if ((m_ikPosition - m_targetPosition).LengthSquared < 1E-08f)
                     break;
             }
@@ -187,8 +195,20 @@ namespace Toys
 
         private void IKProc_Link(int linkNum, bool axis_lim = true)
         {
+            
 
+            
             BoneTransform transformBone = IKLinksBones[linkNum];
+            /*
+            if (IK.Bone.Index == 165 && transformBone.Bone.Index == 163)
+            {
+                Console.WriteLine("link");
+                Console.WriteLine(m_targetPosition);
+                Console.WriteLine(m_ikPosition);
+                Console.WriteLine((m_targetPosition - m_ikPosition).LengthSquared);
+            }
+            */
+
             Vector3 linkPos = new Vector3(transformBone.LocalMatrix.M41, transformBone.LocalMatrix.M42, transformBone.LocalMatrix.M43);
             Vector3 vectLinkTarget = linkPos - m_targetPosition;
             vectLinkTarget.Normalize();
@@ -203,7 +223,7 @@ namespace Toys
 
             //finding axis to rotate
             Vector3 axis = Vector3.Cross(vectLinkTarget, vectLinkIK);
-
+            
             if (IKLinks[linkNum].IsLimit & axis_lim)
             {
                 switch (IKLinks[linkNum].FixAxis)
@@ -244,25 +264,44 @@ namespace Toys
             }
 
 
-            float num4 = Vector3.Dot(vectLinkTarget, vectLinkIK);
-            if (num4 > 1f)
+            float dot = Vector3.Dot(vectLinkTarget, vectLinkIK);
+            if (dot > 1f)
             {
-                num4 = 1f;
+                dot = 1f;
             }
-            else if (num4 < -1f)
+            else if (dot < -1f)
             {
-                num4 = -1f;
+                dot = -1f;
             }
 
-            float angleTargetIK = (float)Math.Acos(num4);
+
+
+            float angleTargetIK = (float)Math.Acos(dot);
             float angleMaxRotation = LimitOnce * (float)(linkNum + 1);
             angleTargetIK = Math.Min(angleTargetIK, angleMaxRotation);
-            if (IK.Bone.Index == 162 && linkNum == 0)
+            /*
+            if (IK.Bone.Index == 165)
             {
-                Console.WriteLine("link");
+                Console.WriteLine("angle");
+                Console.WriteLine(angleTargetIK);           
+            }
+            */
+            //prevent paralel vectors error 
+            if (angleTargetIK != 0 && !Single.IsNaN(axis.X))
+                transformBone.IKRotation *= Quaternion.FromAxisAngle(axis, angleTargetIK);
+
+            if (IK.Bone.Index == 165 && Single.IsNaN(transformBone.IKRotation.X))
+            {
+                Console.WriteLine("ERR");
+                Console.WriteLine(vectLinkTarget);
+                Console.WriteLine(vectLinkIK);
+                Console.WriteLine(axis);
                 Console.WriteLine(angleTargetIK);
             }
-            transformBone.IKRotation *= Quaternion.FromAxisAngle(axis, angleTargetIK);
+            if (IK.Bone.Index == 165)
+            {
+                //Console.WriteLine(transformBone.IKRotation);
+            }
 
             if (IKLinks[linkNum].IsLimit)
             {
@@ -279,21 +318,8 @@ namespace Toys
                             {
                                 angle.X = ((angle.X < 0f) ? -1.535889f : 1.535889f);
                             }
-                            /*
-                            float num7 = (float)Math.Cos((double)angle.X);
-                            if (num7 != 0f)
-                            {
-                                num7 = 1f / num7;
-                            }
-                            float num8 = matrixIKRotation.M31 * num7;
-                            float num9 = matrixIKRotation.M33 * num7;
-                            angle.Y = (float)Math.Atan2((double)num8, (double)num9);
-                            float num10 = matrixIKRotation.M12 * num7;
-                            float num11 = matrixIKRotation.M22 * num7;
-                            angle.Z = (float)Math.Atan2((double)num10, (double)num11);
-                            */
-                            angle.Y = -(float)Math.Atan2(matrixIKRotation.M31, matrixIKRotation.M33);
-                            angle.Z = -(float)Math.Atan2(matrixIKRotation.M12, matrixIKRotation.M22);
+                            angle.Y = (float)Math.Atan2(matrixIKRotation.M31, matrixIKRotation.M33);
+                            angle.Z = (float)Math.Atan2(matrixIKRotation.M12, matrixIKRotation.M22);
                             LimitAngle(ref angle, linkNum, axis_lim);
                             transformBone.IKRotation = Quaternion.FromAxisAngle(Vector3.UnitZ, angle.Z) * Quaternion.FromAxisAngle(Vector3.UnitX, angle.X) * Quaternion.FromAxisAngle(Vector3.UnitY, angle.Y);
                             break;
@@ -305,8 +331,8 @@ namespace Toys
                             {
                                 angle.Y = ((angle.Y < 0f) ? -1.535889f : 1.535889f);
                             }
-                            angle.X = -(float)Math.Atan2(matrixIKRotation.M23, matrixIKRotation.M33);
-                            angle.Z = -(float)Math.Atan2(matrixIKRotation.M12, matrixIKRotation.M11);
+                            angle.X = (float)Math.Atan2(matrixIKRotation.M23, matrixIKRotation.M33);
+                            angle.Z = (float)Math.Atan2(matrixIKRotation.M12, matrixIKRotation.M11);
                             LimitAngle(ref angle, linkNum, axis_lim);
                             transformBone.IKRotation = Quaternion.FromAxisAngle(Vector3.UnitX, angle.X) * Quaternion.FromAxisAngle(Vector3.UnitY, angle.Y) * Quaternion.FromAxisAngle(Vector3.UnitZ, angle.Z);
                             break;
@@ -318,8 +344,8 @@ namespace Toys
                             {
                                 angle.Z = ((angle.Z < 0f) ? -1.535889f : 1.535889f);
                             }
-                            angle.X = -(float)Math.Atan2(matrixIKRotation.M23, matrixIKRotation.M22);
-                            angle.Y = -(float)Math.Atan2(matrixIKRotation.M31, matrixIKRotation.M11);
+                            angle.X = (float)Math.Atan2(matrixIKRotation.M23, matrixIKRotation.M22);
+                            angle.Y = (float)Math.Atan2(matrixIKRotation.M31, matrixIKRotation.M11);
                             LimitAngle(ref angle, linkNum, axis_lim);
                             transformBone.IKRotation = Quaternion.FromAxisAngle(Vector3.UnitY, angle.Y) * Quaternion.FromAxisAngle(Vector3.UnitZ, angle.Z) * Quaternion.FromAxisAngle(Vector3.UnitX, angle.X);
                             break;

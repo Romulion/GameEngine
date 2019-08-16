@@ -7,7 +7,8 @@ namespace Toys
     {
         public readonly Bone Bone;
         public Matrix4 TransformMatrix;
-        public Matrix4 LocalSpace;
+        public Matrix4 PhysTransform;
+        public bool Phys = false;
 
         //initial bone space coordinetes for reference
         public Matrix4 LocalSpaceDefault;
@@ -56,6 +57,7 @@ namespace Toys
             LocalSpaceInverted = Matrix4.Identity;
             IsIK = Bone.IK;
             IKRotation = Quaternion.Identity;
+            PhysTransform = Matrix4.Identity;
             ResetTransform(false);
         }
 
@@ -214,8 +216,16 @@ namespace Toys
         {
             //TransformMatrix = LocalMatrix * LocalSpaceInverted;
             //TransformMatrix.Transpose();
-            BoneMatrix = LocalSpaceInverted * BoneMatrix * LocalSpaceDefault;
-            TransformMatrix = (Parent == null) ? BoneMatrix : BoneMatrix * Parent.TransformMatrix;
+            if (!Phys){
+                BoneMatrix = LocalSpaceInverted * BoneMatrix * LocalSpaceDefault;
+                TransformMatrix = (Parent == null) ? BoneMatrix : BoneMatrix * Parent.TransformMatrix;
+            }
+            else 
+            {
+                TransformMatrix = PhysTransform;
+                //Phys = false;
+            }
+
         }
 
         /*

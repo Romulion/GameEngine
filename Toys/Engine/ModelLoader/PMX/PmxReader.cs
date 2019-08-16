@@ -602,18 +602,6 @@ namespace Toys
 
                 //inverting x axis
                 //rigit.Position = new Vector3(-rigit.Position.X, rigit.Position.Y, rigit.Position.Z);
-                if (i >= 113 && i < 123)
-                {
-
-                    // Console.WriteLine(rigit.Size);
-                   // Console.WriteLine(rigit.Position);
-                    //rigit.NonCollisionGroup = -1;
-                }
-                else
-                {
-                   // rigit.Mass = 0;
-                   // rigit.Size = new Vector3(0.01f);
-                }
 
                 rigitbodies[i] = rigit;
 			}
