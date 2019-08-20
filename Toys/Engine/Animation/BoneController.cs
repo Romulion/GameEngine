@@ -1,5 +1,7 @@
 ﻿using System;
 using OpenTK;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Toys
 {
@@ -7,6 +9,7 @@ namespace Toys
 	{
         BoneTransform[] bones;
 		Matrix4[] skeleton;
+        BoneTransform[] bonesOrdered;
 
 		public BoneController(BoneTransform[] bones)
 		{
@@ -22,9 +25,13 @@ namespace Toys
             Initialize(bones);
 
             skeleton = new Matrix4[bones.Length];
+            
+            
             DefaultPos();
             //for tests
-            //this.bones[1].SetTransform(new Quaternion(0f,0f,0f),new Vector3(0f,-0.6f,0));
+            this.bones[1].SetTransform(Quaternion.Identity,new Vector3(0f,-0.7f,0f));
+            
+            //this.bones[84].IK.LoopCount = 10;
             //this.bones[161].SetTransform(new Quaternion(0,0, -45 * (float)Math.PI / 180),Vector3.Zero);
             UpdateSkeleton();
         }
@@ -128,6 +135,7 @@ namespace Toys
                 }
                 this.bones[i] = boneTransform;
             }
+ 
         }
 
         public void UpdateSkeleton()
@@ -136,6 +144,7 @@ namespace Toys
             {
                 bones[i].UpdateLocalMatrix();
             }
+
             for(int i = 0; i < bones.Length; i++)
             {
                 bones[i].UpdateTransformMatrix();

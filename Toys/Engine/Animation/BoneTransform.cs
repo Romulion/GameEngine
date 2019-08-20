@@ -69,44 +69,43 @@ namespace Toys
             //additional parent bone
             if (IsRotateAdd && AddParent != null)
 	        {
-		        var addRotation = Quaternion.Identity;
-
+		        AddRotation = Quaternion.Identity;
 		        if (!IsAddLocal)
 		        {
-			        addRotation = ((!AddParent.IsRotateAdd) ? AddParent.Rotation : AddRotation);
+			        AddRotation = ((!AddParent.IsRotateAdd) ? AddParent.Rotation : AddParent.AddRotation);
 		        }
 		        else
 		        {
-			        addRotation = AddParent.LocalMatrix.ExtractRotation();
+			        AddRotation = AddParent.LocalMatrix.ExtractRotation();
 		        }
 		        if (AddParent.IsIKLink && !IsAddLocal)
 		        {
-			        addRotation *= AddParent.IKRotation;
+			        AddRotation *= AddParent.IKRotation;
 		        }
 		        if (AddRatio != 1f)
 		        {
-			        addRotation = Quaternion.Slerp(Quaternion.Identity, addRotation, AddRatio);
+			        AddRotation = Quaternion.Slerp(Quaternion.Identity, AddRotation, AddRatio);
 		        }
-		        rot = (AddRotation = addRotation * rot);
+		        rot = (AddRotation *= rot);
 	        }
 	        if (IsTranslateAdd && AddParent != null)
 	        {
-		        Vector3 left = Vector3.Zero;
+		        AddTranslation = Vector3.Zero;
 		        if (!IsAddLocal)
 		        {
-			        left = ((!AddParent.IsTranslateAdd) ? (AddParent.Translation) :AddTranslation);
+			        AddTranslation = ((!AddParent.IsTranslateAdd) ? (AddParent.Translation) : AddParent.AddTranslation);
 		        }
 		        else
 		        {
-			        left.X = AddParent.LocalMatrix.M41 - AddParent.Bone.Position.X;
-			        left.Y = AddParent.LocalMatrix.M42 - AddParent.Bone.Position.Y;
-			        left.Z = AddParent.LocalMatrix.M43 - AddParent.Bone.Position.Z;
+			        AddTranslation.X = AddParent.LocalMatrix.M41 - AddParent.LocalSpaceDefault.M41;
+			        AddTranslation.Y = AddParent.LocalMatrix.M42 - AddParent.LocalSpaceDefault.M42;
+			        AddTranslation.Z = AddParent.LocalMatrix.M43 - AddParent.LocalSpaceDefault.M43;
 		        }
 		        if (AddRatio != 1f)
 		        {
-			        left *= AddRatio;
+			        AddTranslation *= AddRatio;
 		        }
-		        trans = (AddTranslation = left + trans);
+		        trans = (AddTranslation += trans);
 	        }
 
 
@@ -117,14 +116,18 @@ namespace Toys
                 rot *= IKRotation;
             }
 
-            
             LocalMatrix = Matrix4.CreateFromQuaternion(rot);
             
             if (Scale.X != 1f || Scale.Y != 1f || Scale.Z != 1f)
                 LocalMatrix *= Matrix4.CreateScale(Scale);
-            LocalMatrix *= Matrix4.CreateTranslation(trans);
+
+            LocalMatrix.M41 += trans.X;
+            LocalMatrix.M42 += trans.Y;
+            LocalMatrix.M43 += trans.Z;
             BoneMatrix = LocalMatrix;
-            LocalMatrix *= Matrix4.CreateTranslation(InitialOffset);
+            LocalMatrix.M41 += InitialOffset.X;
+            LocalMatrix.M42 += InitialOffset.Y;
+            LocalMatrix.M43 += InitialOffset.Z;
 
             if (Parent != null)
             {
@@ -147,7 +150,6 @@ namespace Toys
         {
             Quaternion rot = LocalRotationForIKLink * IKRotation;
             LocalMatrix = Matrix4.CreateFromQuaternion(rot);
-            //if (Bone.Index == 163) { Console.WriteLine(LocalMatrix); }
             if (Scale.X != 1f || Scale.Y != 1f || Scale.Z != 1f)
             {
                 LocalMatrix.M11 = LocalMatrix.M11 * Scale.X;
@@ -160,19 +162,17 @@ namespace Toys
                 LocalMatrix.M32 = LocalMatrix.M32 * Scale.Z;
                 LocalMatrix.M33 = LocalMatrix.M33 * Scale.Z;
             }
-            LocalMatrix.M41 = LocalMatrix.M41 + LocalTranslationForIKLink.X;
-            LocalMatrix.M42 = LocalMatrix.M42 + LocalTranslationForIKLink.Y;
-            LocalMatrix.M43 = LocalMatrix.M43 + LocalTranslationForIKLink.Z;
+            LocalMatrix.M41 += LocalTranslationForIKLink.X;
+            LocalMatrix.M42 += LocalTranslationForIKLink.Y;
+            LocalMatrix.M43 += LocalTranslationForIKLink.Z;
             BoneMatrix = LocalMatrix;
-            LocalMatrix.M41 = LocalMatrix.M41 + InitialOffset.X;
-            LocalMatrix.M42 = LocalMatrix.M42 + InitialOffset.Y;
-            LocalMatrix.M43 = LocalMatrix.M43 + InitialOffset.Z;
+            LocalMatrix.M41 += InitialOffset.X;
+            LocalMatrix.M42 += InitialOffset.Y;
+            LocalMatrix.M43 += InitialOffset.Z;
             if (Parent != null)
             {
                 LocalMatrix *= Parent.LocalMatrix;
             }
-            //if (Bone.Index == 161)
-            //    Console.WriteLine(LocalMatrix);
         }
 
         public void ResetTransform(bool link)
@@ -182,7 +182,6 @@ namespace Toys
             TransformMatrix = Matrix4.Identity;
 
             LocalScale = new Vector3(1f);
-            //LocalRotation = Quaternion.Identity;
 
             Scale = Vector3.One;
             Rotation = Quaternion.Identity;
@@ -213,19 +212,20 @@ namespace Toys
         }
 
         public void UpdateTransformMatrix()
-        {
-            //TransformMatrix = LocalMatrix * LocalSpaceInverted;
-            //TransformMatrix.Transpose();
+        {            
             if (!Phys){
+                /*
                 BoneMatrix = LocalSpaceInverted * BoneMatrix * LocalSpaceDefault;
                 TransformMatrix = (Parent == null) ? BoneMatrix : BoneMatrix * Parent.TransformMatrix;
+                */
+                TransformMatrix = LocalSpaceInverted * LocalMatrix;
             }
             else 
             {
                 TransformMatrix = PhysTransform;
-                //Phys = false;
+                Phys = false;
             }
-
+            
         }
 
         /*

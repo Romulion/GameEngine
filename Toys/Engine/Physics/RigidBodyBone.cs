@@ -85,6 +85,7 @@ namespace Toys
             var mat = GetMat(startTransform).Inverted() * GetMat(Body.WorldTransform) * world;
 			//acon.SetTransformWorld(bone, mat);
             acon.GetBones[bone].PhysTransform = mat;
+            acon.GetBones[bone].Phys = true;
         }
 
 

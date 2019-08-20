@@ -1,4 +1,4 @@
-﻿#define PHYS
+﻿//#define PHYS
 
 using System;
 using OpenTK;

@@ -39,10 +39,10 @@ namespace Toys
         public override void Prepare()
         {
             //test  
-            //skeleton.GetBone(1).SetTransform(new Quaternion(0f,0f ,0f),new Vector3(0, (float)(-0.2 + 0.2 * Math.Cos(test * Math.PI / 180)),0));
+            //skeleton.GetBone(1).SetTransform(new Quaternion(0f,0f ,0f),new Vector3(0, (float)(-0.4 + 0.4 * Math.Cos(test * Math.PI / 180)),0));
             //test += 2;
             //end test
-            skeleton.UpdateSkeleton();
+            //skeleton.UpdateSkeleton();
 
         }
 
@@ -52,7 +52,6 @@ namespace Toys
 			mesh.BindVAO();
 			foreach (var mat in mats)
 			{
-
 				if (!mat.rndrDirrectives.render)
 					continue;
 				//mat.GetShader.ApplyShader();

@@ -25,7 +25,7 @@ namespace Toys
 
 		public void Update(float elapsedTime)
 		{
-            World.StepSimulation(elapsedTime/1000);
+            World.StepSimulation(elapsedTime/1000,2);
 		}
 
 

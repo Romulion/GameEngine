@@ -32,7 +32,6 @@ namespace Toys
             node.AddComponent(tb);
             tb.SetText("牡丹制服高校(アニメ版)ver3");
             */
-
             scene.AddObject(node);
 
 			var task = new Task(() =>

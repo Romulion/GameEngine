@@ -84,7 +84,7 @@ namespace Toys
 
             for (int i = 0; i < iK.Links.Length; i++)
             {
-                if (arr.Length > iK.Links[i].Bone)
+                if (arr.Length > iK.Links[i].Bone && arr.Length >= 0)
                 {
                     IKLinks[i] = iK.Links[i];
                     IKLinksBones[i] = arr[iK.Links[i].Bone];
@@ -103,7 +103,7 @@ namespace Toys
             LimitOnce = iK.AngleLimit;
             LoopCount = Math.Min(iK.LoopCount, 256);
 
-            if (arr.Length > iK.Target)
+            if (arr.Length > iK.Target && iK.Target >=0)
             {
                 Target = arr[iK.Target];
                 IK.IsIK = true;
@@ -148,20 +148,22 @@ namespace Toys
                 return;
 
             InitializeAngle();
-            CalcBonePosition(IKLinksBones.Length - 1);
+            //CalcBonePosition(IKLinksBones.Length - 1);
 
             m_ikPosition = IK.GetTransformedBonePosition();
             Target.UpdateLocalMatrix(true);
             m_targetPosition = Target.GetTransformedBonePosition();
-            /*
-            if (IK.Bone.Index == 165)
+            
+            if (IK.Bone.Index == 17)
             {
                 Console.WriteLine("IK");
                 Console.WriteLine(m_targetPosition);
                 Console.WriteLine(m_ikPosition);
                 Console.WriteLine((m_targetPosition - m_ikPosition).LengthSquared);
+                //LoopCount = 1000;
             }
-            */
+
+            
             if ( (m_ikPosition - m_targetPosition).LengthSquared < 1E-08f)
                 return;
 
@@ -169,9 +171,8 @@ namespace Toys
             if ((m_ikPosition - m_targetPosition).LengthSquared < 1E-08f)
                 return;
 
-            int loopCount = LoopCount;
-            int num = loopCount / 2;
-            for (int i = 0; i < loopCount; i++)
+            int num = LoopCount / 2;
+            for (int i = 0; i < LoopCount; i++)
             {
                 for (int j = 0; j < IKLinksBones.Length; j++)
                 {
@@ -181,49 +182,38 @@ namespace Toys
                     }
                 }
                 
-                if (IK.Bone.Index == 165)
-                {
-                   // Console.WriteLine("iter end");
-                   // Console.WriteLine(i < num);
-                   // Console.WriteLine((m_ikPosition - m_targetPosition).LengthSquared);
-                }
-                
                 if ((m_ikPosition - m_targetPosition).LengthSquared < 1E-08f)
                     break;
             }
         }
 
         private void IKProc_Link(int linkNum, bool axis_lim = true)
-        {
-            
-
-            
+        {   
             BoneTransform transformBone = IKLinksBones[linkNum];
-            /*
-            if (IK.Bone.Index == 165 && transformBone.Bone.Index == 163)
+            
+            if (IK.Bone.Index == 17 && linkNum == 0)
             {
-                Console.WriteLine("link");
-                Console.WriteLine(m_targetPosition);
-                Console.WriteLine(m_ikPosition);
-                Console.WriteLine((m_targetPosition - m_ikPosition).LengthSquared);
+                Console.WriteLine("link {0} targ {1}, ik {2}", linkNum, m_targetPosition, m_ikPosition);
+                //Console.WriteLine(m_targetPosition);
+                //Console.WriteLine(m_ikPosition);
+                //Console.WriteLine((m_targetPosition - m_ikPosition).LengthSquared);
             }
-            */
+            
 
-            Vector3 linkPos = new Vector3(transformBone.LocalMatrix.M41, transformBone.LocalMatrix.M42, transformBone.LocalMatrix.M43);
+            Vector3 linkPos = transformBone.GetTransformedBonePosition();
             Vector3 vectLinkTarget = linkPos - m_targetPosition;
             vectLinkTarget.Normalize();
             Vector3 vectLinkIK = linkPos - m_ikPosition;
             vectLinkIK.Normalize();
-            Matrix4 matrixParent = (transformBone.Parent == null) ? Matrix4.Identity : transformBone.Parent.LocalMatrix;
-            //removing transponation
-            matrixParent.M41 = (matrixParent.M42 = (matrixParent.M43 = 0f));
 
+            Matrix4 matrixParent = (transformBone.Parent == null) ? Matrix4.Identity : transformBone.Parent.LocalMatrix;
+            matrixParent.M41 = (matrixParent.M42 = (matrixParent.M43 = 0f));
             Matrix4 matrix2 = Matrix4.Transpose(matrixParent);
             matrix2.M14 = (matrix2.M24 = (matrix2.M34 = 0f));
 
             //finding axis to rotate
             Vector3 axis = Vector3.Cross(vectLinkTarget, vectLinkIK);
-            
+
             if (IKLinks[linkNum].IsLimit & axis_lim)
             {
                 switch (IKLinks[linkNum].FixAxis)
@@ -263,7 +253,6 @@ namespace Toys
                 axis.Normalize();
             }
 
-
             float dot = Vector3.Dot(vectLinkTarget, vectLinkIK);
             if (dot > 1f)
             {
@@ -274,35 +263,19 @@ namespace Toys
                 dot = -1f;
             }
 
-
-
             float angleTargetIK = (float)Math.Acos(dot);
             float angleMaxRotation = LimitOnce * (float)(linkNum + 1);
             angleTargetIK = Math.Min(angleTargetIK, angleMaxRotation);
-            /*
-            if (IK.Bone.Index == 165)
-            {
-                Console.WriteLine("angle");
-                Console.WriteLine(angleTargetIK);           
+            
+            
+            if (IK.Bone.Index == 17 && linkNum == 1)
+            {  
+              //  Console.WriteLine("link 1, angle {1}, axis {2}", linkNum, angleTargetIK, axis);
             }
-            */
             //prevent paralel vectors error 
             if (angleTargetIK != 0 && !Single.IsNaN(axis.X))
                 transformBone.IKRotation *= Quaternion.FromAxisAngle(axis, angleTargetIK);
-
-            if (IK.Bone.Index == 165 && Single.IsNaN(transformBone.IKRotation.X))
-            {
-                Console.WriteLine("ERR");
-                Console.WriteLine(vectLinkTarget);
-                Console.WriteLine(vectLinkIK);
-                Console.WriteLine(axis);
-                Console.WriteLine(angleTargetIK);
-            }
-            if (IK.Bone.Index == 165)
-            {
-                //Console.WriteLine(transformBone.IKRotation);
-            }
-
+  
             if (IKLinks[linkNum].IsLimit)
             {
                 Vector3 angle = Vector3.Zero;
@@ -331,6 +304,7 @@ namespace Toys
                             {
                                 angle.Y = ((angle.Y < 0f) ? -1.535889f : 1.535889f);
                             }
+                            float num10 = (float)Math.Cos(angle.Y);
                             angle.X = (float)Math.Atan2(matrixIKRotation.M23, matrixIKRotation.M33);
                             angle.Z = (float)Math.Atan2(matrixIKRotation.M12, matrixIKRotation.M11);
                             LimitAngle(ref angle, linkNum, axis_lim);
@@ -344,6 +318,7 @@ namespace Toys
                             {
                                 angle.Z = ((angle.Z < 0f) ? -1.535889f : 1.535889f);
                             }
+                            float num6 = (float)Math.Cos(angle.Z);
                             angle.X = (float)Math.Atan2(matrixIKRotation.M23, matrixIKRotation.M22);
                             angle.Y = (float)Math.Atan2(matrixIKRotation.M31, matrixIKRotation.M11);
                             LimitAngle(ref angle, linkNum, axis_lim);
@@ -353,10 +328,14 @@ namespace Toys
                 }
                 transformBone.IKRotation = Quaternion.Invert(transformBone.LocalRotationForIKLink) * transformBone.IKRotation;
             }
+            if (IK.Bone.Index == 17 && linkNum < 2)
+            {  
+                transformBone.IKRotation.ToAxisAngle(out Vector3 ax, out float ang);
+                Console.WriteLine("link {0}, angle {1}, axis {2}",linkNum, ang, ax);
+            }
             CalcBonePosition_Link(linkNum);
         }
 
-        //normalize angles to limit
         private void LimitAngle(ref Vector3 angle, int linkNum, bool axis_lim)
         {
             Vector3 high = IKLinks[linkNum].LimitMax;
@@ -368,29 +347,29 @@ namespace Toys
             }
             else if (angle.X > high.X)
             {
-                float num2 = 2f * high.X - angle.X;
-                angle.X = ((num2 >= low.X & axis_lim) ? num2 : high.X);
+                float num = 2f * high.X - angle.X;
+                angle.X = ((num >= low.X & axis_lim) ? num : high.X);
             }
             if (angle.Y < low.Y)
             {
-                float num3 = 2f * low.Y - angle.Y;
-                angle.Y = ((num3 <= high.Y & axis_lim) ? num3 : low.Y);
+                float num = 2f * low.Y - angle.Y;
+                angle.Y = ((num <= high.Y & axis_lim) ? num : low.Y);
             }
             else if (angle.Y > high.Y)
             {
-                float num4 = 2f * high.Y - angle.Y;
-                angle.Y = ((num4 >= low.Y & axis_lim) ? num4 : high.Y);
+                float num = 2f * high.Y - angle.Y;
+                angle.Y = ((num >= low.Y & axis_lim) ? num : high.Y);
             }
             if (angle.Z < low.Z)
             {
-                float num5 = 2f * low.Z - angle.Z;
-                angle.Z = ((num5 <= high.Z & axis_lim) ? num5 : low.Z);
+                float num = 2f * low.Z - angle.Z;
+                angle.Z = ((num <= high.Z & axis_lim) ? num : low.Z);
                 return;
             }
             if (angle.Z > high.Z)
             {
-                float num6 = 2f * high.Z - angle.Z;
-                angle.Z = ((num6 >= low.Z & axis_lim) ? num6 : high.Z);
+                float num = 2f * high.Z - angle.Z;
+                angle.Z = ((num >= low.Z & axis_lim) ? num : high.Z);
             }
         }
 

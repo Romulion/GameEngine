@@ -37,7 +37,7 @@ namespace Toys
 		public Matrix4 localCoordinate = Matrix4.Identity;
         public BoneIK IKData;
 		//unused values
-		public int Layer;
+		public int Level;
 
 		//flags
 		public bool tail;

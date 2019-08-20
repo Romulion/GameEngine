@@ -68,19 +68,16 @@ namespace Toys
             if (LimitMin.X == 0f && LimitMax.X == 0f && LimitMin.Y == 0f && LimitMax.Y == 0f && LimitMin.Z == 0f && LimitMax.Z == 0f)
             {
                 FixAxis = FixAxisType.Fix;
-                return;
             }
-            if (LimitMin.Y == 0f && LimitMax.Y == 0f && LimitMin.Z == 0f && LimitMax.Z == 0f)
+            else if (LimitMin.Y == 0f && LimitMax.Y == 0f && LimitMin.Z == 0f && LimitMax.Z == 0f)
             {
                 FixAxis = FixAxisType.X;
-                return;
             }
-            if (LimitMin.X == 0f && LimitMax.X == 0f && LimitMin.Z == 0f && LimitMax.Z == 0f)
+            else if (LimitMin.X == 0f && LimitMax.X == 0f && LimitMin.Z == 0f && LimitMax.Z == 0f)
             {
                 FixAxis = FixAxisType.Y;
-                return;
             }
-            if (LimitMin.X == 0f && LimitMax.X == 0f && LimitMin.Y == 0f && LimitMax.Y == 0f)
+            else if (LimitMin.X == 0f && LimitMax.X == 0f && LimitMin.Y == 0f && LimitMax.Y == 0f)
             {
                 FixAxis = FixAxisType.Z;
             }

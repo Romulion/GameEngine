@@ -1,17 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\packages\\OpenTK.2.0.0",
     "\\Toys",
     "\\Toys\\Engine",
     "\\Toys\\Engine\\Animation",
     "\\Toys\\Engine\\Animation\\IK",
     "\\Toys\\Engine\\Graphics",
-    "\\Toys\\Engine\\Graphics\\TextRendering",
+    "\\Toys\\Engine\\Graphics\\VertexContainers",
     "\\Toys\\Engine\\ModelLoader",
     "\\Toys\\Engine\\ModelLoader\\PMX",
     "\\Toys\\Engine\\Physics"
   ],
-  "SelectedNode": "\\Toys\\Engine\\Physics\\Joint.cs",
+  "SelectedNode": "\\Toys\\Engine\\Graphics\\MeshDrawerRigged.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -163,7 +163,6 @@ namespace Toys
 					indexes[i] = reader.readVal(header.GetVertexIndexSize);
 			    */
             }
-
 			mesh = new Mesh(vertices, indexes);
 			meshRigged = new Mesh(verticesR, indexes);
 		}
@@ -367,10 +366,10 @@ namespace Toys
                 else
                     ParentIndex = reader.readVal(header.GetBoneIndexSize);
 
-                int Layer = file.ReadInt32();
+                int Level = file.ReadInt32();
 				byte[] flags = file.ReadBytes(2);
 				Bone bone = new Bone(Name, NameEng, Position, ParentIndex, flags);
-				bone.Layer = Layer;
+				bone.Level = Level;
 				if (bone.tail)
 					reader.readVal(header.GetBoneIndexSize);
 				else
