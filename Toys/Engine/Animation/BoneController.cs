@@ -26,13 +26,9 @@ namespace Toys
 
             skeleton = new Matrix4[bones.Length];
             
-            
             DefaultPos();
             //for tests
-            this.bones[1].SetTransform(Quaternion.Identity,new Vector3(0f,-0.7f,0f));
-            
-            //this.bones[84].IK.LoopCount = 10;
-            //this.bones[161].SetTransform(new Quaternion(0,0, -45 * (float)Math.PI / 180),Vector3.Zero);
+            //this.bones[1].SetTransform(Quaternion.Identity,new Vector3(0f,-0.7f,0f));
             UpdateSkeleton();
         }
 

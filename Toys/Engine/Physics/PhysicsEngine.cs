@@ -4,7 +4,7 @@ using BulletSharp.Math;
 
 namespace Toys
 {
-	public class PhysicsEngine
+	public class PhysicsEngine : IDisposable
 	{
 		CollisionDispatcher dispatcher;
 		DbvtBroadphase broadphase;
@@ -25,7 +25,7 @@ namespace Toys
 
 		public void Update(float elapsedTime)
 		{
-            World.StepSimulation(elapsedTime/1000,2);
+            World.StepSimulation(elapsedTime/1000,4);
 		}
 
 
@@ -45,5 +45,13 @@ namespace Toys
 
 			World.AddRigidBody(body,1, short.MaxValue);
 		}
+
+        public void Dispose()
+        {
+            broadphase.Dispose();
+            dispatcher.Dispose();
+            World.Dispose();
+            collisionConf.Dispose();
+        }
 	}
 }

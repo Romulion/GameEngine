@@ -71,7 +71,10 @@ D:\vp\C#\GameEngine\Toys\bin\Debug\pango-sharp.pdb
 D:\vp\C#\GameEngine\Toys\bin\Debug\atk-sharp.pdb
 D:\vp\C#\GameEngine\Toys\obj\x86\Debug\Toys.csproj.CopyComplete
 D:\vp\C#\GameEngine\Toys\obj\x86\Debug\Toys.csprojAssemblyReference.cache
-D:\vp\C#\GameEngine\Toys\bin\Debug\BulletSharp.dll.config
 D:\vp\C#\GameEngine\Toys\bin\Debug\INIFileParser.xml
 D:\vp\C#\GameEngine\Toys\bin\Debug\SharpFont.xml
 D:\vp\C#\GameEngine\Toys\bin\Debug\SharpFont.dll.config
+D:\vp\C#\GameEngine\Toys\bin\Debug\BulletSharp.dll
+D:\vp\C#\GameEngine\Toys\bin\Debug\INIFileParser.dll
+D:\vp\C#\GameEngine\Toys\bin\Debug\SharpFont.dll
+D:\vp\C#\GameEngine\Toys\bin\Debug\freetype6.dll

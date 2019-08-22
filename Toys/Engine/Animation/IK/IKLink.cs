@@ -65,6 +65,7 @@ namespace Toys
             }
 
             FixAxis = FixAxisType.None;
+
             if (LimitMin.X == 0f && LimitMax.X == 0f && LimitMin.Y == 0f && LimitMax.Y == 0f && LimitMin.Z == 0f && LimitMax.Z == 0f)
             {
                 FixAxis = FixAxisType.Fix;

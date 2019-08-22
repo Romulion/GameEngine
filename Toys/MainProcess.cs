@@ -22,8 +22,9 @@ namespace Toys
             //string str = "";
 			SceneNode node = ResourcesManager.LoadAsset<SceneNode>(args[0]);
 			node.Name = "Model1";
-			MeshDrawer md = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
-            //node.GetTransform.Position = new Vector3(1.0f, 0.0f, 0.0f);
+            //node.GetTransform.Rotation = new Vector3(0,(float)Math.PI / 2,0);
+            //MeshDrawer md = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
+            //node.GetTransform.Position = new Vector3(0f, 1.0f, 0.0f);
             //node.phys.ReinstalizeBodys();
 
             //need sync

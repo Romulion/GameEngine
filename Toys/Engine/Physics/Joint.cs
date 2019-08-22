@@ -89,18 +89,15 @@ namespace Toys
                     jointSpring6.LinearLowerLimit = GetVec3(jcon.PosMin);
 					jointSpring6.LinearUpperLimit = GetVec3(jcon.PosMax);
                     
-                    jointSpring6.EnableSpring(0,false);
-                    jointSpring6.EnableSpring(1,false);
-                    jointSpring6.EnableSpring(2,false);
-                    
-                    jointSpring6.SetStiffness(0,jcon.PosSpring.X);
-                    jointSpring6.SetStiffness(1,jcon.PosSpring.X);
-                    jointSpring6.SetStiffness(2,jcon.PosSpring.X);
+                    jointSpring6.EnableSpring(0,true);
+                    jointSpring6.EnableSpring(1,true);
+                    jointSpring6.EnableSpring(2,true);
+
                     /*
                     jointSpring6.SetBounce(0,jcon.PosSpring.X);
                     jointSpring6.SetBounce(1,jcon.PosSpring.Y);
                     jointSpring6.SetBounce(2,jcon.PosSpring.Z);
-
+                    
                     jointSpring6.SetDamping(0,jcon.RotSpring.X);
                     jointSpring6.SetDamping(1,jcon.RotSpring.Y);
                     jointSpring6.SetDamping(2,jcon.RotSpring.Z);

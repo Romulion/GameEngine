@@ -1,4 +1,4 @@
-﻿//#define PHYS
+﻿#define PHYS
 
 using System;
 using OpenTK;
@@ -42,6 +42,7 @@ namespace Toys
 				Load += OnLoad;
 				UpdateFrame += Update;
 				RenderFrame += OnRender;
+                Closing += CoreEngine_Closing;
 			}
 			catch (Exception e)
 			{
@@ -50,9 +51,14 @@ namespace Toys
 			}
 		}
 
-		//for Load event
-		//
-		void OnLoad(object sender, EventArgs e)
+        private void CoreEngine_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            pEngine.Dispose();
+        }
+
+        //for Load event
+        //
+        void OnLoad(object sender, EventArgs e)
 		{
 			VSync = VSyncMode.On;
 			gEngine.OnLoad();
@@ -116,7 +122,7 @@ namespace Toys
 			//render main scene
 			gEngine.Render();
 			//render physics
-			//(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
+			(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
 
 			SwapBuffers();
 
