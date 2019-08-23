@@ -76,9 +76,10 @@ namespace Toys
 		//
 		void Update(object sender, FrameEventArgs e)
 		{
-			stopwatch.Start();
-			//mesh morpher
-			if (task != null)
+            elapsed = (float)(UpdateTime + RenderTime);
+            
+            //mesh morpher
+            if (task != null)
 			{
 				task();
 				task = null;
@@ -101,15 +102,18 @@ namespace Toys
 			{
 				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
 			}
-
             //physics
 #if (PHYS)
 			foreach (var node in mainScene.GetNodes())
 			{
 				node.phys.Update();
 			}
-			pEngine.Update(elapsed);
-			foreach (var node in mainScene.GetNodes())
+            //stopwatch.Start();
+            pEngine.Update(elapsed);
+            //stopwatch.Stop();
+            //Console.WriteLine(stopwatch.ElapsedTicks * ((double)1000 / Stopwatch.Frequency));
+            //stopwatch.Reset();
+            foreach (var node in mainScene.GetNodes())
 			{
 				node.phys.PostUpdate();
 			}
@@ -122,13 +126,9 @@ namespace Toys
 			//render main scene
 			gEngine.Render();
 			//render physics
-			(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
+			//(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
 
 			SwapBuffers();
-
-            stopwatch.Stop();
-            elapsed = stopwatch.ElapsedMilliseconds;
-			stopwatch.Reset();
         }
 
 

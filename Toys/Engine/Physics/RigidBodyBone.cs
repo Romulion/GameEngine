@@ -22,8 +22,7 @@ namespace Toys
         public BoneController acon { get; set; }
         public RigidContainer rigCon { get; set; }
 		RigidBodyConstructionInfo rbInfo;
-
-		public RigidBodyBone(RigidContainer rcon)
+        public RigidBodyBone(RigidContainer rcon)
 		{
             rigCon = rcon;
             CollisionShape shape = null;
@@ -51,12 +50,11 @@ namespace Toys
 			startTransform = Matrix.RotationYawPitchRoll(rcon.Rotation.Y, rcon.Rotation.X, rcon.Rotation.Z) * Matrix.Translation(GetVec3(rcon.Position));
             rbInfo = new RigidBodyConstructionInfo(rcon.Mass, new DefaultMotionState(startTransform), shape, inertia);
 			Body = new RigidBody(rbInfo);
-            //rbInfo.Dispose();
 
             Body.ActivationState = ActivationState.DisableDeactivation;
             Body.Friction = rcon.Friction;
             Body.SetDamping(rcon.MassAttenuation, rcon.RotationDamping);
-            Body.Restitution = rcon.Repulsion;
+            Body.Restitution = rcon.Restitution;
 
 			if (rcon.Phys == PhysType.FollowBone)
 				Body.SetCustomDebugColor (new Vector3(0,1,0));
@@ -64,11 +62,9 @@ namespace Toys
 				Body.SetCustomDebugColor (new Vector3(1,0,0));
 			else if (rcon.Phys == PhysType.GravityBone)
 				Body.SetCustomDebugColor (new Vector3(0,0,1));
-			
+		
             //Body.SetContactStiffnessAndDamping(0,0);
             //Body.SetContactStiffnessAndDamping(rcon.Repulsion, rcon.Repulsion);
-            
-
         }
 
 
@@ -76,15 +72,14 @@ namespace Toys
 
         public void SyncBone2Body(OpenTK.Matrix4 world)
 		{
-            //Body.WorldTransform = startTransform * GetMat(acon.GetSkeleton[bone]) * GetMat(world);
-            Body.WorldTransform = startTransform * GetMat(acon.GetBone(bone).TransformMatrix);
+            var mat = GetMat(acon.GetBone(bone).TransformMatrix * world);
+            Body.WorldTransform = startTransform * mat;
         }
 
 		public void SyncBody2Bone(OpenTK.Matrix4 world)
 		{
-            var mat = GetMat(startTransform).Inverted() * GetMat(Body.WorldTransform) * world;
-			//acon.SetTransformWorld(bone, mat);
-            acon.GetBones[bone].PhysTransform = mat;
+            var mat = GetMat(startTransform).Inverted() * GetMat(Body.WorldTransform);
+            acon.GetBones[bone].PhysTransform = mat * world;
             acon.GetBones[bone].Phys = true;
         }
 

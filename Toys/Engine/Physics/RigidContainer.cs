@@ -24,7 +24,7 @@ namespace Toys
 		public float Mass;
 		public float MassAttenuation;
 		public float RotationDamping;
-		public float Repulsion;
+		public float Restitution;
 		public float Friction;
 		public PhysType Phys;
 

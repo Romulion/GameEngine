@@ -102,8 +102,8 @@ namespace Toys
                     jointSpring6.SetDamping(1,jcon.RotSpring.Y);
                     jointSpring6.SetDamping(2,jcon.RotSpring.Z);
                     */
+                    jointSpring6.SetEquilibriumPoint();
                     joint = jointSpring6;
-                   
                     break;
 			}
 

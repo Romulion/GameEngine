@@ -577,7 +577,7 @@ namespace Toys
 		/// </summary>
 		void ReadRigit()
 		{
-			int readCount = file.ReadInt32();
+            int readCount = file.ReadInt32();
 			rigitbodies = new RigidContainer[readCount];
 			RigidContainer rigit;
 			for (int i = 0; i<readCount; i++)
@@ -595,7 +595,7 @@ namespace Toys
 				rigit.Mass = file.ReadSingle();
 				rigit.MassAttenuation = file.ReadSingle() ;
 				rigit.RotationDamping = file.ReadSingle() * multipler;
-				rigit.Repulsion = file.ReadSingle();
+				rigit.Restitution = file.ReadSingle();
 				rigit.Friction = file.ReadSingle();
 				rigit.Phys = (PhysType)file.ReadByte();
 
@@ -608,7 +608,7 @@ namespace Toys
 
 		void ReadJoints()
 		{
-			int jointCount = file.ReadInt32();
+            int jointCount = file.ReadInt32();
 			joints = new JointContainer[jointCount];
 
 			for (int i = 0; i<jointCount; i++)

@@ -13,20 +13,31 @@ namespace Toys
 
 		public PhysicsEngine()
 		{
-			collisionConf = new DefaultCollisionConfiguration();
+            using (var collisionConfigurationInfo = new DefaultCollisionConstructionInfo
+            {
+                DefaultMaxPersistentManifoldPoolSize = 80000,
+                DefaultMaxCollisionAlgorithmPoolSize = 80000
+            })
+            {
+                collisionConf = new DefaultCollisionConfiguration(collisionConfigurationInfo);
+            };
             dispatcher = new CollisionDispatcher(collisionConf);
             broadphase = new DbvtBroadphase();
             var Solver = new SequentialImpulseConstraintSolver();
+            //DiscreteDynamicsWorldMultiThreaded(dispatcher, broadphase, Solver, collisionConf);
             World = new DiscreteDynamicsWorld(dispatcher, broadphase, Solver, collisionConf);
-			World.Gravity = new Vector3(0, -9.8f, 0);
+
+            //World = new DiscreteDynamicsWorldMultiThreaded(dispatcher, broadphase, cspm, csM, collisionConf);
+            World.Gravity = new Vector3(0, -9.8f, 0);
 			CreateFloor();
-		}
+            //World.LatencyMotionStateInterpolation = false;
+        }
 
 
 		public void Update(float elapsedTime)
 		{
-            World.StepSimulation(elapsedTime/1000,4);
-		}
+            World.StepSimulation(elapsedTime,4);
+        }
 
 
 		void CreateFloor()

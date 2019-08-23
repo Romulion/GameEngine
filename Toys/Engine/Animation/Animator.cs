@@ -27,7 +27,7 @@ namespace Toys
 			if (!isPlaing)
 				return;
 
-			time += (delta / 1000);
+			time += delta;
 
 			time = (time >= length + framelength) ? time % length : time;
 
