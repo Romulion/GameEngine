@@ -22,7 +22,8 @@ namespace Toys
 
         int x, y, ymax;
 
-		int VAO, VBO;
+        //for testing purpose
+        TextCanvas debugTextmap;
 
         List<TextCanvas> texts = new List<TextCanvas>();
         
@@ -46,8 +47,10 @@ namespace Toys
 
 			shdr.uniforms[0].SetValue(projection);
             charmap = Texture.CreateCharMap(mapSize, mapSize);
-            CreateCanvas();
-		}
+
+            //test
+            //CreateTestTextureMap();
+        }
 
 
         Character GetCharacter(char c)
@@ -79,7 +82,7 @@ namespace Toys
 										 face.Glyph.Advance.X.Value);
 			chars.Add(c, ch);
 
-            Console.WriteLine("{0} {1} {2} {3} {4}",c, x,y, bitmap.Width, bitmap.Rows);
+            Console.WriteLine("{0} {1} {2} {3} {4} {5}",c, (int)c, x,y, bitmap.Width, bitmap.Rows);
             x += bitmap.Width;
 
             bitmap.Dispose();
@@ -92,6 +95,7 @@ namespace Toys
             int VAO = GL.GenVertexArray();
             int VBO = GL.GenBuffer();
             GL.BindVertexArray(VAO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
             GL.EnableVertexAttribArray(0);
             GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Float, false, 4 * 4, 0);
             GL.BindVertexArray(0);
@@ -99,10 +103,14 @@ namespace Toys
             var canvas = new TextCanvas(VAO, VBO);
             texts.Add(canvas);
 
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+            //GL.MemoryBarrier(MemoryBarrierFlags.ElementArrayBarrierBit);
+            GL.BufferData(BufferTarget.ArrayBuffer, 1000 * 4, IntPtr.Zero, BufferUsageHint.DynamicDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             return canvas;
         }
 
-        public void AddText(TextCanvas canvas)
+        public void UpdateText(TextCanvas canvas)
         {
             GL.ActiveTexture(TextureUnit.Texture0);
             charmap.BindTexture();
@@ -113,6 +121,8 @@ namespace Toys
             int i = 0;
             foreach (var c in canvas.text)
             {
+                if (c == 8381)
+                    continue;
 
                 var chr = GetCharacter(c);
                 float xpos = x + chr.Bearing.X * canvas.scale;
@@ -129,15 +139,19 @@ namespace Toys
                      xpos + w, ypos + h,   chr.position.X + chr.Size.X / mapSize, chr.position.Y 
                 };
 
-                Array.Copy(verts, 0, vertices, i, 24);
+                Array.Copy(verts, 0, vertices, i, verts.Length);
                 x += (int)((chr.Advance >> 6) * canvas.scale);
 
                 i += 24;
             }
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, canvas.VBO);
+            //GL.MemoryBarrier(MemoryBarrierFlags.ElementArrayBarrierBit);
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, vertices.Length * 4, vertices);
+            //GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * 4, vertices, BufferUsageHint.DynamicDraw);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindVertexArray(0);
+
+            canvas.length = canvas.text.Length * 6;
         }
         
 		byte[] ReadFont(Stream strm)
@@ -169,30 +183,12 @@ namespace Toys
 
             GL.ActiveTexture(TextureUnit.Texture0);
             charmap.BindTexture();
-            
+
             foreach (var t in texts)
 			{
                 GL.BindVertexArray(t.VAO);
                 GL.DrawArrays(PrimitiveType.Triangles, 0, 6 * t.length);
             }
-#if debugTextmap
-            GL.BindVertexArray(VAO);
-            float[,] vertics = {
-                    { 0,    480,   0, 0},
-                    { 0,     0,      0, 1},
-                    { 480, 0,       1, 1},
-                    { 0,    480,  0, 0},
-                    { 480, 0,       1 , 1},
-                    { 480, 480,   1 , 0 }
-                };
-
-            //chr.texture.BindTexture();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, 6 * 4 * 4, vertics);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
-#endif
-
             GL.BindVertexArray(0);
 		}
 
@@ -201,5 +197,23 @@ namespace Toys
 			lib.Dispose();
 			face.Dispose();
 		}
+
+        private void CreateTestTextureMap()
+        {
+            debugTextmap = CreateCanvas();
+
+            float[,] vertics = {
+                    { 0,    480,   0, 0},
+                    { 0,     0,      0, 1},
+                    { 480, 0,       1, 1},
+                    { 0,    480,  0, 0},
+                    { 480, 0,       1 , 1},
+                    { 480, 480,   1 , 0 }
+                };
+            GL.BindBuffer(BufferTarget.ArrayBuffer, debugTextmap.VBO);
+            GL.BufferData(BufferTarget.ArrayBuffer, 6 * 4 * 4, vertics, BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            debugTextmap.length = 6;
+        }
 	}
 }

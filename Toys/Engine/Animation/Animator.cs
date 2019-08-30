@@ -175,5 +175,13 @@ namespace Toys
         {
     
         }
+
+        internal override void AddComponent(SceneNode node)
+        {
+        }
+
+        internal override void RemoveComponent()
+        {
+        }
     }
 }

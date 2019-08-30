@@ -9,8 +9,6 @@ namespace Toys
 		public JointContainer jcon { get; private set; }
 		public TypedConstraint joint { get; private set; }
 
-		int NoBody = 255;
-
 		public Joint(JointContainer jc, RigidBodyBone[] rbodies)
 		{
 			jcon = jc;

@@ -22,17 +22,27 @@ namespace Toys
             tr = GraphicsEngine.textRender;
             textobj = tr.CreateCanvas();
             textobj.pos = new Vector2(25);
+            Console.WriteLine(textobj.VBO);
         }
 
         public void SetText(string text)
         {
             textobj.text = text;
-            tr.AddText(textobj);
+            tr.UpdateText(textobj);
         }
 
         internal override void Unload()
         {
             
+        }
+
+
+        internal override void AddComponent(SceneNode node)
+        {
+        }
+
+        internal override void RemoveComponent()
+        {
         }
     }
 }

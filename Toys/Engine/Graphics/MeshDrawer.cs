@@ -1,4 +1,6 @@
-﻿namespace Toys
+﻿using System;
+
+namespace Toys
 {
 	public class MeshDrawer : Component
 	{
@@ -87,5 +89,25 @@
 			mesh.Delete();
 		}
 
-	}
+        internal override void AddComponent(SceneNode nod)
+        {
+            if (node != null)
+                throw new Exception("");
+            else
+            {
+                CoreEngine.gEngine.meshes.Add(this);
+                node = nod;  
+            }
+        }
+
+        internal override void RemoveComponent()
+        {
+            if (node != null)
+            {
+                node = null;
+                CoreEngine.gEngine.meshes.Remove(this);
+            }
+
+        }
+    }
 }

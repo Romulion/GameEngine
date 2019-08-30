@@ -61,9 +61,9 @@ namespace Toys
 		//component framework
 		public void AddComponent(Component comp)
 		{
-			//if (components.Exists((Component c) => c is ))
-			comp.node = this;
-			components.Add(comp);
+            //if (components.Exists((Component c) => c is ))
+            comp.AddComponent(this);
+            components.Add(comp);
 		}
 
 		public Component GetComponent(Type ctype)

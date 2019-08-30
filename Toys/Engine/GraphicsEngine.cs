@@ -9,15 +9,16 @@ namespace Toys
     class GraphicsEngine
     {
         int Width, Height;
-        int FBO;
 
-		MainRenderer mainRender;
+        internal static MainRenderer mainRender;
 		internal static TextRenderer textRender;
 		//test
-		int VBO, VAO;
+		int VBO, VAO, FBO;
 		Shader sh;
 
-		public Scene renderScene { get; private set; }
+        internal List<MeshDrawer> meshes = new List<MeshDrawer>();
+
+        public Scene renderScene { get; private set; }
 
 		public GraphicsEngine(Scene scene)
         {
@@ -126,7 +127,7 @@ namespace Toys
         public void Render()
         {
 			//get render object list
-			MeshDrawer[] meshes = GetRenderObjects();
+			MeshDrawer[] meshes = this.meshes.ToArray();
 
             //preparing models to rendering
             foreach (var mesh in meshes)
@@ -148,7 +149,7 @@ namespace Toys
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             GL.ClearColor(0.0f, 0.1f, 0.1f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-			mainRender.Render(meshes);
+			mainRender.Render(meshes.ToArray());
 
 			textRender.RenderText();
 

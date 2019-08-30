@@ -22,6 +22,7 @@ namespace Toys
             //string str = "";
 			SceneNode node = ResourcesManager.LoadAsset<SceneNode>(args[0]);
 			node.Name = "Model1";
+            
             //node.GetTransform.Rotation = new Vector3(0,(float)Math.PI / 2,0);
             //MeshDrawer md = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
             //node.GetTransform.Position = new Vector3(0f, 1.0f, 0.0f);
@@ -34,8 +35,20 @@ namespace Toys
             tb.SetText("牡丹制服高校(アニメ版)ver3");
             */
             scene.AddObject(node);
+            TextBox text = null;
+            long frames = 1;
+            double update = 0, render = 0;
+            core.Load += (s, e) => { text = new TextBox(); node.AddComponent(text);};
+            core.UpdateFrame += (s, e) => {
+                update += core.UpdateTime * 1000;
+                render += core.RenderTime * 1000;
+                text.SetText((update/ frames).ToString("C1") + "  " + (render/frames).ToString("C1"));
+                frames++;
+            };
+            //
+            //
 
-			var task = new Task(() =>
+            var task = new Task(() =>
 				{
 				Application.Init();
 				Window wndw = new Window(node,core);
@@ -46,7 +59,6 @@ namespace Toys
 			core.Run(60);
 
 		}
-
-   }
+    }
 
 }

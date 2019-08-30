@@ -1,4 +1,4 @@
-﻿#define PHYS
+﻿//#define PHYS
 
 using System;
 using OpenTK;
@@ -13,8 +13,8 @@ namespace Toys
 	public class CoreEngine : GameWindow
 	{
 
-		GraphicsEngine gEngine;
-		public static PhysicsEngine pEngine;
+		internal static GraphicsEngine gEngine;
+		internal static PhysicsEngine pEngine;
 		queue task;
 
 		//time controll

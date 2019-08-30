@@ -1,6 +1,7 @@
 using System;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using System.Collections.Generic;
 
 namespace Toys
 {
@@ -50,7 +51,7 @@ namespace Toys
 		}
 
 		//shadow rendering
-		public void RenderShadow(SceneNode[] nodes)
+		public void RenderShadow(List<SceneNode> nodes)
 		{
 			SetLightVars();
 
