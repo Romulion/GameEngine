@@ -50,15 +50,11 @@ namespace Toys
                     if (rigits[i].Phys == PhysType.GravityBone || rigits[i].Phys == PhysType.Gravity)
                     {
                         postPhysics += rigitBodies[i].SyncBody2Bone;
-                        bones.GetBone(rigits[i].BoneIndex).Phys = true;
+                       // bones.GetBone(rigits[i].BoneIndex).Phys = true;
                     }
                        
                 }
-                //World.AddRigidBody(rigitBodies[i].Body, rigits[i].GroupId, (short)(-1 ^ rigits[i].NonCollisionGroup));
-                //Console.WriteLine("{0} {1} {2}",i, Convert.ToString((int)Math.Pow(2, rigits[i].GroupId), 2).PadLeft(16,'0'), Convert.ToString(rigits[i].NonCollisionGroup, 2).PadLeft(16, '0'));
                 World.AddRigidBody(rigitBodies[i].Body, (int)Math.Pow(2, rigits[i].GroupId), rigits[i].NonCollisionGroup);
-                //Console.WriteLine(rigitBodies[i].Body.WorldTransform);
-                //World.AddRigidBody(rigitBodies[i].Body);
 
             }
         }

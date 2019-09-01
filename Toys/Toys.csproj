@@ -54,7 +54,9 @@
     <Compile Include="Engine\Graphics\TextRendering\TextBox.cs" />
     <Compile Include="Engine\Graphics\TextRendering\TextCanvas.cs" />
     <Compile Include="Engine\Objects\SceneNode.cs" />
+    <Compile Include="Engine\Objects\ScriptingComponent.cs" />
     <Compile Include="Engine\Objects\Transformation.cs" />
+    <Compile Include="Engine\Systen\ScriptingEngine.cs" />
     <Compile Include="MainProcess.cs" />
     <Compile Include="Engine\Animation\BoneController.cs" />
     <Compile Include="Engine\Animation\Bone.cs" />
