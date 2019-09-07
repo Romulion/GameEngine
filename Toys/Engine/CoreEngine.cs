@@ -15,7 +15,8 @@ namespace Toys
 
 		internal static GraphicsEngine gEngine;
 		internal static PhysicsEngine pEngine;
-		queue task;
+        internal static ScriptingEngine sEngine;
+        queue task;
 
 		//time controll
 		Stopwatch stopwatch;
@@ -38,6 +39,7 @@ namespace Toys
 				mainScene = new Scene();
 				gEngine = new GraphicsEngine(mainScene);
 				pEngine = new PhysicsEngine();
+                sEngine = new ScriptingEngine();
 
 				Load += OnLoad;
 				UpdateFrame += Update;
@@ -77,7 +79,9 @@ namespace Toys
 		void Update(object sender, FrameEventArgs e)
 		{
             elapsed = (float)(UpdateTime + RenderTime);
-            
+            sEngine.Awake();
+            sEngine.Start();
+            sEngine.Update();
             //mesh morpher
             if (task != null)
 			{
@@ -104,20 +108,21 @@ namespace Toys
 			}
             //physics
 #if (PHYS)
-			foreach (var node in mainScene.GetNodes())
-			{
-				node.phys.Update();
-			}
+			//foreach (var node in mainScene.GetNodes())
+			//{
+			//	node.phys.Update();
+			//}
             //stopwatch.Start();
             pEngine.Update(elapsed);
             //stopwatch.Stop();
             //Console.WriteLine(stopwatch.ElapsedTicks * ((double)1000 / Stopwatch.Frequency));
             //stopwatch.Reset();
-            foreach (var node in mainScene.GetNodes())
-			{
-				node.phys.PostUpdate();
-			}
+            //foreach (var node in mainScene.GetNodes())
+			//{
+			//	node.phys.PostUpdate();
+			//}
 #endif
+            sEngine.PreRender();
         }
 
 

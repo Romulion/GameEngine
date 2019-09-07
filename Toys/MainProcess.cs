@@ -35,6 +35,8 @@ namespace Toys
             tb.SetText("牡丹制服高校(アニメ版)ver3");
             */
             scene.AddObject(node);
+            TestScript ts = (TestScript)node.AddComponent<TestScript>();
+            /*
             TextBox text = null;
             long frames = 1;
             double update = 0, render = 0;
@@ -47,7 +49,7 @@ namespace Toys
             };
             //
             //
-
+            */
             var task = new Task(() =>
 				{
 				Application.Init();

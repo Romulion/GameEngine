@@ -7,7 +7,7 @@ namespace Toys
 
 		string Name { get; }
 		internal string Id { get; set;}
-		internal Type type;
+		internal Type type { get; set; }
 		internal abstract void Unload();
 
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Toys
 {
@@ -11,7 +12,7 @@ namespace Toys
         Transformation transform;
 		//public MeshDrawer model = null;
 		//public BoneController anim = null;
-        public PhysicsManager phys = null;
+        //public PhysicsManager phys = null;
 		//public Morph[] morph = null;
 		public string Name;
 		public bool Active = true;
@@ -66,7 +67,32 @@ namespace Toys
             components.Add(comp);
 		}
 
-		public Component GetComponent(Type ctype)
+        public Component AddComponent<T>() where T : Component
+        {
+            Type t = typeof(T);
+            try
+            {
+                Component comp = (Component)(t.GetConstructors()[0]).Invoke(new object[] { });
+                comp.type = t;
+                comp.AddComponent(this);
+                components.Add(comp);
+                return comp;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+                
+            return null;
+        }
+
+        public Component GetComponent<T>() where T : Component
+        {
+            Type t = typeof(T); 
+            return GetComponent(t);
+        }
+
+        public Component GetComponent(Type ctype)
 		{
 			//if (components.Exists((Component c) => c is ))
 			var result = from comp in components

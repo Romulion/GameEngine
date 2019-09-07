@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Toys
 {
-    public class PhysicsManager
+    public class PhysicsManager : ScriptingComponent
     {
         public delegate void BoneBodySyncer(OpenTK.Matrix4 world);
         RigidBodyBone[] rigitBodies;
@@ -17,6 +17,9 @@ namespace Toys
 
 		public DiscreteDynamicsWorld World { get; private set; }
 
+        RigidContainer[] Rigits;
+        JointContainer[] Jcons;
+
         public PhysicsManager(RigidContainer[] rigits, JointContainer[] jcons, BoneController bons, Transformation trans)
         {
             //setup world physics
@@ -25,10 +28,17 @@ namespace Toys
             //instalize delegates
             prePhysics = (m) => { };
             postPhysics = (m) => { };
+            Rigits = rigits;
+            Jcons = jcons;
+            //CreateGeneric6DofSpringConstraint();
+            type = typeof(PhysicsManager);
+        }
+
+        void Awake()
+        {
             World = CoreEngine.pEngine.World;
-            InstalizeRigitBody(rigits);
-            InstalizeJoints(jcons);
-			//CreateGeneric6DofSpringConstraint();
+            InstalizeRigitBody(Rigits);
+            InstalizeJoints(Jcons);
         }
 
         void InstalizeRigitBody(RigidContainer[] rigits)
@@ -74,12 +84,12 @@ namespace Toys
             }
         }
 
-        public void Update()
+        void Update()
         {
             prePhysics(worldTrans.globalTransform);
         }
 
-        public void PostUpdate()
+        void PreRender()
         {
             var worldInverted = worldTrans.globalTransform;
             worldInverted.Invert();
