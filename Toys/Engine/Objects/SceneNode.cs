@@ -10,10 +10,6 @@ namespace Toys
         List<SceneNode> childs;
         public SceneNode parent;
         Transformation transform;
-		//public MeshDrawer model = null;
-		//public BoneController anim = null;
-        //public PhysicsManager phys = null;
-		//public Morph[] morph = null;
 		public string Name;
 		public bool Active = true;
 		List<Component> components;

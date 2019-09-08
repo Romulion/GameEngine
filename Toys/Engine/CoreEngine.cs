@@ -131,7 +131,7 @@ namespace Toys
 			//render main scene
 			gEngine.Render();
 			//render physics
-			//(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
+			(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
 
 			SwapBuffers();
         }

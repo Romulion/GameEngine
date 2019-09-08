@@ -15,7 +15,7 @@ namespace Toys
         public BoneBodySyncer postPhysics;
         Transformation worldTrans;
 
-		public DiscreteDynamicsWorld World { get; private set; }
+        DiscreteDynamicsWorld World;
 
         RigidContainer[] Rigits;
         JointContainer[] Jcons;
@@ -74,13 +74,9 @@ namespace Toys
             joints = new Joint[jcons.Length];
             for (int i = 0; i < jcons.Length; i++)
             {
-
-				//if (i < 80 || i > 81)
-				//    continue;
                 joints[i] = new Joint(jcons[i], rigitBodies);
 				if (joints[i].joint != null)
                 World.AddConstraint(joints[i].joint, true);
-
             }
         }
 
@@ -99,10 +95,8 @@ namespace Toys
 		//test
 		public void ReinstalizeBodys()
 		{
-
 			foreach (var body in rigitBodies)
-				body.Reinstalize(worldTrans.globalTransform);
-			
+				body.Reinstalize(worldTrans.globalTransform);	
 		}
     }
 }
