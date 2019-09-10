@@ -28,7 +28,6 @@ namespace Toys
         {
             scripts.Add(sc);
             AwakeQueue.Enqueue(sc);
-            Console.WriteLine(sc.type);
         }
 
         internal void Awake()
@@ -60,7 +59,6 @@ namespace Toys
                 var mess = GetMessage(sc,"Update");
                 if (mess != null)
                     updates.Add(new Message(sc,mess));
-
                 mess = GetMessage(sc, "PreRender");
                 if (mess != null)
                     prerender.Add(new Message(sc, mess));

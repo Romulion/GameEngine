@@ -27,7 +27,7 @@ namespace Toys
 		public CoreEngine() : base(640, 480, new GraphicsMode(32, 8, 8, 4))
 		{
 			Instalize();
-			stopwatch = new Stopwatch();
+			
 		}
 
 		void Instalize()
@@ -40,8 +40,8 @@ namespace Toys
 				gEngine = new GraphicsEngine(mainScene);
 				pEngine = new PhysicsEngine();
                 sEngine = new ScriptingEngine();
-
-				Load += OnLoad;
+                stopwatch = new Stopwatch();
+                Load += OnLoad;
 				UpdateFrame += Update;
 				RenderFrame += OnRender;
                 Closing += CoreEngine_Closing;
@@ -69,8 +69,6 @@ namespace Toys
 			{
 				gEngine.Resize(Width, Height);
 			};
-
-			pEngine.World.DebugDrawer = new PhysicsDebugDraw(pEngine.World);
 		}
 
 
@@ -108,19 +106,11 @@ namespace Toys
 			}
             //physics
 #if (PHYS)
-			//foreach (var node in mainScene.GetNodes())
-			//{
-			//	node.phys.Update();
-			//}
             //stopwatch.Start();
             pEngine.Update(elapsed);
             //stopwatch.Stop();
             //Console.WriteLine(stopwatch.ElapsedTicks * ((double)1000 / Stopwatch.Frequency));
             //stopwatch.Reset();
-            //foreach (var node in mainScene.GetNodes())
-			//{
-			//	node.phys.PostUpdate();
-			//}
 #endif
             sEngine.PreRender();
         }
@@ -131,7 +121,7 @@ namespace Toys
 			//render main scene
 			gEngine.Render();
 			//render physics
-			(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
+			//(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
 
 			SwapBuffers();
         }
