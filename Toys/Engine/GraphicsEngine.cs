@@ -94,7 +94,7 @@ namespace Toys
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
                 GL.Enable(EnableCap.Blend);
-                GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+                GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 				//GL.BlendFunc(BlendingFactor.Src1Alpha,BlendingFactor.OneMinusSrcAlpha);
 
                 GL.Enable(EnableCap.DepthTest);

@@ -33,12 +33,12 @@ namespace Toys
             List<ShaderUniform> uniforms = new List<ShaderUniform>();
 
 			int m, length, size;
-			StringBuilder name = new StringBuilder(40);
+            string name;
 			ActiveUniformType type;
 			GL.GetProgram(shaderProgram, GetProgramParameterName.ActiveUniforms, out m);
 			for (int i = 0; i < m; i++)
 			{
-				GL.GetActiveUniform(shaderProgram, i, 40, out length, out size, out type, name);
+				GL.GetActiveUniform(shaderProgram, i, 40, out length, out size, out type, out name);
 
                 string group = "";
                 string uname;

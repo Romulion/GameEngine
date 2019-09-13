@@ -78,3 +78,4 @@ D:\vp\C#\GameEngine\Toys\bin\Debug\BulletSharp.dll
 D:\vp\C#\GameEngine\Toys\bin\Debug\INIFileParser.dll
 D:\vp\C#\GameEngine\Toys\bin\Debug\SharpFont.dll
 D:\vp\C#\GameEngine\Toys\bin\Debug\freetype6.dll
+D:\Coding\GameEngine\Toys\bin\Debug\OpenTK.pdb

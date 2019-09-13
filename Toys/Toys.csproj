@@ -153,6 +153,10 @@
     <Compile Include="Engine\Graphics\TextRendering\Character.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="OpenTK, Version=3.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenTK.3.1.0\lib\net20\OpenTK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="SharpFont, Version=4.0.1.200, Culture=neutral, PublicKeyToken=48add4c483071cdf, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpFont.4.0.1\lib\net45\SharpFont.dll</HintPath>
     </Reference>
@@ -172,18 +176,15 @@
     <Reference Include="INIFileParser">
       <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK">
-      <HintPath>..\packages\OpenTK.2.0.0\lib\net20\OpenTK.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assamble\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
     <None Include="VertexRigged.manifest" />
     <None Include="Resourses\textures\toon_blank.bmp" />
-    <None Include="OpenTK.dll.config" />
     <None Include="Engine\Graphics\ShaderUniforms\ShaderUniformTyped.cs" />
   </ItemGroup>
   <ItemGroup>
