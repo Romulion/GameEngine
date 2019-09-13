@@ -69,7 +69,7 @@ namespace Toys
             {
                 string[] elements = line.Split(new char[] { ' ' }, 2);
                 int id = Int32.Parse(elements[0]);
-                string[] elements2 = line.Split(new char[] { '"' }, 2);
+                string[] elements2 = line.Split(new char[] { '"' }, 3);
                 bones.Add(elements2[1], id);
             }
 
