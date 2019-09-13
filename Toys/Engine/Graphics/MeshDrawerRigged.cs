@@ -19,10 +19,19 @@ namespace Toys
 			ubs = (UniformBufferSkeleton)ubm.GetBuffer("skeleton");
 		}
 
-		public override void Draw()
+        public MeshDrawerRigged(Mesh mesh, BoneController skelet, Morph[] mor = null) : base(mesh, null, mor)
+        {
+            skeleton = skelet;
+            UniformBufferManager ubm = UniformBufferManager.GetInstance;
+            ubs = (UniformBufferSkeleton)ubm.GetBuffer("skeleton");
+        }
+
+        public override void Draw()
 		{
 			ubs.SetBones(skeleton.GetSkeleton);
 
+            base.Draw();
+            /*
 			mesh.BindVAO();
 			foreach (var mat in mats)
 			{
@@ -34,6 +43,7 @@ namespace Toys
 				mesh.Draw(mat.offset, mat.count);
 			}
 			mesh.ReleaseVAO();
+            */
 		}
 
         public override void Prepare()
@@ -44,7 +54,7 @@ namespace Toys
             //skeleton.GetBone(8).IKRotation = Quaternion.FromAxisAngle(Vector3.UnitZ, (float)(test * Math.PI / 180));
             //test += 2;
             //end test
-            skeleton.UpdateSkeleton();
+            //skeleton.UpdateSkeleton();
         }
 
 		public override void DrawSimple()

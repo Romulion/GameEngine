@@ -214,7 +214,7 @@ namespace Toys
 
 		internal void Draw()
 		{
-			GL.DrawElements(PrimitiveType.Triangles, vertexCount, DrawElementsType.UnsignedInt, 0);
+			GL.DrawElements(PrimitiveType.Triangles, indexes.Length, DrawElementsType.UnsignedInt, 0);
 		}
 
 

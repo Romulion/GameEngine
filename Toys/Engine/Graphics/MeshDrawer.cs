@@ -13,17 +13,21 @@ namespace Toys
 		public bool CastShadow;
 
 
-		public MeshDrawer(Mesh mesh, IMaterial[] mats,Morph[] mor = null) : base (typeof(MeshDrawer))
+		public MeshDrawer(Mesh mesh, IMaterial[] mats = null,Morph[] mor = null) : base (typeof(MeshDrawer))
 		{
 			this.mesh = mesh;
-			this.mats = mats;
-			morph = mor;
+            if (mats != null)
+                this.mats = mats;
+            else
+            {
+                this.mats = new Material[] { new Material(new ShaderSettings(), new RenderDirectives()) };
+            }
+            morph = mor;
 		}
 
 		//for single material mesh
 		public MeshDrawer(Mesh mesh, IMaterial mat) : this(mesh, new IMaterial[] { mat })
 		{
-			mat.count = mesh.indexes.Length;
 		}
 
         public virtual void Prepare()
@@ -43,8 +47,11 @@ namespace Toys
 					continue;
 
 				mat.ApplyMaterial();
-				mesh.Draw(mat.offset, mat.count);
-			}
+                if (mat.count != 0)
+                    mesh.Draw(mat.offset, mat.count);
+                else
+                    mesh.Draw();
+            }
 			mesh.ReleaseVAO();
 		}
 
@@ -62,8 +69,11 @@ namespace Toys
 				if (!rndr.render || !rndr.hasEdges)
 					continue;
 				otl.ApplyOutline();
-				mesh.Draw(mat.offset, mat.count);
-			}
+                if (mat.count != 0)
+                    mesh.Draw(mat.offset, mat.count);
+                else
+                    mesh.Draw();
+            }
 			mesh.ReleaseVAO();
 		}
 
@@ -76,9 +86,13 @@ namespace Toys
 				
 				if (!mat.rndrDirrectives.render)
 					continue;
-				//mat.GetShader.ApplyShader();
-				mesh.Draw(mat.offset, mat.count);
-			}
+                //mat.GetShader.ApplyShader();
+                if (mat.count != 0)
+                    mesh.Draw(mat.offset, mat.count);
+                else
+                    mesh.Draw();
+
+            }
 
 			mesh.ReleaseVAO();
 

@@ -11,11 +11,11 @@ namespace Toys
 	public class ShaderSettings
 	{
 		public EnvironmentMode envType = EnvironmentMode.None;
-		public bool recieveShadow;
+		public bool recieveShadow = true;
 		public bool toonShadow;
 		public bool hasSkeleton;
-		public bool affectedByLight;
-		public bool TextureDiffuse;
+		public bool affectedByLight = true;
+		public bool TextureDiffuse = true;
 		public bool TextureSpecular;
 		public bool TextureAmbient;
 		public bool discardInvisible;
