@@ -17,15 +17,20 @@ namespace Toys
             EulerYZX,
         }
 
+        public enum TransformType
+        {
+            LocalRelative,
+            LocalAbsolute,
+        }
+
         public int framerate = 24;
         public readonly AnimationFrame[] frames;
 		public readonly Dictionary<string, int> bones = new Dictionary<string, int>();
-        public readonly RotationType Type;
+        public RotationType Type { get; internal set; }
+        public TransformType TransType { get; internal set; }
 
-
-        public Animation (AnimationFrame[] frams, Dictionary<string, int> boneReference, RotationType type)
+        public Animation (AnimationFrame[] frams, Dictionary<string, int> boneReference)
         {
-            Type = type;
             frames = frams;
 			bones = boneReference;
         }

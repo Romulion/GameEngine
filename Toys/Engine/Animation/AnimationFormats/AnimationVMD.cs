@@ -55,9 +55,11 @@ namespace Toys
 
                 ReadFrames();
             }
-            var anim = new Animation(frames, bones, Animation.RotationType.Quaternion);
-            anim.framerate = 30;
-            return anim;
+            var animation = new Animation(frames.ToArray(), bones);
+            animation.Type = Animation.RotationType.Quaternion;
+            animation.TransType = Animation.TransformType.LocalRelative;
+            animation.framerate = 30;
+            return animation;
         }
 
         void ReadFrames()

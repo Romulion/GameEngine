@@ -31,7 +31,9 @@ namespace Toys
             //Console.WriteLine(bc.GetBone(82).Bone2WorldInitial);
             //Console.WriteLine(bc.GetBone(81).Bone2WorldInitial);
             //Console.WriteLine(bc.GetBone(3).BoneMatrix);
-            //bc.GetBone(1).SetTransform(new Quaternion(0, 0, 0f), new Vector3(0, 1, 0));
+            //bc.GetBone(19).SetTransform(new Quaternion(0, 0, 1.5f), new Vector3(0, 0, 0));
+            //bc.GetBone(21).SetTransform(new Quaternion(0, 1.5f, 0), new Vector3(0, 0, 0));
+            //bc.GetBone(22).SetTransform(new Quaternion(0, 1.5f, 0), new Vector3(0, 0, 0));
             //bc.UpdateSkeleton();
             /*
             CollisionShape shape = new SphereShape(0.1f);

@@ -27,7 +27,7 @@ namespace Toys
         public Matrix4 LocalMatrix;
         //current bone transform matrix
         internal Matrix4 BoneMatrix;
-        public Matrix4 InitialLocalTransform { get; private set; }
+        public Matrix4 InitialLocalTransform { get; internal set; }
         //public Vector3 InitialOffset;
 
         Vector3 Translation;

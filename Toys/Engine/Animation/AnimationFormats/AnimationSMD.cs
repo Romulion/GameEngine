@@ -5,6 +5,12 @@ using OpenTK;
 
 namespace Toys
 {
+    /// <summary>
+    /// valve's SMD animation parser
+    /// transform calculated relative to parent's bone
+    /// rotation performed in order x y z
+    /// doesnt support scale
+    /// </summary>
     internal class AnimationSMD : IAnimationLoader
     {
         string Path;
@@ -14,7 +20,6 @@ namespace Toys
         internal AnimationSMD(string path)
         {
             Path = path;
-
         }
         
         public Animation Load()
@@ -32,7 +37,10 @@ namespace Toys
                     ReadFrames(file);
             }
 
-            return new Animation(frames.ToArray(), bones,Animation.RotationType.EulerXYZ);
+            var animation = new Animation(frames.ToArray(), bones);
+            animation.Type = Animation.RotationType.EulerXYZ;
+            animation.TransType = Animation.TransformType.LocalAbsolute;
+            return animation;
         }
         
         private void ReadFrames(StreamReader file)
