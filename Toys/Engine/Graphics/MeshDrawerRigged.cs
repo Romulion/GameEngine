@@ -8,10 +8,6 @@ namespace Toys
 		public BoneController skeleton { get; private set; }
 		UniformBufferSkeleton ubs;
 
-        //test
-        int test = 0;
-        //end test
-
 		public MeshDrawerRigged(Mesh mesh, IMaterial[] mats, BoneController skelet, Morph[] mor = null) : base(mesh, mats, mor)
 		{
 			skeleton = skelet;
@@ -29,32 +25,12 @@ namespace Toys
         public override void Draw()
 		{
 			ubs.SetBones(skeleton.GetSkeleton);
-
             base.Draw();
-            /*
-			mesh.BindVAO();
-			foreach (var mat in mats)
-			{
-				var rdirs = mat.rndrDirrectives;
-				if (!rdirs.render)
-					continue;
-
-				mat.ApplyMaterial();
-				mesh.Draw(mat.offset, mat.count);
-			}
-			mesh.ReleaseVAO();
-            */
 		}
 
         public override void Prepare()
         {
-            //test  
-            //skeleton.GetBone(1).SetTransform(new Quaternion(0f,0f ,0f),new Vector3(0, (float)(-0.4 + 0.4 * Math.Cos(test * Math.PI / 180)),0));
-            //skeleton.GetBone(8).SetTransform(new Quaternion(0,(float)(test * Math.PI / 180),0), new Vector3(0, 0, 0));
-            //skeleton.GetBone(8).IKRotation = Quaternion.FromAxisAngle(Vector3.UnitZ, (float)(test * Math.PI / 180));
-            //test += 2;
-            //end test
-            //skeleton.UpdateSkeleton();
+            skeleton.UpdateSkeleton();
         }
 
 		public override void DrawSimple()
@@ -65,7 +41,6 @@ namespace Toys
 			{
 				if (!mat.rndrDirrectives.render)
 					continue;
-				//mat.GetShader.ApplyShader();
 				mesh.Draw(mat.offset, mat.count);
 			}
 

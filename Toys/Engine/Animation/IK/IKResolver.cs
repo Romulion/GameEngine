@@ -34,9 +34,6 @@ namespace Toys
             }
         }
 
-        int test = 1;
-        int test2 = 40;
-
         public BoneTransform IK {get; private set;}
 
         public BoneTransform Target {get; private set;}

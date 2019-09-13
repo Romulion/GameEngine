@@ -290,48 +290,6 @@ namespace Toys
 				mat.SetTexture(envTex, TextureType.Sphere);
 
                 mat.UniManager.Set("diffuse_color", difColor);
-                //mat.SetValue(difColor,"diffuse_color");
-                /* old material class
-				MaterialPMX mat = new MaterialPMX();
-				mat.Name = reader.readString();
-				mat.NameEng = reader.readString();
-				mat.DiffuseColor = reader.readVector4();
-				if (mat.DiffuseColor.W == 0)
-					mat.dontDraw = true;
-				mat.SpecularColour = reader.readVector3();
-				mat.Specular = file.ReadSingle();
-				mat.AmbientColour = reader.readVector3();
-				mat.SetFlags = file.ReadByte();
-				mat.EdgeColour = reader.readVector4();
-				mat.EdgeScaler = file.ReadSingle();
-				//texture
-				int texture =  reader.readVal(header.GetTextureIndexSize);
-				reader.readVal(header.GetTextureIndexSize);
-				int blend = file.ReadByte();
-				byte toonType = file.ReadByte();
-				Texture toon = empty;
-
-				if (toonType == 0)
-				{
-					int text = reader.readVal(header.GetTextureIndexSize);
-					if (text != 255)
-						toon = textures[text];
-				}
-				else
-					 file.ReadByte();
-
-                reader.readString();
-				int count = file.ReadInt32();
-				Texture tex = empty;
-				if (texture != 255)
-				{
-					tex = textures[texture];
-				}
-				mat.textures = new Texture[] {tex, toon};
-				mat.offset = offset;
-				mat.count = count;
-
-				*/
 
                 mat.offset = offset;
 				mat.count = count;
@@ -423,9 +381,7 @@ namespace Toys
 					}
                     bik.Links = links;
 				    bone.IKData = bik;
-				}
-
-                
+				} 
                 bones[i] = bone;
 			}
 
@@ -434,10 +390,9 @@ namespace Toys
             {
                 Bone bone = bones[i];
                 if (bone.ParentIndex >= 0 && bone.ParentIndex < bones.Length){
-                    bone.Parent2Local *=  Matrix4.CreateTranslation(bone.Position - bones[bone.ParentIndex].Position);
+                    bone.Parent2Local =  Matrix4.CreateTranslation(bone.Position - bones[bone.ParentIndex].Position);
                 }
             }
-			//Bone.MakeChilds(bones);
 		}
 
 		void ReadMorhps()
@@ -447,7 +402,6 @@ namespace Toys
 
 			for (int i = 0; i < morphCount; i++)
 			{
-				//List<Vector4> vertex_morph = new List<Vector4>();
 				string name = reader.readString();
 				string nameEng = reader.readString();
 
@@ -480,9 +434,6 @@ namespace Toys
 							int index = reader.readVal(header.GetVertexIndexSize);
 							Vector3 pos = reader.readVector3() * multipler;
                             ((MorphVertex)morphs[i]).AddVertex(pos, index);
-                            //invert x axis
-                            //((MorphVertex)morphs[i]).AddVertex(new Vector3(-pos.X, pos.Y, pos.Z), index);
-                            //vertex_morph = new Vector4(pos, index);
                             break;
 						case 2:  //bone morph
 							reader.readVal(header.GetBoneIndexSize);
@@ -589,9 +540,6 @@ namespace Toys
 				rigit.Friction = file.ReadSingle();
 				rigit.Phys = (PhysType)file.ReadByte();
 
-                //inverting x axis
-                //rigit.Position = new Vector3(-rigit.Position.X, rigit.Position.Y, rigit.Position.Z);
-
                 rigitbodies[i] = rigit;
 			}
 		}
@@ -618,14 +566,7 @@ namespace Toys
 				joint.PosSpring = reader.readVector3() * multipler;
 				joint.RotSpring = reader.readVector3();
 
-                //inverting x axis
-                //joint.Position = new Vector3(-joint.Position.X, joint.Position.Y, joint.Position.Z);
-                if (i >= 90 && i < 100)
-                {
-                    //joint.Position += new Vector3(0,0,0.1f);
-                    //   Console.WriteLine(joint.Position);
-                }
-                    joints[i] = joint;
+                joints[i] = joint;
 			}
 
 		}
@@ -668,17 +609,6 @@ namespace Toys
 		{
 			get
 			{
-				/*
-				MeshDrawer md = new MeshDrawer(meshRigged, mats);
-				md.OutlineDrawing = true;
-
-				var node = new SceneNode();
-				node.model = md;
-				node.anim = new BoneController(bones);
-				node.morph = morphs;
-                node.phys = new PhysicsManager(rigitbodies, joints, node.anim, node.GetTransform);
-				return node; 
-*/
 				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats,new BoneController(bones), morphs);
 				md.OutlineDrawing = true;
 

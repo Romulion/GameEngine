@@ -175,11 +175,6 @@ namespace Toys
             LocalMatrix.M42 += LocalTranslationForIKLink.Y;
             LocalMatrix.M43 += LocalTranslationForIKLink.Z;
             BoneMatrix = LocalMatrix;
-            /*
-            LocalMatrix.M41 += InitialOffset.X;
-            LocalMatrix.M42 += InitialOffset.Y;
-            LocalMatrix.M43 += InitialOffset.Z;
-            */
             LocalMatrix *= InitialLocalTransform;
             if (Parent != null)
             {
@@ -232,21 +227,8 @@ namespace Toys
             {
                 TransformMatrix = PhysTransform;
                 //Phys = false;
-            }
-            
+            }       
         }
-
-        /*
-        public void UpdateLocalRotation()
-        {
-            if (!LocalRotationFlag)
-            {
-                LocalMatrix = Matrix4.CreateFromQuaternion(LocalRotation);
-                LocalRotation.Normalize();
-                LocalRotationFlag = true;
-            }
-        }
-        */
 
         public Vector3 GetTransformedBonePosition()
         {
