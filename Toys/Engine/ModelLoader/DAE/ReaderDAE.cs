@@ -91,7 +91,7 @@ namespace Toys
 				bones[i].childs = childs.ToArray();
 			}
             //set local to global space
-            SetGlobalLocalSpace(bones[0], Matrix4.Identity);
+            //SetGlobalLocalSpace(bones[0], Matrix4.Identity);
 
         }
 
@@ -118,16 +118,17 @@ namespace Toys
 
         }
 
+        /*
         void SetGlobalLocalSpace(Bone bone, Matrix4 parentalSpace)
         {
            
-            bone.localSpace = bone.localSpaceDefault * parentalSpace;
+             = bone.Parent2Local * parentalSpace;
 
             foreach (int child in bone.childs)
                 SetGlobalLocalSpace(bones[child], bone.localSpace);
 
         }
-
+        */
 
 		public SceneNode GetModel
 		{

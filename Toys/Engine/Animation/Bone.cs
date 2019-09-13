@@ -12,30 +12,40 @@ namespace Toys
 
 		//common transform data
 		public Vector3 Position;
-		public readonly int ParentIndex;
+		public int ParentIndex;
 		public int Index;
 		public int[] childs;
         public Vector3 Axis = Vector3.Zero;
 
-        public Matrix4 localSpaceDefault;
+        Matrix4 local;
+        public Matrix4 Parent2Local {
+            get
+            {
+                return local;
+            }
+            internal set
+            {
+                local = value;
+                Local2Parent = local.Inverted();
+            }
+        }
+        public Matrix4 Local2Parent { get; private set; }
 
-        public Matrix4 localSpace { 
-			get 
-			{
-				return local;
-			} 
-			internal set 
-			{
-				local = value;
-                localSpaceDefault = local;
-                localSpaceInverted = local.Inverted();
-			} 
-		}
-
-		Matrix4 local;
-		public Matrix4 localSpaceInverted { get; private set; }
-		public Matrix4 localCoordinate = Matrix4.Identity;
+        Matrix4 world;
+        public Matrix4 World2Local {
+            get
+            {
+                return world;
+            }
+            internal set
+            {
+                world = value;
+                Local2Parent = world.Inverted();
+            }
+        }
+        public Matrix4 Local2World { get; private set; }
         public BoneIK IKData;
+
 		//unused values
 		public int Level;
 
@@ -74,12 +84,17 @@ namespace Toys
 
 		public Bone(string name, Matrix4 pos, int parent)
 		{
-            localSpaceDefault = pos;
+            Parent2Local = pos;
 			Name = name;
 			ParentIndex = parent;
         }
 
-		void SetFlags(byte[] bytes)
+        public Bone()
+        {
+            ParentIndex = -1;
+        }
+
+        void SetFlags(byte[] bytes)
 		{
 			BitArray flags = new BitArray(bytes);
 

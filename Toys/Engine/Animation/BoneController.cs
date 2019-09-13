@@ -3,6 +3,7 @@ using OpenTK;
 using System.Linq;
 using System.Collections.Generic;
 
+
 namespace Toys
 {
 	public class BoneController
@@ -19,16 +20,16 @@ namespace Toys
 			DefaultPos();
 		}
 
-        public BoneController(Bone[] bones)
+        public BoneController(Bone[] bones,bool order = false)
         {
             this.bones = new BoneTransform[bones.Length];
             Initialize(bones);
 
+            UpdateOrder(order);
+
             skeleton = new Matrix4[bones.Length];
             
             DefaultPos();
-            //for tests
-            //this.bones[1].SetTransform(Quaternion.Identity,new Vector3(0f,-0.7f,0f));
             UpdateSkeleton();
         }
 
@@ -69,24 +70,71 @@ namespace Toys
             return bones[id];
         }
 
+        void UpdateOrder(bool reorder)
+        {
+            bonesOrdered = new BoneTransform[bones.Length];
+            if (!reorder)
+            {
+                for (int i = 0; i < bones.Length; i++)
+                    bonesOrdered[i] = bones[i];
+            }
+            else
+            {
+                int index = 0;
+                List<BoneTransform> locks = bones.ToList();
+                var query = from bone in bones
+                            where bone.Bone.ParentIndex == -1
+                            select bone;
+                foreach (var bone in query)
+                {
+                    BoneLurker(locks, bone, ref index);
+                }
+            }
+
+            for (int i = 0; i < bones.Length; i++)
+            {
+                if (bonesOrdered[i].Parent != null)
+                {
+                    if (i == 82)
+                    {
+                        //Console.WriteLine(bonesOrdered[i].Parent.World2BoneInitial);
+                        //Console.WriteLine(bonesOrdered[i].InitialLocalTransform);
+                    }
+                    bonesOrdered[i].World2BoneInitial = bonesOrdered[i].InitialLocalTransform * bonesOrdered[i].Parent.World2BoneInitial;
+                }
+            }
+              
+        }
+
+        void BoneLurker(List<BoneTransform> locks,BoneTransform boneT,ref int index)
+        {
+            bonesOrdered[index++] = boneT;
+            locks.Remove(boneT);
+            var query = from bone in bones
+                        where bone.Bone.ParentIndex == boneT.Bone.Index
+                        select bone;
+            foreach (var bone in query)
+            {
+                BoneLurker(locks, bone, ref index);
+            }
+        }
+
         void Initialize(Bone[] bones){
+            
             this.bones = new BoneTransform[bones.Length];
             for (int i = 0; i < bones.Length; i++)
             {
-                Bone boneData = bones[i];
                 this.bones[i] = new BoneTransform(bones[i]);
             }
             for (int i = 0; i < bones.Length; i++)
             {
+                
                 Bone boneData = bones[i];
                 boneData.Index = i;
                 BoneTransform boneTransform = this.bones[i];
-                boneTransform.InitialOffset = boneData.Position;
                 if (boneData.ParentIndex < this.bones.Length && boneData.ParentIndex >= 0)
                 {
                     boneTransform.Parent = this.bones[boneData.ParentIndex];
-                    boneTransform.LocalSpaceDefault = boneTransform.Parent.LocalSpaceDefault * Matrix4.CreateTranslation(boneTransform.Bone.Position);
-                    boneTransform.LocalSpaceInverted = boneTransform.LocalSpaceDefault.Inverted();
                 }
                 else
                     boneTransform.Parent = null;
@@ -138,10 +186,9 @@ namespace Toys
         {
             for(int i = 0; i < bones.Length; i++)
             {
-                bones[i].UpdateLocalMatrix();
+                bonesOrdered[i].UpdateLocalMatrix();
             }
-
-            for(int i = 0; i < bones.Length; i++)
+            for (int i = 0; i < bones.Length; i++)
             {
                 bones[i].UpdateTransformMatrix();
                 skeleton[i] = bones[i].TransformMatrix;

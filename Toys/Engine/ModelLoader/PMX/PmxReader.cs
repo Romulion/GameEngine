@@ -169,7 +169,6 @@ namespace Toys
 
 		void ReadTextures()
 		{
-			//Console.Write(Encoding.Default);
 			int texCount = file.ReadInt32();
 			textures = new Texture[texCount];
 			for (int i = 0; i < texCount; i++)
@@ -179,16 +178,12 @@ namespace Toys
 
 				if (texture.Contains("toon"))
 					tex.ChangeType(TextureType.Toon);
-				//textures[i] = new Texture(dir + texture, TextureType.Toon, texture);
 				else
 				{
 					tex.ChangeType(TextureType.Diffuse);
 					tex.ChangeWrapper(Texture.Wrapper.Repeat);
 				}
-					//textures[i] = new Texture(dir + texture, TextureType.Diffuse, texture, false);
 				textures[i] = tex;
-                //Console.WriteLine("{0}  {1}",i, texture);
-
             }
 		}
 
@@ -368,6 +363,7 @@ namespace Toys
 
                 int Level = file.ReadInt32();
 				byte[] flags = file.ReadBytes(2);
+
 				Bone bone = new Bone(Name, NameEng, Position, ParentIndex, flags);
 				bone.Level = Level;
 				if (bone.tail)
@@ -381,6 +377,7 @@ namespace Toys
 					bone.ParentInfluence = file.ReadSingle();
 				}
 
+                bone.Parent2Local = Matrix4.Identity;
 				//probably cant be both true
 				if (bone.FixedAxis)
 				{
@@ -388,7 +385,7 @@ namespace Toys
 					Vector3 Z = Vector3.Cross(X, new Vector3(0f, 1f, 0f));
 					Vector3 Y = Vector3.Cross(Z, X);
 					Matrix3 local = new Matrix3(X,Y,Z);
-					bone.localSpace = new Matrix4(local) * Matrix4.CreateTranslation(Position);
+                    bone.Parent2Local = new Matrix4(local);
 				}
 				if (bone.LocalCoordinate)
 				{
@@ -396,14 +393,8 @@ namespace Toys
 					Vector3 Z = reader.readVector3();
 					Vector3 Y = Vector3.Cross(Z, X);
 					Matrix3 local = new Matrix3(X, Y, Z);
-					bone.localSpace = new Matrix4(local) * Matrix4.CreateTranslation(Position);
+                    bone.Parent2Local = new Matrix4(local);
 				}
-
-                //set if not set
-                if (bone.localSpace == default(Matrix4))
-                {
-                    bone.localSpace = Matrix4.CreateTranslation(bone.Position);
-                }
 
 				if (bone.ExternalPdeform)
 				{
@@ -434,8 +425,7 @@ namespace Toys
 				    bone.IKData = bik;
 				}
 
-                //if (i == 75 || i == 221)
-                //    Console.WriteLine(bone.Position);
+                
                 bones[i] = bone;
 			}
 
@@ -443,8 +433,8 @@ namespace Toys
             for (int i = bones.Length - 1; i > -1; i--)
             {
                 Bone bone = bones[i];
-                if (bone.ParentIndex > 0 && bone.ParentIndex < bones.Length){
-                    bone.Position -= bones[bone.ParentIndex].Position;
+                if (bone.ParentIndex >= 0 && bone.ParentIndex < bones.Length){
+                    bone.Parent2Local *=  Matrix4.CreateTranslation(bone.Position - bones[bone.ParentIndex].Position);
                 }
             }
 			//Bone.MakeChilds(bones);

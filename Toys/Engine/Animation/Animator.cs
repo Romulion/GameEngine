@@ -6,7 +6,7 @@ namespace Toys
 {
     class Animator : Component
     {
-        BoneController bones;
+        public BoneController bones { get; private set; }
         Animation anim;
         bool isPlaing = false;
         float time = 0f;

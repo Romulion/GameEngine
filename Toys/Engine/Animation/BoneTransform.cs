@@ -11,13 +11,24 @@ namespace Toys
         public bool Phys = false;
 
         //initial bone space coordinetes for reference
-        public Matrix4 LocalSpaceDefault;
+        Matrix4 boneSpaceTranstorm;
+        public Matrix4 World2BoneInitial {
+            get { return boneSpaceTranstorm; }
+            internal set
+            {
+                boneSpaceTranstorm = value;
+                Bone2WorldInitial = boneSpaceTranstorm.Inverted();
+            }
+        }
         //inverted initial bone space coordinetes for calculating tranform
-        public Matrix4 LocalSpaceInverted;
+        public Matrix4 Bone2WorldInitial { get; private set; }
 
+        //fully transformed matrix
         public Matrix4 LocalMatrix;
-        Matrix4 BoneMatrix;
-        public Vector3 InitialOffset;
+        //current bone transform matrix
+        internal Matrix4 BoneMatrix;
+        public Matrix4 InitialLocalTransform { get; private set; }
+        //public Vector3 InitialOffset;
 
         Vector3 Translation;
         Quaternion Rotation;
@@ -25,7 +36,6 @@ namespace Toys
         Quaternion AddRotation;
         Vector3 AddTranslation;
 
-        Vector3 LocalTranslation;
         //Quaternion LocalRotation;
         Vector3 LocalScale;
 
@@ -53,11 +63,12 @@ namespace Toys
         {
             Bone = b;
             LocalMatrix = Matrix4.Identity;
-            LocalSpaceDefault = Matrix4.Identity;
-            LocalSpaceInverted = Matrix4.Identity;
+            World2BoneInitial = Matrix4.Identity;
+            Bone2WorldInitial = Matrix4.Identity;
             IsIK = Bone.IK;
             IKRotation = Quaternion.Identity;
             PhysTransform = Matrix4.Identity;
+            InitialLocalTransform = b.Parent2Local;
             ResetTransform(false);
         }
 
@@ -97,9 +108,9 @@ namespace Toys
 		        }
 		        else
 		        {
-			        AddTranslation.X = AddParent.LocalMatrix.M41 - AddParent.LocalSpaceDefault.M41;
-			        AddTranslation.Y = AddParent.LocalMatrix.M42 - AddParent.LocalSpaceDefault.M42;
-			        AddTranslation.Z = AddParent.LocalMatrix.M43 - AddParent.LocalSpaceDefault.M43;
+			        AddTranslation.X = AddParent.LocalMatrix.M41 - AddParent.World2BoneInitial.M41;
+			        AddTranslation.Y = AddParent.LocalMatrix.M42 - AddParent.World2BoneInitial.M42;
+			        AddTranslation.Z = AddParent.LocalMatrix.M43 - AddParent.World2BoneInitial.M43;
 		        }
 		        if (AddRatio != 1f)
 		        {
@@ -125,9 +136,7 @@ namespace Toys
             LocalMatrix.M42 += trans.Y;
             LocalMatrix.M43 += trans.Z;
             BoneMatrix = LocalMatrix;
-            LocalMatrix.M41 += InitialOffset.X;
-            LocalMatrix.M42 += InitialOffset.Y;
-            LocalMatrix.M43 += InitialOffset.Z;
+            LocalMatrix *= InitialLocalTransform;
 
             if (Parent != null)
             {
@@ -166,9 +175,12 @@ namespace Toys
             LocalMatrix.M42 += LocalTranslationForIKLink.Y;
             LocalMatrix.M43 += LocalTranslationForIKLink.Z;
             BoneMatrix = LocalMatrix;
+            /*
             LocalMatrix.M41 += InitialOffset.X;
             LocalMatrix.M42 += InitialOffset.Y;
             LocalMatrix.M43 += InitialOffset.Z;
+            */
+            LocalMatrix *= InitialLocalTransform;
             if (Parent != null)
             {
                 LocalMatrix *= Parent.LocalMatrix;
@@ -214,7 +226,7 @@ namespace Toys
         public void UpdateTransformMatrix()
         {            
             if (!Phys){
-                TransformMatrix = LocalSpaceInverted * LocalMatrix;
+                TransformMatrix = Bone2WorldInitial * LocalMatrix;
             }
             else 
             {

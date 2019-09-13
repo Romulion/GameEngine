@@ -4,25 +4,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BulletSharp;
-using BulletSharp.Math;
+//using BulletSharp.Math;
+using OpenTK;
 
 namespace Toys
 {
     class TestScript : ScriptingComponent
     {
-        DiscreteDynamicsWorld World;
+        //DiscreteDynamicsWorld World;
         long frames = 1;
         double update = 0, render = 0;
-        TextBox text;
-        RigidBody Body;
+        //TextBox text;
+        //RigidBody Body;
+        BoneController bc;
 
         void Awake()
         {
-            World = CoreEngine.pEngine.World;
+            var msd = (Animator)node.GetComponent<Animator>();
+            if (msd != null)
+                bc = msd.bones;
+            //World = CoreEngine.pEngine.World;
         }
 
         void Start()
         {
+            //Console.WriteLine(bc.GetBone(82).Bone2WorldInitial);
+            //Console.WriteLine(bc.GetBone(81).Bone2WorldInitial);
+            //Console.WriteLine(bc.GetBone(3).BoneMatrix);
+            //bc.GetBone(1).SetTransform(new Quaternion(0, 0, 0f), new Vector3(0, 1, 0));
+            //bc.UpdateSkeleton();
+            /*
             CollisionShape shape = new SphereShape(0.1f);
             RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(0f, new DefaultMotionState(Matrix.Translation(new Vector3(0, 1, 0))), shape, Vector3.Zero);
             Body = new RigidBody(rbInfo);
@@ -91,16 +102,18 @@ namespace Toys
             //jointSpring61.SetParam(ConstraintParam.Cfm, 0f);
             jointSpring61.SetEquilibriumPoint();
             World.AddConstraint(jointSpring61, true);
+            */
         }
 
         void Update()
         {
-            update++;
+           // update++;
+           // bc.GetBone(3).SetTransform(new Quaternion(0, 0, (float)(dec2rad(45) * Math.Cos(update * 3 * Math.PI / 180))), new Vector3(0, 0, 0));
             //update += .UpdateTime * 1000;
-            Matrix world = Body.WorldTransform;
-            world.M42 = (float)(1 + 0.5 * Math.Cos(update * 3 * Math.PI / 180));
+            //Matrix world = Body.WorldTransform;
+            //world.M42 = (float)(1 + 0.5 * Math.Cos(update * 3 * Math.PI / 180));
             //Body.MotionState.SetWorldTransform(ref world);
-            Body.WorldTransform = world;
+            //Body.WorldTransform = world;
         }
 
         float dec2rad(int grad)

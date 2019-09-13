@@ -20,9 +20,10 @@ namespace Toys
             var scene = core.mainScene;
 
             //string str = "";
-			SceneNode node = ResourcesManager.LoadAsset<SceneNode>(args[0]);
-			node.Name = "Model1";
-            
+            SceneNode node = ResourcesManager.LoadAsset<SceneNode>(args[0]);
+            //node.Name = "Model1";
+            //var loader = new ReaderLMD(args[0]);
+            //SceneNode node = loader.GetModel;
             //node.GetTransform.Rotation = new Vector3(0,(float)Math.PI / 2,0);
             //MeshDrawer md = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
             //node.GetTransform.Position = new Vector3(0f, 1.0f, 0.0f);
@@ -35,7 +36,7 @@ namespace Toys
             tb.SetText("牡丹制服高校(アニメ版)ver3");
             */
             scene.AddObject(node);
-           // TestScript ts = (TestScript)node.AddComponent<TestScript>();
+            TestScript ts = (TestScript)node.AddComponent<TestScript>();
             /*
             TextBox text = null;
             long frames = 1;

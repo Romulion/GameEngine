@@ -54,6 +54,7 @@
     <Compile Include="Engine\GraphicsEngine.cs" />
     <Compile Include="Engine\Graphics\TextRendering\TextBox.cs" />
     <Compile Include="Engine\Graphics\TextRendering\TextCanvas.cs" />
+    <Compile Include="Engine\ModelLoader\LMD\ReaderLMD.cs" />
     <Compile Include="Engine\Objects\SceneNode.cs" />
     <Compile Include="Engine\Objects\ScriptingComponent.cs" />
     <Compile Include="Engine\Objects\Transformation.cs" />

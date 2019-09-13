@@ -8,6 +8,7 @@ namespace Toys
 	{
 		PMX,
 		DAE,
+        LMD,
 	}
 
 	public class ModelLoader
@@ -28,7 +29,10 @@ namespace Toys
 				case "dae":
 					format = ModelFormat.DAE;
 					break;
-				default :
+                case "lmd":
+                    format = ModelFormat.LMD;
+                    break;
+                default :
 					throw new Exception("cant recognize file format");
 			}
 
@@ -46,8 +50,10 @@ namespace Toys
 				case ModelFormat.DAE :
 					modelLoader = new ReaderDAE(filename);
 					break;
-					
-			}
+                case ModelFormat.LMD:
+                    modelLoader = new ReaderLMD(filename);
+                    break;
+            }
 			return modelLoader;
 		}
 	}
