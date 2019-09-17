@@ -14,9 +14,8 @@ namespace Toys
 		
 		private ShaderManager()
 		{
-			var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
-			string frag = ReadFromStream(assembly.GetManifestResourceStream(defPath + "def.fs"));
-			string vert = ReadFromStream(assembly.GetManifestResourceStream(defPath + "def.vs"));
+			string frag = ReadFromAssetStream(defPath + "def.fsh");
+			string vert = ReadFromAssetStream(defPath + "def.vsh");
 
 			shaders = new Dictionary<string, Shader>();
 			Shader def = new ShaderMain(vert, frag);
@@ -40,12 +39,11 @@ namespace Toys
 			
 			if (shaders.ContainsKey(name))
 				return;
-			var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
 			string file_path = defPath + name;
-			string frag = ReadFromStream(assembly.GetManifestResourceStream(file_path + ".fs"));
-			string vert = ReadFromStream(assembly.GetManifestResourceStream(file_path + ".vs"));
+			string frag = ReadFromAssetStream(file_path + ".fsh");
+			string vert = ReadFromAssetStream(file_path + ".vsh");
 			LoadShader(name, vert, frag);
-		}
+        }
 
 		public void LoadShader(string name, string vert, string frag)
 		{
@@ -65,8 +63,7 @@ namespace Toys
 		{
 			if (shaders.ContainsKey(name))
 				return shaders[name];
-			var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
-			string cmp = ReadFromStream(assembly.GetManifestResourceStream(defPath + compute));
+			string cmp = ReadFromAssetStream(defPath + compute);
 			Shader shdr = new ShaderCompute(cmp);
 
 			shaders.Add(name, shdr);
@@ -93,9 +90,12 @@ namespace Toys
 			}
 		}
 
-		string ReadFromStream(Stream stream)
+		public static string ReadFromAssetStream(string path)
 		{
-			string str = "";
+            var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
+            var stream = assembly.GetManifestResourceStream(path);
+
+            string str = "";
 			using (var reader = new StreamReader(stream)) {
 				str = reader.ReadToEnd ();
 			}
