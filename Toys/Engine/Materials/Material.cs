@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Toys
 {
-	public class Material : IMaterial
+	public abstract class Material
 	{
 		public ShaderSettings shdrSettings { get; set; }
 		public RenderDirectives rndrDirrectives { get; set; }
@@ -18,92 +18,67 @@ namespace Toys
         public ShaderUniform[] variables { get; private set; }
         public ShaderUniformManager UniManager { get; private set; }
 
-        Dictionary<TextureType, Texture> textures;
-		//Dictionary<string, float> uniforms;
-		Shader shdr;
-
+        protected Dictionary<TextureType, Texture> textures;
+		protected Shader shdr;
 		
-		public Material(ShaderSettings shdrsett, RenderDirectives rdir)
+		public Material()
 		{
 			textures = new Dictionary<TextureType, Texture>();
-			shdrSettings = shdrsett;
-			rndrDirrectives = rdir;
-
-			outln = new Outline();
-
-			CreateShader();
+            outln = new Outline();
 		}
 
-
-		void CreateShader()
+		protected void CreateShader(Shader shader)
 		{
-			Texture txtr = Texture.LoadEmpty();
+            shdr = shader;
+            Texture txtr = Texture.LoadEmpty();
 			TextureUnit unit = TextureUnit.Texture0;
-
-			shdr = ShaderConstructor.CreateShader(shdrSettings);
             variables = shdr.uniforms;
             UniManager = new ShaderUniformManager(shdr.uniforms,this);
 
 			shdr.ApplyShader();
-			if (shdrSettings.TextureDiffuse)
-			{
-				textures.Add(TextureType.Diffuse, txtr);
-				GL.ActiveTexture(unit + (int)TextureType.Diffuse);
-				txtr.BindTexture();
-			}
-			if (shdrSettings.TextureSpecular)
-			{
-				textures.Add(TextureType.Specular, txtr);
-				GL.ActiveTexture(unit + (int)TextureType.Specular);
-				txtr.BindTexture();
-			}
-			if (shdrSettings.toonShadow)
-			{
-				textures.Add(TextureType.Toon, txtr);
-				GL.ActiveTexture(unit + (int)TextureType.Toon);
-				txtr.BindTexture();
-			}
-			if (shdrSettings.envType > 0)
-			{
-				textures.Add(TextureType.Sphere, txtr);
-				GL.ActiveTexture(unit + (int)TextureType.Sphere);
-				txtr.BindTexture();
-			}
+            if (shdrSettings.TextureDiffuse)
+            {
+                textures.Add(TextureType.Diffuse, txtr);
+                GL.ActiveTexture(unit + (int)TextureType.Diffuse);
+                txtr.BindTexture();
+            }
+
+            if (shdrSettings.TextureSpecular)
+            {
+                textures.Add(TextureType.Specular, txtr);
+                GL.ActiveTexture(unit + (int)TextureType.Specular);
+                txtr.BindTexture();
+            }
+
+            if (shdrSettings.toonShadow)
+            {
+                textures.Add(TextureType.Toon, txtr);
+                GL.ActiveTexture(unit + (int)TextureType.Toon);
+                txtr.BindTexture();
+            }
+
+            if (shdrSettings.envType > 0)
+            {
+                textures.Add(TextureType.Sphere, txtr);
+                GL.ActiveTexture(unit + (int)TextureType.Sphere);
+                txtr.BindTexture();
+            }
 		}
 
-        //passing value to uniform
-        
-        public void SetValue(object val, string Name)
-        {
-            var query = from v in variables
-                        where v.Name == Name
-                        select v;
-
-            query.First().SetValue(val);
-        }
-       
-
-		public void SetTexture(Texture txtr, TextureType type)
+		public virtual void SetTexture(Texture txtr, TextureType type)
 		{
-
-
-			//var type = txtr.GetTextureType;
-
-
 			if (textures.ContainsKey(type))
 			{
 				textures[type] = txtr;
 			}
-
 		}
 
-		public void UpdateMaterial()
+		public virtual void UpdateMaterial()
 		{
 			shdr.DeleteShader();
-			CreateShader();
 		}
 
-		public void ApplyMaterial()
+		public virtual void ApplyMaterial()
 		{
 			shdr.ApplyShader();
 			TextureUnit unit = TextureUnit.Texture0;
@@ -114,13 +89,6 @@ namespace Toys
 			}
 		}
 
-		public Material Clone()
-		{
-			var material = new Material(shdrSettings, rndrDirrectives);
-			foreach (var texture in textures)
-				material.SetTexture(texture.Value,texture.Key);
-
-			return material;
-		}
+        public abstract Material Clone();
 	}
 }

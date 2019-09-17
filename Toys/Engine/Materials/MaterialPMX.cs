@@ -5,11 +5,8 @@ using System.Collections;
 
 namespace Toys
 {
-	public class MaterialPMX : IOutline
+	public class MaterialPMX : Material
 	{
-		public Texture[] textures;
-
-		public string NameEng;
 		public Vector4 DiffuseColor = Vector4.One;
 		public Vector3 SpecularColour;
 		public float Specular;
@@ -18,12 +15,8 @@ namespace Toys
 		//IOutline
 		public Vector4 EdgeColour{ get; set;}
 		public float EdgeScaler { get; set;}
-		public bool hasEdge { get; set;}
 
-		//IMaterial
-		public bool dontDraw { get; set; }
-		public string Name { get; set; }
-		public bool drawShadow { get; set; }
+		//IMateria
 
 
 		//flags
@@ -34,18 +27,13 @@ namespace Toys
 		public bool pointDrawing;
 		public bool lineDrawing;
 
-		Shader program;
-		Shader outline;
-
-		public MaterialPMX()
+        public MaterialPMX(ShaderSettings shdrsett, RenderDirectives rdir) :base()
 		{
-			program = ShaderManager.GetInstance.GetShader("pmx");
-			outline = ShaderManager.GetInstance.GetShader("outline");
-		}
-
-		public int offset { get; set; }
-		public int count { get; set; }
-
+            shdrSettings = shdrsett;
+            rndrDirrectives = rdir;
+            CreateShader();
+        }
+        /*
 		public byte SetFlags 
 		{
 			set {
@@ -60,38 +48,22 @@ namespace Toys
 				lineDrawing = flags[7];
 			}
 		}
+        */
 
+        private void CreateShader()
+        {
+            shdr = ShaderConstructor.CreateShader(shdrSettings);
+            CreateShader(shdr);
+        }
 
-		public Shader GetShader
-		{
-			get { return program;}
-		}
+        public override Material Clone()
+        {
+            var material = new MaterialPMX(shdrSettings, rndrDirrectives);
+            foreach (var texture in textures)
+                material.SetTexture(texture.Value, texture.Key);
 
+            return material;
+        }
 
-
-		public void ApplyMaterial() 
-		{
-			program.ApplyShader();
-			if (textures != null)
-			{
-				TextureUnit unit = TextureUnit.Texture0;
-				foreach (Texture txtr in textures)
-				{
-					GL.ActiveTexture(unit);
-					txtr.BindTexture();
-					unit += 1;      
-    			}
-			}
-		}
-
-
-		public void ApplyOutline()
-		{
-			outline.SetUniform(EdgeColour, "EdgeColor");
-			outline.SetUniform(EdgeScaler, "EdgeScaler");
-		}
-
-
-
-	}
+    }
 }

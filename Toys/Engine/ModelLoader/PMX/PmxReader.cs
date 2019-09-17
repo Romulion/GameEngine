@@ -11,7 +11,7 @@ namespace Toys
 		Header header;
 		Texture[] textures;
 		Texture empty;
-		IMaterial[] mats;
+		Material[] mats;
 		Bone[] bones;
 		public Morph[] morphs;
 		float multipler = 0.1f;
@@ -192,7 +192,7 @@ namespace Toys
 			string txt = "";
 			int materiaCount = file.ReadInt32();
 			int offset = 0;
-			mats = new IMaterial[materiaCount];
+			mats = new Material[materiaCount];
 			for (int i = 0; i < materiaCount; i++)
 			{
 				ShaderSettings shdrs = new ShaderSettings();
@@ -282,7 +282,7 @@ namespace Toys
 				{
 					tex = textures[difTexIndex];
 				}
-				var mat = new Material(shdrs, rndr);
+				var mat = new MaterialPMX(shdrs, rndr);
 				mat.Name = name;
 				mat.outln = outln;
 				mat.SetTexture(tex,TextureType.Diffuse);
@@ -587,7 +587,7 @@ namespace Toys
 			get { return textures; }
 		}
 
-		public IMaterial[] GetMaterials
+		public Material[] GetMaterials
 		{
 			get { return mats; }
 		}

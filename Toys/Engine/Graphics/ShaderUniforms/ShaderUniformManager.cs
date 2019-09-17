@@ -8,9 +8,9 @@ namespace Toys
     public class ShaderUniformManager
     {
         public ShaderUniform[] uniforms;
-        IMaterial material;
+        Material material;
 
-        public ShaderUniformManager(ShaderUniform[] unis,IMaterial mat)
+        public ShaderUniformManager(ShaderUniform[] unis,Material mat)
         {
             uniforms = unis;
             material = mat;

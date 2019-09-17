@@ -130,7 +130,7 @@ namespace Toys
 				rddir.hasEdges = true;
 				shdrst.TextureDiffuse = true;
 				shdrst.discardInvisible = true;
-				var mat  = new Material(shdrst, rddir);
+				var mat  = new MaterialPMX(shdrst, rddir);
 				mat.Name = mts[i].Name;
 				mat.SetTexture(mts[i].txtr, TextureType.Diffuse);
 

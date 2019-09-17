@@ -29,7 +29,7 @@ namespace Toys
 			ShowAll();
 		}
 
-		void SetList(IMaterial[] mats)
+		void SetList(Material[] mats)
 		{
 			int y = 0;
 			var disable = new Gdk.Color(10, 100, 10);

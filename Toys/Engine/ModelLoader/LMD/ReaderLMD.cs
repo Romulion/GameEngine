@@ -11,7 +11,7 @@ namespace Toys
     {
         BinaryReader file;
         Reader reader;
-        Dictionary<string, IMaterial> materialTable = new Dictionary<string, IMaterial>();
+        Dictionary<string, Material> materialTable = new Dictionary<string, Material>();
         Mesh[] meshRigged = new Mesh[0];
         MeshDrawer[] mesDrawlers = new MeshDrawer[0];
         Bone[] bones = null;
@@ -76,7 +76,7 @@ namespace Toys
                 sdrs.TextureDiffuse = true;
                 sdrs.affectedByLight = true;
                 sdrs.recieveShadow = false;
-                IMaterial mat = new Material(sdrs, rndd);
+                Material mat = new MaterialPMX(sdrs, rndd);
                 mat.Name = MaterialName;
                 materialTable.Add(MaterialName, mat);
             }
@@ -184,10 +184,10 @@ namespace Toys
             }
 
             var mesh = new Mesh(verts.ToArray(), indexes);
-            IMaterial mat;
+            Material mat;
             if (materialTable.TryGetValue(matName, out mat))
             {
-                return new MeshDrawerRigged(mesh, new IMaterial[] { mat }, boneControll);
+                return new MeshDrawerRigged(mesh, new Material[] { mat }, boneControll);
             }
             else
                 return new MeshDrawerRigged(mesh, boneControll);

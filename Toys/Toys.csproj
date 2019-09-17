@@ -54,6 +54,7 @@
     <Compile Include="Engine\GraphicsEngine.cs" />
     <Compile Include="Engine\Graphics\TextRendering\TextBox.cs" />
     <Compile Include="Engine\Graphics\TextRendering\TextCanvas.cs" />
+    <Compile Include="Engine\Materials\MaterialPM.cs" />
     <Compile Include="Engine\ModelLoader\LMD\ReaderLMD.cs" />
     <Compile Include="Engine\Objects\SceneNode.cs" />
     <Compile Include="Engine\Objects\ScriptingComponent.cs" />
@@ -69,7 +70,6 @@
     <Compile Include="Engine\Graphics\Texture.cs" />
     <Compile Include="Engine\Controll\Camera.cs" />
     <Compile Include="Engine\Morph\Morph.cs" />
-    <Compile Include="Engine\Materials\IMaterial.cs" />
     <Compile Include="Engine\Objects\LightSource.cs" />
     <Compile Include="Engine\Materials\MaterialSimple.cs" />
     <Compile Include="Engine\Morph\MorphVertex.cs" />
@@ -155,7 +155,6 @@
   <ItemGroup>
     <Reference Include="OpenTK, Version=3.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.3.1.0\lib\net20\OpenTK.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="SharpFont, Version=4.0.1.200, Culture=neutral, PublicKeyToken=48add4c483071cdf, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpFont.4.0.1\lib\net45\SharpFont.dll</HintPath>
@@ -183,36 +182,40 @@
   <ItemGroup>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resourses\shaders\PM.fsh" />
     <None Include="VertexRigged.manifest" />
     <None Include="Resourses\textures\toon_blank.bmp" />
     <None Include="Engine\Graphics\ShaderUniforms\ShaderUniformTyped.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resourses\shaders\def.fs" />
-    <EmbeddedResource Include="Resourses\shaders\def.vs" />
-    <EmbeddedResource Include="Resourses\shaders\pmx.fs" />
-    <EmbeddedResource Include="Resourses\shaders\pmx.vs" />
-    <EmbeddedResource Include="Resourses\shaders\pp.fs" />
-    <EmbeddedResource Include="Resourses\shaders\pp.vs" />
+    <EmbeddedResource Include="Resourses\shaders\def.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\def.vsh" />
+    <EmbeddedResource Include="Resourses\shaders\pmx.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\pmx.vsh" />
+    <EmbeddedResource Include="Resourses\shaders\pp.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\pp.vsh" />
     <EmbeddedResource Include="Resourses\textures\empty.png" />
-    <EmbeddedResource Include="Resourses\shaders\shadow.fs" />
-    <EmbeddedResource Include="Resourses\shaders\shadow.vs" />
-    <EmbeddedResource Include="Resourses\shaders\outline.fs" />
-    <EmbeddedResource Include="Resourses\shaders\outline.vs" />
+    <EmbeddedResource Include="Resourses\shaders\shadow.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\shadow.vsh" />
+    <EmbeddedResource Include="Resourses\shaders\outline.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\outline.vsh" />
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resourses\shaders\skin.glsl" />
-    <EmbeddedResource Include="Resourses\shaders\phys.fs" />
-    <EmbeddedResource Include="Resourses\shaders\phys.vs" />
-    <EmbeddedResource Include="Resourses\shaders\defscreen.fs" />
-    <EmbeddedResource Include="Resourses\shaders\defscreen.vs" />
+    <EmbeddedResource Include="Resourses\shaders\phys.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\phys.vsh" />
+    <EmbeddedResource Include="Resourses\shaders\defscreen.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\defscreen.vsh" />
     <EmbeddedResource Include="Resourses\Fonts\BadScript-Regular.ttf" />
     <EmbeddedResource Include="Resourses\Fonts\msgothic.ttc" />
     <EmbeddedResource Include="Resourses\Fonts\Pecita.otf" />
-    <EmbeddedResource Include="Resourses\shaders\text.fs" />
-    <EmbeddedResource Include="Resourses\shaders\text.vs" />
+    <EmbeddedResource Include="Resourses\shaders\text.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\text.vsh" />
     <EmbeddedResource Include="Resourses\Fonts\ARIALUNI.TTF" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resourses\shaders\PM.vsh" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />

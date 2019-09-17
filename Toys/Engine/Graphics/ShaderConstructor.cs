@@ -14,17 +14,28 @@ namespace Toys
 			setting = stng;
 		}
 
-		public static Shader CreateShader(ShaderSettings settings)
+        ShaderConstructor()
+        {
+        }
+
+        public static Shader CreateShader(string vs, string fs)
+        {
+            var constructor = new ShaderConstructor();
+            constructor.rawVertex = vs;
+            constructor.rawFragment = fs;
+            return constructor.Creator();
+        }
+
+        public static Shader CreateShader(ShaderSettings settings)
 		{
 			var constructor = new ShaderConstructor(settings);
-			return constructor.Creator();
+            constructor.GenerateVertex();
+            constructor.GenerateFragment();
+            return constructor.Creator();
 		}
 
 		Shader Creator()
 		{
-
-			GenerateVertex();
-			GenerateFragment();
 			Shader shdr = null;
 			try
 			{
@@ -37,11 +48,8 @@ namespace Toys
 
 			//binding buffers
 			var ubm = UniformBufferManager.GetInstance;
-			if (setting.hasSkeleton)
-			{
-				var ubs = ubm.GetBuffer("skeleton");
-				shdr.SetUBO(ubs.bufferIndex, "skeleton");
-			}
+			var ubs = ubm.GetBuffer("skeleton");
+			shdr.SetUBO(ubs.bufferIndex, "skeleton");
 			var ubsp = ubm.GetBuffer("space");
 			shdr.SetUBO(ubsp.bufferIndex, "space");
 			var ubl = ubm.GetBuffer("light");
@@ -49,24 +57,14 @@ namespace Toys
 
 			//bind textures
 			shdr.ApplyShader();
-			if (setting.TextureDiffuse)
-				shdr.SetUniform((int)TextureType.Diffuse, "material.texture_diffuse");
-			if (setting.toonShadow)
-			{
-				shdr.SetUniform((int)TextureType.Toon, "material.texture_toon");
-               
-            }
-            if (setting.recieveShadow)
-            {
-                shdr.SetUniform((int)TextureType.ShadowMap, "shadowMap");
-            }
-            if (setting.TextureSpecular)
-				shdr.SetUniform((int)TextureType.Specular, "material.texture_specular");
 
-			if (setting.envType > 0)
-				shdr.SetUniform((int)TextureType.Sphere, "material.texture_spere");
+            shdr.SetUniform((int)TextureType.ShadowMap, "shadowMap");
+            shdr.SetUniform((int)TextureType.Diffuse, "material.texture_diffuse");
+			shdr.SetUniform((int)TextureType.Toon, "material.texture_toon");
+			shdr.SetUniform((int)TextureType.Specular, "material.texture_specular");
+			shdr.SetUniform((int)TextureType.Sphere, "material.texture_spere");
 
-			return shdr;
+            return shdr;
 		}
 
 		void GenerateVertex()
@@ -75,18 +73,14 @@ namespace Toys
 
 			rawVertex += "layout (location = 0) in vec3 aPos;\n"
 						+"layout (location = 1) in vec3 aNormal;\n"
-						+"layout (location = 2) in vec2 aTexcord;\n";
-
-			if (setting.hasSkeleton)
-				rawVertex += "layout (location = 3) in ivec4 BoneIDs;\n"
-							+"layout (location = 4) in vec4 Weights;\n";
+						+"layout (location = 2) in vec2 aTexcord;\n"
+                        +"layout (location = 3) in ivec4 BoneIDs;\n"
+						+"layout (location = 4) in vec4 Weights;\n";
 
 			rawVertex += "\n";
 
 			//setting uniform buffers
-			if (setting.hasSkeleton)
-				rawVertex += "layout (std140) uniform skeleton\n{\n    mat4 gBones[500];\n};\n";
-
+			rawVertex += "layout (std140) uniform skeleton\n{\n    mat4 gBones[500];\n};\n";
 			rawVertex += "layout (std140) uniform space {\n\tmat4 model;\n\tmat4 pvm;\n\tmat4 NormalMat;\n\tmat4 lightSpacePos;\n};\n";
 
 			//setting out structure
@@ -129,29 +123,16 @@ namespace Toys
 			rawFragment += "layout (std140) uniform light {\n\tvec3 LightPos;\n\tvec3 viewPos;\n\tfloat near_plane;\n\tfloat far_plane;\n};\n";
 
 			//setting material specific parameters
-			rawFragment += "struct Material{\n";
-
-			//if (setting.TextureDiffuse) //test enabling
-				rawFragment += "\tsampler2D texture_diffuse;\n";
-
-			if (setting.TextureSpecular)
-				rawFragment += "\tsampler2D texture_specular;\n";
-
-			if (setting.toonShadow)
-				rawFragment += "\tsampler2D texture_toon;\n";
-			
-			if (setting.envType > 0)
-				rawFragment += "\tsampler2D texture_spere;\n";
-
-            if (setting.DifuseColor)
-                rawFragment += "\tvec4 diffuse_color;\n";
-
-            rawFragment += "};\n";
+			rawFragment += "struct Material{\n"
+                        +"\tsampler2D texture_diffuse;\n"
+                        +"\tsampler2D texture_specular;\n"
+                        +"\tsampler2D texture_toon;\n"
+                        +"\tsampler2D texture_spere;\n"
+                        +"\tvec4 diffuse_color;\n"
+                        +"};\n";
 
 			rawFragment += "uniform Material material;\n";
-
-			if (setting.recieveShadow)
-				rawFragment += "uniform sampler2DShadow shadowMap;\n";
+            rawFragment += "uniform sampler2DShadow shadowMap;\n";
 
 			if (setting.recieveShadow)
 			{
@@ -162,11 +143,11 @@ namespace Toys
 					+ "\treturn (2.0 * near_plane * far_plane) / (far_plane + near_plane - z * (far_plane - near_plane));\n"
 					+ "}\n";
 				*/
-				rawFragment += "float ShadowCalculation(vec4 fragPosLightSpace)\n"
+				rawFragment += "float ShadowCalculation()\n"
 					+ "{\n"
 					+ "\tfloat bias = 0.005;\n"
-					+ "\tvec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;\n"
-					+ "\tprojCoords = projCoords * 0.5 + 0.5;\n"
+					+ "\tvec3 projCoords = fs_in.lightSpace.xyz / fs_in.lightSpace.w;\n"
+                    + "\tprojCoords = projCoords * 0.5 + 0.5;\n"
 					+ "\tprojCoords.z -= bias;"
 					+ "\tfloat shadow = 1 - texture(shadowMap, projCoords);\n"
 					/*
@@ -191,7 +172,7 @@ namespace Toys
 
 			//shadowing section
 			if (setting.recieveShadow)
-				rawFragment += "float shadow = ShadowCalculation(fs_in.lightSpace);\n";
+				rawFragment += "float shadow = ShadowCalculation();\n";
 
 
 			if (setting.affectedByLight)

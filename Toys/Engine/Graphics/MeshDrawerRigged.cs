@@ -8,7 +8,7 @@ namespace Toys
 		public BoneController skeleton { get; private set; }
 		UniformBufferSkeleton ubs;
 
-		public MeshDrawerRigged(Mesh mesh, IMaterial[] mats, BoneController skelet, Morph[] mor = null) : base(mesh, mats, mor)
+		public MeshDrawerRigged(Mesh mesh, Material[] mats, BoneController skelet, Morph[] mor = null) : base(mesh, mats, mor)
 		{
 			skeleton = skelet;
 			UniformBufferManager ubm = UniformBufferManager.GetInstance;

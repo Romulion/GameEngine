@@ -5,7 +5,7 @@ namespace Toys
 	public class MeshDrawer : Component
 	{
 		public Mesh mesh { get; private set; }
-		public IMaterial[] mats { get; private set; }
+		public Material[] mats { get; private set; }
 		public Morph[] morph { get; private set; }
 
 
@@ -13,20 +13,20 @@ namespace Toys
 		public bool CastShadow;
 
 
-		public MeshDrawer(Mesh mesh, IMaterial[] mats = null,Morph[] mor = null) : base (typeof(MeshDrawer))
+		public MeshDrawer(Mesh mesh, Material[] mats = null,Morph[] mor = null) : base (typeof(MeshDrawer))
 		{
 			this.mesh = mesh;
             if (mats != null)
                 this.mats = mats;
             else
             {
-                this.mats = new Material[] { new Material(new ShaderSettings(), new RenderDirectives()) };
+                this.mats = new Material[] { new MaterialPMX(new ShaderSettings(), new RenderDirectives()) };
             }
             morph = mor;
 		}
 
 		//for single material mesh
-		public MeshDrawer(Mesh mesh, IMaterial mat) : this(mesh, new IMaterial[] { mat })
+		public MeshDrawer(Mesh mesh, Material mat) : this(mesh, new Material[] { mat })
 		{
 		}
 
@@ -63,7 +63,7 @@ namespace Toys
 
 			foreach (var mat in mats)
 			{
-				var	otl = ((Material)mat).outln;
+				var	otl = mat.outln;
 				var rndr = mat.rndrDirrectives;
 				//outline = mat.outline;
 				if (!rndr.render || !rndr.hasEdges)
