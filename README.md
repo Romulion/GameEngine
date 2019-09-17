@@ -9,10 +9,9 @@ Features
 * Mesh morphing
 
 TODO
-1) Add physics (bullet physics)
-2) Support fbx, obj, dae(partially exist) model formats
-3) Support different graphic engines (DX and Vulcan)
-4) Animation engine
+1) Support more model fromats (fbx, obj)
+2) Support different graphic engines (DX and Vulcan)
+3) Implement soung engine
 
 
 
