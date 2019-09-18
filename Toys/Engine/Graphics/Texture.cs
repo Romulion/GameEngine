@@ -170,9 +170,7 @@ namespace Toys
             //setting mip layer count
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureBaseLevel, 0);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, texture.header.numberOfMipmapLevels-1);
-            //int a;
-            //GL.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureMaxLevel,out a);
-            Console.WriteLine("{0} {1}" , texture.header.glInternalFormat, texture.header.glPixelFormat);
+
             if (texture.header.glDataType == 0)
             {
                 for (int i = 0; i < texture.header.numberOfMipmapLevels; i++)

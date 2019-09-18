@@ -5,12 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using BulletSharp;
 //using BulletSharp.Math;
+using OpenTK.Input;
 using OpenTK;
 
 namespace Toys
 {
     class TestScript : ScriptingComponent
     {
+        
         //DiscreteDynamicsWorld World;
         long frames = 1;
         double update = 0, render = 0;
@@ -18,10 +20,9 @@ namespace Toys
         //RigidBody Body;
         BoneController bc;
         public static Texture texture;
-
         void Awake()
         {
-
+            
             /*
             Vertex3D[] verts = new Vertex3D[]
             {
@@ -136,8 +137,8 @@ namespace Toys
 
         void Update()
         {
-           // update++;
-           // bc.GetBone(3).SetTransform(new Quaternion(0, 0, (float)(dec2rad(45) * Math.Cos(update * 3 * Math.PI / 180))), new Vector3(0, 0, 0));
+            // update++;
+            // bc.GetBone(3).SetTransform(new Quaternion(0, 0, (float)(dec2rad(45) * Math.Cos(update * 3 * Math.PI / 180))), new Vector3(0, 0, 0));
             //update += .UpdateTime * 1000;
             //Matrix world = Body.WorldTransform;
             //world.M42 = (float)(1 + 0.5 * Math.Cos(update * 3 * Math.PI / 180));

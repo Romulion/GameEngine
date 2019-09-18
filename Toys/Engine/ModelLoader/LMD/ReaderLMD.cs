@@ -76,13 +76,14 @@ namespace Toys
                 sdrs.hasSkeleton = true;
                 sdrs.TextureDiffuse = true;
                 sdrs.TextureSpecular = true;
-                sdrs.affectedByLight = true;
                 sdrs.recieveShadow = false;
+                rndd.hasEdges = true;
+
                 Material mat = new MaterialPM(sdrs, rndd);
                 mat.Name = MaterialName;
                 materialTable.Add(MaterialName, mat);
                 mat.UniManager.Set("uv_scale", Vector4.One);
-                //mat.UniManager.Set("uv_translation", Vector4.Zero);
+                //scale face shadow texture
                 if (MaterialName.Contains("face"))
                     mat.UniManager.Set("uv_scale", new Vector4(1,1,4,4));
                 try
@@ -285,6 +286,7 @@ namespace Toys
                     node.AddComponent(mesh);
                     node.AddComponent(new Animator(mesh.skeleton));
                 }
+                node.AddComponent<ScriptChangeExpression>();
                 return node;
             }
         }

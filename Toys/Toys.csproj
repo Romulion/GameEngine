@@ -59,6 +59,7 @@
     <Compile Include="Engine\Materials\MaterialCustom.cs" />
     <Compile Include="Engine\Materials\MaterialPM.cs" />
     <Compile Include="Engine\ModelLoader\LMD\ReaderLMD.cs" />
+    <Compile Include="Engine\ModelLoader\LMD\ScriptChangeExpression.cs" />
     <Compile Include="Engine\Objects\SceneNode.cs" />
     <Compile Include="Engine\Objects\ScriptingComponent.cs" />
     <Compile Include="Engine\Objects\Transformation.cs" />
