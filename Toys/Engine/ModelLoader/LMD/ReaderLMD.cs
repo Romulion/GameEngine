@@ -16,6 +16,7 @@ namespace Toys
         MeshDrawer[] mesDrawlers = new MeshDrawer[0];
         Bone[] bones = null;
         BoneController boneControll = null;
+        Dictionary<string, Texture> texturesDict = new Dictionary<string, Texture>();
 
         public ReaderLMD(string path)
         {
@@ -76,9 +77,17 @@ namespace Toys
                 sdrs.TextureDiffuse = true;
                 sdrs.affectedByLight = true;
                 sdrs.recieveShadow = false;
-                Material mat = new MaterialPMX(sdrs, rndd);
+                Material mat = new MaterialPM(sdrs, rndd);
                 mat.Name = MaterialName;
                 materialTable.Add(MaterialName, mat);
+                try
+                {
+                    ReadTexturesFromMaterial(MaterialName, mat);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
 
         }
@@ -281,5 +290,57 @@ namespace Toys
                 return null;
             }
         }
+
+        void ReadTexturesFromMaterial(string name, Material mat)
+        {
+            string path = "Materials/" + name + ".material";
+            Stream fs = File.OpenRead(path);
+            var file = new BinaryReader(fs);
+            var reader = new Reader(file);
+            reader.encoding = 1;
+            //this offset looks static
+            file.BaseStream.Position = 0x4FF;
+            string variable = "init";
+            while (variable != name)
+            {
+                variable = reader.readStringB();
+                string textPath = "";
+                TextureType type = TextureType.Diffuse;
+                switch (variable)
+                {
+                    case "u_texture0":
+                        file.BaseStream.Position += 1;
+                        textPath = reader.readStringB();
+                        type = TextureType.Diffuse;
+                        break;
+                    case "u_texture1":
+                        file.BaseStream.Position += 1;
+                        textPath = reader.readStringB();
+                        type = TextureType.Specular;
+                        break;
+                    case "u_texture2":
+                        file.BaseStream.Position += 1;
+                        textPath = reader.readStringB();
+                        type = TextureType.Toon;
+                        break;
+                }
+                if (textPath != "")
+                {
+                    textPath = textPath.Substring(textPath.LastIndexOf("Models/") + 7);
+                    if (texturesDict.ContainsKey(textPath))
+                        mat.SetTexture(texturesDict[textPath], type);
+                    else
+                    {
+                        var text = new Texture(textPath);
+                        texturesDict.Add(textPath, text);
+                        mat.SetTexture(text, type);
+                        if (textPath.Contains("ch0101_00_mei_co.ktx"))
+                            TestScript.texture = text;
+                    }
+                }
+                file.BaseStream.Position += 1;
+            }
+        }
+
     }
 }
