@@ -17,13 +17,40 @@ namespace Toys
         //TextBox text;
         //RigidBody Body;
         BoneController bc;
+        public static Texture texture;
 
         void Awake()
         {
-            var msd = (Animator)node.GetComponent<Animator>();
-            if (msd != null)
-                bc = msd.bones;
+
+            /*
+            Vertex3D[] verts = new Vertex3D[]
+            {
+                new Vertex3D(new Vector2(-480,480), new Vector2(0,0)),
+                new Vertex3D(new Vector2(-480,-480), new Vector2(0,1)),
+                new Vertex3D(new Vector2(480,-480), new Vector2(1,1)),
+                new Vertex3D(new Vector2(-480,480), new Vector2(0,0)),
+                new Vertex3D(new Vector2(480,-480), new Vector2(1,1)),
+                new Vertex3D(new Vector2(480,480), new Vector2(1,0)),
+            };
+            Mesh mesh = new Mesh(verts, new int[] { 0, 1, 2, 3, 4, 5 });
+            ShaderSettings ss = new ShaderSettings();
+            RenderDirectives rd = new RenderDirectives();
+            string path = "Toys.Resourses.shaders.";
+            string vs = ShaderManager.ReadFromAssetStream(path + "TestTexture.vsh");
+            string fs = ShaderManager.ReadFromAssetStream(path + "TestTexture.fsh");
+            ss.TextureDiffuse = true;
+            Material mat = new MaterialCustom(ss,rd,vs,fs);
+            if (texture != null)
+                mat.SetTexture(texture,TextureType.Diffuse);
+            mat.Name = "Texture";
+            mat.UniManager.Set("resolution", new Vector3(640, 480,0));
+            MeshDrawer md = new MeshDrawer(mesh,mat);
+            node.AddComponent(md);
+            //var msd = (Animator)node.GetComponent<Animator>();
+            //if (msd != null)
+            //    bc = msd.bones;
             //World = CoreEngine.pEngine.World;
+            */
         }
 
         void Start()
