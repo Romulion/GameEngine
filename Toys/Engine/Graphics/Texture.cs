@@ -2,6 +2,7 @@
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.IO;
+using KtxSharp;
 
 namespace Toys
 {
@@ -31,61 +32,37 @@ namespace Toys
             ClampToEdge = All.ClampToEdge,
         }
 
-		public Texture(string path, TextureType type,string name) : base (typeof(Texture))
+        public Texture(string path, TextureType type) : this(path)
 		{
-			texture_id = GL.GenTexture();
-			this.type = type;
-            this.name = name;
-			Bitmap tex1;
-
-			//check texture
-			try
-			{
-				///cause .NET cant read tga natievly
-				/// still need to load .spa textures
-				///png , jpg, bmp is ok
-				if (path.EndsWith("tga",StringComparison.OrdinalIgnoreCase))
-					tex1 = Paloma.TargaImage.LoadTargaImage(path);
-                //spa and sph is bmp or png images. steam to bypass filename extension check
-                else if (path.EndsWith("spa", StringComparison.OrdinalIgnoreCase) || path.EndsWith("sph", StringComparison.OrdinalIgnoreCase))
-                {
-                    Stream strm = File.OpenRead(path);
-                    tex1 = new Bitmap(strm);
-                    Console.WriteLine(path);
-                }
-				else
-					tex1 = new Bitmap(path);
-				
-                LoadTexture(tex1);
-			}
-			catch (Exception)
-			{
-				Console.Write("cant load texture  ");
-				Console.WriteLine(path);
-				//load default texture if fail
-				//without reloading to memory
-				Texture empty = LoadEmpty();
-				texture_id = empty.texture_id;
-				this.type = empty.type;
-				this.name = empty.name;
-            }
-
-
-		}
+            this.type = type;
+        }
 
 		public Texture(string path) : base (typeof(Texture))
 		{
 			texture_id = GL.GenTexture();
 			Bitmap tex1;
-
-			//check texture
-			try
+            Console.WindowHeight = 50;
+            //check texture
+            try
 			{
-				///cause .NET cant read tga natievly
-				/// still need to load .spa textures
-				///png , jpg, bmp is ok
-				if (path.EndsWith("tga", StringComparison.OrdinalIgnoreCase))
+
+                if (path.EndsWith("ktx", StringComparison.OrdinalIgnoreCase))
+                {
+                    byte[] ktxBytes = File.ReadAllBytes(path);
+                    KtxStructure ktxStructure = null;
+                    using (MemoryStream ms = new MemoryStream(ktxBytes))
+                    {
+                        ktxStructure = KtxLoader.LoadInput(ms);
+                        LoadTexture(ktxStructure);
+                    }
+                    return;
+                }
+
+                ///cause .NET cant read tga natievly
+                ///png , jpg, bmp is ok
+                if (path.EndsWith("tga", StringComparison.OrdinalIgnoreCase))
 					tex1 = Paloma.TargaImage.LoadTargaImage(path);
+                /// .spa| .sph textures is png bmp or jpg textures
                 else if (path.EndsWith("spa", StringComparison.OrdinalIgnoreCase) || path.EndsWith("sph", StringComparison.OrdinalIgnoreCase))
                 {
                     Stream strm = File.OpenRead(path);
@@ -95,12 +72,15 @@ namespace Toys
 					tex1 = new Bitmap(path);
 				LoadTexture(tex1);
             }
-			catch (Exception)
+			catch (Exception e)
 			{
 				Console.Write("cant load texture  ");
-				//load default texture if fail
-				//without reloading to memory
-				Texture empty = LoadEmpty();
+                Console.WriteLine(path);
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+                //load default texture if fail
+                //without reloading to memory
+                Texture empty = LoadEmpty();
 				texture_id = empty.texture_id;
                 this.name = empty.name;
             }
@@ -156,14 +136,6 @@ namespace Toys
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
 
-
-			/*
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.Repeat);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.MirroredRepeat);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.NearestMipmapLinear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.NearestMipmapNearest);
-			*/
-
 			//load to static memory
 			System.Drawing.Imaging.BitmapData data =
 				texture.LockBits(new Rectangle(0, 0, texture.Width, texture.Height),
@@ -177,8 +149,6 @@ namespace Toys
 				format = PixelFormat.Bgr;
 
 			//loading to video memory
-			//GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
-			//              texture.Width, texture.Height, 0, format, PixelType.UnsignedByte, IntPtr.Zero);
 			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
 						  texture.Width, texture.Height, 0, format, PixelType.UnsignedByte, data.Scan0);
 			GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
@@ -187,6 +157,47 @@ namespace Toys
 			texture.UnlockBits(data);
 			texture.Dispose();
 		}
+
+        void LoadTexture(KtxStructure texture)
+        {
+            GL.BindTexture(TextureTarget.Texture2D, texture_id);
+            //setting wrapper
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.MirroredRepeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.MirroredRepeat);
+            //setting interpolation
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
+            //setting mip layer count
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureBaseLevel, 0);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, texture.header.numberOfMipmapLevels-1);
+            //int a;
+            //GL.GetTexParameterI(TextureTarget.Texture2D, GetTextureParameter.TextureMaxLevel,out a);
+            Console.WriteLine("{0} {1}" , texture.header.glInternalFormat, texture.header.glPixelFormat);
+            if (texture.header.glDataType == 0)
+            {
+                for (int i = 0; i < texture.header.numberOfMipmapLevels; i++)
+                {
+                    byte[] mipLev = texture.textureData.textureDataOfMipmapLevel[i];
+                    GL.CompressedTexImage2D(TextureTarget.Texture2D, i, (InternalFormat)texture.header.glInternalFormat,
+                        (int)texture.header.pixelWidth, (int)texture.header.pixelHeight, 0, mipLev.Length, mipLev);
+                    //mip level > 0 gives memory error
+                    break;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < texture.header.numberOfMipmapLevels; i++)
+                {
+                    byte[] mipLev = texture.textureData.textureDataOfMipmapLevel[i];
+                    GL.TexImage2D(TextureTarget.Texture2D, i, (PixelInternalFormat)texture.header.glPixelFormat,
+                              (int)texture.header.pixelWidth, (int)texture.header.pixelHeight, 0,
+                              (PixelFormat)texture.header.glPixelFormat, (PixelType)texture.header.glDataType, mipLev);
+                    //mip level > 0 gives memory error
+                    break;
+                }
+            }
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+        }
 
 
         public void ChangeWrapper(Wrapper wrap)
@@ -212,7 +223,6 @@ namespace Toys
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
 			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texture_id, 0);
 			return new Texture(texture_id,type);
-
 		}
 
 
