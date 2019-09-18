@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Toys.Engine.Materials
+namespace Toys
 {
     class MaterialPM : Material
     {
@@ -18,7 +18,6 @@ namespace Toys.Engine.Materials
         private void CreateShader()
         {
             string path = "Toys.Resourses.shaders.";
-
             string vs = ShaderManager.ReadFromAssetStream(path + "PM.vsh");
             string fs = ShaderManager.ReadFromAssetStream(path + "PM.fsh");
             shdr = ShaderConstructor.CreateShader(vs, fs);

@@ -103,7 +103,7 @@ namespace Toys
 				mat.textureName = mat.textureName.Remove(mat.textureName.IndexOf("_id", 0));
 			}
 			mat.textureName += "." + surf.FindNodes("format")[0].InnerText.ToLower();
-			mat.txtr = new Texture(mat.textureName, TextureType.Diffuse, mat.textureName);
+			mat.txtr = new Texture(mat.textureName, TextureType.Diffuse);
 			mts.Add(mat);
 		}
 
