@@ -14,6 +14,13 @@ namespace Toys
             rndrDirrectives = rdir;
             CreateShader();
         }
+        private MaterialPM(ShaderSettings shdrsett, RenderDirectives rdir, Shader shader)
+        {
+            shdrSettings = shdrsett;
+            rndrDirrectives = rdir;
+            shdr = shader;
+            CreateShader(shdr);
+        }
 
         private void CreateShader()
         {
@@ -24,9 +31,17 @@ namespace Toys
             CreateShader(shdr);
         }
 
+        public override void ApplyMaterial()
+        {
+            base.ApplyMaterial();
+            //foreach (var uni in UniManager.uniforms)
+            //    uni.Assign();
+        }
+
+
         public override Material Clone()
         {
-            var material = new MaterialPMX(shdrSettings, rndrDirrectives);
+            var material = new MaterialPM(shdrSettings, rndrDirrectives,shdr);
             foreach (var texture in textures)
                 material.SetTexture(texture.Value, texture.Key);
 

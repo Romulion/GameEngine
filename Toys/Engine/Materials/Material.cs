@@ -15,7 +15,6 @@ namespace Toys
 		public string Name { get; set; }
 		public int offset { get; set; }
 		public int count { get; set; }
-        public ShaderUniform[] variables { get; private set; }
         public ShaderUniformManager UniManager { get; private set; }
 
         protected Dictionary<TextureType, Texture> textures;
@@ -32,7 +31,6 @@ namespace Toys
             shdr = shader;
             Texture txtr = Texture.LoadEmpty();
 			TextureUnit unit = TextureUnit.Texture0;
-            variables = shdr.uniforms;
             UniManager = new ShaderUniformManager(shdr.uniforms,this);
 
 			shdr.ApplyShader();
