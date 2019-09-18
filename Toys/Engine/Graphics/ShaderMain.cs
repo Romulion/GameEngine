@@ -65,6 +65,9 @@ namespace Toys
                     case ActiveUniformType.Int:
                         uniforms.Add(new ShaderUniformInt(uname, group, this, id));
                         break;
+                    case ActiveUniformType.FloatVec2:
+                        uniforms.Add(new ShaderUniformVector2(uname, group, this, id));
+                        break;
                     case ActiveUniformType.FloatVec3:
                         uniforms.Add(new ShaderUniformVector3(uname, group, this, id));
                         break;

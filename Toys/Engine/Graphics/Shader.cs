@@ -22,34 +22,39 @@ namespace Toys
 		//by string
 		public void SetUniform(float value, string name)
 		{
-			GL.Uniform1(GL.GetUniformLocation(shaderProgram, name), value);
-		}
+            SetUniform(value, GL.GetUniformLocation(shaderProgram, name));
+        }
 
 		public void SetUniform(int value, string name)
 		{
-			GL.Uniform1(GL.GetUniformLocation(shaderProgram, name), value);
-		}
+            SetUniform(value, GL.GetUniformLocation(shaderProgram, name));
+        }
 
 		public void SetUniform(Matrix4 value, string name)
 		{
-			GL.UniformMatrix4(GL.GetUniformLocation(shaderProgram, name), false, ref value);
-		}
+            SetUniform(value, GL.GetUniformLocation(shaderProgram, name));
+        }
 
 		public void SetUniform(Vector3 value, string name)
 		{
-			GL.Uniform3(GL.GetUniformLocation(shaderProgram, name), ref value);
-		}
+            SetUniform(value, GL.GetUniformLocation(shaderProgram, name));
+        }
 
-		public void SetUniform(Vector4 value, string name)
+        public void SetUniform(Vector2 value, string name)
+        {
+            SetUniform(value, GL.GetUniformLocation(shaderProgram, name));
+        }
+
+        public void SetUniform(Vector4 value, string name)
 		{
-			GL.Uniform4(GL.GetUniformLocation(shaderProgram, name), ref value);
+            SetUniform(value,GL.GetUniformLocation(shaderProgram, name));
 		}
 
 		public void SetUniform(Vector4[] value, string name)
 		{
 			for (int i = 0; i < value.Length; i++)
 			{
-				GL.Uniform4(GL.GetUniformLocation(shaderProgram, name + "[" + i + "]"), ref value[i]);
+                SetUniform(value[i], GL.GetUniformLocation(shaderProgram, name + "[" + i + "]"));
 			}
 		}
 
@@ -57,7 +62,7 @@ namespace Toys
 		{
 			for (int i = 0; i < value.Length; i++)
 			{
-				GL.UniformMatrix4(GL.GetUniformLocation(shaderProgram, name + "[" + i + "]"), false, ref value[i]);
+                SetUniform(value[i], GL.GetUniformLocation(shaderProgram, name + "[" + i + "]"));
 			}
 		}
 
@@ -76,8 +81,12 @@ namespace Toys
 		{
 			GL.UniformMatrix4(id, false, ref value);
 		}
+        public void SetUniform(Vector2 value, int id)
+        {
+            GL.Uniform2(id, ref value);
+        }
 
-		public void SetUniform(Vector3 value, int id)
+        public void SetUniform(Vector3 value, int id)
 		{
 			GL.Uniform3(id, ref value);
 		}
