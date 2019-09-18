@@ -75,11 +75,16 @@ namespace Toys
                 RenderDirectives rndd = new RenderDirectives();
                 sdrs.hasSkeleton = true;
                 sdrs.TextureDiffuse = true;
+                sdrs.TextureSpecular = true;
                 sdrs.affectedByLight = true;
                 sdrs.recieveShadow = false;
                 Material mat = new MaterialPM(sdrs, rndd);
                 mat.Name = MaterialName;
                 materialTable.Add(MaterialName, mat);
+                mat.UniManager.Set("uv_scale", Vector4.One);
+                //mat.UniManager.Set("uv_translation", Vector4.Zero);
+                if (MaterialName.Contains("face"))
+                    mat.UniManager.Set("uv_scale", new Vector4(1,1,4,4));
                 try
                 {
                     ReadTexturesFromMaterial(MaterialName, mat);
@@ -145,8 +150,9 @@ namespace Toys
                     file.BaseStream.Position += 4;
                     file.BaseStream.Position += 0xc;
                 }
-                vert.uvtex = new Vector2(file.ReadUInt16(), file.ReadUInt16());
-                vert.uvtex /= 65535f;
+                vert.uvtex = new Vector2();
+                vert.uvtex.X = Half.FromBytes(file.ReadBytes(2),0);
+                vert.uvtex.Y = Half.FromBytes(file.ReadBytes(2), 0);
                 if (chunkSize == 0x28)
                     file.BaseStream.Position += 4;
                 vert.boneIndexes = new IVector4(new int[] { file.ReadByte(), file.ReadByte(), file.ReadByte(), file.ReadByte() });
@@ -334,9 +340,8 @@ namespace Toys
                         var text = new Texture(textPath);
                         texturesDict.Add(textPath, text);
                         mat.SetTexture(text, type);
-                        if (textPath.Contains("ch0101_00_mei_co.ktx"))
-                            TestScript.texture = text;
                     }
+                    
                 }
                 file.BaseStream.Position += 1;
             }
