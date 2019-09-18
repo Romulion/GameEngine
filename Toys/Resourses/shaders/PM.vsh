@@ -18,11 +18,14 @@ layout (std140) uniform space {
 };
 
 out VS_OUT {
-	vec2 Texcord;
+	vec4 Texcord;
 	vec3 FragPos;
 	vec3 Normal;
 	vec4 lightSpace;
 } vs_out;
+
+uniform vec4 uv_translation;
+uniform vec4 uv_scale;
 
 void main()
 {
@@ -33,7 +36,8 @@ void main()
 	
 	gl_Position =  pvm * BoneTransform * vec4(aPos, 1.0);
 	
-	vs_out.Texcord = aTexcord;	
+	vs_out.Texcord.xy = aTexcord * uv_scale.xy + uv_translation.xy;
+	vs_out.Texcord.zw = aTexcord * uv_scale.zw + uv_translation.zw;
 	vs_out.FragPos = vec3(model * BoneTransform * vec4(aPos, 1.0));
 	vs_out.Normal = mat3(NormalMat * BoneTransform)  * aNormal;
 	vs_out.lightSpace = lightSpacePos * vec4(vs_out.FragPos,1.0);	

@@ -1,7 +1,7 @@
 #version 330 core
 out vec4 FragColor;
 in VS_OUT {
-	vec2 Texcord;
+	vec4 Texcord;
 	vec3 FragPos;
 	vec3 Normal;
 	vec4 lightSpace;
@@ -20,22 +20,14 @@ struct Material{
 };
 
 uniform Material material;
-uniform sampler2DShadow shadowMap;
 
-float ShadowCalculation(vec4 fragPosLightSpace)
-{
-	float bias = 0.005;
-	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-	projCoords = projCoords * 0.5 + 0.5;
-	projCoords.z -= bias;	float shadow = 1 - texture(shadowMap, projCoords);
-	return shadow;
-}
 void main()
 {
-vec4 texcolor = texture(material.texture_diffuse,fs_in.Texcord);
-if (texcolor.a < 0.05)
+	vec4 texcolor = texture(material.texture_diffuse,fs_in.Texcord.xy);
+	if (texcolor.a < 0.05)
 		discard;
 
-vec4 shadowcolor  = texture(material.texture_specular,fs_in.Texcord);
-FragColor = texcolor * shadowcolor;
+	vec4 shadowcolor  = texture(material.texture_specular,fs_in.Texcord.zw);
+	shadowcolor.w = 1;
+	FragColor = texcolor * shadowcolor;
 }
