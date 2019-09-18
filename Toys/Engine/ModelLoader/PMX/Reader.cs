@@ -33,8 +33,23 @@ namespace Toys
 			return "";
 		}
 
+        public string readStringB()
+        {
+            int length = stream.ReadByte();
+            byte[] buffer = buffer = stream.ReadBytes(length);
 
-		public Vector3 readVector3()
+            if (encoding == 1)
+            {
+                return Encoding.UTF8.GetString(buffer);
+            }
+            if (encoding == 0)
+
+                return Encoding.Unicode.GetString(buffer);
+
+            return "";
+        }
+
+        public Vector3 readVector3()
 		{
 			return new Vector3(stream.ReadSingle(),stream.ReadSingle(),stream.ReadSingle());
 		}
