@@ -20,6 +20,8 @@ namespace Toys
         public abstract void AddModifier(MaterialMorpher caller, object val, ModifyType mod);
         public abstract UniformModifier[] Getmods();
 
+        public abstract ShaderUniform Clone();
+
         public void SetValue(object val)
         {
 

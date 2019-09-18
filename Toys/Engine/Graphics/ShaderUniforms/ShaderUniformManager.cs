@@ -48,6 +48,12 @@ namespace Toys
             }
         }
 
+        public void Apply()
+        {
+            foreach (var uni in uniforms)
+                uni.Assign();
+        }
+
         ShaderUniform GetUniform(string name)
         {
             var query = from v in uniforms
@@ -58,9 +64,9 @@ namespace Toys
                 return query.First();
 
             return null;
-
         }
 
+        //for deletion
         void VisibilityCheck(string name, ShaderUniform uni)
         {
             if (name == "diffuse_color")

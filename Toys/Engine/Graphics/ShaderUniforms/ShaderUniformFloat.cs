@@ -65,6 +65,12 @@ namespace Toys
             return query.ToArray();
         }
 
+        public override ShaderUniform Clone()
+        {
+            var shdrvar = new ShaderUniformFloat(Name, Group, program, varId);
+            shdrvar.value = value;
+            return shdrvar;
+        }
 
         protected override void CalculateFinal()
         {

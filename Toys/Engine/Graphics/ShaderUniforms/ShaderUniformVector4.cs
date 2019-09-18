@@ -10,7 +10,7 @@ namespace Toys
 
         protected Dictionary<MaterialMorpher, UniformModifier> mods = new Dictionary<MaterialMorpher, UniformModifier>();
         string varName;
-        Vector4 value = Vector4.One;
+        Vector4 value = Vector4.Zero;
 
 
 
@@ -68,7 +68,13 @@ namespace Toys
             return query.ToArray();
         }
 
-
+        public override ShaderUniform Clone()
+        {
+            var shdrvar = new ShaderUniformVector4(Name, Group, program, varId);
+            shdrvar.value = value;
+            return shdrvar;
+        }
+             
         protected override void CalculateFinal()
         {
             value = RetrieveValue(defaultValue);

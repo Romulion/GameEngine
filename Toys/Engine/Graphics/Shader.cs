@@ -8,7 +8,20 @@ namespace Toys
 	{
 		protected int shaderProgram;
 
-        public ShaderUniform[] uniforms { get; protected set; }
+        protected ShaderUniform[] unis;
+
+        //clone uniforms for each copy of material
+        public ShaderUniform[] uniforms {
+            get
+            {
+                ShaderUniform[] vars = new ShaderUniform[unis.Length];
+                for (int i = 0; i < vars.Length; i++)
+                {
+                    vars[i] = unis[i].Clone();
+                }
+                return vars;
+            }
+        }
 
 		public Shader()
 		{

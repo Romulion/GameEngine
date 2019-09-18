@@ -64,8 +64,13 @@ namespace Toys
 			return query.ToArray();
 		}
 
-
-		protected override void CalculateFinal()
+        public override ShaderUniform Clone()
+        {
+            var shdrvar = new ShaderUniformMatrix4(Name, Group, program, varId);
+            shdrvar.value = value;
+            return shdrvar;
+        }
+        protected override void CalculateFinal()
 		{
 			value = RetrieveValue(defaultValue);
 			foreach (UniformModifier mod in Getmods())
