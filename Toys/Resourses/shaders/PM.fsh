@@ -26,8 +26,7 @@ void main()
 	vec4 texcolor = texture(material.texture_diffuse,fs_in.Texcord.xy);
 	if (texcolor.a < 0.05)
 		discard;
-
-	vec4 shadowcolor  = texture(material.texture_specular,fs_in.Texcord.zw);
+	vec4 shadowcolor = texture(material.texture_specular,fs_in.Texcord.zw) * 0.6 + vec4(0.4);
 	shadowcolor.w = 1;
 	FragColor = texcolor * shadowcolor;
 }

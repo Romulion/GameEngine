@@ -81,6 +81,7 @@ namespace Toys
 
                 Material mat = new MaterialPM(sdrs, rndd);
                 mat.Name = MaterialName;
+                mat.outln.EdgeScaler = 0.1f;
                 materialTable.Add(MaterialName, mat);
                 mat.UniManager.Set("uv_scale", Vector4.One);
                 //scale face shadow texture
@@ -199,7 +200,9 @@ namespace Toys
                 string WeightBoneName = reader.readString();
             }
 
-            var mesh = new Mesh(verts.ToArray(), indexes);
+            var vv = verts.ToArray();
+            CalculateVertNormals.CalculateNormals(vv,indexes);
+            var mesh = new Mesh(vv, indexes);
             Material mat;
             if (materialTable.TryGetValue(matName, out mat))
             {

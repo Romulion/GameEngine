@@ -51,6 +51,7 @@
     <Compile Include="Engine\Animation\IK\IKLink.cs" />
     <Compile Include="Engine\Animation\IK\IKResolver.cs" />
     <Compile Include="Engine\Animation\BoneTransform.cs" />
+    <Compile Include="Engine\CalculateVertNormals.cs" />
     <Compile Include="Engine\Controll\InputHandler.cs" />
     <Compile Include="Engine\GraphicsEngine.cs" />
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector2.cs" />

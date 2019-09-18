@@ -22,7 +22,7 @@ namespace Toys
         public static Texture texture;
         void Awake()
         {
-            
+
             /*
             Vertex3D[] verts = new Vertex3D[]
             {
@@ -47,11 +47,12 @@ namespace Toys
             mat.UniManager.Set("resolution", new Vector3(640, 480,0));
             MeshDrawer md = new MeshDrawer(mesh,mat);
             node.AddComponent(md);
+            */
             //var msd = (Animator)node.GetComponent<Animator>();
             //if (msd != null)
             //    bc = msd.bones;
             //World = CoreEngine.pEngine.World;
-            */
+            
         }
 
         void Start()
@@ -59,7 +60,7 @@ namespace Toys
             //Console.WriteLine(bc.GetBone(82).Bone2WorldInitial);
             //Console.WriteLine(bc.GetBone(81).Bone2WorldInitial);
             //Console.WriteLine(bc.GetBone(3).BoneMatrix);
-            //bc.GetBone(19).SetTransform(new Quaternion(0, 0, 1.5f), new Vector3(0, 0, 0));
+            //bc.GetBone(2).SetTransform(new Quaternion(0, 0, 1.5f), new Vector3(0, 0, 0));
             //bc.GetBone(21).SetTransform(new Quaternion(0, 1.5f, 0), new Vector3(0, 0, 0));
             //bc.GetBone(22).SetTransform(new Quaternion(0, 1.5f, 0), new Vector3(0, 0, 0));
             //bc.UpdateSkeleton();
