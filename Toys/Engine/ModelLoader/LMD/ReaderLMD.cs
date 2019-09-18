@@ -77,7 +77,7 @@ namespace Toys
                 sdrs.TextureDiffuse = true;
                 sdrs.TextureSpecular = true;
                 sdrs.recieveShadow = false;
-                rndd.hasEdges = true;
+                rndd.hasEdges = false;
 
                 Material mat = new MaterialPM(sdrs, rndd);
                 mat.Name = MaterialName;
@@ -312,6 +312,7 @@ namespace Toys
             //this offset looks static
             file.BaseStream.Position = 0x4FF;
             string variable = "init";
+            Console.WriteLine(name);
             while (variable != name)
             {
                 variable = reader.readStringB();
@@ -337,6 +338,7 @@ namespace Toys
                 }
                 if (textPath != "")
                 {
+                    
                     textPath = textPath.Substring(textPath.LastIndexOf("Models/") + 7);
                     if (texturesDict.ContainsKey(textPath))
                         mat.SetTexture(texturesDict[textPath], type);
@@ -345,11 +347,20 @@ namespace Toys
                         var text = new Texture(textPath);
                         texturesDict.Add(textPath, text);
                         mat.SetTexture(text, type);
+                        
                     }
-                    
+                    /*
+                    if (name == "M_skin")
+                    {
+                        TestScript.texture = texturesDict[textPath];
+                        Console.WriteLine(1111);
+                    }
+                    */
                 }
+                
                 file.BaseStream.Position += 1;
             }
+            Console.WriteLine(22222);
         }
 
     }

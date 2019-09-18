@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Toys</RootNamespace>
     <AssemblyName>Toys</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <ApplicationManifest>VertexRigged.manifest</ApplicationManifest>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -67,6 +67,16 @@
     <Compile Include="Engine\Systen\Message.cs" />
     <Compile Include="Engine\Systen\ScriptingEngine.cs" />
     <Compile Include="Engine\TestScript.cs" />
+    <Compile Include="ExternalCode\libktxsharp\KtxBitFiddling.cs" />
+    <Compile Include="ExternalCode\libktxsharp\KtxCommon.cs" />
+    <Compile Include="ExternalCode\libktxsharp\KtxErrors.cs" />
+    <Compile Include="ExternalCode\libktxsharp\KtxHeader.cs" />
+    <Compile Include="ExternalCode\libktxsharp\KtxLoader.cs" />
+    <Compile Include="ExternalCode\libktxsharp\KtxStructure.cs" />
+    <Compile Include="ExternalCode\libktxsharp\KtxTextureData.cs" />
+    <Compile Include="ExternalCode\libktxsharp\KtxValidators.cs" />
+    <Compile Include="ExternalCode\libktxsharp\MetadataValue.cs" />
+    <Compile Include="ExternalCode\libktxsharp\VersionInfo.cs" />
     <Compile Include="MainProcess.cs" />
     <Compile Include="Engine\Animation\BoneController.cs" />
     <Compile Include="Engine\Animation\Bone.cs" />
@@ -81,7 +91,7 @@
     <Compile Include="Engine\Objects\Scene.cs" />
     <Compile Include="Engine\Objects\Shader_Manager.cs" />
     <Compile Include="Engine\CoreEngine.cs" />
-    <Compile Include="TargaImage.cs" />
+    <Compile Include="ExternalCode\TargaImage.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="Window\Window.cs" />
     <Compile Include="gtk-gui\Toys.Window.cs" />
@@ -158,9 +168,6 @@
     <Compile Include="Engine\Graphics\TextRendering\Character.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="libktxsharp">
-      <HintPath>C:\Users\yuriy.sakhno\source\repos\libktxsharp\bin\Release\libktxsharp.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTK, Version=3.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.3.1.0\lib\net20\OpenTK.dll</HintPath>
     </Reference>
