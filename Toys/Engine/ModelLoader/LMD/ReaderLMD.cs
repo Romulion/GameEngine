@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.IO;
@@ -77,8 +78,7 @@ namespace Toys
                 sdrs.TextureDiffuse = true;
                 sdrs.TextureSpecular = true;
                 sdrs.recieveShadow = false;
-                rndd.hasEdges = false;
-
+                rndd.hasEdges = true;
                 Material mat = new MaterialPM(sdrs, rndd);
                 mat.Name = MaterialName;
                 mat.outln.EdgeScaler = 0.1f;
@@ -190,17 +190,32 @@ namespace Toys
             for (int i = 0; i < facesCount; i++)
                 indexes[i] = reader.readVal(Fsize);
 
-            //Read Bones Weigth
+            //Read Weigth Bones dictionary
             file.BaseStream.Position = WeightBoneNameTableStart;
             int WeightBoneCount = file.ReadInt32();
+            int[] boneIdDict = new int[WeightBoneCount];
             for (int i = 0; i< WeightBoneCount; i++)
             {
                 file.BaseStream.Position = WeightBoneNameTableStart + i * 4 + 4;
                 file.BaseStream.Position += file.ReadInt32();
                 string WeightBoneName = reader.readString();
+                boneIdDict[i] = Array.FindIndex(bones, (b) => b.Name == WeightBoneName);
             }
 
             var vv = verts.ToArray();
+
+            //set bone id to global
+            for(int i = 0; i < vv.Length; i++)
+            {
+                IVector4 boneIndexes = vv[i].boneIndexes;
+                boneIndexes.bone1 = boneIdDict[boneIndexes.bone1];
+                boneIndexes.bone2 = boneIdDict[boneIndexes.bone2];
+                boneIndexes.bone3 = boneIdDict[boneIndexes.bone3];
+                boneIndexes.bone4 = boneIdDict[boneIndexes.bone4];
+                vv[i].boneIndexes = boneIndexes;
+            }
+
+
             CalculateVertNormals.CalculateNormals(vv,indexes);
             var mesh = new Mesh(vv, indexes);
             Material mat;
@@ -302,6 +317,7 @@ namespace Toys
             }
         }
 
+        delegate bool Check();
         void ReadTexturesFromMaterial(string name, Material mat)
         {
             string path = "Materials/" + name + ".material";
@@ -309,59 +325,58 @@ namespace Toys
             var file = new BinaryReader(fs);
             var reader = new Reader(file);
             reader.encoding = 1;
-            //this offset looks static
-            file.BaseStream.Position = 0x4FF;
-            string variable = "init";
-            Console.WriteLine(name);
-            while (variable != name)
+
+            //file.BaseStream.Position = 0x4FF;
+            //file.BaseStream.Position = 0x6C0;
+            //int offset = 0x4FF;
+
+            byte[] buffer = new byte[3];
+            while (file.BaseStream.Read(buffer, 2, 1) > 0)
             {
-                variable = reader.readStringB();
-                string textPath = "";
-                TextureType type = TextureType.Diffuse;
-                switch (variable)
-                {
-                    case "u_texture0":
-                        file.BaseStream.Position += 1;
-                        textPath = reader.readStringB();
-                        type = TextureType.Diffuse;
-                        break;
-                    case "u_texture1":
-                        file.BaseStream.Position += 1;
-                        textPath = reader.readStringB();
-                        type = TextureType.Specular;
-                        break;
-                    case "u_texture2":
-                        file.BaseStream.Position += 1;
-                        textPath = reader.readStringB();
-                        type = TextureType.Toon;
-                        break;
-                }
-                if (textPath != "")
+                //looking for sequence "00 0A 75" 0A for 10 bytes string 0x75 from u char
+                if (buffer[0] == 0 && buffer[2] == 'u' && buffer[1] == 10)
                 {
                     
-                    textPath = textPath.Substring(textPath.LastIndexOf("Models/") + 7);
-                    if (texturesDict.ContainsKey(textPath))
-                        mat.SetTexture(texturesDict[textPath], type);
-                    else
-                    {
-                        var text = new Texture(textPath);
-                        texturesDict.Add(textPath, text);
-                        mat.SetTexture(text, type);
-                        
-                    }
-                    /*
-                    if (name == "M_skin")
-                    {
-                        TestScript.texture = texturesDict[textPath];
-                        Console.WriteLine(1111);
-                    }
-                    */
-                }
-                
-                file.BaseStream.Position += 1;
-            }
-            Console.WriteLine(22222);
-        }
+                    file.BaseStream.Position -= 2;
+                    string textureId = reader.readStringB();
+                    string textPath = "";
+                    TextureType type = TextureType.Diffuse;
 
+                    switch (textureId)
+                    {
+                        case "u_texture0":
+                            file.BaseStream.Position += 1;
+                            textPath = reader.readStringB();
+                            type = TextureType.Diffuse;
+                            break;
+                        case "u_texture1":
+                            file.BaseStream.Position += 1;
+                            textPath = reader.readStringB();
+                            type = TextureType.Specular;
+                            break;
+                        case "u_texture2":
+                            file.BaseStream.Position += 1;
+                            textPath = reader.readStringB();
+                            type = TextureType.Toon;
+                            break;
+                    }
+                    if (textPath != "")
+                    {
+                        textPath = textPath.Substring(textPath.LastIndexOf("Models/") + 7);
+                        if (texturesDict.ContainsKey(textPath))
+                            mat.SetTexture(texturesDict[textPath], type);
+                        else
+                        {
+                            var text = new Texture(textPath);
+                            texturesDict.Add(textPath, text);
+                            mat.SetTexture(text, type);
+                        }
+                    }
+                }
+
+                buffer[0] = buffer[1];
+                buffer[1] = buffer[2];
+            }
+        }
     }
 }
