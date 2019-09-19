@@ -5,7 +5,6 @@ in VS_OUT {
 	vec3 FragPos;
 	vec3 Normal;
 	vec4 lightSpace;
-	vec3 NormalLocal;
 } fs_in;
 
 layout (std140) uniform light {
