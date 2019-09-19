@@ -134,8 +134,6 @@ namespace Toys
             int vertSize = reader.readVal(Size);
             int VertOffset = (int)file.BaseStream.Position;
 
-           // Console.WriteLine("{0} {1} {2}", meshName, facesCount, vertCount);
-
             List<VertexRigged3D> verts = new List<VertexRigged3D>();
             for (int i = 0; i < vertCount; i++)
             {
@@ -326,17 +324,12 @@ namespace Toys
             var reader = new Reader(file);
             reader.encoding = 1;
 
-            //file.BaseStream.Position = 0x4FF;
-            //file.BaseStream.Position = 0x6C0;
-            //int offset = 0x4FF;
-
             byte[] buffer = new byte[3];
             while (file.BaseStream.Read(buffer, 2, 1) > 0)
             {
-                //looking for sequence "00 0A 75" 0A for 10 bytes string 0x75 from u char
+                //looking for sequence "00 0A 75" 0A - 10 chars string; 0x75 - u char
                 if (buffer[0] == 0 && buffer[2] == 'u' && buffer[1] == 10)
                 {
-                    
                     file.BaseStream.Position -= 2;
                     string textureId = reader.readStringB();
                     string textPath = "";
