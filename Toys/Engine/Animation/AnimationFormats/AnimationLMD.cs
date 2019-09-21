@@ -21,6 +21,7 @@ namespace Toys
         string Path;
         BinaryReader file;
         Reader reader;
+        float speed = 1;
 
         Dictionary<string, int> bones = new Dictionary<string, int>();
         AnimationFrame[] frames;
@@ -34,6 +35,9 @@ namespace Toys
                 reader = new Reader(file);
                 reader.encoding = 1;
                 ReadBones();
+
+                file.BaseStream.Position = 100;
+                speed = file.ReadSingle();
             }
         }
 
@@ -42,7 +46,7 @@ namespace Toys
             var animation = new Animation(frames.ToArray(), bones);
             animation.Type = Animation.RotationType.Quaternion;
             animation.TransType = Animation.TransformType.LocalAbsolute;
-            animation.framerate = 30;
+            animation.framerate = (int)(frames.Length / speed);
             return animation;
         }
 
