@@ -42,7 +42,6 @@ namespace Toys
             foreach (var pair in boneReference)
             {
                 Quaternion rotation = Quaternion.Identity;
-                
 
                 Vector3 pos = frame1.bones[pair.Value].position + (frame2.bones[pair.Value].position - frame1.bones[pair.Value].position) * frameDelta;
                 if (anim.Type == Animation.RotationType.Quaternion)
@@ -50,7 +49,6 @@ namespace Toys
                     Quaternion prevQuat = new Quaternion(frame1.bones[pair.Value].rotation.Xyz, frame1.bones[pair.Value].rotation.W);
                     Quaternion nextQuat = new Quaternion(frame2.bones[pair.Value].rotation.Xyz, frame2.bones[pair.Value].rotation.W);
                     rotation = Quaternion.Slerp(prevQuat, nextQuat, frameDelta);
-                    bones.GetBone(pair.Key).SetTransform(rotation, pos);
                 }
                 else
                 {
@@ -79,7 +77,7 @@ namespace Toys
                 length = (anim.frames.Length - 1) / (float)anim.framerate;
                 framelength = 1 / (float)anim.framerate;
                 Instalize(anim.frames[0]);
-                isPlaing = true;       
+                isPlaing = true;
             }
             catch (Exception e)
             {
