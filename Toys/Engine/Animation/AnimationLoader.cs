@@ -11,6 +11,7 @@ namespace Toys
     {
         SMD,
         VMD,
+        LMD,
     }
 
     class AnimationLoader
@@ -30,10 +31,12 @@ namespace Toys
                 case "vmd":
                     format = AnimationFormat.VMD;
                     break;
+                case "lmd":
+                    format = AnimationFormat.LMD;
+                    break;
                 default:
                     throw new Exception("cant recognize file format");
             }
-
             return Load(path, format);
 
         }
@@ -48,6 +51,9 @@ namespace Toys
                     break;
                 case AnimationFormat.VMD:
                     modelLoader = new AnimationVMD(filename);
+                    break;
+                case AnimationFormat.LMD:
+                    modelLoader = new AnimationLMD(filename);
                     break;
             }
             return modelLoader.Load();
