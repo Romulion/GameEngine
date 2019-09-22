@@ -22,7 +22,6 @@ namespace Toys
             tr = GraphicsEngine.textRender;
             textobj = tr.CreateCanvas();
             textobj.pos = new Vector2(25);
-            Console.WriteLine(textobj.VBO);
         }
 
         public void SetText(string text)

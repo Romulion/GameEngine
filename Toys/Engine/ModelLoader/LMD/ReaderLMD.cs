@@ -78,10 +78,10 @@ namespace Toys
                 sdrs.TextureDiffuse = true;
                 sdrs.TextureSpecular = true;
                 sdrs.recieveShadow = false;
-                rndd.hasEdges = true;
+                rndd.hasEdges = false;
                 Material mat = new MaterialPM(sdrs, rndd);
                 mat.Name = MaterialName;
-                mat.outln.EdgeScaler = 0.1f;
+                mat.outln.EdgeScaler = 0.2f;
                 materialTable.Add(MaterialName, mat);
                 mat.UniManager.Set("uv_scale", Vector4.One);
                 //scale face shadow texture

@@ -123,17 +123,7 @@ namespace Toys
 
 
             NormalizeFrames(bua);
-            /*
-            while (file.BaseStream.Position < dest)
-            {
-                int stride = file.ReadInt32();
-                if (( stride + file.BaseStream.Position - 4) == dest)
-                    Console.WriteLine("{0} {1}", file.BaseStream.Position - 4, stride + file.BaseStream.Position - 4);
 
-                //Console.WriteLine(stride + file.BaseStream.Position -4);
-                file.BaseStream.Position -= 3;
-            }
-            */
         }
 
         //creaating frames with aproximation
@@ -146,6 +136,7 @@ namespace Toys
             for (int i = 0; i < MaxFrames; i++)
                 bonePosesIntepr[i] = new List<BonePosition>();
 
+            Console.WriteLine(bones.Count);
             float framePart = 1f / MaxFrames;
             for (int n = 0; n < bones.Count; n++)
             {

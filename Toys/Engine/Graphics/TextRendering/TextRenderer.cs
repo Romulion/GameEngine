@@ -13,7 +13,7 @@ namespace Toys
 	{
 		Library lib;
 		Face face;
-		string font = "ARIALUNI.TTF";
+		string font = "font.TTF";
 		Dictionary<char, Character> chars = new Dictionary<char, Character>();
 		Matrix4 projection;
         static int mapSize = 1024;
@@ -26,28 +26,37 @@ namespace Toys
         TextCanvas debugTextmap;
 
         List<TextCanvas> texts = new List<TextCanvas>();
-        
+
 
         internal TextRenderer()
-		{
-			lib = new Library();
+        {
+            lib = new Library();
 
-			string defPath = "Toys.Resourses.Fonts.";
-			var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
+            try
+            {
+                using (Stream file = File.OpenRead(font))
+                {
+                    face = new Face(lib, ReadFont(file), 0);
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine(222);
+                string defPath = "Toys.Resourses.Fonts.reddelicious.ttf";
+                var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
+                face = new Face(lib, ReadFont(assembly.GetManifestResourceStream(defPath)), 0);
+            }
 
-			face = new Face(lib, ReadFont(assembly.GetManifestResourceStream(defPath + font)), 0);
             face.SetPixelSizes(0, 48);
+            projection = Matrix4.CreateOrthographicOffCenter(0, 800, 0, 600, 0f, -0.01f);
+            ShaderManager shdmMgmt = ShaderManager.GetInstance;
+            shdmMgmt.LoadShader("text");
+            shdr = shdmMgmt.GetShader("text");
+            shdr.ApplyShader();
+            shdr.SetUniform((int)TextureType.Diffuse, "text");
 
-			projection = Matrix4.CreateOrthographicOffCenter(0, 800, 0, 600, 0f, -0.01f);
-			ShaderManager shdmMgmt = ShaderManager.GetInstance;
-			shdmMgmt.LoadShader("text");
-			shdr = shdmMgmt.GetShader("text");
-			shdr.ApplyShader();
-			shdr.SetUniform((int)TextureType.Diffuse, "text");
-
-			shdr.uniforms[0].SetValue(projection);
+            shdr.uniforms[0].SetValue(projection);
             charmap = Texture.CreateCharMap(mapSize, mapSize);
-
             //test
             //CreateTestTextureMap();
         }
@@ -82,7 +91,6 @@ namespace Toys
 										 face.Glyph.Advance.X.Value);
 			chars.Add(c, ch);
 
-            Console.WriteLine("{0} {1} {2} {3} {4} {5}",c, (int)c, x,y, bitmap.Width, bitmap.Rows);
             x += bitmap.Width;
 
             bitmap.Dispose();

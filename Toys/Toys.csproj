@@ -40,6 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Engine\Animation\Animation.cs" />
+    <Compile Include="Engine\Animation\AnimationFormats\AnimationLMD.cs" />
     <Compile Include="Engine\Animation\AnimationFormats\AnimationSMD.cs" />
     <Compile Include="Engine\Animation\AnimationFormats\AnimationVMD.cs" />
     <Compile Include="Engine\Animation\AnimationFormats\IAnimationLoader.cs" />
@@ -200,6 +201,7 @@
     <None Include="packages.config" />
     <EmbeddedResource Include="Resourses\shaders\PM.fsh" />
     <EmbeddedResource Include="Resourses\shaders\TestTexture.fsh" />
+    <EmbeddedResource Include="Resourses\Fonts\reddelicious.ttf" />
     <None Include="VertexRigged.manifest" />
     <None Include="Resourses\textures\toon_blank.bmp" />
     <None Include="Engine\Graphics\ShaderUniforms\ShaderUniformTyped.cs" />
@@ -224,12 +226,8 @@
     <EmbeddedResource Include="Resourses\shaders\phys.vsh" />
     <EmbeddedResource Include="Resourses\shaders\defscreen.fsh" />
     <EmbeddedResource Include="Resourses\shaders\defscreen.vsh" />
-    <EmbeddedResource Include="Resourses\Fonts\BadScript-Regular.ttf" />
-    <EmbeddedResource Include="Resourses\Fonts\msgothic.ttc" />
-    <EmbeddedResource Include="Resourses\Fonts\Pecita.otf" />
     <EmbeddedResource Include="Resourses\shaders\text.fsh" />
     <EmbeddedResource Include="Resourses\shaders\text.vsh" />
-    <EmbeddedResource Include="Resourses\Fonts\ARIALUNI.TTF" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resourses\shaders\PM.vsh" />
