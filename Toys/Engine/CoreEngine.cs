@@ -16,10 +16,9 @@ namespace Toys
 		internal static GraphicsEngine gEngine;
 		internal static PhysicsEngine pEngine;
         internal static ScriptingEngine sEngine;
+        public static Time time;
         queue task;
 
-		//time controll
-		Stopwatch stopwatch;
 		float elapsed = 0.01f;
 
 		public Scene mainScene;
@@ -40,7 +39,7 @@ namespace Toys
 				gEngine = new GraphicsEngine(mainScene);
 				pEngine = new PhysicsEngine();
                 sEngine = new ScriptingEngine();
-                stopwatch = new Stopwatch();
+                time = new Time();
                 Load += OnLoad;
 				UpdateFrame += Update;
 				RenderFrame += OnRender;
@@ -76,6 +75,7 @@ namespace Toys
 		//
 		void Update(object sender, FrameEventArgs e)
 		{
+            time.Start();
             elapsed = (float)(UpdateTime + RenderTime);
             sEngine.Awake();
             sEngine.Start();
@@ -113,17 +113,19 @@ namespace Toys
             //stopwatch.Reset();
 #endif
             sEngine.PreRender();
+            time.updagteTime = time.Stop();
         }
 
 
         void OnRender (object sender, FrameEventArgs e)
         {
-			//render main scene
-			gEngine.Render();
-			//render physics
-			//(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
-
-			SwapBuffers();
+            time.Start();
+            //render main scene
+            gEngine.Render();
+            //render physics
+            //(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
+            time.renderTime = time.Stop();
+            SwapBuffers();
         }
 
 

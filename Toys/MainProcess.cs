@@ -36,18 +36,34 @@ namespace Toys
             tb.SetText("牡丹制服高校(アニメ版)ver3");
             */
             scene.AddObject(node);
-            TestScript ts = (TestScript)node.AddComponent<TestScript>();
+            //TestScript ts = (TestScript)node.AddComponent<TestScript>();
+            
             
             TextBox text = null;
             long frames = 1;
             double update = 0, render = 0;
+            bool start = false;
             core.Load += (s, e) => { text = new TextBox(); node.AddComponent(text);};
             core.UpdateFrame += (s, e) => {
-                update += core.UpdateTime * 1000;
-                render += core.RenderTime * 1000;
-                text.SetText((update/ frames).ToString("C1") + "  " + (render/frames).ToString("C1"));
-                frames++;
+                
+
+                update += CoreEngine.time.updagteTime;
+                render += CoreEngine.time.renderTime;
+
+
+                if (start)
+                {
+                    text.SetText((update / frames).ToString("C2") + "  " + (render / frames).ToString("C2"));
+                    frames++;
+                }
+                else if (!start && render > 100)
+                {
+                    update = 0;
+                    render = 0;
+                    start = true;
+                }
             };
+            
             //
             //
             

@@ -40,9 +40,12 @@ namespace Toys
 			for (int i = 0; i < vert.Length; i++)
 				vert[i] = (Vertex3D)vertices[i];
 
+#if !VertexSkin
             SetupMesh(vert);
             MakeSSBO(0, vertices);
-            //SetupMeshRigged(vertices);
+#else
+            SetupMeshRigged(vertices);
+#endif
         }
 
 

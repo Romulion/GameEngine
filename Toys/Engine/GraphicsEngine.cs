@@ -111,10 +111,9 @@ namespace Toys
 			ShaderManager shdmMgmt = ShaderManager.GetInstance;
 			try
 			{
-				shdmMgmt.LoadShader("pmx");
 				shdmMgmt.LoadShader("shadow");
 				shdmMgmt.LoadShader("outline");
-			}
+            }
 			catch (Exception e)
 			{
 				Console.WriteLine(e.Message);

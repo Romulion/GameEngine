@@ -14,7 +14,7 @@ namespace Toys
 		int SSB;
 		Mesh mesh;
 
-		public ModelSkinning(Mesh mesh)
+        public ModelSkinning(Mesh mesh)
 		{
 			this.mesh = mesh;
 			Initialize(mesh.vertexCount,mesh.vSize);
@@ -24,40 +24,15 @@ namespace Toys
 		{
 			var manager = ShaderManager.GetInstance;
 			ComputeShader =	manager.LoadShader("compute","skin.glsl");
-            /*
-            SSB = GL.GenBuffer();
-			GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB);
-			GL.BufferData(BufferTarget.ShaderStorageBuffer, vCount * vSize, (IntPtr)0, BufferUsageHint.DynamicDraw);
-			GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, SSB);
-			GL.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
-            */
             //CheckData();
            // Console.WriteLine(GL.GetError());
         }
 
         public void Skin()
 		{
-            
-			ComputeShader.ApplyShader();
+            ComputeShader.ApplyShader();
             mesh.BindSSBO();
             GL.DispatchCompute(mesh.vertexCount, 1, 1);
-            //Console.WriteLine(GL.GetError());
-            //mesh.BindSSBO();
-            //GL.BindBuffer(BufferTarget.ShaderStorageBuffer, SSB);
-            //GL.DispatchCompute(mesh.vertexCount, 1, 1);
-            //GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
-
-            //mesh.ApplySkin();
-            //*/
-
-            /*
-			GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB);
-			IntPtr point = GL.MapBuffer(BufferTarget.ShaderStorageBuffer, BufferAccess.ReadOnly);
-			int val = Marshal.ReadInt32(point,0);
-			Console.WriteLine(BitConverter.ToSingle(BitConverter.GetBytes(val),0));
-			//GL.UnmapBuffer(BufferTarget.ShaderStorageBuffer);
-			*/
-
         }
 
         void CheckData()

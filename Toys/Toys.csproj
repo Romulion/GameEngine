@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;ComputeSkin</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -68,6 +68,7 @@
     <Compile Include="Engine\Objects\Transformation.cs" />
     <Compile Include="Engine\Systen\Message.cs" />
     <Compile Include="Engine\Systen\ScriptingEngine.cs" />
+    <Compile Include="Engine\Systen\Time.cs" />
     <Compile Include="Engine\TestScript.cs" />
     <Compile Include="ExternalCode\libktxsharp\KtxBitFiddling.cs" />
     <Compile Include="ExternalCode\libktxsharp\KtxCommon.cs" />

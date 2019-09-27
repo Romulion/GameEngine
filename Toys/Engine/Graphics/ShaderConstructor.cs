@@ -90,7 +90,8 @@ namespace Toys
 			rawVertex += "void main()\n{\n";
 
 			string applySkeleton = "";
-			if (setting.hasSkeleton)
+#if VertexSkin
+            if (setting.hasSkeleton)
 			{
 				rawVertex += "mat4 BoneTransform = gBones[BoneIDs[0]] * Weights[0];\n"
 							+"\tBoneTransform += gBones[BoneIDs[1]] * Weights[1];\n"
@@ -98,8 +99,8 @@ namespace Toys
 							+"\tBoneTransform += gBones[BoneIDs[3]] * Weights[3];\n";
 				applySkeleton = " * BoneTransform";
 			}
-
-			rawVertex += "gl_Position =  pvm"+ applySkeleton +" * vec4(aPos, 1.0);\n";
+#endif
+            rawVertex += "gl_Position =  pvm"+ applySkeleton +" * vec4(aPos, 1.0);\n";
 
 			rawVertex += "vs_out.Texcord = aTexcord;\n";
 			rawVertex += "vs_out.FragPos = vec3(model"+ applySkeleton +" * vec4(aPos, 1.0));\n";

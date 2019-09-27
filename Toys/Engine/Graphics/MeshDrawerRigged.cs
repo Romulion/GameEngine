@@ -1,6 +1,4 @@
-﻿using System;
-using OpenTK;
-
+﻿
 namespace Toys
 {
 	public class MeshDrawerRigged : MeshDrawer
@@ -26,21 +24,26 @@ namespace Toys
 
         public override void Draw()
 		{
-			//ubs.SetBones(skeleton.GetSkeleton);
-            //ms.Skin();
+#if VertexSkin
+            ubs.SetBones(skeleton.GetSkeleton);
+#endif
             base.Draw();
 		}
 
         public override void Prepare()
         {
             skeleton.UpdateSkeleton();
+#if !VertexSkin
             ubs.SetBones(skeleton.GetSkeleton);
             ms.Skin();
+#endif
         }
 
-		public override void DrawSimple()
+        public override void DrawSimple()
 		{
-			//ubs.SetBones(skeleton.GetSkeleton);
+#if VertexSkin
+            ubs.SetBones(skeleton.GetSkeleton);
+#endif
             mesh.BindVAO();
 			foreach (var mat in mats)
 			{
