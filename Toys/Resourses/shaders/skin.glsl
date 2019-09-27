@@ -6,7 +6,7 @@ layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 struct VertexRigged
 {
  	vec3 aPos;
-	vec3 aNormal;
+	vec4 aNormal;
 	vec2 aTexcord;
 	ivec4 BoneIDs;
 	vec4 Weights;
@@ -48,7 +48,7 @@ void main() {
     BoneTransform += gBones[vert.BoneIDs[3]] * vert.Weights[3];
 
    	model[vIndex].aPos = (BoneTransform * vec4(vert.aPos,1)).xyz;
-    model[vIndex].aNormal = (BoneTransform * vec4(vert.aNormal,1)).xyz;
+    model[vIndex].aNormal = (BoneTransform * vert.aNormal).xyz;
     //model[vIndex].aPos = (vert.aPos).xyz;
     //model[vIndex].aNormal = (vert.aNormal).xyz;
     //model[vIndex].aPos = vec3(BoneTransform[0][3],BoneTransform[3][1],BoneTransform[3][2]);
