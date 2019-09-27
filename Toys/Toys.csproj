@@ -55,6 +55,7 @@
     <Compile Include="Engine\CalculateVertNormals.cs" />
     <Compile Include="Engine\Controll\InputHandler.cs" />
     <Compile Include="Engine\GraphicsEngine.cs" />
+    <Compile Include="Engine\Graphics\ShaderConstructorNew.cs" />
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector2.cs" />
     <Compile Include="Engine\Graphics\TextRendering\TextBox.cs" />
     <Compile Include="Engine\Graphics\TextRendering\TextCanvas.cs" />
@@ -209,8 +210,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Resourses\shaders\def.fsh" />
     <EmbeddedResource Include="Resourses\shaders\def.vsh" />
-    <EmbeddedResource Include="Resourses\shaders\pmx.fsh" />
-    <EmbeddedResource Include="Resourses\shaders\pmx.vsh" />
+    <EmbeddedResource Include="Resourses\shaders\template.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\tamplate.vsh" />
     <EmbeddedResource Include="Resourses\shaders\pp.fsh" />
     <EmbeddedResource Include="Resourses\shaders\pp.vsh" />
     <EmbeddedResource Include="Resourses\textures\empty.png" />

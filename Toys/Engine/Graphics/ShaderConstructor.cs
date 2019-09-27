@@ -112,7 +112,7 @@ namespace Toys
 			rawVertex += "}\n";
 		}
 
-		void GenerateFragment()
+        void GenerateFragment()
 		{
 			rawFragment += "";
 			rawFragment += "#version 330 core\n";

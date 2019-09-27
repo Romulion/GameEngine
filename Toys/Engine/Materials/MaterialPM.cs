@@ -29,6 +29,7 @@ namespace Toys
             string fs = ShaderManager.ReadFromAssetStream(path + "PM.fsh");
             shdr = ShaderConstructor.CreateShader(vs, fs);
             CreateShader(shdr);
+
         }
 
         public override void ApplyMaterial()

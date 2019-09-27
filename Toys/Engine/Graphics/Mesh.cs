@@ -20,8 +20,9 @@ namespace Toys
 		internal int vSize;
 		//elements array
 		public Vertex3D[] vert { get; private set; }
+        public VertexRigged3D[] vertRig { get; private set; }
 
-		public Mesh(Vertex3D[] vertices, int[] indexes)
+        public Mesh(Vertex3D[] vertices, int[] indexes)
 		{
             this.indexes = indexes;
 			vSize = Marshal.SizeOf(typeof(Vertex3D));
@@ -31,15 +32,18 @@ namespace Toys
 
 		public Mesh(VertexRigged3D[] vertices, int[] indexes)
 		{
-			this.indexes = indexes;
-			vSize = Marshal.SizeOf(typeof(VertexRigged3D));
+            vertRig = vertices;
 
-			vert = new Vertex3D[vertices.Length];
+            this.indexes = indexes;
+			vSize = Marshal.SizeOf(typeof(VertexRigged3D));
+            vert = new Vertex3D[vertices.Length];
 			for (int i = 0; i < vert.Length; i++)
 				vert[i] = (Vertex3D)vertices[i];
 
-			SetupMeshRigged(vertices);
-		}
+            SetupMesh(vert);
+            MakeSSBO(0, vertices);
+            //SetupMeshRigged(vertices);
+        }
 
 
 		//clearing resources
@@ -114,8 +118,6 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
 			GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indexes.Length, indexes, BufferUsageHint.StaticDraw);
 
-
-
 			//position
 			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "position"));
 			GL.EnableVertexAttribArray(0);
@@ -139,16 +141,17 @@ namespace Toys
 		}
 
 		//create shader storage buffer for mesh
-		internal void MakeSSBO(int index)
+		void MakeSSBO(int index, VertexRigged3D[] vertRig)
 		{
-			
 			int vertSize = Marshal.SizeOf(typeof(VertexRigged3D));
 			SSB0 = GL.GenBuffer();
 			GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB0);
-			GL.BufferData(BufferTarget.ShaderStorageBuffer, vertSize* vertexCount, vert, BufferUsageHint.DynamicDraw);
+			GL.BufferData(BufferTarget.ShaderStorageBuffer, vertSize* vertexCount, vertRig, BufferUsageHint.DynamicDraw);
 			GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, index, SSB0);
 			GL.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
-		}
+
+            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, VBO);
+        }
 
 		public MeshMorper GetMorpher
 		{
@@ -173,11 +176,12 @@ namespace Toys
 		internal void ApplySkin()
 		{
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-			int size = Marshal.SizeOf(typeof(Vertex3D)) * vertexCount;
+			//int size = Marshal.SizeOf(typeof(Vertex3D)) * vertexCount;
 
-			GL.CopyBufferSubData(BufferTarget.ShaderStorageBuffer, BufferTarget.ArrayBuffer, (IntPtr)0,(IntPtr)0, size);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+			//GL.CopyBufferSubData(BufferTarget.ShaderStorageBuffer, BufferTarget.ArrayBuffer, (IntPtr)0,(IntPtr)0, size);
+            //GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 		}
+
 
 		internal void BindVAO()
 		{
@@ -193,12 +197,10 @@ namespace Toys
 		//for compute shader morphs
 		internal void BindSSBO()
 		{
-			GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB0);
-		}
-		internal void BindSSBO1()
-		{
-			GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, SSB0);
-		}
+            //GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB0);
+            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, SSB0);
+            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, VBO);
+        }
 
 		/// <summary>
 		/// Draw the part of mesh.

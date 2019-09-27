@@ -1,19 +1,25 @@
 ﻿using System;
 using OpenTK;
+using System.Runtime.InteropServices;
 
 namespace Toys
 {
-	/// <summary>
-	/// Vertex rigged.
-	/// </summary>
-	public struct VertexRigged3D 
+    /// <summary>
+    /// Vertex rigged.
+    /// </summary>
+    [StructLayout(LayoutKind.Explicit, Size = 80)]
+    public struct VertexRigged3D 
 	{
-
-		public Vector3 position;
-		public Vector3 normal;
-		public Vector2 uvtex;
-		public IVector4 boneIndexes;
-		public Vector4 weigth;
+        [FieldOffset(0)]
+        public Vector3 position;
+        [FieldOffset(16)]
+        public Vector3 normal;
+        [FieldOffset(32)]
+        public Vector2 uvtex;
+        [FieldOffset(48)]
+        public IVector4 boneIndexes;
+        [FieldOffset(64)]
+        public Vector4 weigth;
 
 
 		public VertexRigged3D(Vector3 pos, Vector3 norm, Vector2 tex, IVector4 indexes, Vector4 weigth)

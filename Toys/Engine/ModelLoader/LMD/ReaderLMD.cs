@@ -201,7 +201,6 @@ namespace Toys
             }
 
             var vv = verts.ToArray();
-
             //set bone id to global
             for(int i = 0; i < vv.Length; i++)
             {

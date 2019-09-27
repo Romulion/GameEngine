@@ -42,5 +42,4 @@ void main()
 	vs_out.Normal = mat3(NormalMat * BoneTransform)  * aNormal;
 	vs_out.lightSpace = lightSpacePos * vec4(vs_out.FragPos,1.0);
 	//Normal = mat3(NormalMat) * aNormal;
-	
 }
