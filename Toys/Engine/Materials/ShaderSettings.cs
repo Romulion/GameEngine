@@ -17,8 +17,9 @@ namespace Toys
 		public bool affectedByLight = true;
 		public bool TextureDiffuse = true;
 		public bool TextureSpecular;
-		public bool TextureAmbient;
-		public bool discardInvisible;
+		public bool Ambient;
+        public bool SpecularColor;
+        public bool discardInvisible;
         public bool DifuseColor;
 	}
 }

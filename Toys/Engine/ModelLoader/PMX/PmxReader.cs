@@ -174,7 +174,7 @@ namespace Toys
 			for (int i = 0; i < texCount; i++)
 			{
 				string texture = reader.readString();
-				Texture tex = ResourcesManager.LoadAsset<Texture>(texture);
+                Texture tex = ResourcesManager.LoadAsset<Texture>(texture);
 
 				if (texture.Contains("toon"))
 					tex.ChangeType(TextureType.Toon);
@@ -202,7 +202,8 @@ namespace Toys
 				shdrs.discardInvisible = true;
 				shdrs.affectedByLight = true;
                 shdrs.DifuseColor = true;
-
+                shdrs.Ambient = true;
+                shdrs.SpecularColor = true;
 
                 shdrs.TextureDiffuse = true;
 				string name = reader.readString();
@@ -212,9 +213,12 @@ namespace Toys
                 //if (difColor.W == 0)//diffuse color
 				//	rndr.render = false;
 
-				reader.readVector3(); //specular color
-				file.ReadSingle(); //specular
-				reader.readVector3(); //ambient color
+				Vector3 specularColour = reader.readVector3(); //specular color
+				float specularPower =  file.ReadSingle(); //specular
+                //fix zero power bug
+                if (specularPower == 0)
+                    specularPower = 0.000001f;
+                Vector3 ambientColour = reader.readVector3(); //ambient color
 				//setting values from flags
 				var flags = new MaterialFlags(file.ReadByte());
 				shdrs.recieveShadow = flags.receiveShadow;
@@ -285,10 +289,17 @@ namespace Toys
 				var mat = new MaterialPMX(shdrs, rndr);
 				mat.Name = name;
 				mat.outln = outln;
+
 				mat.SetTexture(tex,TextureType.Diffuse);
 				mat.SetTexture(toon, TextureType.Toon);
 				mat.SetTexture(envTex, TextureType.Sphere);
-
+                mat.SpecularColour = specularColour;
+                mat.Specular = specularPower;
+                mat.DiffuseColor = difColor;
+                mat.AmbientColour = ambientColour;
+                mat.UniManager.Set("specular_color", specularColour);
+                mat.UniManager.Set("ambient_color", ambientColour);
+                mat.UniManager.Set("specular_power", specularPower);
                 mat.UniManager.Set("diffuse_color", difColor);
 
                 mat.offset = offset;
@@ -305,9 +316,9 @@ namespace Toys
 			bones = new Bone[bonesCount];
 
 			for (int i = 0; i < bonesCount; i++)
-			{
+			{                
 				string Name = reader.readString();
-				string NameEng = reader.readString();
+                string NameEng = reader.readString();
 
 				Vector3 Position = reader.readVector3() * multipler;
 
@@ -356,7 +367,8 @@ namespace Toys
 
 				if (bone.ExternalPdeform)
 				{
-					reader.readVal(header.GetBoneIndexSize);
+                    //reader.readVal(header.GetBoneIndexSize);
+                    file.ReadInt32();
 				}
 
 				if (bone.IK)
@@ -381,7 +393,7 @@ namespace Toys
 					}
                     bik.Links = links;
 				    bone.IKData = bik;
-				} 
+				}
                 bones[i] = bone;
 			}
 
@@ -456,9 +468,9 @@ namespace Toys
                             var MMorpher = new MaterialMorpher(mat);
                             MMorpher.mode = file.ReadByte();
 							MMorpher.diffuse = reader.readVector4();
-							reader.readVector3();
+                            MMorpher.specular = reader.readVector3();
 							file.ReadSingle();
-							reader.readVector3();
+                            MMorpher.ambient = reader.readVector3();
 							reader.readVector4();
 							file.ReadSingle();
 							reader.readVector4();

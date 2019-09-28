@@ -45,14 +45,16 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 			IntPtr point = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);
 
-			foreach (var vertex in morphData)
+            int uvOffset = (int)Marshal.OffsetOf(typeof(VertexRigged3D), "uvtex");
+            Console.WriteLine(uvOffset);
+            foreach (var vertex in morphData)
 			{
 				int index = (int)vertex.Z;
 				int offset = index * vertStride;
 				Vector2 morphed = vertex.Xy * degree + verts[index].uvtex;
 				verts[index].uvtex = morphed;
-				Marshal.WriteInt32(point, offset + 24, BitConverter.ToInt32(BitConverter.GetBytes(morphed.X), 0));
-				Marshal.WriteInt32(point, offset + 28, BitConverter.ToInt32(BitConverter.GetBytes(morphed.Y), 0));
+				Marshal.WriteInt32(point, offset + uvOffset, BitConverter.ToInt32(BitConverter.GetBytes(morphed.X), 0));
+				Marshal.WriteInt32(point, offset + uvOffset + 4, BitConverter.ToInt32(BitConverter.GetBytes(morphed.Y), 0));
 			}
 
 			GL.UnmapBuffer(BufferTarget.ArrayBuffer);

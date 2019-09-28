@@ -3,6 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.IO;
 using KtxSharp;
+using System.Runtime.ExceptionServices;
 
 namespace Toys
 {
@@ -103,13 +104,10 @@ namespace Toys
 
 		}
 
-
-		void LoadTexture(Bitmap texture)
+        void LoadTexture(Bitmap texture)
 		{
-
-
-			//for rare 8bpp formats 
-			if (texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
+            //for 8bpp formats 
+            if (texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format4bppIndexed)
 			{
 				Bitmap clone = new Bitmap(texture.Width, texture.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
 
@@ -117,7 +115,6 @@ namespace Toys
 				{
 					gr.DrawImage(texture, new Rectangle(0, 0, clone.Width, clone.Height));
 				}
-
 				texture = clone;
 			}
 
@@ -148,10 +145,10 @@ namespace Toys
 			else
 				format = PixelFormat.Bgr;
 
-			//loading to video memory
-			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
+            //loading to video memory
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
 						  texture.Width, texture.Height, 0, format, PixelType.UnsignedByte, data.Scan0);
-			GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
 			//clear resources
 			texture.UnlockBits(data);

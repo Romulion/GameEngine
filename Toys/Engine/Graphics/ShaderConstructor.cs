@@ -130,7 +130,10 @@ namespace Toys
                         +"\tsampler2D texture_toon;\n"
                         +"\tsampler2D texture_spere;\n"
                         +"\tvec4 diffuse_color;\n"
-                        +"};\n";
+                        + "\tvec3 specular_color;\n"
+                        + "\tfloat specular_power;\n"
+                        + "\tvec3 ambient_color;\n"
+                        + "};\n";
 
 			rawFragment += "uniform Material material;\n";
             rawFragment += "uniform sampler2DShadow shadowMap;\n";
@@ -157,32 +160,42 @@ namespace Toys
 					+ "\tfloat shadow = currentDepth - bias > closestDepth  ? 0.98 : 0.02;\n"
 					//+"\t/* disabled shadow smoothing\n\tfloat shadow = 0.0;\n\tvec2 texelSize = 1.0 / textureSize(shadowMap, 0);\n\tfor(int x = -1; x <= 1; ++x)\n\t{\n\t\tfor(int y = -1; y <= 1; ++y)\n\t\t{\n\t\t\tfloat pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; \n\t\t\tshadow += currentDepth - bias > pcfDepth ? 0.98 : 0.02;        \n\t\t}    \n\t}\n\tshadow /= 9.0;\n\t
 					 */
-					+ "\treturn shadow;\n}";
+					+ "\treturn shadow;\n}\n";
 			}
 
 			//main function
 			rawFragment += "void main()\n{\n";
+            
+            rawFragment += "const vec3 amb = vec3(0.07);\n";
 
-			if (setting.TextureDiffuse)
+            if (setting.TextureDiffuse)
 			{
 				rawFragment += "vec4 texcolor = texture(material.texture_diffuse,fs_in.Texcord);\n";
 				if (setting.discardInvisible)
 					rawFragment += "if (texcolor.a < 0.05)\n\t\tdiscard;\n";
 			}
 
+            rawFragment += "vec3 normal = normalize(fs_in.Normal);\n";
+            rawFragment += "vec3 lightDir = normalize(LightPos - fs_in.FragPos);\n";
 
-			//shadowing section
-			if (setting.recieveShadow)
+            
+            if (setting.SpecularColor)
+            {
+                rawFragment += "vec3 viewDir = normalize(viewPos - fs_in.FragPos);\n";
+                rawFragment += "vec3 reflectDir = reflect(-lightDir, normal);\n";
+                rawFragment += "float spec = pow(max(dot(viewDir, reflectDir), 0), material.specular_power);\n";
+            }
+
+
+            //shadowing section
+            if (setting.recieveShadow)
 				rawFragment += "float shadow = ShadowCalculation();\n";
 
 
 			if (setting.affectedByLight)
 			{
-				rawFragment += "vec3 normal = normalize(fs_in.Normal);\n";
-				rawFragment += "vec3 lightDir = normalize(LightPos - fs_in.FragPos);\n";
-				rawFragment += "float diffuse = 1 - max(dot(lightDir,normal) , 0.02);\n";
-
-				if (setting.toonShadow)
+                rawFragment += "float diffuse = 1 - max(dot(lightDir,normal) , 0.02);\n";
+                if (setting.toonShadow)
 				{
 					if (setting.recieveShadow)
 						rawFragment += "vec4 shadowcolor  = texture(material.texture_toon,vec2(max(diffuse,shadow)));\n";
@@ -192,9 +205,9 @@ namespace Toys
 				else
 				{
 					if (setting.recieveShadow)
-						rawFragment += "vec4 shadowcolor  = vec4(vec3(max(1-diffuse,1-shadow) * 0.7 + 0.3),1.0);\n";
+						rawFragment += "vec4 shadowcolor  = vec4(vec3(max(1-diffuse,1-shadow) * 0.2 + 0.8),1.0);\n";
 					else
-						rawFragment += "vec4 shadowcolor  = vec4(vec3(diffuse * 0.7 + 0.3),1.0);\n";
+						rawFragment += "vec4 shadowcolor  = vec4(vec3(diffuse * 0.2 + 0.8),1.0);\n";
 				}
 			}
 			else
@@ -218,33 +231,45 @@ namespace Toys
 
 			if (setting.envType > 0)
 			{
-				rawFragment += "vec4 envLight = texture(material.texture_spere,(normalize(fs_in.NormalLocal).xy * 0.5 + vec2(0.5)));\n";
+				rawFragment += "vec4 envLight = texture(material.texture_spere,-(normal.xy * 0.5 + vec2(0.5)));\n";
 				if (setting.envType == EnvironmentMode.Additive || setting.envType == EnvironmentMode.Subtract)
 					rawFragment += "envLight.w = 0f;\n";
 			}
 
 
-            string output = "";
-			if (setting.TextureDiffuse)
-				output = "texcolor * shadowcolor";
-			else if (!setting.TextureDiffuse)
-				output = "shadowcolor";
+            string output = "vec4(clamp(amb";
+            if (setting.DifuseColor)
+                output += "+ material.diffuse_color.xyz * 0.5";
+            if (setting.Ambient)
+                output += "+ material.ambient_color";
+            if (setting.SpecularColor)
+                output += "+ abs(material.specular_color * spec)";
+            output += ",0.0,1.0),1)";
+
+            output += " * (";
+            if (setting.TextureDiffuse)
+				output += "texcolor";
+				
 
             string mul = "";
 
             if (setting.envType == EnvironmentMode.Additive)
                 output += " + envLight";
             else if (setting.envType == EnvironmentMode.Subtract)
-                output += " - envLight";
+                output += " - envLight";            
             else if (setting.envType == EnvironmentMode.Multiply)
                 mul += " * envLight";
-
-            if (setting.DifuseColor)
-                mul += " * material.diffuse_color";
-
+            output += ") * shadowcolor";
+            
             rawFragment += "FragColor = (" + output + ") " + mul  + ";\n";
+           // rawFragment += "if (material.specular_power == 0)\n" +
+           //     "FragColor = vec4(1,0,0,1);\n" +
+           //     "else if (material.specular_power > 0)\n" +
+           //     "FragColor = vec4(0,1,0,1);\n" +
+           //     "else\n" +
+           //     "FragColor = vec4(0,0,1,1);\n";
 
-			rawFragment += "}\n";
+            rawFragment += "}\n";
 
 			//MessageBox.Show(rawFragment);
             //Console.ReadKey();

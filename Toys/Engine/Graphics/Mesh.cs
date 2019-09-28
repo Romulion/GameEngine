@@ -161,9 +161,12 @@ namespace Toys
 			get
 			{
 				if (morpher == null)
-					morpher = new MeshMorper(vert, VBO, vSize);
-				
-				return morpher; 
+#if VertexSkin
+                    morpher = new MeshMorper(vert, VBO, vSize);
+#else
+                    morpher = new MeshMorper(vert, SSB0, vSize);
+#endif
+                return morpher; 
 			}
 		}
 		//updating mesh for vertex morph and skinning
