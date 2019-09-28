@@ -17,7 +17,7 @@ namespace Toys
             Name = name;
             Group = group;
 			varId = id;
-
+            type = typeof(float);
             if (group != "")
                 varName = group + "." + name;
             else
@@ -75,7 +75,6 @@ namespace Toys
         protected override void CalculateFinal()
         {
             value = RetrieveValue(defaultValue);
-            Console.WriteLine(222);
             foreach (UniformModifier mod in Getmods())
             {
                 switch (mod.t)

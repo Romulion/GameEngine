@@ -18,7 +18,7 @@ namespace Toys
             Name = name;
             Group = group;
 			varId = id;
-
+            type = typeof(int);
             if (group != "")
                 varName = group + "." + name;
             else
