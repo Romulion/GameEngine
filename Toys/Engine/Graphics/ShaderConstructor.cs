@@ -198,33 +198,34 @@ namespace Toys
                 if (setting.toonShadow)
 				{
 					if (setting.recieveShadow)
-						rawFragment += "vec4 shadowcolor  = texture(material.texture_toon,vec2(max(diffuse,shadow)));\n";
+						rawFragment += "vec4 shadowcolor  = texture(material.texture_toon,vec2(max(diffuse,shadow))) * 0.6 + vec4(0.4);\n";
 					else
-						rawFragment += "vec4 shadowcolor  = texture(material.texture_toon,vec2(diffuse));\n";
+						rawFragment += "vec4 shadowcolor  = texture(material.texture_toon,vec2(diffuse)) * 0.6 + vec4(0.4);\n";
 				}
 				else
 				{
 					if (setting.recieveShadow)
-						rawFragment += "vec4 shadowcolor  = vec4(vec3(max(1-diffuse,1-shadow) * 0.2 + 0.8),1.0);\n";
+						rawFragment += "vec4 shadowcolor  = vec4(vec3(max(diffuse,shadow) * 0.2 + 0.8),1.0);\n";
 					else
 						rawFragment += "vec4 shadowcolor  = vec4(vec3(diffuse * 0.2 + 0.8),1.0);\n";
 				}
 			}
 			else
 			{
-				if (setting.toonShadow)
-				{
-					if (setting.recieveShadow)
-						rawFragment += "vec4 shadowcolor  = texture(material.texture_toon,vec2(shadow)));\n";
+
+				if (setting.recieveShadow)
+                {
+                    if (setting.toonShadow)
+                    {
+                        rawFragment += "vec4 shadowcolor  = texture(material.texture_toon,vec2(shadow)));\n";
+                    }
+						
 					else
-						rawFragment += "vec4 shadowcolor  = texture(material.texture_toon,vec2(1.0));\n";
+                        rawFragment += "vec4 shadowcolor  = vec4(vec3(1 - shadow),1.0);\n";
 				}
 				else
 				{
-					if (setting.recieveShadow)
-						rawFragment += "vec4 shadowcolor  = vec4(vec3(1 - shadow),1.0);\n";
-					else
-						rawFragment += "vec4 shadowcolor  = vec4(1.0);\n";
+					rawFragment += "vec4 shadowcolor  = vec4(1.0);\n";
 				}
 
 			}
