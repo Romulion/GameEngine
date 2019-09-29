@@ -3,6 +3,7 @@ using System.IO;
 using OpenTK;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace Toys
 {
@@ -270,14 +271,26 @@ namespace Toys
 					{
 						//disable shadowing if no toon texture
 						shdrs.affectedByLight = false;
-						shdrs.recieveShadow = false;
+						//shdrs.recieveShadow = false;
 					}
 						//MessageBox.Show(name + " " + text);
 				}
 				else
 				{
 					byte toontex = file.ReadByte();
-					shdrs.toonShadow = true;
+                    toontex++;
+                    string texturePath = String.Format("Toys.Resourses.textures.PMX.toon{0}.bmp", toontex.ToString().PadLeft(2,'0'));
+                    Texture toonTex = ResourcesManager.GetResourse<Texture>(texturePath);
+                    if (toonTex == null)
+                    {
+                        var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture)).Assembly;
+                        Bitmap pic = new Bitmap(assembly.GetManifestResourceStream(texturePath));
+                        toonTex = new Texture(pic, TextureType.Toon, String.Format("toon{0}.bmp", toontex.ToString().PadLeft(2, '0')));
+                        ResourcesManager.AddAsset<Texture>(toonTex, texturePath);
+                    }
+                    
+                    toon = toonTex;
+                    shdrs.toonShadow = true;
 				}
                 reader.readString();
 				int count = file.ReadInt32();
@@ -289,8 +302,7 @@ namespace Toys
 				var mat = new MaterialPMX(shdrs, rndr);
 				mat.Name = name;
 				mat.outln = outln;
-
-				mat.SetTexture(tex,TextureType.Diffuse);
+                mat.SetTexture(tex,TextureType.Diffuse);
 				mat.SetTexture(toon, TextureType.Toon);
 				mat.SetTexture(envTex, TextureType.Sphere);
                 mat.SpecularColour = specularColour;
@@ -301,7 +313,6 @@ namespace Toys
                 mat.UniManager.Set("ambient_color", ambientColour);
                 mat.UniManager.Set("specular_power", specularPower);
                 mat.UniManager.Set("diffuse_color", difColor);
-
                 mat.offset = offset;
 				mat.count = count;
 				mats[i] = mat;
@@ -416,7 +427,6 @@ namespace Toys
 			{
 				string name = reader.readString();
 				string nameEng = reader.readString();
-
 				int panel = file.ReadByte();
 				int type = file.ReadByte();
 				int size = file.ReadInt32();
@@ -461,10 +471,9 @@ namespace Toys
                             
 							int idx = reader.readVal(header.GetMaterialIndexSize);
                             Material mat = null;
-                            if (idx == 255)
-                                mat = (Material)mats[0];
-                            else
+                            if (idx >= 0 && idx < mats.Length)
                                 mat = (Material)mats[idx];
+
                             var MMorpher = new MaterialMorpher(mat);
                             MMorpher.mode = file.ReadByte();
 							MMorpher.diffuse = reader.readVector4();

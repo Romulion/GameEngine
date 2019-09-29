@@ -53,7 +53,12 @@ namespace Toys
 			return asset as T;
 		}
 
-		public static T[] GetResourses<T>() where T : Resource
+        internal static void AddAsset<T>(T asset, string name) where T : Resource
+        {
+                resources.Add(name, asset);
+        }
+
+        public static T[] GetResourses<T>() where T : Resource
 		{
 			List<T> result = new List<T>();
 			foreach (var val in resources.Values)
@@ -63,7 +68,14 @@ namespace Toys
 			return result.ToArray();
 		}
 
-		public static T[] GetComponents<T>() where T : Component
+        public static T GetResourse<T>(string name) where T : Resource
+        {
+            if (resources.ContainsKey(name))
+                return resources[name] as T;
+            return null;
+        }
+
+        public static T[] GetComponents<T>() where T : Component
 		{
 			List<T> result = new List<T>();
 			foreach (var val in resources.Values)

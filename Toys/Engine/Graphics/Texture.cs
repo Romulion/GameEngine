@@ -77,8 +77,8 @@ namespace Toys
 			{
 				Console.Write("cant load texture  ");
                 Console.WriteLine(path);
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                //Console.WriteLine(e.Message);
+                //Console.WriteLine(e.StackTrace);
                 //load default texture if fail
                 //without reloading to memory
                 Texture empty = LoadEmpty();
@@ -95,7 +95,7 @@ namespace Toys
 		}
 
 		//for build in textures
-		Texture(Bitmap tex, TextureType type, string name) : base (typeof(Texture))
+		internal Texture(Bitmap tex, TextureType type, string name) : base (typeof(Texture))
 		{
 			texture_id = GL.GenTexture();
             this.type = type;
@@ -106,8 +106,9 @@ namespace Toys
 
         void LoadTexture(Bitmap texture)
 		{
+           
             //for 8bpp formats 
-            if (texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format4bppIndexed)
+            if (texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format4bppIndexed || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppRgb)
 			{
 				Bitmap clone = new Bitmap(texture.Width, texture.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
 
@@ -140,7 +141,7 @@ namespace Toys
 
 			//recognithing pixel format type
 			PixelFormat format;
-            if (Image.IsAlphaPixelFormat(texture.PixelFormat) || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppRgb)
+            if (Image.IsAlphaPixelFormat(texture.PixelFormat))
 				format = PixelFormat.Bgra;
 			else
 				format = PixelFormat.Bgr;
