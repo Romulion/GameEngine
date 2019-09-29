@@ -271,7 +271,7 @@ namespace Toys
 					{
 						//disable shadowing if no toon texture
 						shdrs.affectedByLight = false;
-						//shdrs.recieveShadow = false;
+						shdrs.recieveShadow = false;
 					}
 						//MessageBox.Show(name + " " + text);
 				}
@@ -297,7 +297,7 @@ namespace Toys
 				Texture tex = empty;
 				if (difTexIndex != 255)
 				{
-					tex = textures[difTexIndex];
+                    tex = textures[difTexIndex];
 				}
 				var mat = new MaterialPMX(shdrs, rndr);
 				mat.Name = name;
@@ -365,6 +365,7 @@ namespace Toys
 					Vector3 Z = Vector3.Cross(X, new Vector3(0f, 1f, 0f));
 					Vector3 Y = Vector3.Cross(Z, X);
 					Matrix3 local = new Matrix3(X,Y,Z);
+                    local.Normalize();
                     bone.Parent2Local = new Matrix4(local);
 				}
 				if (bone.LocalCoordinate)
@@ -373,6 +374,7 @@ namespace Toys
 					Vector3 Z = reader.readVector3();
 					Vector3 Y = Vector3.Cross(Z, X);
 					Matrix3 local = new Matrix3(X, Y, Z);
+                    local.Normalize();
                     bone.Parent2Local = new Matrix4(local);
 				}
 
