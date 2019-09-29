@@ -26,6 +26,9 @@ namespace Toys
 
         public void Perform(float degree)
         {
+            if (Mat == null)
+                return;
+
             if (mode == 0)
             {
                 Mat.UniManager.Modify(this, diffuseName, (Vector4.One - (Vector4.One - diffuse) * degree), ModifyType.Multiply);

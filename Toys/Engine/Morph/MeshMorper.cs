@@ -46,7 +46,7 @@ namespace Toys
 			IntPtr point = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.WriteOnly);
 
             int uvOffset = (int)Marshal.OffsetOf(typeof(VertexRigged3D), "uvtex");
-            Console.WriteLine(uvOffset);
+
             foreach (var vertex in morphData)
 			{
 				int index = (int)vertex.Z;

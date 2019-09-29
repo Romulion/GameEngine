@@ -57,16 +57,18 @@ namespace Toys
 
         void Start()
         {
-            //Console.WriteLine(bc.GetBone(82).Bone2WorldInitial);
+            //Console.WriteLine(bc.GetBone(33).LocalMatrix);
             //Console.WriteLine(bc.GetBone(5).Bone.Name);
             //Console.WriteLine(bc.GetBone(3).BoneMatrix);
-           // bc.GetBone(0).SetTransform(new Quaternion(0, 0, 0), new Vector3(0, 0.5f, 0));
-            
+            // bc.GetBone(0).SetTransform(new Quaternion(0, 0, 0), new Vector3(0, 0.5f, 0));
+
             //bc.GetBone(8).SetTransform(new Quaternion(0, 1.5f, 0), new Vector3(0, 0, 0));
             //bc.GetBone(21).SetTransform(new Quaternion(0, 1.5f, 0), new Vector3(0, 0, 0));
             //bc.GetBone(22).SetTransform(new Quaternion(0, 1.5f, 0), new Vector3(0, 0, 0));
             //bc.UpdateSkeleton();
-            //Console.WriteLine(bc.GetBone(5).TransformMatrix);
+            //Console.WriteLine(bc.GetBone(34).LocalMatrix);
+           // Console.WriteLine(bc.GetBone(34).Bone2WorldInitial);
+           // Console.WriteLine(bc.GetBone(34).TransformMatrix);
             /*
             CollisionShape shape = new SphereShape(0.1f);
             RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(0f, new DefaultMotionState(Matrix.Translation(new Vector3(0, 1, 0))), shape, Vector3.Zero);

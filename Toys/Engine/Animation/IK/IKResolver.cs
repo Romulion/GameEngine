@@ -267,7 +267,7 @@ namespace Toys
                             angle.Y = (float)Math.Atan2(matrixIKRotation.M31, matrixIKRotation.M33);
                             angle.Z = (float)Math.Atan2(matrixIKRotation.M12, matrixIKRotation.M22);
                             LimitAngle(ref angle, linkNum, axis_lim);
-                            transformBone.IKRotation = Quaternion.FromAxisAngle(Vector3.UnitZ, angle.Z) * Quaternion.FromAxisAngle(Vector3.UnitX, angle.X) * Quaternion.FromAxisAngle(Vector3.UnitY, angle.Y);
+                            transformBone.IKRotation = Quaternion.FromAxisAngle(Vector3.UnitY, angle.Y) * Quaternion.FromAxisAngle(Vector3.UnitX, angle.X) * Quaternion.FromAxisAngle(Vector3.UnitZ, angle.Z);
                             break;
                         }
                     case IKLink.EulerType.XYZ:
@@ -280,7 +280,7 @@ namespace Toys
                             angle.X = (float)Math.Atan2(matrixIKRotation.M23, matrixIKRotation.M33);
                             angle.Z = (float)Math.Atan2(matrixIKRotation.M12, matrixIKRotation.M11);
                             LimitAngle(ref angle, linkNum, axis_lim);
-                            transformBone.IKRotation = Quaternion.FromAxisAngle(Vector3.UnitX, angle.X) * Quaternion.FromAxisAngle(Vector3.UnitY, angle.Y) * Quaternion.FromAxisAngle(Vector3.UnitZ, angle.Z);
+                            transformBone.IKRotation =  Quaternion.FromAxisAngle(Vector3.UnitZ, angle.Z) * Quaternion.FromAxisAngle(Vector3.UnitY, angle.Y) * Quaternion.FromAxisAngle(Vector3.UnitX, angle.X);
                             break;
                         }
                     case IKLink.EulerType.YZX:
@@ -293,7 +293,7 @@ namespace Toys
                             angle.X = (float)Math.Atan2(matrixIKRotation.M23, matrixIKRotation.M22);
                             angle.Y = (float)Math.Atan2(matrixIKRotation.M31, matrixIKRotation.M11);
                             LimitAngle(ref angle, linkNum, axis_lim);
-                            transformBone.IKRotation = Quaternion.FromAxisAngle(Vector3.UnitY, angle.Y) * Quaternion.FromAxisAngle(Vector3.UnitZ, angle.Z) * Quaternion.FromAxisAngle(Vector3.UnitX, angle.X);
+                            transformBone.IKRotation = Quaternion.FromAxisAngle(Vector3.UnitX, angle.X) * Quaternion.FromAxisAngle(Vector3.UnitZ, angle.Z) * Quaternion.FromAxisAngle(Vector3.UnitY, angle.Y);
                             break;
                         }
                 }

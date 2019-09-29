@@ -237,6 +237,18 @@
   <ItemGroup>
     <EmbeddedResource Include="Resourses\shaders\TestTexture.vsh" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resourses\textures\PMX\toon01.bmp" />
+    <EmbeddedResource Include="Resourses\textures\PMX\toon02.bmp" />
+    <EmbeddedResource Include="Resourses\textures\PMX\toon03.bmp" />
+    <EmbeddedResource Include="Resourses\textures\PMX\toon04.bmp" />
+    <EmbeddedResource Include="Resourses\textures\PMX\toon05.bmp" />
+    <EmbeddedResource Include="Resourses\textures\PMX\toon06.bmp" />
+    <EmbeddedResource Include="Resourses\textures\PMX\toon07.bmp" />
+    <EmbeddedResource Include="Resourses\textures\PMX\toon08.bmp" />
+    <EmbeddedResource Include="Resourses\textures\PMX\toon09.bmp" />
+    <EmbeddedResource Include="Resourses\textures\PMX\toon10.bmp" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -111,7 +111,8 @@ namespace Toys
 				rawVertex += "vs_out.NormalLocal = mat3(pvm"+ applySkeleton +") * aNormal;\n";
 
 			rawVertex += "}\n";
-		}
+            //MessageBox.Show(rawVertex);
+        }
 
         void GenerateFragment()
 		{
@@ -221,7 +222,7 @@ namespace Toys
                     }
 						
 					else
-                        rawFragment += "vec4 shadowcolor  = vec4(vec3(1 - shadow),1.0);\n";
+                        rawFragment += "vec4 shadowcolor  = vec4(vec3(1 - shadow* 0.2),1.0);\n";
 				}
 				else
 				{
@@ -232,7 +233,7 @@ namespace Toys
 
 			if (setting.envType > 0)
 			{
-				rawFragment += "vec4 envLight = texture(material.texture_spere,-(normal.xy * 0.5 + vec2(0.5)));\n";
+				rawFragment += "vec4 envLight = texture(material.texture_spere,-normalize(fs_in.NormalLocal).xy * 0.5+ vec2(0.5));\n";
 				if (setting.envType == EnvironmentMode.Additive || setting.envType == EnvironmentMode.Subtract)
 					rawFragment += "envLight.w = 0f;\n";
 			}
@@ -261,15 +262,8 @@ namespace Toys
             else if (setting.envType == EnvironmentMode.Multiply)
                 mul += " * envLight";
             output += ") * shadowcolor";
-            
-            rawFragment += "FragColor = (" + output + ") " + mul  + ";\n";
-           // rawFragment += "if (material.specular_power == 0)\n" +
-           //     "FragColor = vec4(1,0,0,1);\n" +
-           //     "else if (material.specular_power > 0)\n" +
-           //     "FragColor = vec4(0,1,0,1);\n" +
-           //     "else\n" +
-           //     "FragColor = vec4(0,0,1,1);\n";
 
+            rawFragment += "FragColor = (" + output + ") " + mul  + ";\n";
             rawFragment += "}\n";
 
 			//MessageBox.Show(rawFragment);

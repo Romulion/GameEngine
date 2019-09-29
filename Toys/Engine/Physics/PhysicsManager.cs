@@ -50,7 +50,7 @@ namespace Toys
 				rigitBodies[i] = new RigidBodyBone(rigits[i]);
 
                 //skipping bone binding for no index riggs (ushort indexes only)
-                if (rigits[i].BoneIndex != ushort.MaxValue)
+                if (rigits[i].BoneIndex < bones.GetBones.Length && rigits[i].BoneIndex >=0)
                 {
                     rigitBodies[i].bone = rigits[i].BoneIndex;
                     rigitBodies[i].acon = bones;
