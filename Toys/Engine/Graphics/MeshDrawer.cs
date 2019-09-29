@@ -45,8 +45,11 @@ namespace Toys
 				var rdirs = mat.rndrDirrectives;
 				if (!rdirs.render)
 					continue;
-
-				mat.ApplyMaterial();
+                if (rdirs.nocull)
+                    CoreEngine.gEngine.SetCullMode(FaceCullMode.Disable);
+                else
+                    CoreEngine.gEngine.SetCullMode(FaceCullMode.Back);
+                mat.ApplyMaterial();
                 if (mat.count != 0)
                     mesh.Draw(mat.offset, mat.count);
                 else

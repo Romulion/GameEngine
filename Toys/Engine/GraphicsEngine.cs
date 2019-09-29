@@ -6,6 +6,13 @@ using System.Collections.Generic;
 
 namespace Toys
 {
+    enum FaceCullMode
+    {
+        Disable,
+        Front,
+        Back,
+    }
+
     class GraphicsEngine
     {
         int Width, Height;
@@ -15,6 +22,8 @@ namespace Toys
 		//test
 		int VBO, VAO, FBO;
 		Shader sh;
+        bool faceCullEnable;
+        bool faceCullFront;
 
         internal List<MeshDrawer> meshes = new List<MeshDrawer>();
 
@@ -64,7 +73,7 @@ namespace Toys
 
 		}
 
-        public void Instalize()
+        void Instalize()
         {
 			var settings = Settings.GetInstance();
 			Width = settings.Graphics.Width;
@@ -120,10 +129,10 @@ namespace Toys
 			}
         }
 
-        
 
 
-        public void Render()
+
+        internal void Render()
         {
 			//get render object list
 			MeshDrawer[] meshes = this.meshes.ToArray();
@@ -133,8 +142,9 @@ namespace Toys
                mesh.Prepare();
 
             //shadow pass
-            GL.Enable(EnableCap.CullFace);
-            GL.CullFace(CullFaceMode.Back);
+            SetCullMode(FaceCullMode.Back);
+            //GL.Enable(EnableCap.CullFace);
+            //GL.CullFace(CullFaceMode.Back);
             GL.Disable(EnableCap.Multisample);
 
 			//renderScene.GetLight.RenderShadow(renderScene.GetNodes());
@@ -142,7 +152,8 @@ namespace Toys
 
             GL.Enable(EnableCap.Multisample);
             GL.Disable(EnableCap.CullFace);
-			GL.Viewport(0, 0, Width, Height);
+            SetCullMode(FaceCullMode.Disable);
+            GL.Viewport(0, 0, Width, Height);
                        
 			//render scene to primary buffer
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
@@ -160,7 +171,7 @@ namespace Toys
 			*/
         }
 
-        public void Resize(int newWidth, int newHeight)
+        internal void Resize(int newWidth, int newHeight)
         {
             Width = newWidth;
             Height = newHeight;
@@ -168,6 +179,44 @@ namespace Toys
 			renderScene.camera.projection =  Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (30 / 180f), Width / (float)Height, 0.1f, 10.0f);
 			mainRender.Resize();
 			textRender.Resize(newWidth, newHeight);
+        }
+
+        internal void SetCullMode(FaceCullMode cullMode)
+        {
+            if (cullMode == FaceCullMode.Disable && faceCullEnable)
+            {
+                if (faceCullEnable)
+                {
+                    faceCullEnable = false;
+                    GL.Disable(EnableCap.CullFace);
+                }
+            }
+            else if (cullMode == FaceCullMode.Back)
+            {
+                if (faceCullFront)
+                { 
+                    GL.CullFace(CullFaceMode.Back);
+                    faceCullFront = false;
+                }
+                if (!faceCullEnable)
+                {
+                    GL.Enable(EnableCap.CullFace);
+                    faceCullEnable = true;
+                }
+            }
+            else if (cullMode == FaceCullMode.Front)
+            {
+                if (!faceCullFront)
+                {
+                    GL.CullFace(CullFaceMode.Front);
+                    faceCullFront = true;
+                }
+                if (!faceCullEnable)
+                {
+                    GL.Enable(EnableCap.CullFace);
+                    faceCullEnable = true;
+                }
+            }
         }
 
 		MeshDrawer[] GetRenderObjects()
