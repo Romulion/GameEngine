@@ -7,14 +7,19 @@ namespace Toys
 	public class Scene
 	{
         List<SceneNode> nodes = new List<SceneNode>();
-        public Camera camera;
 		LightSource light;
 
         int i = 0;
 
 		public void OnLoad()
 		{
-			camera = new Camera();
+            var camera = new Camera();
+            SceneNode node = new SceneNode();
+            node.AddComponent(camera);
+            node.AddComponent<CameraControllScript>();
+            node.GetTransform.Position = new Vector3(0, 1, 3);
+            nodes.Add(node);
+            
 			light = new LightSource();
         }
 
@@ -36,12 +41,6 @@ namespace Toys
 					an.Update(time);
 			}
         }
-
-
-        public Camera GetCamera
-		{
-			get { return camera; }
-		}
 
 		public LightSource GetLight
 		{

@@ -25,6 +25,7 @@ namespace Toys
         bool faceCullEnable;
         bool faceCullFront;
 
+        internal List<Camera> cameras = new List<Camera>();
         internal List<MeshDrawer> meshes = new List<MeshDrawer>();
 
         public Scene renderScene { get; private set; }
@@ -38,7 +39,7 @@ namespace Toys
 		public void OnLoad()
 		{
 			renderScene.OnLoad();
-			mainRender = new MainRenderer(renderScene.camera, renderScene);
+			mainRender = new MainRenderer(renderScene);
 			textRender = new TextRenderer();
 			renderScene.GetLight.BindShadowMap();
             //TestTriangle();
@@ -96,7 +97,7 @@ namespace Toys
                 //allocation custom framebuffer buffers
                 int RBO = GL.GenRenderbuffer();
                 GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, RBO);
-                GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, Width, Height);
+                //GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, Width, Height);
                 GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
                 GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, RBO);
                 //Console.WriteLine(GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer));
@@ -150,17 +151,21 @@ namespace Toys
 			//renderScene.GetLight.RenderShadow(renderScene.GetNodes());
 			renderScene.GetLight.RenderShadow(meshes);
 
-            GL.Enable(EnableCap.Multisample);
-            GL.Disable(EnableCap.CullFace);
-            SetCullMode(FaceCullMode.Disable);
-            GL.Viewport(0, 0, Width, Height);
-                       
-			//render scene to primary buffer
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-            GL.ClearColor(0.0f, 0.1f, 0.1f, 1.0f);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-			mainRender.Render(meshes.ToArray());
+            foreach (var cam in cameras)
+            {
+                cam.CalcLook();
+                GL.Enable(EnableCap.Multisample);
+                //GL.Disable(EnableCap.CullFace);
+                SetCullMode(FaceCullMode.Disable);
+                GL.Viewport(0, 0, cam.Width, cam.Height);
 
+                //render scene to primary buffer
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                GL.ClearColor(0.0f, 0.1f, 0.1f, 1.0f);
+                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+                mainRender.Render(meshes.ToArray(), cam);
+            }
 			textRender.RenderText();
 
 			/*
@@ -175,9 +180,15 @@ namespace Toys
         {
             Width = newWidth;
             Height = newHeight;
-            GL.Viewport(0,0,Width,Height);
-			renderScene.camera.projection =  Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (30 / 180f), Width / (float)Height, 0.1f, 10.0f);
-			mainRender.Resize();
+            foreach (var cam in cameras)
+            {
+                if (cam.Main)
+                {  
+                    cam.Width = newWidth;
+                    cam.Height = newHeight;
+                    cam.CalcProjection();
+                }
+            }
 			textRender.Resize(newWidth, newHeight);
         }
 

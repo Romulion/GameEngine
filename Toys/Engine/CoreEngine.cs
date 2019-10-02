@@ -16,6 +16,7 @@ namespace Toys
 		internal static GraphicsEngine gEngine;
 		internal static PhysicsEngine pEngine;
         internal static ScriptingEngine sEngine;
+        internal static CoreEngine core;
         public static Time time;
         queue task;
 
@@ -26,7 +27,7 @@ namespace Toys
 		public CoreEngine() : base(640, 480, new GraphicsMode(32, 8, 8, 4))
 		{
 			Instalize();
-			
+			core = this;
 		}
 
 		void Instalize()
@@ -63,7 +64,6 @@ namespace Toys
 		{
 			VSync = VSyncMode.On;
 			gEngine.OnLoad();
-			mainScene.camera.Control(this);
 			Resize += (s, ev) =>
 			{
 				gEngine.Resize(Width, Height);
