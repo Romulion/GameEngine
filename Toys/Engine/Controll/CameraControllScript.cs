@@ -20,7 +20,7 @@ namespace Toys
         const float R = 3.5f;
         float r;
         Vector3 cameraUp = new Vector3(0.0f, 1.0f, 0.0f);
-        Vector3 cameraOffset = new Vector3(0.0f, 1.0f, 0.0f);
+        Vector3 cameraOffset = new Vector3(0.0f, 0.5f, 0.0f);
 
         void Awake()
         {
@@ -29,6 +29,7 @@ namespace Toys
             game = CoreEngine.core;
             camera = (Camera)node.GetComponent<Camera>();
             camera.Target = Vector3.UnitY;
+            camera.Target -= new Vector3(0,0.25f,0);
             transform.Position = camera.Target + CalcPos(r, Phi, Theta);
             Control();
         }

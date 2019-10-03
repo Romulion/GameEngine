@@ -18,12 +18,14 @@ namespace Toys
 
 	public class Texture : Resource
 	{
-		int texture_id;
+		protected int texture_id;
         new TextureType type;
 		public string name { private set; get; }
+        public int Width { get; protected set; }
+        public int Height { get; protected set; }
 
-		//default texture
-		static Texture def;
+        //default texture
+        static Texture def;
 
         public enum Wrapper
         {
@@ -73,7 +75,7 @@ namespace Toys
 					tex1 = new Bitmap(path);
 				LoadTexture(tex1);
             }
-			catch (Exception e)
+			catch (Exception)
 			{
 				Console.Write("cant load texture  ");
                 Console.WriteLine(path);
@@ -101,8 +103,12 @@ namespace Toys
             this.type = type;
             this.name = name;
 			LoadTexture(tex);
-
 		}
+
+        protected Texture() : base(typeof(Texture))
+        {
+            texture_id = GL.GenTexture();
+        }
 
         void LoadTexture(Bitmap texture)
 		{
@@ -151,8 +157,10 @@ namespace Toys
 						  texture.Width, texture.Height, 0, format, PixelType.UnsignedByte, data.Scan0);
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
-			//clear resources
-			texture.UnlockBits(data);
+            Width = texture.Width;
+            Height = texture.Height;
+            //clear resources
+            texture.UnlockBits(data);
 			texture.Dispose();
 		}
 
@@ -168,6 +176,9 @@ namespace Toys
             //setting mip layer count
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureBaseLevel, 0);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, texture.header.numberOfMipmapLevels-1);
+
+            Width = (int)texture.header.pixelWidth;
+            Height = (int)texture.header.pixelHeight;
 
             if (texture.header.glDataType == 0)
             {
@@ -212,7 +223,7 @@ namespace Toys
 		//for postprocessing framebuffer
 		public static Texture LoadFrameBufer(int Width, int Height, string type)
 		{
-			int texture_id = GL.GenTexture();
+            int texture_id = GL.GenTexture();
 			GL.BindTexture(TextureTarget.Texture2D,texture_id);
 			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, Width, Height, 0, PixelFormat.Rgb, PixelType.UnsignedByte, IntPtr.Zero);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
@@ -255,8 +266,8 @@ namespace Toys
 			return new Texture(texture_id, type);
 		}
 
-		//examplar method for binding texture to shader
-		public void BindTexture()
+        //examplar method for binding texture to shader
+        public void BindTexture()
 		{
 			GL.BindTexture(TextureTarget.Texture2D,texture_id);
 		}
@@ -269,24 +280,6 @@ namespace Toys
 		public string GetName
 		{
 			get { return name; }
-		}
-
-		public static Texture CreateChar(char ch, IntPtr bitmap,int width, int heigth)
-		{
-			GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
-			int texture_id = GL.GenTexture();
-			var texture = new Texture(texture_id, ch.ToString());
-			GL.BindTexture(TextureTarget.Texture2D, texture_id);
-			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.R8,
-			              width, heigth, 0, PixelFormat.Red, PixelType.UnsignedByte, bitmap);
-			
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
-			//setting wrapper
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.ClampToEdge);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.ClampToEdge);
-			GL.BindTexture(TextureTarget.Texture2D, 0);
-			return texture;
 		}
 
         public static Texture CreateCharMap(int width, int heigth)

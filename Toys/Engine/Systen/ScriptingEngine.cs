@@ -17,6 +17,7 @@ namespace Toys
         Queue<ScriptingComponent> StartQueue = new Queue<ScriptingComponent>();
         List<Message> updates = new List<Message>();
         List<Message> prerender = new List<Message>();
+        List<Message> postRender = new List<Message>();
 
 
         internal ScriptingEngine()
@@ -62,6 +63,10 @@ namespace Toys
                 mess = GetMessage(sc, "PreRender");
                 if (mess != null)
                     prerender.Add(new Message(sc, mess));
+
+                mess = GetMessage(sc, "PostRender");
+                if (mess != null)
+                    postRender.Add(new Message(sc, mess));
             }
         }
 
@@ -96,5 +101,10 @@ namespace Toys
                 prr.Method();
         }
 
+        internal void PostRender()
+        {
+            foreach (var prr in postRender)
+                prr.Method();
+        }
     }
 }

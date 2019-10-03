@@ -125,6 +125,8 @@ namespace Toys
             //render physics
             //(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
             time.renderTime = time.Stop();
+
+            sEngine.PostRender();
             SwapBuffers();
         }
 

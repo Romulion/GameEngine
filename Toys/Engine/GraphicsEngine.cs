@@ -25,7 +25,8 @@ namespace Toys
         bool faceCullEnable;
         bool faceCullFront;
 
-        internal List<Camera> cameras = new List<Camera>();
+        //internal List<Camera> cameras = new List<Camera>();
+        internal Camera MainCamera;
         internal List<MeshDrawer> meshes = new List<MeshDrawer>();
 
         public Scene renderScene { get; private set; }
@@ -148,25 +149,23 @@ namespace Toys
             //GL.CullFace(CullFaceMode.Back);
             GL.Disable(EnableCap.Multisample);
 
-			//renderScene.GetLight.RenderShadow(renderScene.GetNodes());
 			renderScene.GetLight.RenderShadow(meshes);
 
-            foreach (var cam in cameras)
+            if (MainCamera != null)
             {
-                cam.CalcLook();
+                MainCamera.CalcLook();
                 GL.Enable(EnableCap.Multisample);
                 //GL.Disable(EnableCap.CullFace);
                 SetCullMode(FaceCullMode.Disable);
-                GL.Viewport(0, 0, cam.Width, cam.Height);
-
+                GL.Viewport(0, 0, MainCamera.Width, MainCamera.Height);
                 //render scene to primary buffer
-                GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-                GL.ClearColor(0.0f, 0.1f, 0.1f, 1.0f);
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, MainCamera.renderBuffer);
+                GL.ClearColor(0.0f, 0.1f, 0.1f, 0.0f);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-                mainRender.Render(meshes.ToArray(), cam);
+                mainRender.Render(meshes.ToArray(), MainCamera);
             }
-			textRender.RenderText();
+            textRender.RenderText();
 
 			/*
 			//test
@@ -180,15 +179,9 @@ namespace Toys
         {
             Width = newWidth;
             Height = newHeight;
-            foreach (var cam in cameras)
-            {
-                if (cam.Main)
-                {  
-                    cam.Width = newWidth;
-                    cam.Height = newHeight;
-                    cam.CalcProjection();
-                }
-            }
+            MainCamera.Width = newWidth;
+            MainCamera.Height = newHeight;
+            MainCamera.CalcProjection();
 			textRender.Resize(newWidth, newHeight);
         }
 

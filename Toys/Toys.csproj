@@ -56,6 +56,7 @@
     <Compile Include="Engine\Controll\CameraControllScript.cs" />
     <Compile Include="Engine\Controll\InputHandler.cs" />
     <Compile Include="Engine\GraphicsEngine.cs" />
+    <Compile Include="Engine\Graphics\RenderTexture.cs" />
     <Compile Include="Engine\Graphics\ShaderConstructorNew.cs" />
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector2.cs" />
     <Compile Include="Engine\Graphics\TextRendering\TextBox.cs" />
@@ -64,6 +65,10 @@
     <Compile Include="Engine\Materials\MaterialPM.cs" />
     <Compile Include="Engine\ModelLoader\LMD\ReaderLMD.cs" />
     <Compile Include="Engine\ModelLoader\LMD\ScriptChangeExpression.cs" />
+    <Compile Include="Engine\Modules\DinamicForm\DynamicForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Engine\Modules\DinamicForm\DynamicFormScript.cs" />
     <Compile Include="Engine\Objects\SceneNode.cs" />
     <Compile Include="Engine\Objects\ScriptingComponent.cs" />
     <Compile Include="Engine\Objects\Transformation.cs" />

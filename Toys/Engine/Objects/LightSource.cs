@@ -89,7 +89,7 @@ namespace Toys
 			{
 				Matrix4 pvm = mesh.node.GetTransform.globalTransform * lightdir * projection;
 				shdr.SetUniform(pvm, "pvm");
-				mesh.DrawSimple();;
+				mesh.DrawSimple();
 			}
 		}
 

@@ -19,20 +19,21 @@ namespace Toys
         //TextBox text;
         //RigidBody Body;
         BoneController bc;
+        Material mat;
         public static Texture texture;
         void Awake()
         {
-
             /*
             Vertex3D[] verts = new Vertex3D[]
             {
-                new Vertex3D(new Vector2(-480,480), new Vector2(0,0)),
-                new Vertex3D(new Vector2(-480,-480), new Vector2(0,1)),
-                new Vertex3D(new Vector2(480,-480), new Vector2(1,1)),
-                new Vertex3D(new Vector2(-480,480), new Vector2(0,0)),
-                new Vertex3D(new Vector2(480,-480), new Vector2(1,1)),
-                new Vertex3D(new Vector2(480,480), new Vector2(1,0)),
+                new Vertex3D(new Vector2(-640,480), new Vector2(0,1)),
+                new Vertex3D(new Vector2(-640,0), new Vector2(0,0)),
+                new Vertex3D(new Vector2(0,0), new Vector2(1,0)),
+                new Vertex3D(new Vector2(-640,480), new Vector2(0,1)),
+                new Vertex3D(new Vector2(0,0), new Vector2(1,0)),
+                new Vertex3D(new Vector2(0,480), new Vector2(1,1)),
             };
+            
             Mesh mesh = new Mesh(verts, new int[] { 0, 1, 2, 3, 4, 5 });
             ShaderSettings ss = new ShaderSettings();
             RenderDirectives rd = new RenderDirectives();
@@ -40,23 +41,29 @@ namespace Toys
             string vs = ShaderManager.ReadFromAssetStream(path + "TestTexture.vsh");
             string fs = ShaderManager.ReadFromAssetStream(path + "TestTexture.fsh");
             ss.TextureDiffuse = true;
-            Material mat = new MaterialCustom(ss,rd,vs,fs);
-            if (texture != null)
-                mat.SetTexture(texture,TextureType.Diffuse);
+            mat = new MaterialCustom(ss,rd,vs,fs);
             mat.Name = "Texture";
             mat.UniManager.Set("resolution", new Vector3(640, 480,0));
             MeshDrawer md = new MeshDrawer(mesh,mat);
             node.AddComponent(md);
-            */
+           */
+           /*
             var msd = (Animator)node.GetComponent<Animator>();
             if (msd != null)
                 bc = msd.bones;
+                */
             //World = CoreEngine.pEngine.World;
             
         }
 
         void Start()
         {
+            /*
+            if (texture != null)
+            {
+                mat.SetTexture(texture, TextureType.Diffuse);
+            }
+            */
             //Console.WriteLine(bc.GetBone(33).LocalMatrix);
             //Console.WriteLine(bc.GetBone(5).Bone.Name);
             //Console.WriteLine(bc.GetBone(3).BoneMatrix);
@@ -67,8 +74,8 @@ namespace Toys
             //bc.GetBone(22).SetTransform(new Quaternion(0, 1.5f, 0), new Vector3(0, 0, 0));
             //bc.UpdateSkeleton();
             //Console.WriteLine(bc.GetBone(34).LocalMatrix);
-           // Console.WriteLine(bc.GetBone(34).Bone2WorldInitial);
-           // Console.WriteLine(bc.GetBone(34).TransformMatrix);
+            // Console.WriteLine(bc.GetBone(34).Bone2WorldInitial);
+            // Console.WriteLine(bc.GetBone(34).TransformMatrix);
             /*
             CollisionShape shape = new SphereShape(0.1f);
             RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(0f, new DefaultMotionState(Matrix.Translation(new Vector3(0, 1, 0))), shape, Vector3.Zero);

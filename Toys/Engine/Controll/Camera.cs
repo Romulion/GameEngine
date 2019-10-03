@@ -23,8 +23,8 @@ namespace Toys
         
         public bool Active { get; set;}
         public bool Main { get; internal set; }
-        
 
+        public int renderBuffer = 0;
         //camera space
         Vector3 cameraTarget = new Vector3(0f, 1f, 0f);
 		Vector3 cameraUp = new Vector3(0.0f, 1.0f, 0.0f);
@@ -85,13 +85,13 @@ namespace Toys
         internal override void AddComponent(SceneNode nod)
         {
             node = nod;
-            CoreEngine.gEngine.cameras.Add(this);
+            CoreEngine.gEngine.MainCamera = this;
         }
 
         internal override void RemoveComponent()
         {
             node = null;
-            CoreEngine.gEngine.cameras.Remove(this);
+            CoreEngine.gEngine.MainCamera = null;
         }
         internal override void Unload()
         {

@@ -19,8 +19,8 @@ namespace Toys
             node.AddComponent<CameraControllScript>();
             node.GetTransform.Position = new Vector3(0, 1, 3);
             nodes.Add(node);
-            
-			light = new LightSource();
+            node.AddComponent<DynamicFormScript>();
+            light = new LightSource();
         }
 
 		public void AddObject(SceneNode node)
