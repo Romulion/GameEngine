@@ -41,27 +41,21 @@ namespace Toys
             
             TextBox text = null;
             long frames = 1;
+            long framesMax = 60;
             double update = 0, render = 0;
-            bool start = false;
             core.Load += (s, e) => { text = new TextBox(); node.AddComponent(text);};
             core.UpdateFrame += (s, e) => {
-                
 
-                update += CoreEngine.time.updagteTime;
-                render += CoreEngine.time.renderTime;
-
-
-                if (start)
+                if (frames >= framesMax)
                 {
                     text.SetText((update / frames).ToString("C2") + "  " + (render / frames).ToString("C2"));
-                    frames++;
-                }
-                else if (!start && render > 100)
-                {
+                    frames = 0;
                     update = 0;
                     render = 0;
-                    start = true;
                 }
+                update += CoreEngine.time.updagteTime;
+                render += CoreEngine.time.renderTime;
+                frames++;
             };
             
             //
