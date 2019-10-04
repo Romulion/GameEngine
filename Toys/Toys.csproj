@@ -56,6 +56,7 @@
     <Compile Include="Engine\Controll\CameraControllScript.cs" />
     <Compile Include="Engine\Controll\InputHandler.cs" />
     <Compile Include="Engine\GraphicsEngine.cs" />
+    <Compile Include="Engine\Graphics\RenderBuffer.cs" />
     <Compile Include="Engine\Graphics\RenderTexture.cs" />
     <Compile Include="Engine\Graphics\ShaderConstructorNew.cs" />
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector2.cs" />

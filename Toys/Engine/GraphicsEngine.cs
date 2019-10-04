@@ -145,34 +145,29 @@ namespace Toys
 
             //shadow pass
             SetCullMode(FaceCullMode.Back);
-            //GL.Enable(EnableCap.CullFace);
-            //GL.CullFace(CullFaceMode.Back);
             GL.Disable(EnableCap.Multisample);
-
 			renderScene.GetLight.RenderShadow(meshes);
 
+            //clear display buffer
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Enable(EnableCap.Multisample);
             if (MainCamera != null)
             {
                 MainCamera.CalcLook();
-                GL.Enable(EnableCap.Multisample);
-                //GL.Disable(EnableCap.CullFace);
-                SetCullMode(FaceCullMode.Disable);
                 GL.Viewport(0, 0, MainCamera.Width, MainCamera.Height);
                 //render scene to primary buffer
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, MainCamera.renderBuffer);
-                GL.ClearColor(0.0f, 0.1f, 0.1f, 0.0f);
+                SetCullMode(FaceCullMode.Disable);
+                GL.ClearColor(MainCamera.ClearColor);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
                 mainRender.Render(meshes.ToArray(), MainCamera);
             }
-            textRender.RenderText();
 
-			/*
-			//test
-			sh.ApplyShader();
-			GL.BindVertexArray(VAO);
-			GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
-			*/
+            //render ui
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            textRender.RenderText();
         }
 
         internal void Resize(int newWidth, int newHeight)

@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTK;
 using OpenTK.Input;
-
+using OpenTK.Graphics;
 namespace Toys
 {
 	public enum ProjectionType
@@ -30,6 +30,7 @@ namespace Toys
 		Vector3 cameraUp = new Vector3(0.0f, 1.0f, 0.0f);
 		Matrix4 look;
 
+        public Color4 ClearColor = new Color4(0.0f, 0.1f, 0.1f, 0f);
         ProjectionType projType = ProjectionType.Perspective;
         public ProjectionType projectionType {
             get { return projType; }
