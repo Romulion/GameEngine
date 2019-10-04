@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OpenTK.Input;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Toys
 {
@@ -19,25 +20,23 @@ namespace Toys
         DynamicForm form;
         int Width, Height;
         Bitmap bm;
+        bool isLeftButtonMouseDown = false;
+        int offsetX, offsetY;
+        RenderBuffer rb;
         void Awake()
         {
             cam = CoreEngine.gEngine.MainCamera;
             Width = cam.Width;
             Height = cam.Height;
-            renderTex = new RenderTexture(cam.Width,cam.Height);
-            rendBuff = GL.GenFramebuffer();
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer,rendBuff);
-            renderTex.AttachToBuffer();
 
-            rbo = GL.GenRenderbuffer();
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, rbo);
-            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, cam.Width, cam.Height);
-            GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, rbo);
-            //Console.WriteLine(GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer));
-
+            rb = new RenderBuffer(cam);
+            rendBuff = rb.rendBuffMS;
+            renderTex = rb.renderTex;
             bm = new Bitmap(Width, Height);
             form = new DynamicForm();
-            form.Show();
+
+            form.LeftMouseDown += LeftMouseDown;
+            form.LeftMouseUp += LeftMouseUp;
         }
 
 
@@ -57,9 +56,15 @@ namespace Toys
             if (ks[Key.B] && !keyPressed)
             {
                 if (cam.renderBuffer != 0)
+                {
                     cam.renderBuffer = 0;
+                    form.Hide();
+                }
                 else
+                {
                     cam.renderBuffer = rendBuff;
+                    form.Show();
+                }
 
                 keyPressed = true;
             }
@@ -70,30 +75,39 @@ namespace Toys
 
         void PostRender()
         {
-
             if (cam.renderBuffer != 0)
             {
-                
+                rb.Update();
                 renderTex.GetImage(bm);
-                bm.RotateFlip(System.Drawing.RotateFlipType.Rotate180FlipX);
+                bm.RotateFlip(RotateFlipType.Rotate180FlipX);
                 form.UpdateFormDisplay(bm);
-                
-                /*
-                 var img = renderTex.GetImage();
-                // img.RotateFlip(System.Drawing.RotateFlipType.Rotate180FlipX);
-                form.UpdateFormDisplay(img);
-                img.Dispose();
-                */
+            }
+
+
+            if (isLeftButtonMouseDown)
+            {
+                form.Left = Cursor.Position.X + offsetX;
+                form.Top = Cursor.Position.Y + offsetY;
             }
             
-            /*
             KeyboardState ks = Keyboard.GetState();
             if (ks[Key.S])
             {
-                var img = renderTex.GetImage();
-                img.Save("test.png");
+                bm.Save("test.png");
             }
-            */
+            
+        }
+
+        private void LeftMouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            offsetX = form.Left - Cursor.Position.X;
+            offsetY = form.Top - Cursor.Position.Y;
+            isLeftButtonMouseDown = true;
+        }
+
+        private void LeftMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            isLeftButtonMouseDown = false;
         }
     }
 }

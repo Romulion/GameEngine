@@ -267,7 +267,7 @@ namespace Toys
 		}
 
         //examplar method for binding texture to shader
-        public void BindTexture()
+        public virtual void BindTexture()
 		{
 			GL.BindTexture(TextureTarget.Texture2D,texture_id);
 		}

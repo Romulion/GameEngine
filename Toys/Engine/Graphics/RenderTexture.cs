@@ -43,8 +43,13 @@ namespace Toys
         {
             BindTexture();
             var bits = bm.LockBits(new Rectangle(0, 0, Width, Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bits.Scan0);
+            GetImage(bits.Scan0);
             bm.UnlockBits(bits);
+        }
+
+        public void GetImage(IntPtr imgPoint)
+        {
+            GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Bgra, PixelType.UnsignedByte, imgPoint);
         }
 
         internal void ResizeTexture(int width, int heigth)
