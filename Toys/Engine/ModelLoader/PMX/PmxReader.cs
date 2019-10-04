@@ -18,6 +18,7 @@ namespace Toys
 		float multipler = 0.1f;
 		RigidContainer[] rigitbodies;
 		JointContainer[] joints;
+        int[] boneOrder;
 
 		BinaryReader file;
 
@@ -325,7 +326,7 @@ namespace Toys
 		{
 			int bonesCount = file.ReadInt32();
 			bones = new Bone[bonesCount];
-
+            int maxLevel = 0;
 			for (int i = 0; i < bonesCount; i++)
 			{                
 				string Name = reader.readString();
@@ -407,6 +408,10 @@ namespace Toys
                     bik.Links = links;
 				    bone.IKData = bik;
 				}
+
+                if (maxLevel < bone.Level)
+                    maxLevel = bone.Level;
+
                 bones[i] = bone;
 			}
 
@@ -418,7 +423,22 @@ namespace Toys
                     bone.Parent2Local =  Matrix4.CreateTranslation(bone.Position - bones[bone.ParentIndex].Position);
                 }
             }
-		}
+
+
+            boneOrder = new int[bones.Length];
+            int m = 0;
+            for (int n = 0; n <= maxLevel; n++)
+            {
+                for (int i = 0; i < bones.Length; i++)
+                {
+                    if (bones[i].Level == n)
+                    {
+                        boneOrder[m] = i;
+                        m++;
+                    }
+                }
+            }
+        }
 
 		void ReadMorhps()
 		{
@@ -632,7 +652,7 @@ namespace Toys
 		{
 			get
 			{
-				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats,new BoneController(bones), morphs);
+				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats,new BoneController(bones, boneOrder), morphs);
 				md.OutlineDrawing = true;
 
 				var node = new SceneNode();

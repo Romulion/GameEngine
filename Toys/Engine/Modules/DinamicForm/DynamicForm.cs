@@ -78,7 +78,7 @@ namespace Toys
             MouseUp += _MouseUp;
 
 
-            blend = default;
+            blend = default(BlendOpt);
             blend.BlendOp = 0;
             blend.BlendFlags = 0;
             blend.AlphaFormat = 1;

@@ -33,6 +33,24 @@ namespace Toys
             UpdateSkeleton();
         }
 
+        public BoneController(Bone[] bones, int[] bonesOrder)
+        {
+            this.bones = new BoneTransform[bones.Length];
+
+            Initialize(bones);
+
+            bonesOrdered = new BoneTransform[bones.Length];
+            for (int i = 0; i < bonesOrder.Length; i++)
+                bonesOrdered[i] = this.bones[bonesOrder[i]];
+
+            SetWorldTransform();
+
+            skeleton = new Matrix4[bones.Length];
+
+            DefaultPos();
+            UpdateSkeleton();
+        }
+
         public BoneTransform[] GetBones
 		{
 			get
@@ -91,6 +109,11 @@ namespace Toys
                 }
             }
 
+            SetWorldTransform();
+        }
+
+        void SetWorldTransform()
+        {
             for (int i = 0; i < bones.Length; i++)
             {
                 if (bonesOrdered[i].Parent != null)
@@ -103,7 +126,6 @@ namespace Toys
                     bonesOrdered[i].World2BoneInitial = bonesOrdered[i].InitialLocalTransform * bonesOrdered[i].Parent.World2BoneInitial;
                 }
             }
-              
         }
 
         void BoneLurker(List<BoneTransform> locks,BoneTransform boneT,ref int index)
