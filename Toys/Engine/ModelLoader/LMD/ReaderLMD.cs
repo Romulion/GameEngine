@@ -141,7 +141,8 @@ namespace Toys
                 vert.position = reader.readVector3();
                 //vertex color unsupported
                 file.BaseStream.Position += 4;
-                if (chunkSize == 0x24 || chunkSize == 0x28)
+                //if (chunkSize == 0x24 || chunkSize == 0x28)
+                if (chunkSize == 0x24)
                 {
                     file.BaseStream.Position += 4;
                 }
@@ -153,11 +154,20 @@ namespace Toys
                 vert.uvtex = new Vector2();
                 vert.uvtex.X = Half.FromBytes(file.ReadBytes(2),0);
                 vert.uvtex.Y = Half.FromBytes(file.ReadBytes(2), 0);
+                /*
                 if (chunkSize == 0x28)
                     file.BaseStream.Position += 4;
+                    */
                 vert.boneIndexes = new IVector4(new int[] { file.ReadByte(), file.ReadByte(), file.ReadByte(), file.ReadByte() });
-                vert.weigth = new Vector4(file.ReadUInt16(), file.ReadUInt16(), file.ReadUInt16(), file.ReadUInt16());
-                vert.weigth /= 65535f;
+                if (chunkSize == 0x28)
+                {
+                    vert.weigth = reader.readVector4();
+                }
+                else
+                {
+                    vert.weigth = new Vector4(file.ReadUInt16(), file.ReadUInt16(), file.ReadUInt16(), file.ReadUInt16());
+                    vert.weigth /= 65535f;
+                }
                 verts.Add(vert);
             }
 
@@ -187,7 +197,7 @@ namespace Toys
             int[] indexes = new int[facesCount];
             for (int i = 0; i < facesCount; i++)
                 indexes[i] = reader.readVal(Fsize);
-
+            
             //Read Weigth Bones dictionary
             file.BaseStream.Position = WeightBoneNameTableStart;
             int WeightBoneCount = file.ReadInt32();
@@ -199,19 +209,25 @@ namespace Toys
                 string WeightBoneName = reader.readString();
                 boneIdDict[i] = Array.FindIndex(bones, (b) => b.Name == WeightBoneName);
             }
-
+            
             var vv = verts.ToArray();
             //set bone id to global
-            for(int i = 0; i < vv.Length; i++)
+            try
             {
-                IVector4 boneIndexes = vv[i].boneIndexes;
-                boneIndexes.bone1 = boneIdDict[boneIndexes.bone1];
-                boneIndexes.bone2 = boneIdDict[boneIndexes.bone2];
-                boneIndexes.bone3 = boneIdDict[boneIndexes.bone3];
-                boneIndexes.bone4 = boneIdDict[boneIndexes.bone4];
-                vv[i].boneIndexes = boneIndexes;
+                for (int i = 0; i < vv.Length; i++)
+                {
+                    IVector4 boneIndexes = vv[i].boneIndexes;
+                    boneIndexes.bone1 = boneIdDict[boneIndexes.bone1];
+                    boneIndexes.bone2 = boneIdDict[boneIndexes.bone2];
+                    boneIndexes.bone3 = boneIdDict[boneIndexes.bone3];
+                    boneIndexes.bone4 = boneIdDict[boneIndexes.bone4];
+                    vv[i].boneIndexes = boneIndexes;
+                }
             }
+            catch (IndexOutOfRangeException e)
+            {
 
+            }
 
             CalculateVertNormals.CalculateNormals(vv,indexes);
             var mesh = new Mesh(vv, indexes);
@@ -222,6 +238,8 @@ namespace Toys
             }
             else
                 return new MeshDrawerRigged(mesh, boneControll);
+
+
         }
         void ReadBones()
         {
