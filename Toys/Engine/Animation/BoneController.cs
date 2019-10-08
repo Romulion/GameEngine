@@ -8,26 +8,26 @@ namespace Toys
 {
 	public class BoneController
 	{
-        BoneTransform[] bones;
-		Matrix4[] skeleton;
-        BoneTransform[] bonesOrdered;
+        BoneTransform[] _bones;
+		Matrix4[] _skeleton;
+        BoneTransform[] _bonesOrdered;
 
 		public BoneController(BoneTransform[] bones)
 		{
-			this.bones = bones;
+			_bones = bones;
 			//making skeleton matrix
-			skeleton = new Matrix4[bones.Length];
+			_skeleton = new Matrix4[bones.Length];
 			DefaultPos();
 		}
 
         public BoneController(Bone[] bones,bool order = false)
         {
-            this.bones = new BoneTransform[bones.Length];
+            _bones = new BoneTransform[bones.Length];
             Initialize(bones);
 
             UpdateOrder(order);
 
-            skeleton = new Matrix4[bones.Length];
+            _skeleton = new Matrix4[bones.Length];
             
             DefaultPos();
             UpdateSkeleton();
@@ -35,17 +35,17 @@ namespace Toys
 
         public BoneController(Bone[] bones, int[] bonesOrder)
         {
-            this.bones = new BoneTransform[bones.Length];
+            _bones = new BoneTransform[bones.Length];
 
             Initialize(bones);
 
-            bonesOrdered = new BoneTransform[bones.Length];
+            _bonesOrdered = new BoneTransform[bones.Length];
             for (int i = 0; i < bonesOrder.Length; i++)
-                bonesOrdered[i] = this.bones[bonesOrder[i]];
+                _bonesOrdered[i] = _bones[bonesOrder[i]];
 
             SetWorldTransform();
 
-            skeleton = new Matrix4[bones.Length];
+            _skeleton = new Matrix4[bones.Length];
 
             DefaultPos();
             UpdateSkeleton();
@@ -55,7 +55,7 @@ namespace Toys
 		{
 			get
 			{
-				return bones;
+				return _bones;
 			}
 		}
 
@@ -63,7 +63,7 @@ namespace Toys
 		{
 			get
 			{
-				return skeleton;
+				return _skeleton;
 			}
 		}
 
@@ -71,7 +71,7 @@ namespace Toys
 
 		public BoneTransform GetBone(string name)
 		{
-			var bone = Array.Find(bones, (obj) => obj.Bone.Name == name);
+			var bone = Array.Find(_bones, (obj) => obj.Bone.Name == name);
 
 			if (bone == null)
 				Console.WriteLine("bone named '{0}' not found", name);
@@ -82,25 +82,25 @@ namespace Toys
         public BoneTransform GetBone(int id)
         {
 
-            if (id >= bones.Length)
+            if (id >= _bones.Length)
                 return null;
             
-            return bones[id];
+            return _bones[id];
         }
 
         void UpdateOrder(bool reorder)
         {
-            bonesOrdered = new BoneTransform[bones.Length];
+            _bonesOrdered = new BoneTransform[_bones.Length];
             if (!reorder)
             {
-                for (int i = 0; i < bones.Length; i++)
-                    bonesOrdered[i] = bones[i];
+                for (int i = 0; i < _bones.Length; i++)
+                    _bonesOrdered[i] = _bones[i];
             }
             else
             {
                 int index = 0;
-                List<BoneTransform> locks = bones.ToList();
-                var query = from bone in bones
+                List<BoneTransform> locks = _bones.ToList();
+                var query = from bone in _bones
                             where bone.Bone.ParentIndex == -1
                             select bone;
                 foreach (var bone in query)
@@ -114,25 +114,25 @@ namespace Toys
 
         void SetWorldTransform()
         {
-            for (int i = 0; i < bones.Length; i++)
+            for (int i = 0; i < _bones.Length; i++)
             {
-                if (bonesOrdered[i].Parent != null)
+                if (_bonesOrdered[i].Parent != null)
                 {
                     if (i == 82)
                     {
                         //Console.WriteLine(bonesOrdered[i].Parent.World2BoneInitial);
                         //Console.WriteLine(bonesOrdered[i].InitialLocalTransform);
                     }
-                    bonesOrdered[i].World2BoneInitial = bonesOrdered[i].InitialLocalTransform * bonesOrdered[i].Parent.World2BoneInitial;
+                    _bonesOrdered[i].World2BoneInitial = _bonesOrdered[i].InitialLocalTransform * _bonesOrdered[i].Parent.World2BoneInitial;
                 }
             }
         }
 
         void BoneLurker(List<BoneTransform> locks,BoneTransform boneT,ref int index)
         {
-            bonesOrdered[index++] = boneT;
+            _bonesOrdered[index++] = boneT;
             locks.Remove(boneT);
-            var query = from bone in bones
+            var query = from bone in _bones
                         where bone.Bone.ParentIndex == boneT.Bone.Index
                         select bone;
             foreach (var bone in query)
@@ -143,20 +143,20 @@ namespace Toys
 
         void Initialize(Bone[] bones){
             
-            this.bones = new BoneTransform[bones.Length];
+            _bones = new BoneTransform[bones.Length];
             for (int i = 0; i < bones.Length; i++)
             {
-                this.bones[i] = new BoneTransform(bones[i]);
+                _bones[i] = new BoneTransform(bones[i]);
             }
             for (int i = 0; i < bones.Length; i++)
             {
                 
                 Bone boneData = bones[i];
                 boneData.Index = i;
-                BoneTransform boneTransform = this.bones[i];
-                if (boneData.ParentIndex < this.bones.Length && boneData.ParentIndex >= 0)
+                BoneTransform boneTransform = _bones[i];
+                if (boneData.ParentIndex < _bones.Length && boneData.ParentIndex >= 0)
                 {
-                    boneTransform.Parent = this.bones[boneData.ParentIndex];
+                    boneTransform.Parent = _bones[boneData.ParentIndex];
                 }
                 else
                     boneTransform.Parent = null;
@@ -166,9 +166,9 @@ namespace Toys
                 boneTransform.IsTranslateAdd = boneData.InheritTranslation;
                 if (boneTransform.IsRotateAdd || boneTransform.IsTranslateAdd)
                 {
-                    if (this.bones.Length > boneData.ParentInheritIndex)
+                    if (_bones.Length > boneData.ParentInheritIndex)
                     {
-                        boneTransform.AddParent = this.bones[boneData.ParentInheritIndex];
+                        boneTransform.AddParent = _bones[boneData.ParentInheritIndex];
                         boneTransform.AddRatio = boneData.ParentInfluence;
                     }
                     else 
@@ -180,7 +180,7 @@ namespace Toys
                 if (boneData.IK)
                 {
                     boneTransform.IsIK = true;
-			        boneTransform.IK = new IKResolver(this.bones, i);
+			        boneTransform.IK = new IKResolver(_bones, i);
                     
 			        if (boneData.IKData != null)
 			        {
@@ -199,30 +199,30 @@ namespace Toys
 			        }
                     
                 }
-                this.bones[i] = boneTransform;
+                _bones[i] = boneTransform;
             }
  
         }
 
         public void UpdateSkeleton()
         {
-            for(int i = 0; i < bones.Length; i++)
+            for(int i = 0; i < _bones.Length; i++)
             {
-                bonesOrdered[i].UpdateLocalMatrix();
+                _bonesOrdered[i].UpdateLocalMatrix();
             }
-            for (int i = 0; i < bones.Length; i++)
+            for (int i = 0; i < _bones.Length; i++)
             {
-                bones[i].UpdateTransformMatrix();
-                skeleton[i] = bones[i].TransformMatrix;
+                _bones[i].UpdateTransformMatrix();
+                _skeleton[i] = _bones[i].TransformMatrix;
             }
         }
 
         public void DefaultPos()
         {
-            for (int n = 0; n < skeleton.Length; n++)
+            for (int n = 0; n < _skeleton.Length; n++)
             {
-                skeleton[n] = Matrix4.Identity;
-                bones[n].ResetTransform(false);
+                _skeleton[n] = Matrix4.Identity;
+                _bones[n].ResetTransform(false);
             }
         }
         /* obsolette

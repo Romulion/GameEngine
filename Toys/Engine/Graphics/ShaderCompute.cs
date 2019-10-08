@@ -16,10 +16,6 @@ namespace Toys
 			GL.LinkProgram(shaderProgram);
 
 			GL.ValidateProgram(shaderProgram);
-			//int[] info = new int[1];
-			//GL.GetProgram(shaderProgram, GetProgramParameterName.LinkStatus, info);
-			//Console.WriteLine("link status: {0}",info[0]);
-
 			GL.DeleteShader(computeShader);
 
 		}
@@ -45,7 +41,6 @@ namespace Toys
 		public void Check()
 		{
 			int bindPoint = GL.GetProgramResourceIndex(shaderProgram, ProgramInterface.ShaderStorageBlock, "Output");
-			Console.WriteLine(bindPoint);
 			//GL.GetProgramResource(shaderProgram,ProgramInterface.ShaderStorageBlock,0,1
 		}
 	}

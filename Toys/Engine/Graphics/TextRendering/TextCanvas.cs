@@ -6,10 +6,10 @@ namespace Toys
     {
         internal int VAO;
         internal int VBO;
-        internal string text;
-        internal int length;
-        internal Vector2 pos = Vector2.Zero;
-        internal float scale = 1;
+        internal string Text;
+        internal int Length;
+        internal Vector2 Position = Vector2.Zero;
+        internal float Scale = 1;
         
         internal TextCanvas (int vao, int vbo)
         {

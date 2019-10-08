@@ -3,10 +3,10 @@ namespace Toys
 {
 	public class RenderDirectives
 	{
-		public bool hasEdges = false;
-		public bool render = true;
-		public bool castShadow = true;
-		public bool nocull = false;
+		public bool HasEdges = false;
+		public bool IsRendered = true;
+		public bool CastShadow = true;
+		public bool NoCull = false;
 
 	}
 }

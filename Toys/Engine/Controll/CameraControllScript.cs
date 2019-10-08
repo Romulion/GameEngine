@@ -11,7 +11,7 @@ namespace Toys
         Camera camera;
         //mouse controll variables;
         float lastX, lastY;
-        int Phi = 90, Theta = 90, ThetaMax = 170, ThetaMin = 70;
+        int phi = 90, theta = 90, thetaMax = 170, thetaMin = 70;
         int angleStep = 4, angleThresold = 2;
         bool mousePressed;
         float speed = 0.01f;
@@ -24,13 +24,13 @@ namespace Toys
 
         void Awake()
         {
-            transform = node.GetTransform;
+            transform = Node.GetTransform;
             r = 3.5f;
-            game = CoreEngine.core;
-            camera = (Camera)node.GetComponent<Camera>();
+            game = CoreEngine.ActiveCore;
+            camera = (Camera)Node.GetComponent<Camera>();
             camera.Target = Vector3.UnitY;
             camera.Target -= new Vector3(0,0.25f,0);
-            transform.Position = camera.Target + CalcPos(r, Phi, Theta);
+            transform.Position = camera.Target + CalcPos(r, phi, theta);
             Control();
         }
 
@@ -45,7 +45,7 @@ namespace Toys
                 else if (e.Delta < 0)
                     r += speed * 5f;
 
-                transform.Position = camera.Target + CalcPos(r, Phi, Theta);
+                transform.Position = camera.Target + CalcPos(r, phi, theta);
             };
         }
 
@@ -57,23 +57,23 @@ namespace Toys
 
                 if (mouseState.X - lastX > angleThresold)
                 {
-                    Phi += angleStep;
+                    phi += angleStep;
                 }
                 else if (mouseState.X - lastX < -angleThresold)
                 {
-                    Phi -= angleStep;
+                    phi -= angleStep;
                 }
 
-                if (mouseState.Y - lastY > angleThresold && Theta < ThetaMax)
+                if (mouseState.Y - lastY > angleThresold && theta < thetaMax)
                 {
-                    Theta += angleStep;
+                    theta += angleStep;
                 }
-                else if (mouseState.Y - lastY < -angleThresold && Theta > ThetaMin)
+                else if (mouseState.Y - lastY < -angleThresold && theta > thetaMin)
                 {
-                    Theta -= angleStep;
+                    theta -= angleStep;
                 }
 
-                transform.Position = camera.Target + CalcPos(r, Phi, Theta);
+                transform.Position = camera.Target + CalcPos(r, phi, theta);
 
                 lastY = mouseState.Y;
                 lastX = mouseState.X;
@@ -111,11 +111,11 @@ namespace Toys
             {
                 transform.Position = new Vector3(0f, 1f, 0f);
 
-                Phi = 90;
-                Theta = 90;
+                phi = 90;
+                theta = 90;
                 r = R;
                 camera.Target = Vector3.UnitY;
-                transform.Position += CalcPos(r, Phi, Theta);
+                transform.Position += CalcPos(r, phi, theta);
             }
         }
 

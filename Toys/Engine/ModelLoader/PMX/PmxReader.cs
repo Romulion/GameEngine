@@ -16,7 +16,7 @@ namespace Toys
 		Bone[] bones;
 		public Morph[] morphs;
 		float multipler = 0.1f;
-		RigidContainer[] rigitbodies;
+		RigidContainer[] rigitBodies;
 		JointContainer[] joints;
         int[] boneOrder;
 
@@ -60,13 +60,13 @@ namespace Toys
 			string signature = new String(file.ReadChars(4));
 			float version = file.ReadSingle();
 			int length = file.ReadByte();
-			header.attribs = file.ReadBytes(length);
+			header.Attributes = file.ReadBytes(length);
 			header.Name = reader.readString();
 			header.NameEng = reader.readString();
 			header.Comment = reader.readString();
 			header.CommentEng = reader.readString();
 
-			reader.encoding = header.GetEncoding;
+			reader.Encoding = header.GetEncoding;
 		}
 
 
@@ -191,7 +191,6 @@ namespace Toys
 
 		void ReadMaterial()
 		{
-			string txt = "";
 			int materiaCount = file.ReadInt32();
 			int offset = 0;
 			mats = new Material[materiaCount];
@@ -200,9 +199,9 @@ namespace Toys
 				ShaderSettings shdrs = new ShaderSettings();
 				RenderDirectives rndr = new RenderDirectives();
 
-				shdrs.hasSkeleton = true;
-				shdrs.discardInvisible = true;
-				shdrs.affectedByLight = true;
+				shdrs.HasSkeleton = true;
+				shdrs.DiscardInvisible = true;
+				shdrs.AffectedByLight = true;
                 shdrs.DifuseColor = true;
                 shdrs.Ambient = true;
                 shdrs.SpecularColor = true;
@@ -223,11 +222,11 @@ namespace Toys
                 Vector3 ambientColour = reader.readVector3(); //ambient color
 				//setting values from flags
 				var flags = new MaterialFlags(file.ReadByte());
-				shdrs.recieveShadow = flags.receiveShadow;
-				shdrs.affectedByLight = flags.receiveShadow;
-				rndr.castShadow = flags.drawShadow;
-				rndr.hasEdges = flags.hasEdge;
-				rndr.nocull = flags.noCull;
+				shdrs.RecieveShadow = flags.ReceiveShadow;
+				shdrs.AffectedByLight = flags.ReceiveShadow;
+				rndr.CastShadow = flags.CastShadow;
+				rndr.HasEdges = flags.HasEdge;
+				rndr.NoCull = flags.NoCull;
 
 				var outln = new Outline();
 				outln.EdgeColour = reader.readVector4();
@@ -238,19 +237,17 @@ namespace Toys
 				//sphericar texture for false light sources effect
 				int envTexIndex = reader.readVal(header.GetTextureIndexSize);
 				int envBlend = file.ReadByte();
-				shdrs.envType = (EnvironmentMode)envBlend;
+				shdrs.EnvType = (EnvironmentMode)envBlend;
 				Texture envTex = empty;
                 if (envTexIndex != 255 && envBlend > 0)
                 {
-                    //Console.WriteLine("{0} {1}",i, envTexIndex);
-                    if (textures[envTexIndex].name != "def")
+                    if (textures[envTexIndex].Name != "def")
                         envTex = textures[envTexIndex];
                     else
-                        shdrs.envType = 0;
-
+                        shdrs.EnvType = 0;
                 }
                 else
-                    shdrs.envType = 0;
+                    shdrs.EnvType = 0;
 
 
 
@@ -262,19 +259,17 @@ namespace Toys
 					int text = reader.readVal(header.GetTextureIndexSize);
 					if (text != 255)
 					{
-						shdrs.toonShadow = true;
+						shdrs.ToonShadow = true;
                         textures[text].ChangeWrapper(Texture.Wrapper.ClampToEdge);
                         toon = textures[text];
 						//toon.GetTextureType = TextureType.toon;
-
 					}
 					else
 					{
 						//disable shadowing if no toon texture
-						shdrs.affectedByLight = false;
-						shdrs.recieveShadow = false;
+						shdrs.AffectedByLight = false;
+						shdrs.RecieveShadow = false;
 					}
-						//MessageBox.Show(name + " " + text);
 				}
 				else
 				{
@@ -291,7 +286,7 @@ namespace Toys
                     }
                     
                     toon = toonTex;
-                    shdrs.toonShadow = true;
+                    shdrs.ToonShadow = true;
 				}
                 reader.readString();
 				int count = file.ReadInt32();
@@ -302,7 +297,7 @@ namespace Toys
 				}
 				var mat = new MaterialPMX(shdrs, rndr);
 				mat.Name = name;
-				mat.outln = outln;
+				mat.Outline = outln;
                 mat.SetTexture(tex,TextureType.Diffuse);
 				mat.SetTexture(toon, TextureType.Toon);
 				mat.SetTexture(envTex, TextureType.Sphere);
@@ -314,8 +309,8 @@ namespace Toys
                 mat.UniManager.Set("ambient_color", ambientColour);
                 mat.UniManager.Set("specular_power", specularPower);
                 mat.UniManager.Set("diffuse_color", difColor);
-                mat.offset = offset;
-				mat.count = count;
+                mat.Offset = offset;
+				mat.Count = count;
 				mats[i] = mat;
 				offset += count;
 			}
@@ -329,23 +324,23 @@ namespace Toys
             int maxLevel = 0;
 			for (int i = 0; i < bonesCount; i++)
 			{                
-				string Name = reader.readString();
-                string NameEng = reader.readString();
+				string name = reader.readString();
+                string nameEng = reader.readString();
 
 				Vector3 Position = reader.readVector3() * multipler;
 
-                int ParentIndex = 0;
+                int parentIndex = 0;
                 if (header.GetBoneIndexSize == 2)
                 {
-                    ParentIndex = unchecked((short)reader.readVal(header.GetBoneIndexSize));
+                    parentIndex = unchecked((short)reader.readVal(header.GetBoneIndexSize));
                 }
                 else
-                    ParentIndex = reader.readVal(header.GetBoneIndexSize);
+                    parentIndex = reader.readVal(header.GetBoneIndexSize);
 
                 int Level = file.ReadInt32();
 				byte[] flags = file.ReadBytes(2);
 
-				Bone bone = new Bone(Name, NameEng, Position, ParentIndex, flags);
+				Bone bone = new Bone(name, nameEng, Position, parentIndex, flags);
 				bone.Level = Level;
 				if (bone.tail)
 					reader.readVal(header.GetBoneIndexSize);
@@ -381,16 +376,15 @@ namespace Toys
 
 				if (bone.ExternalPdeform)
 				{
-                    //reader.readVal(header.GetBoneIndexSize);
                     file.ReadInt32();
 				}
 
 				if (bone.IK)
 				{
-                    BoneIK bik = new BoneIK();
-					bik.Target = reader.readVal(header.GetBoneIndexSize);
-					bik.LoopCount = file.ReadInt32();
-					bik.AngleLimit = file.ReadSingle();
+                    BoneIK ikBone = new BoneIK();
+					ikBone.Target = reader.readVal(header.GetBoneIndexSize);
+					ikBone.LoopCount = file.ReadInt32();
+					ikBone.AngleLimit = file.ReadSingle();
 					int count = file.ReadInt32();
                     IKLink[] links = new IKLink[count];
 					for (int n = 0; n < count; n++)
@@ -405,8 +399,8 @@ namespace Toys
 						}
                         links[n] = link;
 					}
-                    bik.Links = links;
-				    bone.IKData = bik;
+                    ikBone.Links = links;
+				    bone.IKData = ikBone;
 				}
 
                 if (maxLevel < bone.Level)
@@ -456,14 +450,14 @@ namespace Toys
 				if (type == (int)MorphType.Vertex)
 				{
 					morphs[i] = new MorphVertex(name, nameEng, size);
-					((MorphVertex)morphs[i]).meshMorpher = meshRigged.GetMorpher;
+					((MorphVertex)morphs[i]).MeshMorpher = meshRigged.GetMorpher;
 				}
 				else if (type == (int)MorphType.Material)
 					morphs[i] = new MorphMaterial(name, nameEng, size);
 				else if (type == (int)MorphType.Uv)
 				{
 					morphs[i] = new MorphUV(name, nameEng, size);
-					((MorphUV)morphs[i]).meshMorpher = meshRigged.GetMorpher;
+					((MorphUV)morphs[i]).MeshMorpher = meshRigged.GetMorpher;
 				}
 
                 for (int n = 0; n < size; n++)
@@ -498,16 +492,16 @@ namespace Toys
 
                             var MMorpher = new MaterialMorpher(mat);
                             MMorpher.mode = file.ReadByte();
-							MMorpher.diffuse = reader.readVector4();
-                            MMorpher.specular = reader.readVector3();
+							MMorpher.DiffuseColor = reader.readVector4();
+                            MMorpher.SpecularColor = reader.readVector3();
 							file.ReadSingle();
-                            MMorpher.ambient = reader.readVector3();
+                            MMorpher.AmbientColor = reader.readVector3();
 							reader.readVector4();
 							file.ReadSingle();
 							reader.readVector4();
 							reader.readVector4();
 							reader.readVector4();
-                            ((MorphMaterial)morphs[i]).matMorpher.Add(MMorpher);
+                            ((MorphMaterial)morphs[i]).MaterialMorphers.Add(MMorpher);
 
                             break;
 						case 9: //flip
@@ -562,7 +556,7 @@ namespace Toys
 		void ReadRigit()
 		{
             int readCount = file.ReadInt32();
-			rigitbodies = new RigidContainer[readCount];
+			rigitBodies = new RigidContainer[readCount];
 			RigidContainer rigit;
 			for (int i = 0; i<readCount; i++)
 			{
@@ -572,7 +566,7 @@ namespace Toys
 				rigit.BoneIndex = reader.readVal(header.GetBoneIndexSize);
 				rigit.GroupId = file.ReadByte();
                 rigit.NonCollisionGroup =  file.ReadInt16();
-				rigit.primitive = (PhysPrimitiveType)file.ReadByte();
+				rigit.PrimitiveType = (PhysPrimitiveType)file.ReadByte();
 				rigit.Size = reader.readVector3() * multipler;
 				rigit.Position = reader.readVector3() * multipler;
 				rigit.Rotation = reader.readVector3();
@@ -583,7 +577,7 @@ namespace Toys
 				rigit.Friction = file.ReadSingle();
 				rigit.Phys = (PhysType)file.ReadByte();
 
-                rigitbodies[i] = rigit;
+                rigitBodies[i] = rigit;
 			}
 		}
 
@@ -597,7 +591,7 @@ namespace Toys
 				JointContainer joint = new JointContainer();
 				joint.Name = reader.readString();
 				joint.NameEng = reader.readString();
-				joint.jType =  (JointType)file.ReadByte();
+				joint.Type =  (JointType)file.ReadByte();
 				joint.RigitBody1 =  reader.readVal(header.GetRigidBodyIndexSize);
 				joint.RigitBody2 =  reader.readVal(header.GetRigidBodyIndexSize);
 				joint.Position = reader.readVector3() * multipler;
@@ -658,9 +652,8 @@ namespace Toys
 				var node = new SceneNode();
 				node.AddComponent(md);
 				node.AddComponent(new Animator(md.skeleton));
-                node.AddComponent(new PhysicsManager(rigitbodies, joints, md.skeleton, node.GetTransform));
+                node.AddComponent(new PhysicsManager(rigitBodies, joints, md.skeleton, node.GetTransform));
 				return node;
-
 			}
 		}
 

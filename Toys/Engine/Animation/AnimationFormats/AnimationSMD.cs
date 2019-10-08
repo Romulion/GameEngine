@@ -13,19 +13,19 @@ namespace Toys
     /// </summary>
     internal class AnimationSMD : IAnimationLoader
     {
-        string Path;
-        Dictionary<string, int> bones = new Dictionary<string, int>();
-        List<AnimationFrame> frames = new List<AnimationFrame>();
+        string _path;
+        Dictionary<string, int> _bones = new Dictionary<string, int>();
+        List<AnimationFrame> _frames = new List<AnimationFrame>();
 
         internal AnimationSMD(string path)
         {
-            Path = path;
+            _path = path;
         }
         
         public Animation Load()
         {
             string line;
-            var file = new StreamReader(Path);
+            var file = new StreamReader(_path);
 
             file.ReadLine();
 
@@ -37,7 +37,7 @@ namespace Toys
                     ReadFrames(file);
             }
 
-            var animation = new Animation(frames.ToArray(), bones);
+            var animation = new Animation(_frames.ToArray(), _bones);
             animation.Type = Animation.RotationType.EulerXYZ;
             animation.TransType = Animation.TransformType.LocalAbsolute;
             return animation;
@@ -53,7 +53,7 @@ namespace Toys
                 if (line.StartsWith("time") || line == "end")
                 {
                     if (pos != null)
-                        frames.Add(new AnimationFrame(pos.ToArray()));
+                        _frames.Add(new AnimationFrame(pos.ToArray()));
                     pos = new List<BonePosition>();
                 }
                 else
@@ -78,7 +78,7 @@ namespace Toys
                 string[] elements = line.Split(new char[] { ' ' }, 2);
                 int id = Int32.Parse(elements[0]);
                 string[] elements2 = line.Split(new char[] { '"' }, 3);
-                bones.Add(elements2[1], id);
+                _bones.Add(elements2[1], id);
             }
 
         }

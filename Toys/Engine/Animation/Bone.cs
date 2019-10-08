@@ -14,7 +14,7 @@ namespace Toys
 		public Vector3 Position;
 		public int ParentIndex;
 		public int Index;
-		public int[] childs;
+		public int[] Childs;
         public Vector3 Axis = Vector3.Zero;
 
         Matrix4 local;
@@ -70,21 +70,21 @@ namespace Toys
 
         //public BoneIK IKData = null;
 
-		public Bone(string name, string engName, Vector3 position, int parent, byte[] flags)
+		public Bone(string name, string nameEng, Vector3 position, int parent, byte[] flags)
 		{
 			Name = name;
-			NameEng = engName;
+			NameEng = nameEng;
 			Position = position;
 			ParentIndex = parent;
 			SetFlags(flags);
 
-            childs = new int[0];
+            Childs = new int[0];
 
         }
 
-		public Bone(string name, Matrix4 pos, int parent)
+		public Bone(string name, Matrix4 boneMatrix, int parent)
 		{
-            Parent2Local = pos;
+            Parent2Local = boneMatrix;
 			Name = name;
 			ParentIndex = parent;
         }
@@ -123,7 +123,6 @@ namespace Toys
 		//exploring child trees
 		static int[] GetChilds(Bone[] bones,  int Id)
 		{
-			Vector3 pos = bones[Id].Position;
 			List<int> childs = new List<int>();
 
 			bones[Id].Index = Id;
@@ -136,9 +135,9 @@ namespace Toys
 					childs.AddRange(GetChilds(bones, i));
 				}
 			}
-			bones[Id].childs = childs.ToArray();
+			bones[Id].Childs = childs.ToArray();
 
-			return bones[Id].childs;
+			return bones[Id].Childs;
 		}
 
 		//creating local space

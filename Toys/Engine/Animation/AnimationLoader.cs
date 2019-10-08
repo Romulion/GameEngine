@@ -17,7 +17,7 @@ namespace Toys
     class AnimationLoader
     {
 
-        public static Animation Load(string path, string type = "")
+        public static Animation Load(string path)
         {
             string extension = path.Substring(path.LastIndexOf('.') + 1);
             extension = extension.ToLower();

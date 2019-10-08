@@ -9,15 +9,15 @@ namespace Toys
 
 		Vector3[] morph;
 		int offset = 0;
-		public MeshMorper meshMorpher { set; private get; }
+		public MeshMorper MeshMorpher { set; private get; }
 		float degree = 0f;
 
-		public MorphUV(string Name, string NameEng, int count)
+		public MorphUV(string name, string nameEng, int count)
 		{
 			morph = new Vector3[count];
-			base.Name = Name;
-			base.NameEng = NameEng;
-			type = MorphType.Uv;
+			Name = name;
+			NameEng = nameEng;
+			Type = MorphType.Uv;
 		}
 
 
@@ -33,7 +33,7 @@ namespace Toys
 			get { return morph; }
 		}
 
-		public override float morphDegree
+		public override float MorphDegree
 		{
 			get
 			{
@@ -48,10 +48,10 @@ namespace Toys
 
 		private void PerformMorph(float degree)
 		{
-			if (meshMorpher == null)
+			if (MeshMorpher == null)
 				return;
 
-			meshMorpher.Morph(morph, degree);
+			MeshMorpher.Morph(morph, degree);
 		}
 	}
 

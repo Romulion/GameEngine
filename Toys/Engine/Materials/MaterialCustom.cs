@@ -13,8 +13,8 @@ namespace Toys
 
         public MaterialCustom(ShaderSettings shdrsett, RenderDirectives rdir,string vertShader, string fragShader) : base()
         {
-            shdrSettings = shdrsett;
-            rndrDirrectives = rdir;
+            ShaderSettings = shdrsett;
+            RenderDirrectives = rdir;
             vs = vertShader;
             fs = fragShader;
             CreateShader();
@@ -22,9 +22,9 @@ namespace Toys
 
         private void CreateShader()
         {
-            shdr = ShaderConstructor.CreateShader(vs, fs);
-            shdr.ApplyShader();
-            CreateShader(shdr);
+            shaderProgram = ShaderConstructor.CreateShader(vs, fs);
+            shaderProgram.ApplyShader();
+            CreateShader(shaderProgram);
         }
 
         public override void ApplyMaterial()
@@ -36,7 +36,7 @@ namespace Toys
 
         public override Material Clone()
         {
-            var material = new MaterialPMX(shdrSettings, rndrDirrectives);
+            var material = new MaterialPMX(ShaderSettings, RenderDirrectives);
             foreach (var texture in textures)
                 material.SetTexture(texture.Value, texture.Key);
 

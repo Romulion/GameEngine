@@ -11,29 +11,29 @@ namespace Toys
     public struct VertexRigged3D 
 	{
         [FieldOffset(0)]
-        public Vector3 position;
+        public Vector3 Position;
         [FieldOffset(16)]
-        public Vector3 normal;
+        public Vector3 Normal;
         [FieldOffset(32)]
-        public Vector2 uvtex;
+        public Vector2 UV;
         [FieldOffset(48)]
-        public IVector4 boneIndexes;
+        public IVector4 BoneIndices;
         [FieldOffset(64)]
-        public Vector4 weigth;
+        public Vector4 BoneWeigths;
 
 
-		public VertexRigged3D(Vector3 pos, Vector3 norm, Vector2 tex, IVector4 indexes, Vector4 weigth)
+		public VertexRigged3D(Vector3 postion, Vector3 normal, Vector2 uv, IVector4 boneIdices, Vector4 boneWeigth)
 		{
-			position = pos;
-			normal = norm;
-			uvtex = tex;
-			boneIndexes = indexes;
-			this.weigth = weigth;
+			Position = postion;
+			Normal = normal;
+			UV = uv;
+			BoneIndices = boneIdices;
+			BoneWeigths = boneWeigth;
 		}
 
 		public static explicit operator Vertex3D(VertexRigged3D rigged)
 		{
-			return new Vertex3D(rigged.position,rigged.normal,rigged.uvtex);
+			return new Vertex3D(rigged.Position,rigged.Normal,rigged.UV);
 		}
 	
 	}

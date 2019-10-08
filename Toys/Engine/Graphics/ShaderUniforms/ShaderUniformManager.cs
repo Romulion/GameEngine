@@ -27,11 +27,11 @@ namespace Toys
 
         public void Set(string name,object val)
         {
-            var uni = GetUniform(name);
-            if (uni != null)
+            var uniformVariable = GetUniform(name);
+            if (uniformVariable != null)
             {
-                uni.SetValue(val);
-                VisibilityCheck(name, uni);
+                uniformVariable.SetValue(val);
+                VisibilityCheck(name, uniformVariable);
             }
 
 
@@ -39,19 +39,19 @@ namespace Toys
 
         public void Modify(MaterialMorpher caller, string name, object val, ModifyType type)
         {
-            var uni =  GetUniform(name);
+            var uniformVariable =  GetUniform(name);
 
-            if (uni != null)
+            if (uniformVariable != null)
             {
-                uni.AddModifier(caller, val, type);
-                VisibilityCheck(name, uni);
+                uniformVariable.AddModifier(caller, val, type);
+                VisibilityCheck(name, uniformVariable);
             }
         }
 
         public void Apply()
         {
-            foreach (var uni in uniforms)
-                uni.Assign();
+            foreach (var uniformVariable in uniforms)
+                uniformVariable.Assign();
         }
 
         ShaderUniform GetUniform(string name)
@@ -67,14 +67,14 @@ namespace Toys
         }
 
         //for deletion
-        void VisibilityCheck(string name, ShaderUniform uni)
+        void VisibilityCheck(string name, ShaderUniform uniformVariable)
         {
             if (name == "diffuse_color")
             {
-				if (((Vector4)uni.GetValue()).W < 0.01f)
-                    material.rndrDirrectives.render = false;
+				if (((Vector4)uniformVariable.GetValue()).W < 0.01f)
+                    material.RenderDirrectives.IsRendered = false;
                 else
-                    material.rndrDirrectives.render = true;
+                    material.RenderDirrectives.IsRendered = true;
             }
         }
     }

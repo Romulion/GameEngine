@@ -4,22 +4,22 @@ namespace Toys
 	public class MeshDrawerRigged : MeshDrawer
 	{
 		public BoneController skeleton { get; private set; }
-		UniformBufferSkeleton ubs;
-        ModelSkinning ms;
+		UniformBufferSkeleton uniformBufferSkeleton;
+        ModelSkinning modelSkinner;
 
 		public MeshDrawerRigged(Mesh mesh, Material[] mats, BoneController skelet, Morph[] mor = null) : base(mesh, mats, mor)
 		{
 			skeleton = skelet;
 			UniformBufferManager ubm = UniformBufferManager.GetInstance;
-			ubs = (UniformBufferSkeleton)ubm.GetBuffer("skeleton");
-            ms = new ModelSkinning(mesh);
+			uniformBufferSkeleton = (UniformBufferSkeleton)ubm.GetBuffer("skeleton");
+            modelSkinner = new ModelSkinning(mesh);
 		}
 
         public MeshDrawerRigged(Mesh mesh, BoneController skelet, Morph[] mor = null) : base(mesh, null, mor)
         {
             skeleton = skelet;
             UniformBufferManager ubm = UniformBufferManager.GetInstance;
-            ubs = (UniformBufferSkeleton)ubm.GetBuffer("skeleton");
+            uniformBufferSkeleton = (UniformBufferSkeleton)ubm.GetBuffer("skeleton");
         }
 
         public override void Draw()
@@ -34,8 +34,8 @@ namespace Toys
         {
             skeleton.UpdateSkeleton();
 #if !VertexSkin
-            ubs.SetBones(skeleton.GetSkeleton);
-            ms.Skin();
+            uniformBufferSkeleton.SetBones(skeleton.GetSkeleton);
+            modelSkinner.Skin();
 #endif
         }
 
@@ -44,15 +44,15 @@ namespace Toys
 #if VertexSkin
             ubs.SetBones(skeleton.GetSkeleton);
 #endif
-            mesh.BindVAO();
-			foreach (var mat in mats)
+            Mesh.BindVAO();
+			foreach (var mat in Materials)
 			{
-				if (!mat.rndrDirrectives.render)
+				if (!mat.RenderDirrectives.IsRendered)
 					continue;
-				mesh.Draw(mat.offset, mat.count);
+				Mesh.Draw(mat.Offset, mat.Count);
 			}
 
-			mesh.ReleaseVAO();
+			Mesh.ReleaseVAO();
 		}
 	}
 }

@@ -7,7 +7,7 @@ namespace Toys
     public class Transformation
     {
         private Matrix4 localT;
-        private SceneNode basenode;
+        private SceneNode baseNode;
 		Vector3 rotation = new Vector3();
 		Vector3 position = new Vector3();
 
@@ -21,7 +21,7 @@ namespace Toys
         {
             localT = Matrix4.Identity;
             globalTransform = Matrix4.Identity;
-            basenode = node;
+            baseNode = node;
         }
 
         /// <summary>
@@ -32,14 +32,14 @@ namespace Toys
         public void Transform(Matrix4 local, Matrix4 parent)
         {
             localT = localT * local;
-            basenode.UpdateTransform();
+            baseNode.UpdateTransform();
         }
 
     
         public void SetTransform(Matrix4 local, Matrix4 parent)
         {
             localT = local;
-            basenode.UpdateTransform();
+            baseNode.UpdateTransform();
         }
 
 
@@ -54,7 +54,7 @@ namespace Toys
             {
                 var rot = localT.ClearTranslation();
                 localT = rot * Matrix4.CreateTranslation(value);
-                basenode.UpdateTransform();
+                baseNode.UpdateTransform();
             }
         }
 
@@ -69,14 +69,14 @@ namespace Toys
             {
                 var rot = localT.ClearRotation();
                 localT = Matrix4.CreateFromQuaternion(Quaternion.FromEulerAngles(value)) * rot;
-                basenode.UpdateTransform();
+                baseNode.UpdateTransform();
             }
         }
 
         public void UpdateGlobalTransform()
         {
-            if (basenode.parent != null)
-                globalTransform = basenode.parent.GetTransform.globalTransform * localT;
+            if (baseNode.Parent != null)
+                globalTransform = baseNode.Parent.GetTransform.globalTransform * localT;
             else
                 globalTransform = localT;
         }

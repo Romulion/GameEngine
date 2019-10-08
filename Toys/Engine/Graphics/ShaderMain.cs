@@ -84,7 +84,7 @@ namespace Toys
                 //Console.WriteLine("{0}  {1}",type, name);
 			}
 
-            this.unis = uniforms.ToArray();
+            this.uniforms = uniforms.ToArray();
 
         }
 

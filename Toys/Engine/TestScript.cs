@@ -12,12 +12,6 @@ namespace Toys
 {
     class TestScript : ScriptingComponent
     {
-        
-        //DiscreteDynamicsWorld World;
-        long frames = 1;
-        double update = 0, render = 0;
-        //TextBox text;
-        //RigidBody Body;
         BoneController bc;
         Material mat;
         public static Texture texture;

@@ -24,7 +24,7 @@ namespace Toys
             Stream fs = File.OpenRead(path);
             file = new BinaryReader(fs);
             reader = new Reader(file);
-            reader.encoding = 1;
+            reader.Encoding = 1;
             StartRead();
         }
 
@@ -58,10 +58,10 @@ namespace Toys
             file.BaseStream.Position = matOffset + 4;
 
             file.BaseStream.Position += file.ReadInt32();
-            int MaterialCount = file.ReadInt32();
+            int materialCount = file.ReadInt32();
 
-            int[] offsets = new int[MaterialCount];
-            for (int i = 0; i < MaterialCount; i++)
+            int[] offsets = new int[materialCount];
+            for (int i = 0; i < materialCount; i++)
                 offsets[i] = (int)file.BaseStream.Position + file.ReadInt32();
 
             foreach(var moffs in offsets)
@@ -74,14 +74,14 @@ namespace Toys
                 string MaterialFileName = reader.readString();
                 ShaderSettings sdrs = new ShaderSettings();
                 RenderDirectives rndd = new RenderDirectives();
-                sdrs.hasSkeleton = true;
+                sdrs.HasSkeleton = true;
                 sdrs.TextureDiffuse = true;
                 sdrs.TextureSpecular = true;
-                sdrs.recieveShadow = false;
-                rndd.hasEdges = false;
+                sdrs.RecieveShadow = false;
+                rndd.HasEdges = false;
                 Material mat = new MaterialPM(sdrs, rndd);
                 mat.Name = MaterialName;
-                mat.outln.EdgeScaler = 0.2f;
+                mat.Outline.EdgeScaler = 0.2f;
                 materialTable.Add(MaterialName, mat);
                 mat.UniManager.Set("uv_scale", Vector4.One);
                 //scale face shadow texture
@@ -99,46 +99,46 @@ namespace Toys
 
         }
 
-        MeshDrawer ReadMeshChunk(int pos)
+        MeshDrawer ReadMeshChunk(int streamOffset)
         {
             //mesh name
-            file.BaseStream.Position = pos + 0x7;
+            file.BaseStream.Position = streamOffset + 0x7;
             int chunkSize = file.ReadByte();
             int meshNamePos = (int)file.BaseStream.Position + file.ReadInt32();
             file.BaseStream.Position = meshNamePos;
             string meshName = reader.readString();
             //material reference
-            file.BaseStream.Position = pos + 0x14;
+            file.BaseStream.Position = streamOffset + 0x14;
             int matNamePos = (int)file.BaseStream.Position + file.ReadInt32();
             file.BaseStream.Position = matNamePos + 0x8;
             string matName = reader.readString();
 
             //bones reference
-            file.BaseStream.Position = pos + 0x58;
-            int WeightBoneNameTableStart = (int)file.BaseStream.Position + file.ReadInt32();
-            file.BaseStream.Position = pos + 0x5c;
+            file.BaseStream.Position = streamOffset + 0x58;
+            int weightBoneNameTableStart = (int)file.BaseStream.Position + file.ReadInt32();
+            file.BaseStream.Position = streamOffset + 0x5c;
             int WeightBoneTableStart = (int)file.BaseStream.Position + file.ReadInt32();
 
-            file.BaseStream.Position = pos + 0x78;
+            file.BaseStream.Position = streamOffset + 0x78;
             int facesCount = file.ReadInt32();
-            file.BaseStream.Position = pos + 0x84;
-            int vertCount = file.ReadInt32();
-            byte Size = 4;
-            int SizeTest = vertCount * chunkSize;
+            file.BaseStream.Position = streamOffset + 0x84;
+            int verticesCount = file.ReadInt32();
+            byte size = 4;
+            int SizeTest = verticesCount * chunkSize;
             if (SizeTest < 0x100)
-                Size = 1;
+                size = 1;
             else if (SizeTest < 0x10000)
-                Size = 2;
+                size = 2;
 
             file.BaseStream.Position += 8;
-            int vertSize = reader.readVal(Size);
+            int vertSize = reader.readVal(size);
             int VertOffset = (int)file.BaseStream.Position;
 
-            List<VertexRigged3D> verts = new List<VertexRigged3D>();
-            for (int i = 0; i < vertCount; i++)
+            List<VertexRigged3D> vertices = new List<VertexRigged3D>();
+            for (int i = 0; i < verticesCount; i++)
             {
-                VertexRigged3D vert = new VertexRigged3D();
-                vert.position = reader.readVector3();
+                VertexRigged3D vertice = new VertexRigged3D();
+                vertice.Position = reader.readVector3();
                 //vertex color unsupported
                 file.BaseStream.Position += 4;
                 //if (chunkSize == 0x24 || chunkSize == 0x28)
@@ -151,85 +151,78 @@ namespace Toys
                     file.BaseStream.Position += 4;
                     file.BaseStream.Position += 0xc;
                 }
-                vert.uvtex = new Vector2();
-                vert.uvtex.X = Half.FromBytes(file.ReadBytes(2),0);
-                vert.uvtex.Y = Half.FromBytes(file.ReadBytes(2), 0);
+                vertice.UV = new Vector2();
+                vertice.UV.X = Half.FromBytes(file.ReadBytes(2), 0);
+                vertice.UV.Y = Half.FromBytes(file.ReadBytes(2), 0);
                 /*
                 if (chunkSize == 0x28)
                     file.BaseStream.Position += 4;
                     */
-                vert.boneIndexes = new IVector4(new int[] { file.ReadByte(), file.ReadByte(), file.ReadByte(), file.ReadByte() });
+                vertice.BoneIndices = new IVector4(new int[] { file.ReadByte(), file.ReadByte(), file.ReadByte(), file.ReadByte() });
                 if (chunkSize == 0x28)
                 {
-                    vert.weigth = reader.readVector4();
+                    vertice.BoneWeigths = reader.readVector4();
                 }
                 else
                 {
-                    vert.weigth = new Vector4(file.ReadUInt16(), file.ReadUInt16(), file.ReadUInt16(), file.ReadUInt16());
-                    vert.weigth /= 65535f;
+                    vertice.BoneWeigths = new Vector4(file.ReadUInt16(), file.ReadUInt16(), file.ReadUInt16(), file.ReadUInt16());
+                    vertice.BoneWeigths /= 65535f;
                 }
-                verts.Add(vert);
+                vertices.Add(vertice);
             }
 
-            int UnknownSize = 4;
-            if (Size == 1)
-                UnknownSize = 2;
+            int unknownSize = 4;
+            if (size == 1)
+                unknownSize = 2;
 
-            file.BaseStream.Position = VertOffset + vertSize + Size + UnknownSize;
-            int UnknownCount = file.ReadInt32();
-            file.BaseStream.Position += 0x10 * UnknownCount;
+            file.BaseStream.Position = VertOffset + vertSize + size + unknownSize;
+            int unknownCount = file.ReadInt32();
+            file.BaseStream.Position += 0x10 * unknownCount;
             file.ReadInt32();
             //Read Faces
-            Size = 4;
+            size = 4;
             if (facesCount < 0x100)
-                Size = 1;
+                size = 1;
             else if (facesCount < 0x10000)
-                Size = 2;
+                size = 2;
 
-            int faceSize = reader.readVal(Size);
-            byte Fsize = 4;
-            if (vertCount < 0x100)
-                Fsize = 1;
-            else if (vertCount < 0x10000)
-                Fsize = 2;
+            int faceSize = reader.readVal(size);
+            byte indexValueSize = 4;
+            if (verticesCount < 0x100)
+                indexValueSize = 1;
+            else if (verticesCount < 0x10000)
+                indexValueSize = 2;
 
-            int FaceOffset = (int)file.BaseStream.Position;
+            int faceOffset = (int)file.BaseStream.Position;
             int[] indexes = new int[facesCount];
             for (int i = 0; i < facesCount; i++)
-                indexes[i] = reader.readVal(Fsize);
-            
+                indexes[i] = reader.readVal(indexValueSize);
+
             //Read Weigth Bones dictionary
-            file.BaseStream.Position = WeightBoneNameTableStart;
-            int WeightBoneCount = file.ReadInt32();
-            int[] boneIdDict = new int[WeightBoneCount];
-            for (int i = 0; i< WeightBoneCount; i++)
+            file.BaseStream.Position = weightBoneNameTableStart;
+            int weightBoneCount = file.ReadInt32();
+            int[] boneIdDict = new int[weightBoneCount];
+            for (int i = 0; i < weightBoneCount; i++)
             {
-                file.BaseStream.Position = WeightBoneNameTableStart + i * 4 + 4;
+                file.BaseStream.Position = weightBoneNameTableStart + i * 4 + 4;
                 file.BaseStream.Position += file.ReadInt32();
-                string WeightBoneName = reader.readString();
-                boneIdDict[i] = Array.FindIndex(bones, (b) => b.Name == WeightBoneName);
+                string weightBoneName = reader.readString();
+                boneIdDict[i] = Array.FindIndex(bones, (b) => b.Name == weightBoneName);
             }
-            
-            var vv = verts.ToArray();
+
+            var vv = vertices.ToArray();
             //set bone id to global
-            try
+            for (int i = 0; i < vv.Length; i++)
             {
-                for (int i = 0; i < vv.Length; i++)
-                {
-                    IVector4 boneIndexes = vv[i].boneIndexes;
-                    boneIndexes.bone1 = boneIdDict[boneIndexes.bone1];
-                    boneIndexes.bone2 = boneIdDict[boneIndexes.bone2];
-                    boneIndexes.bone3 = boneIdDict[boneIndexes.bone3];
-                    boneIndexes.bone4 = boneIdDict[boneIndexes.bone4];
-                    vv[i].boneIndexes = boneIndexes;
-                }
-            }
-            catch (IndexOutOfRangeException e)
-            {
-
+                IVector4 boneIndexes = vv[i].BoneIndices;
+                boneIndexes.bone1 = boneIdDict[boneIndexes.bone1];
+                boneIndexes.bone2 = boneIdDict[boneIndexes.bone2];
+                boneIndexes.bone3 = boneIdDict[boneIndexes.bone3];
+                boneIndexes.bone4 = boneIdDict[boneIndexes.bone4];
+                vv[i].BoneIndices = boneIndexes;
             }
 
-            CalculateVertNormals.CalculateNormals(vv,indexes);
+            CalculateVertNormals.CalculateNormals(vv, indexes);
             var mesh = new Mesh(vv, indexes);
             Material mat;
             if (materialTable.TryGetValue(matName, out mat))
@@ -238,8 +231,6 @@ namespace Toys
             }
             else
                 return new MeshDrawerRigged(mesh, boneControll);
-
-
         }
         void ReadBones()
         {
@@ -247,48 +238,48 @@ namespace Toys
             int boneOffset = (int)file.BaseStream.Position + file.ReadInt32();
 
             file.BaseStream.Position = boneOffset + 0x8;
-            int BoneCount = file.ReadInt32();
+            int boneCount = file.ReadInt32();
 
-            int[] boneOffsets = new int[BoneCount];
-            for (int i = 0; i < BoneCount; i++)
+            int[] boneOffsets = new int[boneCount];
+            for (int i = 0; i < boneCount; i++)
             {
                 boneOffsets[i] = (int)file.BaseStream.Position + file.ReadInt32();
             }
 
-            bones = new Bone[BoneCount];
-            string[] parents = new string[BoneCount];
-            for (int i = 0; i < BoneCount; i++)
+            bones = new Bone[boneCount];
+            string[] parents = new string[boneCount];
+            for (int i = 0; i < boneCount; i++)
             {
                 
                 file.BaseStream.Position = boneOffsets[i];
-                int Magic = file.ReadInt32();
+                int magicNumber = file.ReadInt32();
                 file.BaseStream.Position = boneOffsets[i] + 4;
-                int NameOffset = (int)file.BaseStream.Position + file.ReadInt32();
-                file.BaseStream.Position = NameOffset;
-                string BoneName = reader.readString();
+                int nameOffset = (int)file.BaseStream.Position + file.ReadInt32();
+                file.BaseStream.Position = nameOffset;
+                string boneName = reader.readString();
 
                 file.BaseStream.Position = boneOffsets[i] + 8;
-                Matrix4 BoneMatrix = new Matrix4(
+                Matrix4 boneMatrix = new Matrix4(
                     reader.readVector4(),
                     reader.readVector4(),
                     reader.readVector4(),
                     reader.readVector4()
                 );
                 file.BaseStream.Position = boneOffsets[i] + 0x38;
-                Vector3 BonePos = reader.readVector3();
+                Vector3 bonePosition = reader.readVector3();
                 file.BaseStream.Position = boneOffsets[i] + 0x48;
-                int BoneParentOffset = (int)file.BaseStream.Position + file.ReadInt32();
-                file.BaseStream.Position = BoneParentOffset;
+                int boneParentOffset = (int)file.BaseStream.Position + file.ReadInt32();
+                file.BaseStream.Position = boneParentOffset;
                 parents[i] = reader.readString();
-                Bone bone = new Bone(BoneName, BoneMatrix, -1);
+                Bone bone = new Bone(boneName, boneMatrix, -1);
                 bone.Index = i;
-                bone.Position = BonePos;
+                bone.Position = bonePosition;
                 bones[i] = bone;
-                if (Magic < 0x5000)
+                if (magicNumber < 0x5000)
                     continue;
             }
 
-            for (int i = 0; i < BoneCount; i++)
+            for (int i = 0; i < boneCount; i++)
             {
                 bones[i].ParentIndex = Array.FindIndex(bones, (element) => element.Name == parents[i]);
             }
@@ -302,7 +293,7 @@ namespace Toys
                 var node = new SceneNode();
                 foreach (Mesh mesh in meshRigged)
                 {
-                    MeshDrawer md = new MeshDrawer(new Mesh(mesh.vert, mesh.indexes));
+                    MeshDrawer md = new MeshDrawer(new Mesh(mesh.Vertices, mesh.Indices));
                     node.AddComponent(md);
                 }
                 return node;
@@ -339,7 +330,7 @@ namespace Toys
             Stream fs = File.OpenRead(path);
             var file = new BinaryReader(fs);
             var reader = new Reader(file);
-            reader.encoding = 1;
+            reader.Encoding = 1;
 
             byte[] buffer = new byte[3];
             while (file.BaseStream.Read(buffer, 2, 1) > 0)

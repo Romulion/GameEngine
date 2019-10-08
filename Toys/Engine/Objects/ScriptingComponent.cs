@@ -22,13 +22,13 @@ namespace Toys
 
         internal override void AddComponent(SceneNode nod)
         {
-            node = nod;
+            Node = nod;
             CoreEngine.sEngine.AddScript(this);
         }
 
         internal override void RemoveComponent()
         {
-            node = null;
+            Node = null;
             CoreEngine.sEngine.RemoveScript(this);
         }
     }

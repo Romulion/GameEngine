@@ -7,26 +7,26 @@ namespace Toys
 	public class Mesh
 	{
 
-		public int[] indexes;
+		public int[] Indices;
 
 		private MeshMorper morpher = null;
 
 		protected int VAO, VBO, EBO;
-		internal int vertexCount;
+		internal int VertexCount;
 		int SSB0;
 
 		//for vertex morphing
 		//stride 
-		internal int vSize;
+		internal int VertexSize;
 		//elements array
-		public Vertex3D[] vert { get; private set; }
+		public Vertex3D[] Vertices { get; private set; }
         public VertexRigged3D[] vertRig { get; private set; }
 
-        public Mesh(Vertex3D[] vertices, int[] indexes)
+        public Mesh(Vertex3D[] vertices, int[] indices)
 		{
-            this.indexes = indexes;
-			vSize = Marshal.SizeOf(typeof(Vertex3D));
-			vert = vertices;
+            Indices = indices;
+			VertexSize = Marshal.SizeOf(typeof(Vertex3D));
+			Vertices = vertices;
 			SetupMesh(vertices);
 		}
 
@@ -34,14 +34,14 @@ namespace Toys
 		{
             vertRig = vertices;
 
-            this.indexes = indexes;
-			vSize = Marshal.SizeOf(typeof(VertexRigged3D));
-            vert = new Vertex3D[vertices.Length];
-			for (int i = 0; i < vert.Length; i++)
-				vert[i] = (Vertex3D)vertices[i];
+            Indices = indexes;
+			VertexSize = Marshal.SizeOf(typeof(VertexRigged3D));
+            Vertices = new Vertex3D[vertices.Length];
+			for (int i = 0; i < Vertices.Length; i++)
+				Vertices[i] = (Vertex3D)vertices[i];
 
 #if !VertexSkin
-            SetupMesh(vert);
+            SetupMesh(Vertices);
             MakeSSBO(0, vertices);
 #else
             SetupMeshRigged(vertices);
@@ -64,8 +64,8 @@ namespace Toys
 		/// <param name="vertices">Vertices.</param>
 		void SetupMesh(Vertex3D[] vertices)
 		{
-			vertexCount = vertices.Length;
-			int vertSize = Marshal.SizeOf(typeof(Vertex3D));
+			VertexCount = vertices.Length;
+			int verticeSize = Marshal.SizeOf(typeof(Vertex3D));
 
 			//generate buffers
 			VAO = GL.GenVertexArray();
@@ -77,21 +77,21 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 
 			//load vertex array to memmory
-			GL.BufferData(BufferTarget.ArrayBuffer, vertSize * vertexCount, vertices, BufferUsageHint.StaticDraw);
+			GL.BufferData(BufferTarget.ArrayBuffer, verticeSize * VertexCount, vertices, BufferUsageHint.StaticDraw);
 
 
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-			GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indexes.Length, indexes, BufferUsageHint.StaticDraw);
+			GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * Indices.Length, Indices, BufferUsageHint.StaticDraw);
 
 			//assign binding points
 			//position
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex3D), "position"));
+			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, verticeSize, Marshal.OffsetOf(typeof(Vertex3D), "Position"));
 			GL.EnableVertexAttribArray(0);
 			//normal
-			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex3D), "normal"));
+			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, verticeSize, Marshal.OffsetOf(typeof(Vertex3D), "Normal"));
 			GL.EnableVertexAttribArray(1);
 			//uv coord
-			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(Vertex3D), "uvtex"));
+			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, verticeSize, Marshal.OffsetOf(typeof(Vertex3D), "UV"));
 			GL.EnableVertexAttribArray(2);
 
 			//unbind
@@ -107,7 +107,7 @@ namespace Toys
 		void SetupMeshRigged(VertexRigged3D[] vertices)
 		{
 
-			vertexCount = vertices.Length;
+			VertexCount = vertices.Length;
 			int vertSize = Marshal.SizeOf(typeof(VertexRigged3D));
 			VAO = GL.GenVertexArray();
 			VBO = GL.GenBuffer();
@@ -117,24 +117,24 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 			//load vertexes to 
 			//GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * vertices.Length, vertices, BufferUsageHint.StaticDraw);
-			GL.BufferData(BufferTarget.ArrayBuffer, vertSize * vertexCount, vertices, BufferUsageHint.StreamDraw);
+			GL.BufferData(BufferTarget.ArrayBuffer, vertSize * VertexCount, vertices, BufferUsageHint.StreamDraw);
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
-			GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indexes.Length, indexes, BufferUsageHint.StaticDraw);
+			GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * Indices.Length, Indices, BufferUsageHint.StaticDraw);
 
 			//position
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "position"));
+			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "Position"));
 			GL.EnableVertexAttribArray(0);
 			//normal
-			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "normal"));
+			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "Normal"));
 			GL.EnableVertexAttribArray(1);
 			//uv coord
-			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "uvtex"));
+			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "UV"));
 			GL.EnableVertexAttribArray(2);
 			//bones indexes
-			GL.VertexAttribIPointer(3, 4, VertexAttribIntegerType.Int, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "boneIndexes"));
+			GL.VertexAttribIPointer(3, 4, VertexAttribIntegerType.Int, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "BoneIndices"));
 			GL.EnableVertexAttribArray(3);
 			//bones weigth
-			GL.VertexAttribPointer(4, 4, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "weigth"));
+			GL.VertexAttribPointer(4, 4, VertexAttribPointerType.Float, false, vertSize, Marshal.OffsetOf(typeof(VertexRigged3D), "BoneWeigth"));
 			GL.EnableVertexAttribArray(4);
 			//unbind
 
@@ -144,12 +144,12 @@ namespace Toys
 		}
 
 		//create shader storage buffer for mesh
-		void MakeSSBO(int index, VertexRigged3D[] vertRig)
+		void MakeSSBO(int index, VertexRigged3D[] verticesRigged)
 		{
-			int vertSize = Marshal.SizeOf(typeof(VertexRigged3D));
+			int verticeSize = Marshal.SizeOf(typeof(VertexRigged3D));
 			SSB0 = GL.GenBuffer();
 			GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB0);
-			GL.BufferData(BufferTarget.ShaderStorageBuffer, vertSize* vertexCount, vertRig, BufferUsageHint.DynamicDraw);
+			GL.BufferData(BufferTarget.ShaderStorageBuffer, verticeSize* VertexCount, verticesRigged, BufferUsageHint.DynamicDraw);
 			GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, index, SSB0);
 			GL.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
 
@@ -164,7 +164,7 @@ namespace Toys
 #if VertexSkin
                     morpher = new MeshMorper(vert, VBO, vSize);
 #else
-                    morpher = new MeshMorper(vert, SSB0, vSize);
+                    morpher = new MeshMorper(Vertices, SSB0, VertexSize);
 #endif
                 return morpher; 
 			}
@@ -172,20 +172,16 @@ namespace Toys
 		//updating mesh for vertex morph and skinning
 		public void UpdateMeshRigged()
 		{
-			vert[100].position.X += 0.01f;
+			Vertices[100].Position.X += 0.01f;
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 			int vertSize = Marshal.SizeOf(typeof(VertexRigged3D));
-			GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, vertSize * vertexCount, vert);
+			GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, vertSize * VertexCount, Vertices);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 		}
 
 		internal void ApplySkin()
 		{
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-			//int size = Marshal.SizeOf(typeof(Vertex3D)) * vertexCount;
-
-			//GL.CopyBufferSubData(BufferTarget.ShaderStorageBuffer, BufferTarget.ArrayBuffer, (IntPtr)0,(IntPtr)0, size);
-            //GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 		}
 
 
@@ -203,7 +199,6 @@ namespace Toys
 		//for compute shader morphs
 		internal void BindSSBO()
 		{
-            //GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB0);
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, SSB0);
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, VBO);
         }
@@ -222,7 +217,7 @@ namespace Toys
 
 		internal void Draw()
 		{
-			GL.DrawElements(PrimitiveType.Triangles, indexes.Length, DrawElementsType.UnsignedInt, 0);
+			GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
 		}
 
 

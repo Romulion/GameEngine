@@ -6,12 +6,12 @@ namespace Toys
 {
 	public class Joint
 	{
-		public JointContainer jcon { get; private set; }
-		public TypedConstraint joint { get; private set; }
+		public JointContainer JointParameters { get; private set; }
+		public TypedConstraint Constraint { get; private set; }
 
-		public Joint(JointContainer jc, RigidBodyBone[] rbodies)
+		public Joint(JointContainer joint, RigidBodyBone[] rbodies)
 		{
-			jcon = jc;
+			JointParameters = joint;
 			Instalize(rbodies);
 		}
 
@@ -21,16 +21,16 @@ namespace Toys
 			//JointPos *= Matrix.Translation(GetVec3(jcon.Position));
 
 			//look for no second body
-			RigidBody Body1 = null;
-			RigidBody Body2 = null;
+			RigidBody body1 = null;
+			RigidBody body2 = null;
 
 			try
 			{
-				Body1 = rbodies[jcon.RigitBody1].Body;
+				body1 = rbodies[JointParameters.RigitBody1].Body;
 
 				try
 				{
-					Body2 = rbodies[jcon.RigitBody2].Body;
+					body2 = rbodies[JointParameters.RigitBody2].Body;
 				}
 				catch (IndexOutOfRangeException) { }
 			}
@@ -38,54 +38,48 @@ namespace Toys
 			{
 				try
 				{
-					Body1 = rbodies[jcon.RigitBody2].Body;
+					body1 = rbodies[JointParameters.RigitBody2].Body;
 				}
 				catch (IndexOutOfRangeException) { return; }
 			}
 
 
-			var JointSpace = Matrix.RotationYawPitchRoll(jcon.Rotation.Y, jcon.Rotation.X, jcon.Rotation.Z) * Matrix.Translation(GetVec3(jcon.Position));
-			var temp1 = Body1.WorldTransform;
+			var jointSpace = Matrix.RotationYawPitchRoll(JointParameters.Rotation.Y, JointParameters.Rotation.X, JointParameters.Rotation.Z) * Matrix.Translation(GetVec3(JointParameters.Position));
+			var temp1 = body1.WorldTransform;
 			temp1.Invert();
-			var Conn1 = JointSpace * temp1;
+			var conn1 = jointSpace * temp1;
             //var Conn1 = Matrix.Translation(GetVec3(rbodies[jcon.RigitBody1].rigCon.Position - jcon.Position));
 
-			Matrix Conn2 = Matrix.Identity;
-			if (Body2 != null)
+			Matrix conn2 = Matrix.Identity;
+			if (body2 != null)
 			{
-				//calculating joi9nt arms space
-				var temp2 = Body2.WorldTransform;
+				//calculating joint arms space
+				var temp2 = body2.WorldTransform;
 				temp2.Invert();
-				Conn2 = JointSpace* temp2;
-                //Conn2 = Matrix.Translation(GetVec3(rbodies[jcon.RigitBody2].rigCon.Position - jcon.Position));
-
-				//for the older version of BulletSharp
-				//temp1 = RigitBodyBone.GetMat(RigitBodyBone.GetMat(temp1).Inverted());
-				//temp2 = RigitBodyBone.GetMat(RigitBodyBone.GetMat(temp2).Inverted());
-
+				conn2 = jointSpace* temp2;
 			}
-            switch (jcon.jType)
+            switch (JointParameters.Type)
 			{
 				case JointType.ConeTwist:
 					ConeTwistConstraint jointCone = null;
-					if (Body2 != null)
-						jointCone = new ConeTwistConstraint(Body1, Body2, Conn1, Conn2);
+					if (body2 != null)
+						jointCone = new ConeTwistConstraint(body1, body2, conn1, conn2);
 					else
-						jointCone = new ConeTwistConstraint(Body1, Conn1);
+						jointCone = new ConeTwistConstraint(body1, conn1);
 					
 					break;
 				case JointType.SpringSixDOF: //the only one used
 					Generic6DofSpring2Constraint jointSpring6 = null;
-					if (Body2 != null)
-						jointSpring6 = new Generic6DofSpring2Constraint(Body1, Body2, Conn1, Conn2);
+					if (body2 != null)
+						jointSpring6 = new Generic6DofSpring2Constraint(body1, body2, conn1, conn2);
 					else 
-						jointSpring6 = new Generic6DofSpring2Constraint(Body1, Conn1);
+						jointSpring6 = new Generic6DofSpring2Constraint(body1, conn1);
 					
-                    jointSpring6.AngularLowerLimit = GetVec3(jcon.RotMin);
-					jointSpring6.AngularUpperLimit = GetVec3(jcon.RotMax);
+                    jointSpring6.AngularLowerLimit = GetVec3(JointParameters.RotMin);
+					jointSpring6.AngularUpperLimit = GetVec3(JointParameters.RotMax);
                     
-                    jointSpring6.LinearLowerLimit = GetVec3(jcon.PosMin);
-					jointSpring6.LinearUpperLimit = GetVec3(jcon.PosMax);
+                    jointSpring6.LinearLowerLimit = GetVec3(JointParameters.PosMin);
+					jointSpring6.LinearUpperLimit = GetVec3(JointParameters.PosMax);
                     
                     jointSpring6.EnableSpring(0,true);
                     jointSpring6.EnableSpring(1,true);
@@ -101,7 +95,7 @@ namespace Toys
                     jointSpring6.SetDamping(2,jcon.RotSpring.Z);
                     */
                     jointSpring6.SetEquilibriumPoint();
-                    joint = jointSpring6;
+                    Constraint = jointSpring6;
                     break;
 			}
 

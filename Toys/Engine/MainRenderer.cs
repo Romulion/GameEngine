@@ -5,8 +5,7 @@ namespace Toys
 {
 	public class MainRenderer
 	{
-		public Scene mainScene;
-
+		internal Scene MainScene;
 		UniformBufferSkeleton skeleton;
 		UniformBufferLight ubl;
 		UniformBufferSpace ubs;
@@ -14,7 +13,7 @@ namespace Toys
 
 		internal MainRenderer(Scene scene)
 		{
-			mainScene = scene;
+			MainScene = scene;
 			UniformBufferManager ubm = UniformBufferManager.GetInstance;
 			skeleton = (UniformBufferSkeleton)ubm.GetBuffer("skeleton");
 
@@ -27,12 +26,12 @@ namespace Toys
 
 		public void Render(Camera camera) 
 		{
-            renderer.viev = camera.GetLook;
-            renderer.projection = camera.projection;
+            renderer.Viev = camera.GetLook;
+            renderer.Projection = camera.Projection;
             ubl.SetViewPos(camera.GetPos);
-			ubs.SetPvSpace(camera.GetLook * camera.projection);
+			ubs.SetPvSpace(camera.GetLook * camera.Projection);
 
-			foreach (var node in mainScene.GetNodes())
+			foreach (var node in MainScene.GetNodes())
 			{
 				if (!node.Active)
 					continue;
@@ -43,21 +42,15 @@ namespace Toys
 					continue;
 
 				renderer.Render(md);
-				/*
-				if (node.anim != null)
-					skeleton.SetBones(node.anim.GetSkeleton);
-				if (node.model != null)
-					renderer.Render(node);
-				*/
 			}
 		}
 
 		public void Render(MeshDrawer[] meshes, Camera camera)
 		{
-            renderer.viev = camera.GetLook;
-            renderer.projection = camera.projection;
+            renderer.Viev = camera.GetLook;
+            renderer.Projection = camera.Projection;
             ubl.SetViewPos(camera.GetPos);
-			ubs.SetPvSpace(camera.GetLook * camera.projection);
+			ubs.SetPvSpace(camera.GetLook * camera.Projection);
 
             foreach (var mesh in meshes)
 			{

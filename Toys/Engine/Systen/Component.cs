@@ -7,7 +7,7 @@ namespace Toys
 
 		protected Component(Type t) : base(t) { }
 
-        public SceneNode node { get; protected set; }
+        public SceneNode Node { get; protected set; }
 
         //system defined interpritation
         internal abstract void AddComponent(SceneNode nod);

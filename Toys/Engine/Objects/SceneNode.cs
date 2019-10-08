@@ -8,7 +8,7 @@ namespace Toys
 	public class SceneNode : Resource
     {
         List<SceneNode> childs;
-        public SceneNode parent;
+        public SceneNode Parent;
         Transformation transform;
 		public string Name;
 		public bool Active = true;
@@ -18,7 +18,7 @@ namespace Toys
         {
             childs = new List<SceneNode>();
 			components = new List<Component>();
-            parent = null;
+            Parent = null;
             transform = new Transformation(this);
         }
 
@@ -32,10 +32,10 @@ namespace Toys
 
         public void SetParent(SceneNode node)
         {
-            if (parent != null)
-                parent.RemoveChild(this);
+            if (Parent != null)
+                Parent.RemoveChild(this);
 
-            parent = node;
+            Parent = node;
 
             UpdateTransform();
         }
@@ -58,7 +58,6 @@ namespace Toys
 		//component framework
 		public void AddComponent(Component comp)
 		{
-            //if (components.Exists((Component c) => c is ))
             comp.AddComponent(this);
             components.Add(comp);
 		}
@@ -69,7 +68,7 @@ namespace Toys
             try
             {
                 Component comp = (Component)(t.GetConstructors()[0]).Invoke(new object[] { });
-                comp.type = t;
+                comp.Type = t;
                 comp.AddComponent(this);
                 components.Add(comp);
                 return comp;
@@ -90,9 +89,8 @@ namespace Toys
 
         public Component GetComponent(Type ctype)
 		{
-			//if (components.Exists((Component c) => c is ))
 			var result = from comp in components
-						 where comp.type == ctype
+						 where comp.Type == ctype
 						 select comp;
 
 			if (result.Count() == 0)
@@ -103,9 +101,8 @@ namespace Toys
 
 		public Component[] GetComponents(Type ctype)
 		{
-			//if (components.Exists((Component c) => c is ))
 			var result = from comp in components
-						 where comp.type == ctype
+						 where comp.Type == ctype
 						 select comp;
 
 			return result.ToArray();

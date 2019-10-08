@@ -49,11 +49,11 @@ namespace Toys
 			for (int i = 0; i < meshreader.dgc.Count; i++)
 			{
 				var meshItem = meshreader.dgc[i];
-				var matTemplate = matsList.Find((obj) => obj.Name == meshItem.mat + "_mat" );
+				var matTemplate = matsList.Find((obj) => obj.Name == meshItem.MaterialName + "_mat" );
 				mats[i] = matTemplate.Clone();
-				mats[i].Name = meshItem.name;
-				mats[i].count = meshItem.indeces.Length;
-				mats[i].offset = meshItem.offset;
+				mats[i].Name = meshItem.Name;
+				mats[i].Count = meshItem.Indeces.Length;
+				mats[i].Offset = meshItem.Offset;
 			}
 		}
 
@@ -88,19 +88,19 @@ namespace Toys
 						childs.Add(n);
 					}
 
-				bones[i].childs = childs.ToArray();
+				bones[i].Childs = childs.ToArray();
 			}
             //set local to global space
             //SetGlobalLocalSpace(bones[0], Matrix4.Identity);
 
         }
 
-		void getBone(XmlNode xmlnode, int parent)
+		void getBone(XmlNode xmlNode, int parent)
 		{
 
 			int index = bones.Count;
-			string name = xmlnode.Attributes.GetNamedItem("sid").Value;
-			string matrtx = xmlnode.FindNodes("matrix")[0].InnerText;
+			string name = xmlNode.Attributes.GetNamedItem("sid").Value;
+			string matrtx = xmlNode.FindNodes("matrix")[0].InnerText;
 			float[] fls = StringParser.readFloat(matrtx);
 			Matrix4 mat = Matrix4.Identity;
 			mat.Row0 = new Vector4(fls[0], fls[1], fls[2], fls[3] * multiplier);
@@ -112,7 +112,7 @@ namespace Toys
 			Bone bone = new Bone(name, mat, parent);
             bone.Index = index;
             bones.Add(bone);
-            var bonesNodes = xmlnode.FindNodes("node");
+            var bonesNodes = xmlNode.FindNodes("node");
 			foreach (var node in bonesNodes)
 				getBone(node,index);
 

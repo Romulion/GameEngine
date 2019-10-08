@@ -13,21 +13,21 @@ namespace Toys
         Vector2 pos = Vector2.Zero;
         float scale = 1;
 
-        TextCanvas textobj;
+        TextCanvas textCanvas;
 
-        TextRenderer tr;
+        TextRenderer textRenderer;
     
         public TextBox() : base (typeof(TextBox))
         {
-            tr = GraphicsEngine.textRender;
-            textobj = tr.CreateCanvas();
-            textobj.pos = new Vector2(25);
+            textRenderer = GraphicsEngine.TextRender;
+            textCanvas = textRenderer.CreateCanvas();
+            textCanvas.Position = new Vector2(25);
         }
 
         public void SetText(string text)
         {
-            textobj.text = text;
-            tr.UpdateText(textobj);
+            textCanvas.Text = text;
+            textRenderer.UpdateText(textCanvas);
         }
 
         internal override void Unload()

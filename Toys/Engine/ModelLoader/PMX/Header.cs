@@ -4,7 +4,7 @@ namespace Toys
 	public class Header
 	{
 		
-		public byte[] attribs;
+		public byte[] Attributes;
 		public string Name;
 		public string NameEng;
 		public string Comment;
@@ -15,8 +15,8 @@ namespace Toys
 		{
 			get
 			{
-				if (attribs.Length == 8)
-					return attribs[0];
+				if (Attributes.Length == 8)
+					return Attributes[0];
 				else 
 					return 0;
 			}
@@ -27,8 +27,8 @@ namespace Toys
 		{
 			get
 			{
-				if (attribs.Length == 8)
-					return attribs[1];
+				if (Attributes.Length == 8)
+					return Attributes[1];
 				else
 					return 0;
 			}
@@ -38,8 +38,8 @@ namespace Toys
 		{
 			get
 			{
-				if (attribs.Length == 8)
-					return attribs[2];
+				if (Attributes.Length == 8)
+					return Attributes[2];
 				else
 					return 0;
 
@@ -50,51 +50,56 @@ namespace Toys
 		{
 			get
 			{
-				if (attribs.Length == 8)
-					return attribs[3];
+				if (Attributes.Length == 8)
+					return Attributes[3];
 				else
 					return 0;
-			}		}
+			}
+		}
 
 		public byte GetMaterialIndexSize
 		{
 			get
 			{
-				if (attribs.Length == 8)
-					return attribs[4];
+				if (Attributes.Length == 8)
+					return Attributes[4];
 				else
 					return 0;
-			}		}
+			}
+		}
 
 		public byte GetBoneIndexSize
 		{
 			get
 			{
-				if (attribs.Length == 8)
-					return attribs[5];
+				if (Attributes.Length == 8)
+					return Attributes[5];
 				else
 					return 0;
-			}		}
+			}
+		}
 
 		public byte GetMorphIndexSize
 		{
 			get
 			{
-				if (attribs.Length == 8)
-					return attribs[6];
+				if (Attributes.Length == 8)
+					return Attributes[6];
 				else
 					return 0;
-			}		}
+			}
+		}
 
 		public byte GetRigidBodyIndexSize
 		{
 			get
 			{
-				if (attribs.Length == 8)
-					return attribs[7];
+				if (Attributes.Length == 8)
+					return Attributes[7];
 				else
 					return 0;
-			}		}
+			}
+		}
 
 
 	}

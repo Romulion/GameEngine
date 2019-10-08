@@ -10,58 +10,53 @@ namespace Toys
     /// </summary>
 	public class ModelSkinning
 	{
-		Shader ComputeShader;
-		int SSB;
-		Mesh mesh;
+		Shader _computeShader;
+		Mesh _mesh;
 
         public ModelSkinning(Mesh mesh)
 		{
-			this.mesh = mesh;
-			Initialize(mesh.vertexCount,mesh.vSize);
+			_mesh = mesh;
+			Initialize(mesh.VertexCount,mesh.VertexSize);
 		}
 
-		public void Initialize(int vCount, int vSize)
+		public void Initialize(int vertexCount, int vertexSize)
 		{
 			var manager = ShaderManager.GetInstance;
-			ComputeShader =	manager.LoadShader("compute","skin.glsl");
+			_computeShader =	manager.LoadShader("compute","skin.glsl");
             //CheckData();
-           // Console.WriteLine(GL.GetError());
         }
 
         public void Skin()
 		{
-            ComputeShader.ApplyShader();
-            mesh.BindSSBO();
-            GL.DispatchCompute(mesh.vertexCount, 1, 1);
+            _computeShader.ApplyShader();
+            _mesh.BindSSBO();
+            GL.DispatchCompute(_mesh.VertexCount, 1, 1);
         }
 
         void CheckData()
         {
-            //GL.BindBuffer(BufferTarget.ShaderStorageBuffer, SSB);
-            mesh.BindSSBO();
-            ComputeShader.ApplyShader();
-            GL.DispatchCompute(mesh.vertexCount, 1, 1);
-            //GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
+            _mesh.BindSSBO();
+            _computeShader.ApplyShader();
+            GL.DispatchCompute(_mesh.VertexCount, 1, 1);
 
-            mesh.ApplySkin();
+            _mesh.ApplySkin();
             IntPtr point = GL.MapBuffer(BufferTarget.ArrayBuffer, BufferAccess.ReadOnly);
-            //Console.WriteLine(BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(point, 28)), 0));
             
             int n = 0, offset = 0, val;
             
-            while ( n < mesh.vertexCount)
+            while ( n < _mesh.VertexCount)
             {
                 //position
                 val = Marshal.ReadInt32(point, offset);
-                if (mesh.vert[n].position.X != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
+                if (_mesh.Vertices[n].Position.X != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
                     break;
                 offset += 4;
                 val = Marshal.ReadInt32(point, offset);
-                if (mesh.vert[n].position.Y != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
+                if (_mesh.Vertices[n].Position.Y != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
                     break;
                 offset += 4;
                 val = Marshal.ReadInt32(point, offset);
-                if (mesh.vert[n].position.Z != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
+                if (_mesh.Vertices[n].Position.Z != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
                     break;
                 //dummy
                 offset += 4;
@@ -69,17 +64,17 @@ namespace Toys
                 //normals
                 offset += 4;
                 val = Marshal.ReadInt32(point, offset);
-                if (mesh.vert[n].normal.X != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
+                if (_mesh.Vertices[n].Normal.X != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
                     break;
 
                 offset += 4;
                 val = Marshal.ReadInt32(point, offset);
-                if (mesh.vert[n].normal.Y != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
+                if (_mesh.Vertices[n].Normal.Y != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
                     break;
 
                 offset += 4;
                 val = Marshal.ReadInt32(point, offset);
-                if (mesh.vert[n].normal.Z != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
+                if (_mesh.Vertices[n].Normal.Z != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
                     break;
                 //dummy
                 offset += 4;
@@ -87,12 +82,12 @@ namespace Toys
                 //textures
                 offset += 4;
                 val = Marshal.ReadInt32(point, offset);
-                if (mesh.vert[n].uvtex.X != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
+                if (_mesh.Vertices[n].UV.X != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
                     break;
 
                 offset += 4;
                 val = Marshal.ReadInt32(point, offset);
-                if (mesh.vert[n].uvtex.Y != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
+                if (_mesh.Vertices[n].UV.Y != BitConverter.ToSingle(BitConverter.GetBytes(val), 0))
                     break;
                 //dummy
                 offset += 8;
@@ -102,12 +97,12 @@ namespace Toys
             
             n = 0;
             offset = 0;
-            if (n < mesh.vertexCount)
+            if (n < _mesh.VertexCount)
             {
-                Console.WriteLine("memory mismatch found at {0} total {2} offset {1}",n, offset, mesh.vertexCount);
+                Console.WriteLine("memory mismatch found at {0} total {2} offset {1}",n, offset, _mesh.VertexCount);
                 //Console.WriteLine(BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(point, offset - 4)), 0));
                 Console.WriteLine(BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(point, offset)), 0));
-                Console.WriteLine("{0} {1} {2}", mesh.vert[n].position, mesh.vert[n].normal, mesh.vert[n].uvtex);
+                Console.WriteLine("{0} {1} {2}", _mesh.Vertices[n].Position, _mesh.Vertices[n].Normal, _mesh.Vertices[n].UV);
             }
             else
             {

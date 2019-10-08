@@ -17,16 +17,16 @@ namespace Toys
 	{
         Matrix startTransform;
 
-		public int bone { get; set; }
+		public int BoneID { get; set; }
 		public RigidBody Body { get; set; }
-        public BoneController acon { get; set; }
-        public RigidContainer rigCon { get; set; }
+        public BoneController BoneController { get; set; }
+        RigidContainer bodyContainer { get; set; }
 		RigidBodyConstructionInfo rbInfo;
         public RigidBodyBone(RigidContainer rcon)
 		{
-            rigCon = rcon;
+            bodyContainer = rcon;
             CollisionShape shape = null;
-			switch (rcon.primitive)
+			switch (rcon.PrimitiveType)
 			{
 				case PhysPrimitiveType.Box:
 					shape = new BoxShape(GetVec3(rcon.Size));
@@ -72,15 +72,15 @@ namespace Toys
 
         public void SyncBone2Body(OpenTK.Matrix4 world)
 		{
-            var mat = GetMat(acon.GetBone(bone).TransformMatrix * world);
+            var mat = GetMat(BoneController.GetBone(BoneID).TransformMatrix * world);
             Body.MotionState.WorldTransform = startTransform * mat;
         }
 
 		public void SyncBody2Bone(OpenTK.Matrix4 world)
 		{
             var mat = GetMat(startTransform).Inverted() * GetMat(Body.WorldTransform);
-            acon.GetBones[bone].PhysTransform = mat * world;
-            acon.GetBones[bone].Phys = true;
+            BoneController.GetBones[BoneID].PhysTransform = mat * world;
+            BoneController.GetBones[BoneID].Phys = true;
         }
 
 
@@ -89,7 +89,7 @@ namespace Toys
 			return new Vector3(vec3.X, vec3.Y, vec3.Z);
 		}
 
-        /*
+        
 		private Matrix GetMat(OpenTK.Matrix4 mat)
 		{
 			return new Matrix(mat.M11, mat.M12, mat.M13, mat.M14, 
@@ -97,7 +97,7 @@ namespace Toys
 			                  mat.M31, mat.M32, mat.M33, mat.M34, 
 			                  mat.M41, mat.M42, mat.M43, mat.M44);
 		}
-        */
+        
 
 		public static OpenTK.Matrix4 GetMat(Matrix mat)
 		{
@@ -106,7 +106,7 @@ namespace Toys
 					  		  		  mat.M31, mat.M32, mat.M33, mat.M34,
 							  		  mat.M41, mat.M42, mat.M43, mat.M44);
 		}
-
+        /*
         public static Matrix GetMat(OpenTK.Matrix4 mat)
         {
             IntPtr ptr = Marshal.AllocHGlobal(64);
@@ -115,11 +115,10 @@ namespace Toys
             Marshal.FreeHGlobal(ptr);
             return mat1;
         }
-
+        */
 		public void Reinstalize(OpenTK.Matrix4 world)
 		{
 			Body.WorldTransform = startTransform * GetMat(world);
-			//Body.MotionState.WorldTransform = startTransform * GetMat(world);
 			Body.LinearVelocity = Vector3.Zero;
 			Body.AngularVelocity = Vector3.Zero;
 			Body.ClearForces();

@@ -15,19 +15,19 @@ namespace Toys
 		Vector3 look;
 		int shadowBuffer;
 		//shadow texture resolution
-		int Width = 2048;
-		int Heigth = 2048;
+		int width = 2048;
+		int heigth = 2048;
 
 		Texture shadowMap;
 		Shader shdr;
-		Matrix4 lightdir;
+		Matrix4 direction;
 		Matrix4 projection;
 
 		public LightSource()
 		{
 			shadowBuffer = GL.GenFramebuffer();
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, shadowBuffer);
-			shadowMap = Texture.CreateShadowMap(Width,Heigth);
+			shadowMap = Texture.CreateShadowMap(width,heigth);
 			//shadowMap.BindTexture();
 			GL.DrawBuffer(DrawBufferMode.None);
 			GL.ReadBuffer(ReadBufferMode.None);
@@ -42,7 +42,7 @@ namespace Toys
 
 
 			projection = Matrix4.CreateOrthographic(5f, 5f, 0.1f, 5f);
-			lightdir = Matrix4.LookAt(pos, look, new Vector3(0f, 1f, 0f));
+			direction = Matrix4.LookAt(pos, look, new Vector3(0f, 1f, 0f));
 
 			UniformBufferManager ubm = UniformBufferManager.GetInstance;
             ubo = (UniformBufferSkeleton) ubm.GetBuffer("skeleton");
@@ -55,8 +55,8 @@ namespace Toys
 		{
 			SetLightVars();
 
-			lightdir = Matrix4.LookAt(pos, look, new Vector3(0f, 1f, 0f));
-			GL.Viewport(0, 0, Width, Heigth);
+			direction = Matrix4.LookAt(pos, look, new Vector3(0f, 1f, 0f));
+			GL.Viewport(0, 0, width, heigth);
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, shadowBuffer);
 			GL.Clear(ClearBufferMask.DepthBufferBit);
 			shdr.ApplyShader();
@@ -69,7 +69,7 @@ namespace Toys
 				if (md == null)
 					continue;
 				
-				Matrix4 pvm = node.GetTransform.globalTransform * lightdir * projection;
+				Matrix4 pvm = node.GetTransform.globalTransform * direction * projection;
 				shdr.SetUniform(pvm, "pvm");
 				md.DrawSimple();
 			}
@@ -79,15 +79,15 @@ namespace Toys
 		{
 			SetLightVars();
 
-			lightdir = Matrix4.LookAt(pos, look, new Vector3(0f, 1f, 0f));
-			GL.Viewport(0, 0, Width, Heigth);
+			direction = Matrix4.LookAt(pos, look, new Vector3(0f, 1f, 0f));
+			GL.Viewport(0, 0, width, heigth);
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, shadowBuffer);
 			GL.Clear(ClearBufferMask.DepthBufferBit);
 			shdr.ApplyShader();
 
 			foreach (var mesh in meshes)
 			{
-				Matrix4 pvm = mesh.node.GetTransform.globalTransform * lightdir * projection;
+				Matrix4 pvm = mesh.Node.GetTransform.globalTransform * direction * projection;
 				shdr.SetUniform(pvm, "pvm");
 				mesh.DrawSimple();
 			}
@@ -107,7 +107,7 @@ namespace Toys
 		//depth matrix
 		public Matrix4 GetMat
 		{
-			get { return lightdir * projection;}
+			get { return direction * projection;}
 		}
 
 		//light position

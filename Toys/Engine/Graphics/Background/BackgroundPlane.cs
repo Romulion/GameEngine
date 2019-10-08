@@ -17,7 +17,7 @@ namespace Toys
 
         public override void DrawBackground(Camera cam)
         {
-            backgroundShdr.ApplyShader();
+            backgroundShader.ApplyShader();
         }
     }
 }

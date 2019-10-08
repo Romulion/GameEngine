@@ -7,23 +7,23 @@ namespace Toys
 	//default outline class
 	public class Outline : IOutline
 	{
-		Shader outline;
+		Shader outlineShader;
 		public Vector4 EdgeColour { get; set; }
 		public float EdgeScaler { get; set; }
-		public bool hasEdge { get; set; }
+		public bool HasEdge { get; set; }
 
 		public Outline()
 		{
-			outline = ShaderManager.GetInstance.GetShader("outline");
-			hasEdge = true;
+			outlineShader = ShaderManager.GetInstance.GetShader("outline");
+			HasEdge = true;
 			EdgeScaler = 0.2f;
 			EdgeColour = new Vector4(Vector3.Zero, 1f);
 		}
 
 		public void ApplyOutline()
 		{
-			outline.SetUniform(EdgeColour, "EdgeColor");
-			outline.SetUniform(EdgeScaler, "EdgeScaler");
+			outlineShader.SetUniform(EdgeColour, "EdgeColor");
+			outlineShader.SetUniform(EdgeScaler, "EdgeScaler");
 		}
 	}
 }

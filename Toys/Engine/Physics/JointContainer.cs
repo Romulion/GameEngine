@@ -17,7 +17,7 @@ namespace Toys
 	{
 		public string Name;
 		public string NameEng;
-		public JointType jType;
+		public JointType Type;
 		public int RigitBody1;
 		public int RigitBody2;
 		public Vector3 Position;

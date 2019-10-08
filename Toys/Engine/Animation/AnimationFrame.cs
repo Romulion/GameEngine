@@ -8,11 +8,11 @@ namespace Toys
 {
     class AnimationFrame
     {
-        public BonePosition[] bones { get; private set; }
+        public BonePosition[] BonePoritions { get; private set; }
 
         public AnimationFrame(BonePosition[] pos)
         {
-            bones = pos;
+            BonePoritions = pos;
         }
     }
 }

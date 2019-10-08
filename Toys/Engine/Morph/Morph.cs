@@ -21,8 +21,8 @@ namespace Toys
 	{
 		public string Name;
 		public string NameEng;
-		public MorphType type;
-		public int count;
-        public abstract float morphDegree {  get; set; }
+		public MorphType Type;
+		public int Count;
+        public abstract float MorphDegree {  get; set; }
 	}
 }

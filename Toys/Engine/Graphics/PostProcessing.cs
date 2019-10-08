@@ -3,7 +3,7 @@ namespace Toys
 {
 	public class PostProcessing
 	{
-		Shader shdr;
+		Shader shader;
 		Texture screen;
 
 		public PostProcessing(Texture texture)
@@ -11,7 +11,7 @@ namespace Toys
 			ShaderManager shdrm = ShaderManager.GetInstance;
 			screen = texture;
 			shdrm.LoadShader("pp");
-			shdr = shdrm.GetShader("pp");
+			shader = shdrm.GetShader("pp");
 		}
 
 		public void RenderScreen()

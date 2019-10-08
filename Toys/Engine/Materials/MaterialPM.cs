@@ -10,16 +10,16 @@ namespace Toys
     {
         public MaterialPM(ShaderSettings shdrsett, RenderDirectives rdir) : base()
         {
-            shdrSettings = shdrsett;
-            rndrDirrectives = rdir;
+            ShaderSettings = shdrsett;
+            RenderDirrectives = rdir;
             CreateShader();
         }
         private MaterialPM(ShaderSettings shdrsett, RenderDirectives rdir, Shader shader)
         {
-            shdrSettings = shdrsett;
-            rndrDirrectives = rdir;
-            shdr = shader;
-            CreateShader(shdr);
+            ShaderSettings = shdrsett;
+            RenderDirrectives = rdir;
+            shaderProgram = shader;
+            CreateShader(shaderProgram);
         }
 
         private void CreateShader()
@@ -27,8 +27,8 @@ namespace Toys
             string path = "Toys.Resourses.shaders.";
             string vs = ShaderManager.ReadFromAssetStream(path + "PM.vsh");
             string fs = ShaderManager.ReadFromAssetStream(path + "PM.fsh");
-            shdr = ShaderConstructor.CreateShader(vs, fs);
-            CreateShader(shdr);
+            shaderProgram = ShaderConstructor.CreateShader(vs, fs);
+            CreateShader(shaderProgram);
         }
 
         public override void ApplyMaterial()
@@ -41,7 +41,7 @@ namespace Toys
 
         public override Material Clone()
         {
-            var material = new MaterialPM(shdrSettings, rndrDirrectives,shdr);
+            var material = new MaterialPM(ShaderSettings, RenderDirrectives,shaderProgram);
             foreach (var texture in textures)
                 material.SetTexture(texture.Value, texture.Key);
 

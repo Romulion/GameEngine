@@ -7,18 +7,17 @@ namespace Toys
     class MorphMaterial : Morph
     {
         float degree = 0f;
-        public List<MaterialMorpher> matMorpher;
-        int curr = 0;
+        public List<MaterialMorpher> MaterialMorphers;
 
-        public MorphMaterial(string Name, string NameEng, int count)
+        public MorphMaterial(string name, string nameEng, int count)
         {
-            base.Name = Name;
-            base.NameEng = NameEng;
-            type = MorphType.Material;
-            matMorpher = new List<MaterialMorpher>();
+            Name = name;
+            NameEng = nameEng;
+            Type = MorphType.Material;
+            MaterialMorphers = new List<MaterialMorpher>();
         }
 
-        public override float morphDegree
+        public override float MorphDegree
         {
             get
             {
@@ -33,8 +32,8 @@ namespace Toys
 
         void PerformMorph(float value)
         {
-            foreach (var mat in matMorpher)
-                mat.Perform(value);
+            foreach (var materialMorpher in MaterialMorphers)
+                materialMorpher.Perform(value);
         }
     }
 }

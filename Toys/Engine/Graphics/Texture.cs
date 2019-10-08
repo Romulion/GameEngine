@@ -20,12 +20,12 @@ namespace Toys
 	{
 		protected int texture_id;
         new TextureType type;
-		public string name { private set; get; }
+		public string Name { private set; get; }
         public int Width { get; protected set; }
         public int Height { get; protected set; }
 
         //default texture
-        static Texture def;
+        static Texture defaultTexture;
 
         public enum Wrapper
         {
@@ -79,13 +79,9 @@ namespace Toys
 			{
 				Console.Write("cant load texture  ");
                 Console.WriteLine(path);
-                //Console.WriteLine(e.Message);
-                //Console.WriteLine(e.StackTrace);
-                //load default texture if fail
-                //without reloading to memory
                 Texture empty = LoadEmpty();
 				texture_id = empty.texture_id;
-                this.name = empty.name;
+                Name = empty.Name;
             }
 		}
 
@@ -93,7 +89,7 @@ namespace Toys
 		Texture(int texture, string name) : base (typeof(Texture))
 		{
 			texture_id = texture;
-            this.name = name;
+            this.Name = name;
 		}
 
 		//for build in textures
@@ -101,7 +97,7 @@ namespace Toys
 		{
 			texture_id = GL.GenTexture();
             this.type = type;
-            this.name = name;
+            Name = name;
 			LoadTexture(tex);
 		}
 
@@ -124,18 +120,11 @@ namespace Toys
 				}
 				texture = clone;
 			}
-
-			//inverting y axis			
-			//texture.RotateFlip(RotateFlipType.Rotate180FlipX);
 			GL.BindTexture(TextureTarget.Texture2D, texture_id);
-
-
 
 			//setting wrapper
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.MirroredRepeat);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.MirroredRepeat);
-
-
 			//setting interpolation
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
@@ -220,41 +209,28 @@ namespace Toys
 			type = tt;
 		}
 
-		//for postprocessing framebuffer
-		public static Texture LoadFrameBufer(int Width, int Height, string type)
-		{
-            int texture_id = GL.GenTexture();
-			GL.BindTexture(TextureTarget.Texture2D,texture_id);
-			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, Width, Height, 0, PixelFormat.Rgb, PixelType.UnsignedByte, IntPtr.Zero);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
-			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texture_id, 0);
-			return new Texture(texture_id,type);
-		}
-
-
 		//loading blank texture
 		public static Texture LoadEmpty()
 		{
-			if (def == null)
+			if (defaultTexture == null)
 			{
 				var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture)).Assembly;
 				Bitmap pic = new Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.empty.png"));
-				def = new Texture(pic, TextureType.Toon, "def");
+				defaultTexture = new Texture(pic, TextureType.Toon, "def");
 			}
 
-			return def;
+			return defaultTexture;
 		}
 
 
 		//Shadow texture
-		public static Texture CreateShadowMap(int Width, int Height)
+		public static Texture CreateShadowMap(int width, int height)
 		{
 			string type = "shadowmap";
 			int texture_id = GL.GenTexture();
 			GL.BindTexture(TextureTarget.Texture2D, texture_id);
 			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.DepthComponent, 
-			              Width, Height, 0, PixelFormat.DepthComponent, PixelType.Float, IntPtr.Zero);
+			              width, height, 0, PixelFormat.DepthComponent, PixelType.Float, IntPtr.Zero);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
 			//setting wrapper
@@ -279,7 +255,7 @@ namespace Toys
 		}
 		public string GetName
 		{
-			get { return name; }
+			get { return Name; }
 		}
 
         public static Texture CreateCharMap(int width, int heigth)

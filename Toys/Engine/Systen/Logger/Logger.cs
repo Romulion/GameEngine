@@ -22,12 +22,12 @@ namespace Toys
 
 		static List<LogEntry> loggs = new List<LogEntry>();
 		static Output type;
-		string Sender;
+		string sender;
 
 		
 		public Logger(string sender)
 		{
-			Sender = sender;
+			this.sender = sender;
 		}
 
 		static Logger()
@@ -59,7 +59,7 @@ namespace Toys
 
 		void ProceedEntry(Level severenety, string message, string path)
 		{
-			var entry = new LogEntry(Sender, severenety, message, path);
+			var entry = new LogEntry(sender, severenety, message, path);
 			if (type == Output.Internal)
 				loggs.Add(entry);
 			else if (type == Output.Console)

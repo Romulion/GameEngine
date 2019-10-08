@@ -8,7 +8,7 @@ namespace Toys
 	{
 		float EdgeScaler { get; }
 		Vector4 EdgeColour { get; }
-		bool hasEdge { get; set;}
+		bool HasEdge { get; set;}
 		void ApplyOutline();
 	}
 }

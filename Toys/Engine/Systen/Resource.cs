@@ -2,18 +2,18 @@
 
 namespace Toys
 {
-	public abstract class Resource
+    public abstract class Resource
 	{
 
 		string Name { get; }
 		internal string Id { get; set;}
-		internal Type type { get; set; }
+		internal Type Type { get; set; }
 		internal abstract void Unload();
 
 
 		protected Resource(Type type)
 		{
-			this.type = type;
+			Type = type;
 		}
 
 		/*

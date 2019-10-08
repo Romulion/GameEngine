@@ -16,7 +16,7 @@ namespace Toys
 		internal static GraphicsEngine gEngine;
 		internal static PhysicsEngine pEngine;
         internal static ScriptingEngine sEngine;
-        internal static CoreEngine core;
+        internal static CoreEngine ActiveCore;
         public static Time time;
         queue task;
 
@@ -27,7 +27,7 @@ namespace Toys
 		public CoreEngine() : base(640, 480, new GraphicsMode(32, 8, 8, 4))
 		{
 			Instalize();
-			core = this;
+			ActiveCore = this;
 		}
 
 		void Instalize()
@@ -106,14 +106,10 @@ namespace Toys
 			}
             //physics
 #if (PHYS)
-            //stopwatch.Start();
             pEngine.Update(elapsed);
-            //stopwatch.Stop();
-            //Console.WriteLine(stopwatch.ElapsedTicks * ((double)1000 / Stopwatch.Frequency));
-            //stopwatch.Reset();
 #endif
             sEngine.PreRender();
-            time.updagteTime = time.Stop();
+            time.UpdateTime = time.Stop();
         }
 
 
@@ -124,7 +120,7 @@ namespace Toys
             gEngine.Render();
             //render physics
             //(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
-            time.renderTime = time.Stop();
+            time.RenderTime = time.Stop();
 
             sEngine.PostRender();
             SwapBuffers();

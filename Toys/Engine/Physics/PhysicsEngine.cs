@@ -32,10 +32,10 @@ namespace Toys
             };
             dispatcher = new CollisionDispatcher(collisionConf);   
             broadphase = new DbvtBroadphase();
-            var Solver = new SequentialImpulseConstraintSolver();
+            var solver = new SequentialImpulseConstraintSolver();
             //var Solver = new NncgConstraintSolver();
             //DiscreteDynamicsWorldMultiThreaded(dispatcher, broadphase, Solver, collisionConf);
-            World = new DiscreteDynamicsWorld(dispatcher, broadphase, Solver, collisionConf);
+            World = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConf);
 
             //dispatcher = new CollisionDispatcherMultiThreaded(collisionConf);
             //Solver = new ConstraintSolverPoolMultiThreaded(MaxThreadCount);

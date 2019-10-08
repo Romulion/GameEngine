@@ -8,54 +8,54 @@ namespace Toys
 {
 	public abstract class Material
 	{
-		public ShaderSettings shdrSettings { get; set; }
-		public RenderDirectives rndrDirrectives { get; set; }
-		public Outline outln;
+		internal ShaderSettings ShaderSettings { get; set; }
+        public RenderDirectives RenderDirrectives { get; set; }
+		public Outline Outline;
 
 		public string Name { get; set; }
-		public int offset { get; set; }
-		public int count { get; set; }
+		public int Offset { get; set; }
+		public int Count { get; set; }
         public ShaderUniformManager UniManager { get; private set; }
 
         protected Dictionary<TextureType, Texture> textures;
-		protected Shader shdr;
+		protected Shader shaderProgram;
 		
 		public Material()
 		{
 			textures = new Dictionary<TextureType, Texture>();
-            outln = new Outline();
+            Outline = new Outline();
 		}
 
 		protected void CreateShader(Shader shader)
 		{
-            shdr = shader;
+            shaderProgram = shader;
             Texture txtr = Texture.LoadEmpty();
 			TextureUnit unit = TextureUnit.Texture0;
-            UniManager = new ShaderUniformManager(shdr.uniforms,this);
+            UniManager = new ShaderUniformManager(shaderProgram.GetUniforms,this);
 
-			shdr.ApplyShader();
-            if (shdrSettings.TextureDiffuse)
+			shaderProgram.ApplyShader();
+            if (ShaderSettings.TextureDiffuse)
             {
                 textures.Add(TextureType.Diffuse, txtr);
                 GL.ActiveTexture(unit + (int)TextureType.Diffuse);
                 txtr.BindTexture();
             }
 
-            if (shdrSettings.TextureSpecular)
+            if (ShaderSettings.TextureSpecular)
             {
                 textures.Add(TextureType.Specular, txtr);
                 GL.ActiveTexture(unit + (int)TextureType.Specular);
                 txtr.BindTexture();
             }
 
-            if (shdrSettings.toonShadow)
+            if (ShaderSettings.ToonShadow)
             {
                 textures.Add(TextureType.Toon, txtr);
                 GL.ActiveTexture(unit + (int)TextureType.Toon);
                 txtr.BindTexture();
             }
 
-            if (shdrSettings.envType > 0)
+            if (ShaderSettings.EnvType > 0)
             {
                 textures.Add(TextureType.Sphere, txtr);
                 GL.ActiveTexture(unit + (int)TextureType.Sphere);
@@ -73,12 +73,12 @@ namespace Toys
 
 		public virtual void UpdateMaterial()
 		{
-			shdr.DeleteShader();
+			shaderProgram.DeleteShader();
 		}
 
 		public virtual void ApplyMaterial()
 		{
-			shdr.ApplyShader();
+			shaderProgram.ApplyShader();
 			TextureUnit unit = TextureUnit.Texture0;
 			foreach (var kv in textures)
 			{

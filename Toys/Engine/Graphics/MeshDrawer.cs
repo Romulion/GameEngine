@@ -4,29 +4,29 @@ namespace Toys
 {
 	public class MeshDrawer : Component
 	{
-		public Mesh mesh { get; private set; }
-		public Material[] mats { get; private set; }
-		public Morph[] morph { get; private set; }
+		public Mesh Mesh { get; private set; }
+		public Material[] Materials { get; private set; }
+		public Morph[] Morphes { get; private set; }
 
 
 		public bool OutlineDrawing;
 		public bool CastShadow;
 
 
-		public MeshDrawer(Mesh mesh, Material[] mats = null,Morph[] mor = null) : base (typeof(MeshDrawer))
+		public MeshDrawer(Mesh mesh, Material[] materials = null,Morph[] morphes = null) : base (typeof(MeshDrawer))
 		{
-			this.mesh = mesh;
-            if (mats != null)
-                this.mats = mats;
+			Mesh = mesh;
+            if (materials != null)
+                Materials = materials;
             else
             {
-                this.mats = new Material[] { new MaterialPMX(new ShaderSettings(), new RenderDirectives()) };
+                Materials = new Material[] { new MaterialPMX(new ShaderSettings(), new RenderDirectives()) };
             }
-            morph = mor;
+            Morphes = morphes;
 		}
 
 		//for single material mesh
-		public MeshDrawer(Mesh mesh, Material mat) : this(mesh, new Material[] { mat })
+		public MeshDrawer(Mesh mesh, Material materials) : this(mesh, new Material[] { materials })
 		{
 		}
 
@@ -39,89 +39,89 @@ namespace Toys
 		*/
 		public virtual void Draw()
 		{
-			mesh.BindVAO();
-			foreach (var mat in mats)
+			Mesh.BindVAO();
+			foreach (var material in Materials)
 			{
-				var rdirs = mat.rndrDirrectives;
-				if (!rdirs.render)
+				var renderDirectives = material.RenderDirrectives;
+				if (!renderDirectives.IsRendered)
 					continue;
-                if (rdirs.nocull)
+                if (renderDirectives.NoCull)
                     CoreEngine.gEngine.SetCullMode(FaceCullMode.Disable);
                 else
                     CoreEngine.gEngine.SetCullMode(FaceCullMode.Back);
-                mat.ApplyMaterial();
-                if (mat.count != 0)
-                    mesh.Draw(mat.offset, mat.count);
+                material.ApplyMaterial();
+                if (material.Count != 0)
+                    Mesh.Draw(material.Offset, material.Count);
                 else
-                    mesh.Draw();
+                    Mesh.Draw();
             }
-			mesh.ReleaseVAO();
+			Mesh.ReleaseVAO();
 		}
 
 		//drawing model outline
 		public virtual void DrawOutline()
 		{
 			
-			mesh.BindVAO();
+			Mesh.BindVAO();
 
-			foreach (var mat in mats)
+			foreach (var material in Materials)
 			{
-				var	otl = mat.outln;
-				var rndr = mat.rndrDirrectives;
+				var	outline = material.Outline;
+				var renderDirectives = material.RenderDirrectives;
 				//outline = mat.outline;
-				if (!rndr.render || !rndr.hasEdges)
+				if (!renderDirectives.IsRendered || !renderDirectives.HasEdges)
 					continue;
-				otl.ApplyOutline();
-                if (mat.count != 0)
-                    mesh.Draw(mat.offset, mat.count);
+				outline.ApplyOutline();
+                if (material.Count != 0)
+                    Mesh.Draw(material.Offset, material.Count);
                 else
-                    mesh.Draw();
+                    Mesh.Draw();
             }
-			mesh.ReleaseVAO();
+			Mesh.ReleaseVAO();
 		}
 
 		//for shadow mapping
 		public virtual void DrawSimple()
 		{
-			mesh.BindVAO();
-			foreach (var mat in mats)
+			Mesh.BindVAO();
+			foreach (var mat in Materials)
 			{
 				
-				if (!mat.rndrDirrectives.render)
+				if (!mat.RenderDirrectives.IsRendered)
 					continue;
                 //mat.GetShader.ApplyShader();
-                if (mat.count != 0)
-                    mesh.Draw(mat.offset, mat.count);
+                if (mat.Count != 0)
+                    Mesh.Draw(mat.Offset, mat.Count);
                 else
-                    mesh.Draw();
+                    Mesh.Draw();
 
             }
 
-			mesh.ReleaseVAO();
+			Mesh.ReleaseVAO();
 
 		}
 
 		internal override void Unload()
 		{
-			mesh.Delete();
+			Mesh.Delete();
 		}
 
         internal override void AddComponent(SceneNode nod)
         {
-            if (node != null)
+            if (Node != null)
                 throw new Exception("");
             else
             {
                 CoreEngine.gEngine.meshes.Add(this);
-                node = nod;  
+                Node = nod;  
             }
         }
 
         internal override void RemoveComponent()
         {
-            if (node != null)
+            if (Node != null)
             {
-                node = null;
+                Node = null;
                 CoreEngine.gEngine.meshes.Remove(this);
             }
 

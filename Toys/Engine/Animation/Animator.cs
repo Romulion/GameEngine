@@ -6,78 +6,78 @@ namespace Toys
 {
     class Animator : Component
     {
-        public BoneController bones { get; private set; }
-        Animation anim;
-        bool isPlaing = false;
-        float time = 0f;
-        float length = 0;
-        float framelength = 0;
+        public BoneController BoneController { get; private set; }
+        Animation _animation;
+        bool _isPlaing = false;
+        float _time = 0f;
+        float _length = 0;
+        float _frameLength = 0;
 
         //model bone => anim bone reference
         Dictionary<int, int> boneReference = new Dictionary<int, int>();
 
         public Animator(BoneController bc) : base(typeof(Animator))
         {
-            bones = bc;
+            BoneController = bc;
         }
 
 		internal void Update(float delta)
         {
             
-            if (!isPlaing)
+            if (!_isPlaing)
 				return;
 
-            time += delta;
+            _time += delta;
 
-			time = (time >= length + framelength) ? time % length : time;
+			_time = (_time >= _length + _frameLength) ? _time % _length : _time;
 
-			int prevFrame = (int)(time / framelength);
-			int curFrame = (prevFrame == anim.frames.Length - 1) ? 0 : prevFrame + 1;
+			int prevFrame = (int)(_time / _frameLength);
+			int curFrame = (prevFrame == _animation.frames.Length - 1) ? 0 : prevFrame + 1;
 
-			float frameDelta = time / framelength;
+			float frameDelta = _time / _frameLength;
 			frameDelta = frameDelta - (int)frameDelta;
 
-			AnimationFrame frame1 = anim.frames[prevFrame], frame2 = anim.frames[curFrame];
+			AnimationFrame frame1 = _animation.frames[prevFrame], frame2 = _animation.frames[curFrame];
 
             foreach (var pair in boneReference)
             {
                 Quaternion rotation = Quaternion.Identity;
 
-                Vector3 pos = frame1.bones[pair.Value].position + (frame2.bones[pair.Value].position - frame1.bones[pair.Value].position) * frameDelta;
-                if (anim.Type == Animation.RotationType.Quaternion)
+                Vector3 pos = frame1.BonePoritions[pair.Value].Position + (frame2.BonePoritions[pair.Value].Position - frame1.BonePoritions[pair.Value].Position) * frameDelta;
+                if (_animation.Type == Animation.RotationType.Quaternion)
                 {
-                    Quaternion prevQuat = new Quaternion(frame1.bones[pair.Value].rotation.Xyz, frame1.bones[pair.Value].rotation.W);
-                    Quaternion nextQuat = new Quaternion(frame2.bones[pair.Value].rotation.Xyz, frame2.bones[pair.Value].rotation.W);
+                    Quaternion prevQuat = new Quaternion(frame1.BonePoritions[pair.Value].Rotation.Xyz, frame1.BonePoritions[pair.Value].Rotation.W);
+                    Quaternion nextQuat = new Quaternion(frame2.BonePoritions[pair.Value].Rotation.Xyz, frame2.BonePoritions[pair.Value].Rotation.W);
                     rotation = Quaternion.Slerp(prevQuat, nextQuat, frameDelta);
                 }
                 else
                 {
-                    var deltaRot = frame2.bones[pair.Value].rotation - frame1.bones[pair.Value].rotation;
+                    var deltaRot = frame2.BonePoritions[pair.Value].Rotation - frame1.BonePoritions[pair.Value].Rotation;
                     CycleDeltaCheck(ref deltaRot.X);
                     CycleDeltaCheck(ref deltaRot.Y);
                     CycleDeltaCheck(ref deltaRot.Z);
-                    Vector4 rot = frame1.bones[pair.Value].rotation + deltaRot * frameDelta;
+                    Vector4 rot = frame1.BonePoritions[pair.Value].Rotation + deltaRot * frameDelta;
                     rotation = Quaternion.FromAxisAngle(Vector3.UnitZ, rot.Z) * Quaternion.FromAxisAngle(Vector3.UnitY, rot.Y) * Quaternion.FromAxisAngle(Vector3.UnitX, rot.X);
                 }
 
-                if (anim.TransType == Animation.TransformType.LocalRelative)
-                    bones.GetBone(pair.Key).SetTransform(rotation, pos);
-                else if (anim.TransType == Animation.TransformType.LocalAbsolute)
-                    bones.GetBone(pair.Key).InitialLocalTransform = Matrix4.CreateFromQuaternion(rotation) * Matrix4.CreateTranslation(pos);
+                if (_animation.TransType == Animation.TransformType.LocalRelative)
+                    BoneController.GetBone(pair.Key).SetTransform(rotation, pos);
+                else if (_animation.TransType == Animation.TransformType.LocalAbsolute)
+                    BoneController.GetBone(pair.Key).InitialLocalTransform = Matrix4.CreateFromQuaternion(rotation) * Matrix4.CreateTranslation(pos);
             }
         }
 
         public void Play(Animation anim)
         {
             
-            this.anim = anim;
+            _animation = anim;
             UpdateBoneReference();
             try
             {
-                length = (anim.frames.Length - 1) / (float)anim.framerate;
-                framelength = 1 / (float)anim.framerate;
+                _length = (anim.frames.Length - 1) / (float)anim.Framerate;
+                _frameLength = 1 / (float)anim.Framerate;
                 Instalize(anim.frames[0]);
-                isPlaing = true;
+                _isPlaing = true;
             }
             catch (Exception e)
             {
@@ -88,16 +88,16 @@ namespace Toys
 
 		public void Stop()
 		{
-			isPlaing = false;
-			time = 0;
-			bones.DefaultPos();
+			_isPlaing = false;
+			_time = 0;
+			BoneController.DefaultPos();
 		}
 
         void UpdateBoneReference()
         {
             boneReference.Clear();
-            var boneRefNew = anim.bones;
-            foreach (var bone in bones.GetBones)
+            var boneRefNew = _animation.bones;
+            foreach (var bone in BoneController.GetBones)
             {
                 
                 if (boneRefNew.ContainsKey(bone.Bone.Name))
@@ -113,21 +113,21 @@ namespace Toys
 		{
 			foreach (var pair in boneReference)
 			{
-                Vector4 rot = start.bones[pair.Value].rotation;
-                Vector3 pos = start.bones[pair.Value].position;
+                Vector4 rot = start.BonePoritions[pair.Value].Rotation;
+                Vector3 pos = start.BonePoritions[pair.Value].Position;
                 
                 Matrix4 localInv = Matrix4.Identity;
 
                 Quaternion rotation = Quaternion.Identity;
-                if (anim.Type == Animation.RotationType.Quaternion)
+                if (_animation.Type == Animation.RotationType.Quaternion)
                     rotation = new Quaternion(rot.Xyz,rot.W);
                 else
                     rotation = Quaternion.FromAxisAngle(Vector3.UnitZ, rot.Z) * Quaternion.FromAxisAngle(Vector3.UnitY, rot.Y) * Quaternion.FromAxisAngle(Vector3.UnitX, rot.X);
 
-                if (anim.TransType == Animation.TransformType.LocalRelative)
-                    bones.GetBone(pair.Key).SetTransform(rotation, pos);
-                else if (anim.TransType == Animation.TransformType.LocalAbsolute)
-                    bones.GetBone(pair.Key).InitialLocalTransform = Matrix4.CreateFromQuaternion(rotation) * Matrix4.CreateTranslation(pos);
+                if (_animation.TransType == Animation.TransformType.LocalRelative)
+                    BoneController.GetBone(pair.Key).SetTransform(rotation, pos);
+                else if (_animation.TransType == Animation.TransformType.LocalAbsolute)
+                    BoneController.GetBone(pair.Key).InitialLocalTransform = Matrix4.CreateFromQuaternion(rotation) * Matrix4.CreateTranslation(pos);
             }
 		}
 

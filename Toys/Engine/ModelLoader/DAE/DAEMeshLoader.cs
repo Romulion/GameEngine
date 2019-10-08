@@ -85,14 +85,14 @@ namespace Toys
 
 				gc = new DAEGeometryContainer((uint)indexes.Max() + 1);
 				dgc.Add(gc);
-				gc.indeces = indexes;
+				gc.Indeces = indexes;
 
 			}
 
 			//
-			gc.id = geometry.Attributes.GetNamedItem("id").Value;
-			gc.name = geometry.Attributes.GetNamedItem("name").Value;
-			gc.mat = mat;
+			gc.ID = geometry.Attributes.GetNamedItem("id").Value;
+			gc.Name = geometry.Attributes.GetNamedItem("name").Value;
+			gc.MaterialName = mat;
 			//vertices
 
 			XmlNode vertS = mesh.FindId(vertID);
@@ -111,9 +111,9 @@ namespace Toys
 					float[] flsp = StringParser.readFloat(flp[0].InnerText, 0.01f);
 					max = (flsp.Max() > max) ? flsp.Max() : max;
 					int io = 0;
-					for (int n = 0; n < flsp.Length && io < gc.position.Length; n += 3)
+					for (int n = 0; n < flsp.Length && io < gc.Positions.Length; n += 3)
 					{
-						gc.position[io] = new Vector3(flsp[n], flsp[n + 1], flsp[n + 2]);
+						gc.Positions[io] = new Vector3(flsp[n], flsp[n + 1], flsp[n + 2]);
 						io++;
 					}
 
@@ -132,18 +132,18 @@ namespace Toys
 
 				float[] fls = StringParser.readFloat(fl[0].InnerText);
 
-				for (int n = 0; n < fls.Length && i < gc.normals.Length; n += 3)
+				for (int n = 0; n < fls.Length && i < gc.Normals.Length; n += 3)
 				{
-					gc.normals[i] = new Vector3(fls[n], fls[n + 1], fls[n + 2]);
-					gc.normals[i].Normalize();
+					gc.Normals[i] = new Vector3(fls[n], fls[n + 1], fls[n + 2]);
+					gc.Normals[i].Normalize();
 					i++;
 				}
 			}
 			else 
 			{
-				for (int n = 0; i<gc.normals.Length; n += 3)
+				for (int n = 0; i<gc.Normals.Length; n += 3)
 				{
-					gc.normals[i] = Vector3.Zero;
+					gc.Normals[i] = Vector3.Zero;
 					i++;
 				}
 			}
@@ -156,9 +156,9 @@ namespace Toys
 			 i = 0;
 			//Console.WriteLine(fls1.Length);
 
-			for (int n = 0; n < fls1.Length && i < gc.uvcord.Length; n += 2)
+			for (int n = 0; n < fls1.Length && i < gc.UVs.Length; n += 2)
 			{
-				gc.uvcord[i] = new Vector2(fls1[n] * 2f, (1 - fls1[n + 1]));    
+				gc.UVs[i] = new Vector2(fls1[n] * 2f, (1 - fls1[n + 1]));    
 				i++;
 			}
 
@@ -170,7 +170,7 @@ namespace Toys
 			XmlNode skin = controller.FirstChild;
 
 			string geometryID = skin.Attributes.GetNamedItem("source").Value;
-			var geometry = dgc.Find(inst => inst.id == geometryID.Replace("#","") );
+			var geometry = dgc.Find(inst => inst.ID == geometryID.Replace("#","") );
 
 			var weighth = skin.FindNodes("vertex_weights");
 			var inputs = weighth[0].FindNodes("input");
@@ -203,23 +203,23 @@ namespace Toys
 				switch (count)
 				{
 					case 1:
-						geometry.boneIndeces[i] = new IVector4(new int[] { bindedBones[offset],0,0,0 });
-						geometry.weigth[i] = new Vector4( weigths[bindedBones[offset + 1]], 0f, 0f, 0f);
+						geometry.BoneIndeces[i] = new IVector4(new int[] { bindedBones[offset],0,0,0 });
+						geometry.BoneWeigths[i] = new Vector4( weigths[bindedBones[offset + 1]], 0f, 0f, 0f);
 						break;
 					case 2:
-						geometry.boneIndeces[i] = new IVector4(new int[] { bindedBones[offset],bindedBones[offset + 2],0,0 });
-						geometry.weigth[i] = new Vector4(weigths[bindedBones[offset + 1]], weigths[bindedBones[offset + 3]], 0f, 0f);
+						geometry.BoneIndeces[i] = new IVector4(new int[] { bindedBones[offset],bindedBones[offset + 2],0,0 });
+						geometry.BoneWeigths[i] = new Vector4(weigths[bindedBones[offset + 1]], weigths[bindedBones[offset + 3]], 0f, 0f);
 						break;
 					case 3:
-						geometry.boneIndeces[i] = new IVector4(new int[] { bindedBones[offset],bindedBones[offset + 2],bindedBones[offset + 4],0 });
-						geometry.weigth[i] = new Vector4(weigths[bindedBones[offset + 1]], weigths[bindedBones[offset + 3]], weigths[bindedBones[offset + 5]], 0f);
+						geometry.BoneIndeces[i] = new IVector4(new int[] { bindedBones[offset],bindedBones[offset + 2],bindedBones[offset + 4],0 });
+						geometry.BoneWeigths[i] = new Vector4(weigths[bindedBones[offset + 1]], weigths[bindedBones[offset + 3]], weigths[bindedBones[offset + 5]], 0f);
 						break;
 					case 4:
-						geometry.boneIndeces[i] = new IVector4(new int[] { bindedBones[offset],bindedBones[offset + 2],bindedBones[offset + 4],bindedBones[offset + 6]});
-						geometry.weigth[i] = new Vector4(weigths[bindedBones[offset + 1]], weigths[bindedBones[offset + 3]],weigths[bindedBones[offset + 5]], weigths[bindedBones[offset + 7]]);
+						geometry.BoneIndeces[i] = new IVector4(new int[] { bindedBones[offset],bindedBones[offset + 2],bindedBones[offset + 4],bindedBones[offset + 6]});
+						geometry.BoneWeigths[i] = new Vector4(weigths[bindedBones[offset + 1]], weigths[bindedBones[offset + 3]],weigths[bindedBones[offset + 5]], weigths[bindedBones[offset + 7]]);
 						break;
 				}
-				geometry.weigth[i].Normalize();
+				geometry.BoneWeigths[i].Normalize();
 				offset += count * 2;
 			}
 
@@ -236,18 +236,18 @@ namespace Toys
 			int vertsOffset = 0;
 			foreach (var gc in dgc)
 			{
-				for (int n = 0; n < gc.position.Length; n++)
+				for (int n = 0; n < gc.Positions.Length; n++)
 				{
-					verts.Add(new VertexRigged3D(gc.position[n], gc.normals[n], gc.uvcord[n], gc.boneIndeces[n], gc.weigth[n]));
+					verts.Add(new VertexRigged3D(gc.Positions[n], gc.Normals[n], gc.UVs[n], gc.BoneIndeces[n], gc.BoneWeigths[n]));
 				}
-				foreach (int index in gc.indeces)
+				foreach (int index in gc.Indeces)
 				{
 					indeces.Add(index + vertsOffset);
 				}
 
-				gc.offset = offset;
-				vertsOffset += gc.position.Length;
-				offset += gc.indeces.Length;
+				gc.Offset = offset;
+				vertsOffset += gc.Positions.Length;
+				offset += gc.Indeces.Length;
 			}
 
 			Mesh mesh = new Mesh(verts.ToArray(), indeces.ToArray());

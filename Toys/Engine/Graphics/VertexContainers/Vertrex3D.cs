@@ -13,47 +13,47 @@ namespace Toys
     public struct Vertex3D
 	{
         [FieldOffset(0)]
-        public Vector3 position;
+        public Vector3 Position;
         [FieldOffset(16)]
-        public Vector3 normal;
+        public Vector3 Normal;
         [FieldOffset(32)]
-        public Vector2 uvtex;
+        public Vector2 UV;
 	
-		public Vertex3D(Vector3 pos, Vector3 norm, Vector2 tex)
+		public Vertex3D(Vector3 position, Vector3 normal, Vector2 uv)
 		{
-            position = pos;
-            normal = norm;
-            uvtex = tex;
+            Position = position;
+            Normal = normal;
+            UV = uv;
 		}
 
 		//pos only
-		public Vertex3D(Vector3 pos)
+		public Vertex3D(Vector3 position)
 		{
-			position = pos;
-			normal = Vector3.Zero;
-			uvtex = Vector2.Zero;
+			Position = position;
+			Normal = Vector3.Zero;
+			UV = Vector2.Zero;
 		}
 
-		public Vertex3D(Vector3 pos, Vector2 tex)
+		public Vertex3D(Vector3 position, Vector2 uv)
 		{
-			position = pos;
-			normal = Vector3.Zero;
-			uvtex = tex;
+			Position = position;
+			Normal = Vector3.Zero;
+			UV = uv;
 		}
 
 		//for 2d coordinates
-		public Vertex3D(Vector2 pos)
+		public Vertex3D(Vector2 position)
 		{
-			position = new Vector3(pos);
-			normal = Vector3.Zero;
-			uvtex = Vector2.Zero;
+			Position = new Vector3(position);
+			Normal = Vector3.Zero;
+			UV = Vector2.Zero;
 		}
 
-		public Vertex3D(Vector2 pos, Vector2 tex)
+		public Vertex3D(Vector2 position, Vector2 uv)
 		{
-			position = new Vector3(pos);
-			normal = Vector3.Zero;
-			uvtex = tex;
+			Position = new Vector3(position);
+			Normal = Vector3.Zero;
+			UV = uv;
 		}
 	}
 

@@ -10,7 +10,7 @@ namespace Toys
 	{
 		const string libmat = "library_materials";
 		const string libeff = "library_effects";
-		public List<DAEMaterial> mts;
+		public List<DAEMaterial> DAEMaterials;
 
 
 		public DAEMaterialReader(XmlElement xRoot)
@@ -39,7 +39,7 @@ namespace Toys
 				throw new Exception();
 
 			var mats = libmatsNode.FindNodes("material");
-			mts = new List<DAEMaterial>(mats.Length);
+			DAEMaterials = new List<DAEMaterial>(mats.Length);
 			foreach (var material in mats)
 			{
 				CompleteMaterial(material, libeffsNode);
@@ -50,7 +50,7 @@ namespace Toys
 		void CompleteMaterial(XmlNode materialNode, XmlNode root)
 		{
 			var mat = new DAEMaterial();
-			mat.id = materialNode.Attributes.GetNamedItem("id").Value;
+			mat.ID = materialNode.Attributes.GetNamedItem("id").Value;
 			mat.Name = materialNode.Attributes.GetNamedItem("name").Value;
 
 			var inst = materialNode.GetNode("instance_effect");
@@ -76,11 +76,11 @@ namespace Toys
 			foreach (XmlNode setting in shadingType.ChildNodes)
 			{
 				if (setting.Name == "emission")
-					mat.emission = GetColor(setting);
+					mat.Emission = GetColor(setting);
 				else if (setting.Name == "ambient")
-					mat.ambient = GetColor(setting);
+					mat.Ambient = GetColor(setting);
 				else if (setting.Name == "specular")
-					mat.specular = GetColor(setting);
+					mat.Specular = GetColor(setting);
 				else if (setting.Name == "diffuse")
 					diffuseId = setting.GetNode("texture").Attributes.GetNamedItem("texture").Value;
 			}
@@ -97,14 +97,14 @@ namespace Toys
 				throw new Exception();
 
 			var surf = prof.FindAttrib(textureid, "sid").FirstChild;
-			mat.textureName = surf.FindNodes("init_from")[0].InnerText;
-			if (mat.textureName.IndexOf("_id", 0) > 0)
+			mat.TextureName = surf.FindNodes("init_from")[0].InnerText;
+			if (mat.TextureName.IndexOf("_id", 0) > 0)
 			{
-				mat.textureName = mat.textureName.Remove(mat.textureName.IndexOf("_id", 0));
+				mat.TextureName = mat.TextureName.Remove(mat.TextureName.IndexOf("_id", 0));
 			}
-			mat.textureName += "." + surf.FindNodes("format")[0].InnerText.ToLower();
-			mat.txtr = new Texture(mat.textureName, TextureType.Diffuse);
-			mts.Add(mat);
+			mat.TextureName += "." + surf.FindNodes("format")[0].InnerText.ToLower();
+			mat.DiffuseTexture = new Texture(mat.TextureName, TextureType.Diffuse);
+			DAEMaterials.Add(mat);
 		}
 
 		Vector4 GetColor(XmlNode setting)
@@ -116,23 +116,23 @@ namespace Toys
 
 		public List<Material> GetMaterials()
 		{
-			List<Material> mats = new List<Material>(mts.Count);
+			List<Material> mats = new List<Material>(DAEMaterials.Count);
 
-			for (int i = 0; i < mts.Count; i++)
+			for (int i = 0; i < DAEMaterials.Count; i++)
 			{
 				//phong
 				var shdrst = new ShaderSettings();
 				var rddir = new RenderDirectives();
-				shdrst.hasSkeleton = true;
-				shdrst.recieveShadow = false;
-				shdrst.affectedByLight = true;
-				rddir.castShadow = false;
-				rddir.hasEdges = true;
+				shdrst.HasSkeleton = true;
+				shdrst.RecieveShadow = false;
+				shdrst.AffectedByLight = true;
+				rddir.CastShadow = false;
+				rddir.HasEdges = true;
 				shdrst.TextureDiffuse = true;
-				shdrst.discardInvisible = true;
+				shdrst.DiscardInvisible = true;
 				var mat  = new MaterialPMX(shdrst, rddir);
-				mat.Name = mts[i].Name;
-				mat.SetTexture(mts[i].txtr, TextureType.Diffuse);
+				mat.Name = DAEMaterials[i].Name;
+				mat.SetTexture(DAEMaterials[i].DiffuseTexture, TextureType.Diffuse);
 
 				mats.Add(mat);
 			}

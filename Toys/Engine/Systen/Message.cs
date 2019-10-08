@@ -9,12 +9,12 @@ namespace Toys
     class Message
     {
         public Action Method { get; private set; }
-        public ScriptingComponent obj { get; private set; }
+        internal ScriptingComponent ScriptingObject { get; private set; }
 
         public Message(ScriptingComponent sc, Action method)
         {
             Method = method;
-            obj = sc;
+            ScriptingObject = sc;
         }
     }
 }

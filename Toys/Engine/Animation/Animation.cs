@@ -23,9 +23,9 @@ namespace Toys
             LocalAbsolute,
         }
 
-        public int framerate = 24;
-        public readonly AnimationFrame[] frames;
-		public readonly Dictionary<string, int> bones = new Dictionary<string, int>();
+        public int Framerate = 24;
+        internal readonly AnimationFrame[] frames;
+        internal readonly Dictionary<string, int> bones = new Dictionary<string, int>();
         public RotationType Type { get; internal set; }
         public TransformType TransType { get; internal set; }
 

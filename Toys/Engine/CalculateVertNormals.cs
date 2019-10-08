@@ -17,7 +17,7 @@ namespace Toys
             for (int i = 0; i < faces; i++)
             {
                 int offset = i * 3;
-                faceNormals[i] = CalcualteFaceNormal(vers[idexes[offset]].position, vers[idexes[offset + 1]].position, vers[idexes[offset + 2]].position);
+                faceNormals[i] = CalcualteFaceNormal(vers[idexes[offset]].Position, vers[idexes[offset + 1]].Position, vers[idexes[offset + 2]].Position);
             }
 
             for (int i = 0; i < vers.Length; i++)
@@ -28,7 +28,7 @@ namespace Toys
                     if (idexes[n] == i)
                         normal += faceNormals[i / 3];
                 }
-                vers[i].normal = normal.Normalized();
+                vers[i].Normal = normal.Normalized();
             }
         }
         public static void CalculateNormals(VertexRigged3D[] vers, int[] idexes)
@@ -38,7 +38,7 @@ namespace Toys
             for (int i = 0; i < faces; i++)
             {
                 int offset = i * 3;
-                faceNormals[i] = CalcualteFaceNormal(vers[idexes[offset]].position, vers[idexes[offset+1]].position, vers[idexes[offset+2]].position);
+                faceNormals[i] = CalcualteFaceNormal(vers[idexes[offset]].Position, vers[idexes[offset+1]].Position, vers[idexes[offset+2]].Position);
             }
             
             for (int i = 0; i < vers.Length; i++)
@@ -49,7 +49,7 @@ namespace Toys
                     if (idexes[n] == i)
                         normal += faceNormals[i / 3];
                 }
-                vers[i].normal = normal.Normalized();
+                vers[i].Normal = normal.Normalized();
             }
         }
 

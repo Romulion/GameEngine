@@ -8,10 +8,10 @@ namespace Toys
     public class MaterialMorpher
     {
 
-        Material Mat;
-        public Vector4 diffuse;
-        public Vector3 ambient;
-        public Vector3 specular;
+        Material material;
+        public Vector4 DiffuseColor;
+        public Vector3 AmbientColor;
+        public Vector3 SpecularColor;
         public int mode;
 
         string diffuseName = "diffuse_color";
@@ -21,26 +21,26 @@ namespace Toys
 
         public MaterialMorpher(Material mat)
         {
-            Mat = mat;
+            material = mat;
         }
 
         public void Perform(float degree)
         {
-            if (Mat == null)
+            if (material == null)
                 return;
 
             if (mode == 0)
             {
-                Mat.UniManager.Modify(this, diffuseName, (Vector4.One - (Vector4.One - diffuse) * degree), ModifyType.Multiply);
-                Mat.UniManager.Modify(this, ambientName, (Vector3.One - (Vector3.One - ambient) * degree), ModifyType.Multiply);
-                Mat.UniManager.Modify(this, specularName, (Vector3.One - (Vector3.One - specular) * degree), ModifyType.Multiply);
+                material.UniManager.Modify(this, diffuseName, (Vector4.One - (Vector4.One - DiffuseColor) * degree), ModifyType.Multiply);
+                material.UniManager.Modify(this, ambientName, (Vector3.One - (Vector3.One - AmbientColor) * degree), ModifyType.Multiply);
+                material.UniManager.Modify(this, specularName, (Vector3.One - (Vector3.One - SpecularColor) * degree), ModifyType.Multiply);
             }
             //diffuseUni.AddModifier(this,(Vector4.One + (Vector4.One - diffuse) * degree),ModifyType.Multiply);
             else if (mode == 1)
             {
-                Mat.UniManager.Modify(this, diffuseName, diffuse * degree, ModifyType.Add);
-                Mat.UniManager.Modify(this, ambientName, ambient * degree, ModifyType.Add);
-                Mat.UniManager.Modify(this, specularName, specular * degree, ModifyType.Add);
+                material.UniManager.Modify(this, diffuseName, DiffuseColor * degree, ModifyType.Add);
+                material.UniManager.Modify(this, ambientName, AmbientColor * degree, ModifyType.Add);
+                material.UniManager.Modify(this, specularName, SpecularColor * degree, ModifyType.Add);
             }
             // diffuseUni.AddModifier(this, diffuse * degree, ModifyType.Add);
         }

@@ -13,12 +13,12 @@ namespace Toys
 	public class UniformBuffer
 	{
 		protected readonly int UBO;
-		readonly string name;
-		public readonly int bufferIndex;
+		public readonly string Name;
+		public readonly int BufferIndex;
 
 		public UniformBuffer(int size, string bindingName, int bindingPoint)
 		{
-			bufferIndex = bindingPoint;
+			BufferIndex = bindingPoint;
 
 			UBO = GL.GenBuffer();
 			GL.BindBuffer(BufferTarget.UniformBuffer, UBO);
@@ -26,16 +26,16 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.UniformBuffer, 0);
 
 			//adding binding to existing shaders
-			name = bindingName;
-			ShaderManager.GetInstance.SetBinding(bufferIndex, bindingName);
-			GL.BindBufferBase(BufferRangeTarget.UniformBuffer, bufferIndex, UBO);
+			Name = bindingName;
+			ShaderManager.GetInstance.SetBinding(BufferIndex, bindingName);
+			GL.BindBufferBase(BufferRangeTarget.UniformBuffer, BufferIndex, UBO);
 		}
 
 		//binding buffer to shaders
 		public void Rebind()
 		{
-			ShaderManager.GetInstance.SetBinding(bufferIndex, name);
-			GL.BindBufferBase(BufferRangeTarget.UniformBuffer, bufferIndex, UBO);
+			ShaderManager.GetInstance.SetBinding(BufferIndex, Name);
+			GL.BindBufferBase(BufferRangeTarget.UniformBuffer, BufferIndex, UBO);
 		}
 
 		//setting values matrices

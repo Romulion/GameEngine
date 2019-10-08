@@ -5,9 +5,9 @@ namespace Toys
 {
 	public class UniformBufferManager
 	{
-		private static UniformBufferManager unfrmMgmr;
+		private static UniformBufferManager _uniformManager;
 
-		Dictionary<string, UniformBuffer> buffers = new Dictionary<string, UniformBuffer>();
+		Dictionary<string, UniformBuffer> _buffers = new Dictionary<string, UniformBuffer>();
 
 		public enum Target
 		{
@@ -19,9 +19,9 @@ namespace Toys
 		UniformBufferManager()
 		{
 			//add default buffers
-			buffers.Add("skeleton", new UniformBufferSkeleton());
-			buffers.Add("space", new UniformBufferSpace());
-			buffers.Add("light", new UniformBufferLight());
+			_buffers.Add("skeleton", new UniformBufferSkeleton());
+			_buffers.Add("space", new UniformBufferSpace());
+			_buffers.Add("light", new UniformBufferLight());
 		}
 
 
@@ -29,18 +29,18 @@ namespace Toys
 		{
 			get
 			{
-				if (unfrmMgmr == null)
-					unfrmMgmr = new UniformBufferManager();
+				if (_uniformManager == null)
+					_uniformManager = new UniformBufferManager();
 
-				return unfrmMgmr;
+				return _uniformManager;
 
 			}
 		}
 
 		public UniformBuffer GetBuffer(string name)
 		{
-			if (buffers.ContainsKey(name))
-				return buffers[name];
+			if (_buffers.ContainsKey(name))
+				return _buffers[name];
 
 			Console.WriteLine("shader {0} not found", name);
 			return null;

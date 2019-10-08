@@ -12,27 +12,28 @@ namespace Toys
 {
     class DynamicFormScript : ScriptingComponent
     {
-        Camera cam;
-        RenderTexture renderTex;
-        int rendBuff = 0;
-        int rbo = 0;
-        bool keyPressed = false;
-        DynamicForm form;
-        int Width, Height;
-        Bitmap bm;
-        bool isLeftButtonMouseDown = false;
+        int renderBufferId = 0;
         int offsetX, offsetY;
-        RenderBuffer rb;
+        int width, height;
+        Camera camera;
+        Bitmap imageBitmap;
+        DynamicForm form;
+        RenderTexture renderTex;
+        RenderBuffer renderBuffer;
+        bool isLeftButtonMouseDown = false;
+        bool keyPressed = false;
+        
+        
         void Awake()
         {
-            cam = CoreEngine.gEngine.MainCamera;
-            Width = cam.Width;
-            Height = cam.Height;
+            camera = CoreEngine.gEngine.MainCamera;
+            width = camera.Width;
+            height = camera.Height;
 
-            rb = new RenderBuffer(cam);
-            rendBuff = rb.rendBuffMS;
-            renderTex = rb.renderTex;
-            bm = new Bitmap(Width, Height);
+            renderBuffer = new RenderBuffer(camera);
+            renderBufferId = renderBuffer.RenderBufferMS;
+            renderTex = renderBuffer.RenderTexture;
+            imageBitmap = new Bitmap(width, height);
             form = new DynamicForm();
 
             form.LeftMouseDown += LeftMouseDown;
@@ -43,44 +44,44 @@ namespace Toys
         void Update()
         {
             
-            if (Width != cam.Width || Height != cam.Height)
+            if (width != camera.Width || height != camera.Height)
             {
-                Width = cam.Width;
-                Height = cam.Height;
-                renderTex.ResizeTexture(Width, Height);
-                form.Width = cam.Width;
-                form.Height = cam.Height;
+                width = camera.Width;
+                height = camera.Height;
+                renderTex.ResizeTexture(width, height);
+                form.Width = camera.Width;
+                form.Height = camera.Height;
             }
             
-            KeyboardState ks = Keyboard.GetState();
-            if (ks[Key.B] && !keyPressed)
+            KeyboardState keyState = Keyboard.GetState();
+            if (keyState[Key.B] && !keyPressed)
             {
-                if (cam.renderBuffer != 0)
+                if (camera.RenderBuffer != 0)
                 {
-                    cam.renderBuffer = 0;
+                    camera.RenderBuffer = 0;
                     form.Hide();
                 }
                 else
                 {
-                    cam.renderBuffer = rendBuff;
+                    camera.RenderBuffer = renderBufferId;
                     form.Show();
                 }
 
                 keyPressed = true;
             }
 
-            if (!ks[Key.B] && keyPressed)
+            if (!keyState[Key.B] && keyPressed)
                 keyPressed = false;
         }
 
         void PostRender()
         {
-            if (cam.renderBuffer != 0)
+            if (camera.RenderBuffer != 0)
             {
-                rb.Update();
-                renderTex.GetImage(bm);
-                bm.RotateFlip(RotateFlipType.Rotate180FlipX);
-                form.UpdateFormDisplay(bm);
+                renderBuffer.Update();
+                renderTex.GetImage(imageBitmap);
+                imageBitmap.RotateFlip(RotateFlipType.Rotate180FlipX);
+                form.UpdateFormDisplay(imageBitmap);
             }
 
 
@@ -90,10 +91,10 @@ namespace Toys
                 form.Top = Cursor.Position.Y + offsetY;
             }
             
-            KeyboardState ks = Keyboard.GetState();
-            if (ks[Key.S])
+            KeyboardState keyState = Keyboard.GetState();
+            if (keyState[Key.S])
             {
-                bm.Save("test.png");
+                imageBitmap.Save("test.png");
             }
             
         }

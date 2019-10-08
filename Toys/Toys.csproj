@@ -73,6 +73,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Engine\Modules\DinamicForm\DynamicFormScript.cs" />
+    <Compile Include="Engine\Objects\FrameTimeScript.cs" />
     <Compile Include="Engine\Objects\SceneNode.cs" />
     <Compile Include="Engine\Objects\ScriptingComponent.cs" />
     <Compile Include="Engine\Objects\Transformation.cs" />
@@ -99,10 +100,9 @@
     <Compile Include="Engine\Controll\Camera.cs" />
     <Compile Include="Engine\Morph\Morph.cs" />
     <Compile Include="Engine\Objects\LightSource.cs" />
-    <Compile Include="Engine\Materials\MaterialSimple.cs" />
     <Compile Include="Engine\Morph\MorphVertex.cs" />
     <Compile Include="Engine\Objects\Scene.cs" />
-    <Compile Include="Engine\Objects\Shader_Manager.cs" />
+    <Compile Include="Engine\Objects\ShaderManager.cs" />
     <Compile Include="Engine\CoreEngine.cs" />
     <Compile Include="ExternalCode\TargaImage.cs" />
     <Compile Include="gtk-gui\generated.cs" />

@@ -5,8 +5,8 @@ namespace Toys
 {
     public class Time
     {
-        public double renderTime { get; internal set; }
-        public double updagteTime { get; internal set; }
+        public double RenderTime { get; internal set; }
+        public double UpdateTime { get; internal set; }
         Stopwatch stopwatch;
         static double resolution;
 

@@ -14,7 +14,6 @@ namespace Toys
             if (args.Length == 0)
             	return;
 
-           // string path = "D:/3d/3d/Models/Animu/BGHS onigiridojo/JC2_綿木ミシェルver3.2x/ミシェル制服ver3.pmx";
             CoreEngine core = new CoreEngine();
 
             var scene = core.mainScene;
@@ -37,30 +36,8 @@ namespace Toys
             */
             scene.AddObject(node);
             TestScript ts = (TestScript)node.AddComponent<TestScript>();
-            
-            
-            TextBox text = null;
-            long frames = 1;
-            long framesMax = 60;
-            double update = 0, render = 0;
-            core.Load += (s, e) => { text = new TextBox(); node.AddComponent(text);};
-            core.UpdateFrame += (s, e) => {
+            FrameTimeScript ft = (FrameTimeScript)node.AddComponent<FrameTimeScript>();
 
-                if (frames >= framesMax)
-                {
-                    text.SetText((update / frames).ToString("C2") + "  " + (render / frames).ToString("C2"));
-                    frames = 0;
-                    update = 0;
-                    render = 0;
-                }
-                update += CoreEngine.time.updagteTime;
-                render += CoreEngine.time.renderTime;
-                frames++;
-            };
-            
-            //
-            //
-            
             var task = new Task(() =>
 				{
 				Application.Init();

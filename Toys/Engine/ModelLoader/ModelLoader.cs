@@ -17,11 +17,11 @@ namespace Toys
 
 		public static IModelLoader Load(string filename)
 		{
-			string extension = filename.Substring( filename.LastIndexOf('.') + 1);
-            extension = extension.ToLower();
+			string fileExtension = filename.Substring( filename.LastIndexOf('.') + 1);
+            fileExtension = fileExtension.ToLower();
 
 			ModelFormat format = 0;
-			switch (extension)
+			switch (fileExtension)
 			{
 				case "pmx":
 					format = ModelFormat.PMX;

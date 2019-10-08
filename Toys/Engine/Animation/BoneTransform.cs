@@ -59,16 +59,16 @@ namespace Toys
         
         bool changed;
 
-        public BoneTransform(Bone b)
+        public BoneTransform(Bone bone)
         {
-            Bone = b;
+            Bone = bone;
             LocalMatrix = Matrix4.Identity;
             World2BoneInitial = Matrix4.Identity;
             Bone2WorldInitial = Matrix4.Identity;
             IsIK = Bone.IK;
             IKRotation = Quaternion.Identity;
             PhysTransform = Matrix4.Identity;
-            InitialLocalTransform = b.Parent2Local;
+            InitialLocalTransform = bone.Parent2Local;
             ResetTransform(false);
         }
 
@@ -104,7 +104,7 @@ namespace Toys
 		        AddTranslation = Vector3.Zero;
 		        if (!IsAddLocal)
 		        {
-			        AddTranslation = ((!AddParent.IsTranslateAdd) ? (AddParent.Translation) : AddParent.AddTranslation);
+			        AddTranslation = (!AddParent.IsTranslateAdd) ? (AddParent.Translation) : AddParent.AddTranslation;
 		        }
 		        else
 		        {
@@ -205,17 +205,17 @@ namespace Toys
         }
 
 
-        public void SetTransform(Vector3 scale, Quaternion rot, Vector3 trans)
+        public void SetTransform(Vector3 scale, Quaternion rotation, Vector3 translation)
         {
             Scale = scale;
-            Rotation = rot;
-            Translation = trans;
+            Rotation = rotation;
+            Translation = translation;
         }
 
-        public void SetTransform(Quaternion rot, Vector3 trans)
+        public void SetTransform(Quaternion rotation, Vector3 translation)
         {
-            Rotation = rot;
-            Translation = trans;
+            Rotation = rotation;
+            Translation = translation;
         }
 
         public void UpdateTransformMatrix()

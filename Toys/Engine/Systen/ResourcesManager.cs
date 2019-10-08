@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace Toys
 {
@@ -48,7 +50,7 @@ namespace Toys
 			if (asset)
 			{
 				asset.Id = path;
-				asset.type = typeof(T);
+				asset.Type = typeof(T);
 			}
 			return asset as T;
 		}
@@ -80,11 +82,31 @@ namespace Toys
 			List<T> result = new List<T>();
 			foreach (var val in resources.Values)
 			{
-				if (val is T && ((Component)val).node.Active)
+				if (val is T && ((Component)val).Node.Active)
 					result.Add((T)val);
 			}
 
 			return result.ToArray();
 		}
-	}
+
+        public static string ReadFromInternalResource(string path)
+        {
+            var stream = ReadFromInternalResourceStream(path);
+
+            string str = "";
+            using (var reader = new StreamReader(stream))
+            {
+                str = reader.ReadToEnd();
+            }
+            return str;
+        }
+
+        public static Stream ReadFromInternalResourceStream(string path)
+        {
+            string defPath = "Toys.Resourses.";
+            var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
+            var stream = assembly.GetManifestResourceStream(defPath + path);
+            return stream;
+        }
+    }
 }

@@ -8,7 +8,7 @@ namespace Toys
 	public class Reader
 	{
 		BinaryReader stream;
-		public byte encoding;
+		public byte Encoding;
 
 		public Reader(BinaryReader stream)
 		{
@@ -22,13 +22,13 @@ namespace Toys
 
 			byte[] buffer = buffer = stream.ReadBytes(length);
 
-			if (encoding == 1)
+			if (Encoding == 1)
 			{
-				return Encoding.UTF8.GetString(buffer);
+				return System.Text.Encoding.UTF8.GetString(buffer);
 			}
-			if (encoding == 0)
+			if (Encoding == 0)
 				
-				return Encoding.Unicode.GetString(buffer);
+				return System.Text.Encoding.Unicode.GetString(buffer);
 			
 			return "";
 		}
@@ -38,13 +38,13 @@ namespace Toys
             int length = stream.ReadByte();
             byte[] buffer = buffer = stream.ReadBytes(length);
 
-            if (encoding == 1)
+            if (Encoding == 1)
             {
-                return Encoding.UTF8.GetString(buffer);
+                return System.Text.Encoding.UTF8.GetString(buffer);
             }
-            if (encoding == 0)
+            if (Encoding == 0)
 
-                return Encoding.Unicode.GetString(buffer);
+                return System.Text.Encoding.Unicode.GetString(buffer);
 
             return "";
         }

@@ -19,7 +19,7 @@ namespace Toys
             Name = name;
             Group = group;
 			varId = id;
-            type = typeof(Vector4);
+            Type = typeof(Vector4);
             if (group != "")
                 varName = group + "." + name;
             else

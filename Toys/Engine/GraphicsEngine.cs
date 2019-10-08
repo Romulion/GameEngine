@@ -17,8 +17,8 @@ namespace Toys
     {
         int Width, Height;
 
-        internal static MainRenderer mainRender;
-		internal static TextRenderer textRender;
+        internal static MainRenderer MainRender;
+		internal static TextRenderer TextRender;
 		//test
 		int VBO, VAO, FBO;
 		Shader sh;
@@ -40,8 +40,8 @@ namespace Toys
 		public void OnLoad()
 		{
 			renderScene.OnLoad();
-			mainRender = new MainRenderer(renderScene);
-			textRender = new TextRenderer();
+			MainRender = new MainRenderer(renderScene);
+			TextRender = new TextRenderer();
 			renderScene.GetLight.BindShadowMap();
             //TestTriangle();
         }
@@ -84,11 +84,6 @@ namespace Toys
             {
 
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-
-                //ShaderManager mgr = ShaderManager.GetInstance;
-                //mgr.LoadShader("pp");
-                //pp = mgr.GetShader("pp");
-
                 //setting aditional buffer
                 FBO = GL.GenFramebuffer();
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBO);
@@ -157,12 +152,12 @@ namespace Toys
                 MainCamera.CalcLook();
                 GL.Viewport(0, 0, MainCamera.Width, MainCamera.Height);
                 //render scene to primary buffer
-                GL.BindFramebuffer(FramebufferTarget.Framebuffer, MainCamera.renderBuffer);
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, MainCamera.RenderBuffer);
                 SetCullMode(FaceCullMode.Disable);
                 GL.ClearColor(MainCamera.ClearColor);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-                mainRender.Render(meshes.ToArray(), MainCamera);
+                MainRender.Render(meshes.ToArray(), MainCamera);
 
                 if (MainCamera.Background != null)
                     MainCamera.Background.DrawBackground(MainCamera);
@@ -170,7 +165,7 @@ namespace Toys
 
             //render ui
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-            textRender.RenderText();
+            TextRender.RenderText();
         }
 
         internal void Resize(int newWidth, int newHeight)
@@ -180,7 +175,7 @@ namespace Toys
             MainCamera.Width = newWidth;
             MainCamera.Height = newHeight;
             MainCamera.CalcProjection();
-			textRender.Resize(newWidth, newHeight);
+			TextRender.Resize(newWidth, newHeight);
         }
 
         internal void SetCullMode(FaceCullMode cullMode)

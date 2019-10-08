@@ -16,7 +16,7 @@ namespace Toys
 			Name = name;
 			Group = group;
 			varId = id;
-            type = typeof(Matrix4);
+            Type = typeof(Matrix4);
 			if (group != "")
 				varName = group + "." + name;
 			else

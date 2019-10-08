@@ -11,11 +11,11 @@ namespace Toys
     //Face Expressions viever for Pokemon Masters models
     class ScriptChangeExpression : ScriptingComponent
     {
-        bool key_Pressed;
+        bool keyPressed;
         Material face;
         KeyboardState ks;
-        int face_state = 0;
-        Vector2[] expr_states =
+        int currentFace = 0;
+        Vector2[] exprList =
         {
             new Vector2(0,0),
             new Vector2(0.25f,0),
@@ -38,11 +38,11 @@ namespace Toys
         {
 
             face = null;
-            Component[] mds = node.GetComponents(typeof(MeshDrawer));
+            Component[] mds = Node.GetComponents(typeof(MeshDrawer));
 
             foreach (var md in mds)
-                if (((MeshDrawer)md).mats[0].Name.Contains("face"))
-                    face = ((MeshDrawer)md).mats[0];
+                if (((MeshDrawer)md).Materials[0].Name.Contains("face"))
+                    face = ((MeshDrawer)md).Materials[0];
 
         }
         void Update()
@@ -115,18 +115,18 @@ namespace Toys
 
             if (ks.IsKeyUp(Key.E))
             {
-                key_Pressed = false;
+                keyPressed = false;
             }
 
-            if (ks.IsKeyDown(Key.E) && !key_Pressed)
+            if (ks.IsKeyDown(Key.E) && !keyPressed)
             {
-                if (face_state == 15)
-                    face_state = 0;
+                if (currentFace == 15)
+                    currentFace = 0;
                 else
-                    face_state++;
-                trans.Xy = expr_states[face_state];
+                    currentFace++;
+                trans.Xy = exprList[currentFace];
                 face.UniManager.Set("uv_translation", trans);
-                key_Pressed = true;
+                keyPressed = true;
             }
         }
     }

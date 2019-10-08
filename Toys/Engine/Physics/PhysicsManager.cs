@@ -11,8 +11,8 @@ namespace Toys
         RigidBodyBone[] rigitBodies;
         BoneController bones;
         Joint[] joints;
-        public BoneBodySyncer prePhysics;
-        public BoneBodySyncer postPhysics;
+        BoneBodySyncer prePhysics;
+        BoneBodySyncer postPhysics;
         Transformation worldTrans;
 
         DiscreteDynamicsWorld World;
@@ -31,7 +31,7 @@ namespace Toys
             Rigits = rigits;
             Jcons = jcons;
             //CreateGeneric6DofSpringConstraint();
-            type = typeof(PhysicsManager);
+            Type = typeof(PhysicsManager);
         }
 
         void Awake()
@@ -52,8 +52,8 @@ namespace Toys
                 //skipping bone binding for no index riggs (ushort indexes only)
                 if (rigits[i].BoneIndex < bones.GetBones.Length && rigits[i].BoneIndex >=0)
                 {
-                    rigitBodies[i].bone = rigits[i].BoneIndex;
-                    rigitBodies[i].acon = bones;
+                    rigitBodies[i].BoneID = rigits[i].BoneIndex;
+                    rigitBodies[i].BoneController = bones;
                     if (rigits[i].Phys == PhysType.FollowBone || rigits[i].Phys == PhysType.GravityBone)
                         prePhysics += rigitBodies[i].SyncBone2Body;
 
@@ -75,8 +75,8 @@ namespace Toys
             for (int i = 0; i < jcons.Length; i++)
             {
                 joints[i] = new Joint(jcons[i], rigitBodies);
-				if (joints[i].joint != null)
-                World.AddConstraint(joints[i].joint, true);
+				if (joints[i].Constraint != null)
+                World.AddConstraint(joints[i].Constraint, true);
             }
         }
 

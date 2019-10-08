@@ -4,7 +4,7 @@ namespace Toys
 	public class LogEntry
 	{
 		public string Sender { get; private set; }
-		public DateTime time { get; private set; }
+		public DateTime Time { get; private set; }
 		public Logger.Level Severenety { get; private set; }
 		public string Message { get; private set; }
 		public string Location { get; private set; }
@@ -15,7 +15,7 @@ namespace Toys
 			Severenety = severenety;
 			Message = message;
 			Location = location;
-			time = DateTime.Now;
+			Time = DateTime.Now;
 		}
 	}
 }

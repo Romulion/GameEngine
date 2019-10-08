@@ -8,16 +8,16 @@ namespace Toys
 	{
 		protected int shaderProgram;
 
-        protected ShaderUniform[] unis;
+        protected ShaderUniform[] uniforms;
 
         //clone uniforms for each copy of material
-        public ShaderUniform[] uniforms {
+        public ShaderUniform[] GetUniforms {
             get
             {
-                ShaderUniform[] vars = new ShaderUniform[unis.Length];
+                ShaderUniform[] vars = new ShaderUniform[uniforms.Length];
                 for (int i = 0; i < vars.Length; i++)
                 {
-                    vars[i] = unis[i].Clone();
+                    vars[i] = uniforms[i].Clone();
                 }
                 return vars;
             }
@@ -113,11 +113,11 @@ namespace Toys
 		protected int CompileShader(string source, ShaderType st)
 		{
 
-			int compShader = GL.CreateShader(st);
-			GL.ShaderSource(compShader, source);
-			GL.CompileShader(compShader);
+			int computeShader = GL.CreateShader(st);
+			GL.ShaderSource(computeShader, source);
+			GL.CompileShader(computeShader);
 			string log;
-			GL.GetShaderInfoLog(compShader, out log);
+			GL.GetShaderInfoLog(computeShader, out log);
 
 			if (log != "")
 			{
@@ -126,7 +126,7 @@ namespace Toys
 				throw new Exception();
 			}
 
-			return compShader;
+			return computeShader;
 		}
 
 

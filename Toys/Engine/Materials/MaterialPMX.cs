@@ -29,8 +29,8 @@ namespace Toys
 
         public MaterialPMX(ShaderSettings shdrsett, RenderDirectives rdir) :base()
 		{
-            shdrSettings = shdrsett;
-            rndrDirrectives = rdir;
+            ShaderSettings = shdrsett;
+            RenderDirrectives = rdir;
             CreateShader();
         }
         /*
@@ -52,13 +52,13 @@ namespace Toys
 
         private void CreateShader()
         {
-            shdr = ShaderConstructor.CreateShader(shdrSettings);
-            CreateShader(shdr);
+            shaderProgram = ShaderConstructor.CreateShader(ShaderSettings);
+            CreateShader(shaderProgram);
         }
 
         public override Material Clone()
         {
-            var material = new MaterialPMX(shdrSettings, rndrDirrectives);
+            var material = new MaterialPMX(ShaderSettings, RenderDirrectives);
             foreach (var texture in textures)
                 material.SetTexture(texture.Value, texture.Key);
 

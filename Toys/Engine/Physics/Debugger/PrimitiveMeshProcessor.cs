@@ -44,7 +44,7 @@ namespace Toys
 			shaderProgram = ShaderManager.GetInstance.GetShader("phys");
 
 			//setting shader uniform references
-			foreach (var uni in shaderProgram.uniforms)
+			foreach (var uni in shaderProgram.GetUniforms)
 				if (uni.Name == "world")
 					worldS = uni;
 				else if (uni.Name == "color")
@@ -72,7 +72,7 @@ namespace Toys
 
 			var ubm = UniformBufferManager.GetInstance;	
 			var ubsp = ubm.GetBuffer("space");
-			shaderProgram.SetUBO(ubsp.bufferIndex, "space");
+			shaderProgram.SetUBO(ubsp.BufferIndex, "space");
 		}
 
 		PrimitiveData CreateShape(CollisionShape shape)

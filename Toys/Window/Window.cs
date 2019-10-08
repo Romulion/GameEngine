@@ -18,10 +18,10 @@ namespace Toys
 
 
 			var render = (MeshDrawer) node.GetComponent(typeof(MeshDrawer));
-			if (render.mats != null)
-				SetList(render.mats);
-			if (render.morph != null)
-				SetMorphList(render.morph);
+			if (render.Materials != null)
+				SetList(render.Materials);
+			if (render.Morphes != null)
+				SetMorphList(render.Morphes);
 
 			var anim = (Animator)node.GetComponent(typeof(Animator));
 			SetAnimator(anim);
@@ -44,9 +44,9 @@ namespace Toys
 
 				btn.Clicked += (sender, e) =>
 				{
-					var renderDir = mat.rndrDirrectives;
-					renderDir.render = !renderDir.render;
-					if (renderDir.render)
+					var renderDir = mat.RenderDirrectives;
+					renderDir.IsRendered = !renderDir.IsRendered;
+					if (renderDir.IsRendered)
 						btn.ModifyBg(StateType.Normal, disable);
 					else 
 						btn.ModifyBg(StateType.Active, enable);	
@@ -92,7 +92,7 @@ namespace Toys
 
 				scale.ValueChanged += (sender, e) =>
 				{
-					core.addTask = () => morph.morphDegree =(float)scale.Value;
+					core.addTask = () => morph.MorphDegree =(float)scale.Value;
 				};
 
 

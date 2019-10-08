@@ -28,21 +28,21 @@ namespace Toys
         }
         static BackgroundSkybox()
         {
-            string path = "Toys.Resourses.shaders.";
-            string vs = ShaderManager.ReadFromAssetStream(path + "Skybox.vsh");
-            string fs = ShaderManager.ReadFromAssetStream(path + "Skybox.fsh");
-            backgroundShdr = new ShaderMain(vs, fs);
-            backgroundShdr.ApplyShader();
-            backgroundShdr.SetUniform(0, "skybox");
+            string path = "shaders.";
+            string vs = ResourcesManager.ReadFromInternalResource(path + "Skybox.vsh");
+            string fs = ResourcesManager.ReadFromInternalResource(path + "Skybox.fsh");
+            backgroundShader = new ShaderMain(vs, fs);
+            backgroundShader.ApplyShader();
+            backgroundShader.SetUniform(0, "skybox");
         }
 
-        public override void DrawBackground(Camera cam)
+        public override void DrawBackground(Camera camera)
         {
-            backgroundShdr.ApplyShader();
-            Matrix4 look = cam.GetLook;
+            backgroundShader.ApplyShader();
+            Matrix4 look = camera.GetLook;
             look.M41 = look.M42 = look.M43 = 0;
-            backgroundShdr.SetUniform(look, "view");
-            backgroundShdr.SetUniform(cam.projection, "projection");
+            backgroundShader.SetUniform(look, "view");
+            backgroundShader.SetUniform(camera.Projection, "projection");
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.TextureCubeMap, cubemapTexture);
             GL.DepthFunc(DepthFunction.Lequal);
@@ -63,14 +63,11 @@ namespace Toys
             //setting interpolation
             GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, (int)All.Linear);
             GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, (int)All.Linear);
-            
-            var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture)).Assembly;
 
             for (int i = 0; i < textureSides.Length; i++)
             {
-                using (Bitmap pic = new Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.Skybox." + textureSides[i])))
+                using (Bitmap pic = new Bitmap(ResourcesManager.ReadFromInternalResourceStream("textures.Skybox." + textureSides[i])))
                 {
-                    Console.WriteLine(pic.PixelFormat);
                     System.Drawing.Imaging.BitmapData data =
                       pic.LockBits(new Rectangle(0, 0, pic.Width, pic.Height),
                       System.Drawing.Imaging.ImageLockMode.ReadOnly, pic.PixelFormat);

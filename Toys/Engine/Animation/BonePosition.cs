@@ -4,15 +4,15 @@ namespace Toys
 {
     internal struct BonePosition
     {
-        internal readonly Vector3 position;
-        internal readonly Vector4 rotation;
-        internal readonly int boneId;
+        internal readonly Vector3 Position;
+        internal readonly Vector4 Rotation;
+        internal readonly int BoneId;
 
-        internal BonePosition(Vector3 pos, Vector4 rot,int id)
+        internal BonePosition(Vector3 position, Vector4 rotation,int id)
         {
-            position = pos;
-            rotation = rot;
-            boneId = id;
+            Position = position;
+            Rotation = rotation;
+            BoneId = id;
         }
     }
 }

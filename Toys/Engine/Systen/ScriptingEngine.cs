@@ -13,8 +13,8 @@ namespace Toys
     {
         List<ScriptingComponent> scripts = new List<ScriptingComponent>();
 
-        Queue<ScriptingComponent> AwakeQueue = new Queue<ScriptingComponent>();
-        Queue<ScriptingComponent> StartQueue = new Queue<ScriptingComponent>();
+        Queue<ScriptingComponent> awakeQueue = new Queue<ScriptingComponent>();
+        Queue<ScriptingComponent> startQueue = new Queue<ScriptingComponent>();
         List<Message> updates = new List<Message>();
         List<Message> prerender = new List<Message>();
         List<Message> postRender = new List<Message>();
@@ -28,29 +28,29 @@ namespace Toys
         internal void AddScript(ScriptingComponent sc)
         {
             scripts.Add(sc);
-            AwakeQueue.Enqueue(sc);
+            awakeQueue.Enqueue(sc);
         }
 
         internal void Awake()
         {
-            while (AwakeQueue.Count > 0)
+            while (awakeQueue.Count > 0)
             {
-                ScriptingComponent sc = AwakeQueue.Dequeue();
+                ScriptingComponent sc = awakeQueue.Dequeue();
                 var act = GetMessage(sc, "Awake");
                 if (act != null)
                 {
                     act.Invoke();
                 } 
                 sc.IsInstalized = true;
-                StartQueue.Enqueue(sc);
+                startQueue.Enqueue(sc);
             }
         }
 
         internal void Start()
         {
-            while (StartQueue.Count > 0)
+            while (startQueue.Count > 0)
             {
-                ScriptingComponent sc = StartQueue.Dequeue();
+                ScriptingComponent sc = startQueue.Dequeue();
                 var act = GetMessage(sc, "Start");
                 if (act != null)
                 {
@@ -72,7 +72,7 @@ namespace Toys
 
         Action GetMessage(ScriptingComponent sc, string name)
         {
-            MethodInfo method = sc.type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method = sc.Type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Instance);
             Action message = null;
             if (method != null && method.GetGenericArguments().Length == 0)
             {
@@ -85,8 +85,8 @@ namespace Toys
         internal void RemoveScript(ScriptingComponent sc)
         {
             scripts.Remove(sc);
-            updates.RemoveAll((m) => m.obj == sc);
-            prerender.RemoveAll((m) => m.obj == sc);
+            updates.RemoveAll((m) => m.ScriptingObject == sc);
+            prerender.RemoveAll((m) => m.ScriptingObject == sc);
         }
 
         internal void Update()

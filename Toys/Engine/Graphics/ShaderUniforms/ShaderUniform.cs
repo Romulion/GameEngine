@@ -4,7 +4,7 @@ namespace Toys
 {
     public abstract class ShaderUniform
     {
-        public Type type { get; protected set; }
+        public Type Type { get; protected set; }
         public object defaultValue { get; protected set; }
         public string Name { get; protected set; }
         public string Group { get; protected set; }

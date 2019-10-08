@@ -9,28 +9,24 @@ namespace Toys
 {
     public class IKResolver
     {
-        private bool enable;
-        private bool[] m_fixAxis;
+        private bool _isEnable;
+        private bool[] _fixAxis;
         public float LimitOnce;
         public int LoopCount;
 
-        private Vector3 m_ikPosition;
+        private Vector3 _ikPosition;
 
-        private Vector3 m_targetPosition;
+        private Vector3 _targetPosition;
 
-        private const float ZeroValue = 0.0001f;
-
-        private const float ZeroValue2 = 1E-08f;
-
-        public bool Enable
+        public bool IsEnable
         {
             get
             {
-                return enable;
+                return _isEnable;
             }
             set
             {
-                enable = value;
+                _isEnable = value;
             }
         }
 
@@ -52,7 +48,7 @@ namespace Toys
 
         public IKResolver()
         {
-            Enable = false;
+            IsEnable = false;
             LimitOnce = (float)Math.PI;
             LoopCount = 1;
             IsPhysicsAllLink = false;
@@ -78,7 +74,7 @@ namespace Toys
             BoneIK iK = IK.Bone.IKData;
 
             IKLinksBones = new BoneTransform[iK.Links.Length];
-            m_fixAxis = new bool[iK.Links.Length];
+            _fixAxis = new bool[iK.Links.Length];
             IKLinks = new IKLink[iK.Links.Length];
             ContainLimit = false;
 
@@ -95,7 +91,7 @@ namespace Toys
                         IKLinks[i].NormalizeAngle();
                         IKLinks[i].NormalizeEulerAxis();
                         if (IKLinks[i].FixAxis == IKLink.FixAxisType.Fix)
-                            m_fixAxis[i] = true;
+                            _fixAxis[i] = true;
                     }
                 }
             }
@@ -107,7 +103,7 @@ namespace Toys
             {
                 Target = arr[iK.Target];
                 IK.IsIK = true;
-                Enable = true;
+                IsEnable = true;
                 return true;
             }
             Target = null;
@@ -129,7 +125,7 @@ namespace Toys
                 IKLinksBones[i].UpdateLocalMatrix(false);
             }
             Target.UpdateLocalMatrix(false);
-            m_targetPosition = Target.GetTransformedBonePosition();
+            _targetPosition = Target.GetTransformedBonePosition();
         }
 
         private void CalcBonePosition_Link(int link)
@@ -139,21 +135,21 @@ namespace Toys
                 IKLinksBones[i].UpdateLocalMatrixIKLink();
             }
             Target.UpdateLocalMatrix(false);
-            m_targetPosition = Target.GetTransformedBonePosition();
+            _targetPosition = Target.GetTransformedBonePosition();
         }
 
         public void Transform()
         {
-            if (!Enable || Target == null || IKLinksBones.Length == 0)
+            if (!IsEnable || Target == null || IKLinksBones.Length == 0)
                 return;
 
             InitializeAngle();
             CalcBonePosition(IKLinksBones.Length - 1);
-            m_ikPosition = IK.GetTransformedBonePosition();
+            _ikPosition = IK.GetTransformedBonePosition();
             Target.UpdateLocalMatrix();
-            m_targetPosition = Target.GetTransformedBonePosition();
+            _targetPosition = Target.GetTransformedBonePosition();
             
-            if ((m_ikPosition - m_targetPosition).LengthSquared < 1E-08f)
+            if ((_ikPosition - _targetPosition).LengthSquared < 1E-08f)
                 return;
 
             int num = LoopCount / 2;
@@ -161,12 +157,12 @@ namespace Toys
             {
                 for (int j = 0; j < IKLinksBones.Length; j++)
                 {
-                    if (!m_fixAxis[j])
+                    if (!_fixAxis[j])
                     {
                         IKProc_Link(j, i < num);
                     }
                 }
-                if ((m_ikPosition - m_targetPosition).LengthSquared < 1E-08f)
+                if ((_ikPosition - _targetPosition).LengthSquared < 1E-08f)
                     break;
             }
         }
@@ -176,9 +172,9 @@ namespace Toys
             BoneTransform transformBone = IKLinksBones[linkNum];
 
             Vector3 linkPos = transformBone.GetTransformedBonePosition();
-            Vector3 vectLinkTarget = linkPos - m_targetPosition;
+            Vector3 vectLinkTarget = linkPos - _targetPosition;
             vectLinkTarget.Normalize();
-            Vector3 vectLinkIK = linkPos - m_ikPosition;
+            Vector3 vectLinkIK = linkPos - _ikPosition;
             vectLinkIK.Normalize();
 
             Matrix4 matrixParent = (transformBone.Parent == null) ? Matrix4.Identity : transformBone.Parent.LocalMatrix;
