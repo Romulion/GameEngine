@@ -163,6 +163,9 @@ namespace Toys
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
                 mainRender.Render(meshes.ToArray(), MainCamera);
+
+                if (MainCamera.Background != null)
+                    MainCamera.Background.DrawBackground(MainCamera);
             }
 
             //render ui

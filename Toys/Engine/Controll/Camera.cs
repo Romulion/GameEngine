@@ -24,6 +24,8 @@ namespace Toys
         public bool Active { get; set;}
         public bool Main { get; internal set; }
 
+        public BackgroundBase Background;
+
         public int renderBuffer = 0;
         //camera space
         Vector3 cameraTarget = new Vector3(0f, 1f, 0f);
