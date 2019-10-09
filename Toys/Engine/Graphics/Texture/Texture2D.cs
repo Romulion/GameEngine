@@ -16,9 +16,8 @@ namespace Toys
 		ShadowMap = 10,
 	};
 
-	public class Texture2D : Resource
+	public class Texture2D : Texture
 	{
-		protected int texture_id;
         new TextureType type;
 		public string Name { private set; get; }
         public int Width { get; protected set; }
@@ -27,23 +26,17 @@ namespace Toys
         //default texture
         static Texture2D defaultTexture;
 
-        public enum Wrapper
-        {
-            MirrorRepeat = All.MirroredRepeat,
-            Repeat = All.Repeat,
-            ClampToBorder = All.ClampToBorder,
-            ClampToEdge = All.ClampToEdge,
-        }
-
         public Texture2D(string path, TextureType type) : this(path)
 		{
             this.type = type;
         }
 
-		public Texture2D(string path) : base (typeof(Texture2D))
+		public Texture2D(string path)
 		{
-			texture_id = GL.GenTexture();
-			Bitmap tex1;
+            textureType = TextureTarget.Texture2D;
+            GenerateTextureID();
+
+            Bitmap tex1;
             Console.WindowHeight = 50;
             //check texture
             try
@@ -80,30 +73,33 @@ namespace Toys
 				Console.Write("cant load texture  ");
                 Console.WriteLine(path);
                 Texture2D empty = LoadEmpty();
-				texture_id = empty.texture_id;
+                textureID = empty.textureID;
                 Name = empty.Name;
             }
 		}
 
 		//for framebuffer
-		Texture2D(int texture, string name) : base (typeof(Texture2D))
+		Texture2D(int texture, string name)
 		{
-			texture_id = texture;
-            this.Name = name;
+            textureType = TextureTarget.Texture2D;
+            textureID = texture;
+            Name = name;
 		}
 
 		//for build in textures
-		internal Texture2D(Bitmap tex, TextureType type, string name) : base (typeof(Texture2D))
+		internal Texture2D(Bitmap tex, TextureType type, string name)
 		{
-			texture_id = GL.GenTexture();
+            textureType = TextureTarget.Texture2D;
+            textureID = GL.GenTexture();
             this.type = type;
             Name = name;
 			LoadTexture(tex);
 		}
 
-        protected Texture2D() : base(typeof(Texture2D))
+        protected Texture2D()
         {
-            texture_id = GL.GenTexture();
+            textureType = TextureTarget.Texture2D;
+            GenerateTextureID();
         }
 
         void LoadTexture(Bitmap texture)
@@ -120,17 +116,10 @@ namespace Toys
 				}
 				texture = clone;
 			}
-			GL.BindTexture(TextureTarget.Texture2D, texture_id);
-
-			//setting wrapper
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.MirroredRepeat);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.MirroredRepeat);
-			//setting interpolation
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
-
-			//load to static memory
-			System.Drawing.Imaging.BitmapData data =
+			BindTexture();
+            SetDefault();
+            //load to static memory
+            System.Drawing.Imaging.BitmapData data =
 				texture.LockBits(new Rectangle(0, 0, texture.Width, texture.Height),
 					  System.Drawing.Imaging.ImageLockMode.ReadOnly, texture.PixelFormat);
 
@@ -144,7 +133,6 @@ namespace Toys
             //loading to video memory
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
 						  texture.Width, texture.Height, 0, format, PixelType.UnsignedByte, data.Scan0);
-            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
             Width = texture.Width;
             Height = texture.Height;
@@ -155,13 +143,8 @@ namespace Toys
 
         void LoadTexture(KtxStructure texture)
         {
-            GL.BindTexture(TextureTarget.Texture2D, texture_id);
-            //setting wrapper
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.MirroredRepeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.MirroredRepeat);
-            //setting interpolation
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
+            BindTexture();
+            SetDefault();
             //setting mip layer count
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureBaseLevel, 0);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, texture.header.numberOfMipmapLevels-1);
@@ -192,16 +175,6 @@ namespace Toys
                     break;
                 }
             }
-            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-        }
-
-
-        public void ChangeWrapper(Wrapper wrap)
-        {
-            GL.BindTexture(TextureTarget.Texture2D, texture_id);
-
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)wrap);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)wrap);
         }
 
 		public void ChangeType(TextureType tt)
@@ -226,9 +199,8 @@ namespace Toys
 		//Shadow texture
 		public static Texture2D CreateShadowMap(int width, int height)
 		{
-			string type = "shadowmap";
-			int texture_id = GL.GenTexture();
-			GL.BindTexture(TextureTarget.Texture2D, texture_id);
+            var texture = new Texture2D();
+            texture.BindTexture();
 			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.DepthComponent, 
 			              width, height, 0, PixelFormat.DepthComponent, PixelType.Float, IntPtr.Zero);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
@@ -236,34 +208,18 @@ namespace Toys
 			//setting wrapper
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.ClampToEdge);
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.ClampToEdge);
-			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, texture_id, 0);
+			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, texture.textureID, 0);
 			//for shadow aa
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureCompareMode, (int)All.CompareRefToTexture);
-			return new Texture2D(texture_id, type);
-		}
-
-        //examplar method for binding texture to shader
-        public virtual void BindTexture()
-		{
-			GL.BindTexture(TextureTarget.Texture2D,texture_id);
-		}
-
-		public TextureType GetTextureType
-		{
-			get { return type; } 
-			set { type = value;}
-		}
-		public string GetName
-		{
-			get { return Name; }
+            return texture;
 		}
 
         public static Texture2D CreateCharMap(int width, int heigth)
         {
+            var texture = new Texture2D();
+            
+            GL.BindTexture(TextureTarget.Texture2D, texture.textureID);
             GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
-            int texture_id = GL.GenTexture();
-            var texture = new Texture2D(texture_id,"charmap");
-            GL.BindTexture(TextureTarget.Texture2D, texture_id);
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.R8,
                           width, heigth, 0, PixelFormat.Red, PixelType.UnsignedByte, IntPtr.Zero);
 
@@ -281,9 +237,13 @@ namespace Toys
             GL.TexSubImage2D(TextureTarget.Texture2D, 0, x, y, w, h, PixelFormat.Red, PixelType.UnsignedByte, bitmap);
         }
 
-        internal override void Unload()
-		{
-			GL.DeleteTexture(texture_id);
-		}
+        private void SetDefault()
+        {
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)All.MirroredRepeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)All.MirroredRepeat);
+            //setting interpolation
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
+        }
 	}
 }

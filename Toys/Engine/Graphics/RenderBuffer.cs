@@ -40,7 +40,7 @@ namespace Toys
             RenderBufferPost = GL.GenFramebuffer();
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, RenderBufferPost);
             RenderTexture = new RenderTexture(camera.Width, camera.Height);
-            RenderTexture.AttachToBuffer();
+            RenderTexture.AttachToCurrentBuffer();
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
         }
 

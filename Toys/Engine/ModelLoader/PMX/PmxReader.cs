@@ -183,7 +183,7 @@ namespace Toys
 				else
 				{
 					tex.ChangeType(TextureType.Diffuse);
-					tex.ChangeWrapper(Texture2D.Wrapper.Repeat);
+					tex.WrapMode =TextureWrapMode.Repeat;
 				}
 				textures[i] = tex;
             }
@@ -260,7 +260,7 @@ namespace Toys
 					if (text != 255)
 					{
 						shdrs.ToonShadow = true;
-                        textures[text].ChangeWrapper(Texture2D.Wrapper.ClampToEdge);
+                        textures[text].WrapMode = TextureWrapMode.ClampToEdge;
                         toon = textures[text];
 						//toon.GetTextureType = TextureType.toon;
 					}
