@@ -17,7 +17,7 @@ namespace Toys
         MeshDrawer[] mesDrawlers = new MeshDrawer[0];
         Bone[] bones = null;
         BoneController boneControll = null;
-        Dictionary<string, Texture> texturesDict = new Dictionary<string, Texture>();
+        Dictionary<string, Texture2D> texturesDict = new Dictionary<string, Texture2D>();
 
         public ReaderLMD(string path)
         {
@@ -368,7 +368,7 @@ namespace Toys
                             mat.SetTexture(texturesDict[textPath], type);
                         else
                         {
-                            var text = new Texture(textPath);
+                            var text = new Texture2D(textPath);
                             texturesDict.Add(textPath, text);
                             mat.SetTexture(text, type);
                         }

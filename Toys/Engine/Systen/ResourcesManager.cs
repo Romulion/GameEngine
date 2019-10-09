@@ -30,9 +30,9 @@ namespace Toys
 				//asset = model.model;
 				//resources.Add(path, asset);
 			}
-			else if (tp == typeof(Texture))
+			else if (tp == typeof(Texture2D))
 			{
-				asset = new Texture(path);
+				asset = new Texture2D(path);
 				resources.Add(path, asset);
 			}
 			else if (tp == typeof(SceneNode))

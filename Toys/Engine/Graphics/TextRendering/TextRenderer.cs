@@ -17,7 +17,7 @@ namespace Toys
 		Dictionary<char, Character> chars = new Dictionary<char, Character>();
 		Matrix4 projection;
         static int mapSize = 1024;
-        Texture charmap;
+        Texture2D charmap;
 		Shader shdr;
 
         int x, y, ymax;
@@ -56,7 +56,7 @@ namespace Toys
             shdr.SetUniform((int)TextureType.Diffuse, "text");
 
             shdr.GetUniforms[0].SetValue(projection);
-            charmap = Texture.CreateCharMap(mapSize, mapSize);
+            charmap = Texture2D.CreateCharMap(mapSize, mapSize);
             //test
             //CreateTestTextureMap();
         }

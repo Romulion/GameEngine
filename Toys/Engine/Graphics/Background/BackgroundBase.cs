@@ -10,7 +10,7 @@ namespace Toys
     public abstract class BackgroundBase
     {
         protected static Shader backgroundShader;
-        protected Texture texture;
+        protected Texture2D texture;
         public abstract void DrawBackground(Camera cam);
     }
 }

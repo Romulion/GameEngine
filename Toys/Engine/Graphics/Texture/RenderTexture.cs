@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace Toys
 {
-    class RenderTexture : Texture
+    class RenderTexture : Texture2D
     {
         public RenderTexture(int width, int height)
         {

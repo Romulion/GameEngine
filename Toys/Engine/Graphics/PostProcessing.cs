@@ -4,9 +4,9 @@ namespace Toys
 	public class PostProcessing
 	{
 		Shader shader;
-		Texture screen;
+		Texture2D screen;
 
-		public PostProcessing(Texture texture)
+		public PostProcessing(Texture2D texture)
 		{
 			ShaderManager shdrm = ShaderManager.GetInstance;
 			screen = texture;

@@ -60,11 +60,13 @@
     <Compile Include="Engine\Graphics\Background\BackgroundPlane.cs" />
     <Compile Include="Engine\Graphics\Background\BackgroundSkybox.cs" />
     <Compile Include="Engine\Graphics\RenderBuffer.cs" />
-    <Compile Include="Engine\Graphics\RenderTexture.cs" />
+    <Compile Include="Engine\Graphics\Texture\Cubemap.cs" />
+    <Compile Include="Engine\Graphics\Texture\RenderTexture.cs" />
     <Compile Include="Engine\Graphics\ShaderConstructorNew.cs" />
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector2.cs" />
     <Compile Include="Engine\Graphics\TextRendering\TextBox.cs" />
     <Compile Include="Engine\Graphics\TextRendering\TextCanvas.cs" />
+    <Compile Include="Engine\Graphics\Texture\Texture.cs" />
     <Compile Include="Engine\Materials\MaterialCustom.cs" />
     <Compile Include="Engine\Materials\MaterialPM.cs" />
     <Compile Include="Engine\ModelLoader\LMD\ReaderLMD.cs" />
@@ -96,7 +98,7 @@
     <Compile Include="Engine\Animation\Bone.cs" />
     <Compile Include="Engine\Graphics\Mesh.cs" />
     <Compile Include="Engine\Graphics\ShaderMain.cs" />
-    <Compile Include="Engine\Graphics\Texture.cs" />
+    <Compile Include="Engine\Graphics\Texture\Texture2D.cs" />
     <Compile Include="Engine\Controll\Camera.cs" />
     <Compile Include="Engine\Morph\Morph.cs" />
     <Compile Include="Engine\Objects\LightSource.cs" />

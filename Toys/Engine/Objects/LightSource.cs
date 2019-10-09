@@ -18,7 +18,7 @@ namespace Toys
 		int width = 2048;
 		int heigth = 2048;
 
-		Texture shadowMap;
+		Texture2D shadowMap;
 		Shader shdr;
 		Matrix4 direction;
 		Matrix4 projection;
@@ -27,7 +27,7 @@ namespace Toys
 		{
 			shadowBuffer = GL.GenFramebuffer();
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, shadowBuffer);
-			shadowMap = Texture.CreateShadowMap(width,heigth);
+			shadowMap = Texture2D.CreateShadowMap(width,heigth);
 			//shadowMap.BindTexture();
 			GL.DrawBuffer(DrawBufferMode.None);
 			GL.ReadBuffer(ReadBufferMode.None);

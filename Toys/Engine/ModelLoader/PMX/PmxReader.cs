@@ -10,8 +10,8 @@ namespace Toys
 	public class PmxReader : IModelLoader
 	{
 		Header header;
-		Texture[] textures;
-		Texture empty;
+		Texture2D[] textures;
+		Texture2D empty;
 		Material[] mats;
 		Bone[] bones;
 		public Morph[] morphs;
@@ -37,7 +37,7 @@ namespace Toys
             else
                 dir = "";
 
-			empty = Texture.LoadEmpty();
+			empty = Texture2D.LoadEmpty();
 			Stream fs = File.OpenRead(path);
 			file = new BinaryReader(fs);
 			reader = new Reader(file);
@@ -172,18 +172,18 @@ namespace Toys
 		void ReadTextures()
 		{
 			int texCount = file.ReadInt32();
-			textures = new Texture[texCount];
+			textures = new Texture2D[texCount];
 			for (int i = 0; i < texCount; i++)
 			{
 				string texture = reader.readString();
-                Texture tex = ResourcesManager.LoadAsset<Texture>(texture);
+                Texture2D tex = ResourcesManager.LoadAsset<Texture2D>(texture);
 
 				if (texture.Contains("toon"))
 					tex.ChangeType(TextureType.Toon);
 				else
 				{
 					tex.ChangeType(TextureType.Diffuse);
-					tex.ChangeWrapper(Texture.Wrapper.Repeat);
+					tex.ChangeWrapper(Texture2D.Wrapper.Repeat);
 				}
 				textures[i] = tex;
             }
@@ -238,7 +238,7 @@ namespace Toys
 				int envTexIndex = reader.readVal(header.GetTextureIndexSize);
 				int envBlend = file.ReadByte();
 				shdrs.EnvType = (EnvironmentMode)envBlend;
-				Texture envTex = empty;
+				Texture2D envTex = empty;
                 if (envTexIndex != 255 && envBlend > 0)
                 {
                     if (textures[envTexIndex].Name != "def")
@@ -253,14 +253,14 @@ namespace Toys
 
                 byte toonType = file.ReadByte();
 				
-				Texture toon = empty;
+				Texture2D toon = empty;
 				if (toonType == 0)
 				{
 					int text = reader.readVal(header.GetTextureIndexSize);
 					if (text != 255)
 					{
 						shdrs.ToonShadow = true;
-                        textures[text].ChangeWrapper(Texture.Wrapper.ClampToEdge);
+                        textures[text].ChangeWrapper(Texture2D.Wrapper.ClampToEdge);
                         toon = textures[text];
 						//toon.GetTextureType = TextureType.toon;
 					}
@@ -276,13 +276,13 @@ namespace Toys
 					byte toontex = file.ReadByte();
                     toontex++;
                     string texturePath = String.Format("Toys.Resourses.textures.PMX.toon{0}.bmp", toontex.ToString().PadLeft(2,'0'));
-                    Texture toonTex = ResourcesManager.GetResourse<Texture>(texturePath);
+                    Texture2D toonTex = ResourcesManager.GetResourse<Texture2D>(texturePath);
                     if (toonTex == null)
                     {
-                        var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture)).Assembly;
+                        var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
                         Bitmap pic = new Bitmap(assembly.GetManifestResourceStream(texturePath));
-                        toonTex = new Texture(pic, TextureType.Toon, String.Format("toon{0}.bmp", toontex.ToString().PadLeft(2, '0')));
-                        ResourcesManager.AddAsset<Texture>(toonTex, texturePath);
+                        toonTex = new Texture2D(pic, TextureType.Toon, String.Format("toon{0}.bmp", toontex.ToString().PadLeft(2, '0')));
+                        ResourcesManager.AddAsset<Texture2D>(toonTex, texturePath);
                     }
                     
                     toon = toonTex;
@@ -290,7 +290,7 @@ namespace Toys
 				}
                 reader.readString();
 				int count = file.ReadInt32();
-				Texture tex = empty;
+				Texture2D tex = empty;
 				if (difTexIndex != 255)
 				{
                     tex = textures[difTexIndex];
@@ -619,7 +619,7 @@ namespace Toys
 			get { return meshRigged; }
 		}
 
-		public Texture[] GetTextures
+		public Texture2D[] GetTextures
 		{
 			get { return textures; }
 		}

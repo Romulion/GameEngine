@@ -14,7 +14,7 @@ namespace Toys
     {
         BoneController bc;
         Material mat;
-        public static Texture texture;
+        public static Texture2D texture;
         void Awake()
         {
             /*
