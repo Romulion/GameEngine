@@ -72,10 +72,7 @@ namespace Toys
 
 		void ReadMesh()
 		{
-            
-			int meshSize = file.ReadInt32();
-            Console.WriteLine(meshSize);
-            
+			int meshSize = file.ReadInt32();            
 			VertexRigged3D [] verticesR = new VertexRigged3D[meshSize];
 			Vertex3D[] vertices = new Vertex3D[meshSize];
 			for (int i = 0; i < meshSize; i++)

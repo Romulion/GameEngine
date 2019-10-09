@@ -41,7 +41,6 @@ namespace Toys
             }
             catch (Exception)
             {
-                Console.WriteLine(222);
                 string defPath = "Toys.Resourses.Fonts.reddelicious.ttf";
                 var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
                 face = new Face(lib, ReadFont(assembly.GetManifestResourceStream(defPath)), 0);
@@ -139,12 +138,12 @@ namespace Toys
                 float h = chr.Size.Y * canvas.Scale;
 
                 float[] verts = {
-                     xpos,    ypos + h,   chr.position.X, chr.position.Y,
-                     xpos,     ypos,      chr.position.X, chr.position.Y + chr.Size.Y / mapSize,
-                     xpos + w, ypos,       chr.position.X + chr.Size.X / mapSize, chr.position.Y + chr.Size.Y / mapSize ,
-                     xpos,     ypos + h,   chr.position.X, chr.position.Y ,
-                     xpos + w, ypos,       chr.position.X + chr.Size.X / mapSize, chr.position.Y + chr.Size.Y / mapSize ,
-                     xpos + w, ypos + h,   chr.position.X + chr.Size.X / mapSize, chr.position.Y 
+                     xpos,    ypos + h,   chr.Position.X, chr.Position.Y,
+                     xpos,     ypos,      chr.Position.X, chr.Position.Y + chr.Size.Y / mapSize,
+                     xpos + w, ypos,       chr.Position.X + chr.Size.X / mapSize, chr.Position.Y + chr.Size.Y / mapSize ,
+                     xpos,     ypos + h,   chr.Position.X, chr.Position.Y ,
+                     xpos + w, ypos,       chr.Position.X + chr.Size.X / mapSize, chr.Position.Y + chr.Size.Y / mapSize ,
+                     xpos + w, ypos + h,   chr.Position.X + chr.Size.X / mapSize, chr.Position.Y 
                 };
 
                 Array.Copy(verts, 0, vertices, i, verts.Length);

@@ -8,14 +8,14 @@ namespace Toys
 		internal Vector2 Size;
 		internal Vector2 Bearing;
 		internal int Advance;
-        internal Vector2 position;
+        internal Vector2 Position;
 
-		internal Character(Vector2 p, Vector2 s, Vector2 b, int a)
+		internal Character(Vector2 position, Vector2 size, Vector2 bearing, int advance)
 		{
-			Size = s;
-			Bearing = b;
-			Advance = a;
-            position = p;
+			Size = size;
+			Bearing = bearing;
+			Advance = advance;
+            Position = position;
 		}
 	}
 }

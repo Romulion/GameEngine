@@ -20,6 +20,16 @@ namespace Toys
 
             //string str = "";
             SceneNode node = ResourcesManager.LoadAsset<SceneNode>(args[0]);
+
+            var camera = new Camera();
+            SceneNode sceneNode = new SceneNode();
+            sceneNode.AddComponent(camera);
+            sceneNode.AddComponent<CameraControllScript>();
+            sceneNode.GetTransform.Position = new Vector3(0, 1, 3);
+            sceneNode.AddComponent<DynamicFormScript>();
+            scene.AddObject(sceneNode);
+            camera.Background = new BackgroundSkybox();
+
             //node.Name = "Model1";
             //var loader = new ReaderLMD(args[0]);
             //SceneNode node = loader.GetModel;

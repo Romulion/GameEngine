@@ -50,7 +50,7 @@ namespace Toys
         public Camera() : base(typeof(Camera))
 		{
             NearPlane = 0.1f;
-            FarPlane = 10.0f;
+            FarPlane = 100.0f;
             projType = ProjectionType.Perspective;
             Main = true;
         }

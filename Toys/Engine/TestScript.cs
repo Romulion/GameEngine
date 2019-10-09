@@ -41,11 +41,11 @@ namespace Toys
             MeshDrawer md = new MeshDrawer(mesh,mat);
             node.AddComponent(md);
            */
-           /*
-            var msd = (Animator)node.GetComponent<Animator>();
+           
+            var msd = (Animator)Node.GetComponent<Animator>();
             if (msd != null)
-                bc = msd.bones;
-                */
+                bc = msd.BoneController;
+                
             //World = CoreEngine.pEngine.World;
             
         }
@@ -58,7 +58,8 @@ namespace Toys
                 mat.SetTexture(texture, TextureType.Diffuse);
             }
             */
-            //Console.WriteLine(bc.GetBone(33).LocalMatrix);
+           // Console.WriteLine(bc.GetBone(3).LocalMatrix);
+           // Console.WriteLine(bc.GetBone(3).InitialLocalTransform);
             //Console.WriteLine(bc.GetBone(5).Bone.Name);
             //Console.WriteLine(bc.GetBone(3).BoneMatrix);
             // bc.GetBone(0).SetTransform(new Quaternion(0, 0, 0), new Vector3(0, 0.5f, 0));

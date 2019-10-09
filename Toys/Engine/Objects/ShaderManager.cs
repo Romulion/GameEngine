@@ -74,7 +74,6 @@ namespace Toys
 		{
 			if (shaderDictionary.ContainsKey(name))
 				return shaderDictionary[name];
-			Console.WriteLine(shaderDictionary.Count);
 
 			Console.WriteLine("shader {0} not found", name);
 			return shaderDictionary["def"];

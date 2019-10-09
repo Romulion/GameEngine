@@ -44,11 +44,11 @@ namespace Toys
 			var daemats = new DAEMaterialReader(xRoot);
 			var matsList = daemats.GetMaterials();
 
-			mats = new Material[meshreader.dgc.Count];
+			mats = new Material[meshreader.DAEGeometry.Count];
 
-			for (int i = 0; i < meshreader.dgc.Count; i++)
+			for (int i = 0; i < meshreader.DAEGeometry.Count; i++)
 			{
-				var meshItem = meshreader.dgc[i];
+				var meshItem = meshreader.DAEGeometry[i];
 				var matTemplate = matsList.Find((obj) => obj.Name == meshItem.MaterialName + "_mat" );
 				mats[i] = matTemplate.Clone();
 				mats[i].Name = meshItem.Name;
@@ -144,7 +144,7 @@ namespace Toys
 			get
 			{
 				
-				MeshDrawerRigged md = new MeshDrawerRigged(mesh, mats,new BoneController(bones.ToArray()));
+				MeshDrawerRigged md = new MeshDrawerRigged(mesh, mats,new BoneController(bones.ToArray(),true));
 				md.OutlineDrawing = true;
 				var node = new SceneNode();
 				node.AddComponent(md);

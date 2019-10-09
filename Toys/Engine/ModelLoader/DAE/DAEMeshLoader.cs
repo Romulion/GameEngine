@@ -8,15 +8,16 @@ namespace Toys
 {
 	public class DAEMeshLoader
 	{
-		public List<DAEGeometryContainer> dgc;
+		public List<DAEGeometryContainer> DAEGeometry;
 		XmlNode xGeometry = null;
 		const string nodeName = "library_geometries";
-
+        Logger logger;
 		float max = 0f;
 
 		public DAEMeshLoader(XmlElement xRoot)
 		{
-			foreach (XmlNode xnode in xRoot)
+            logger = new Logger("DAE mesh loader");
+            foreach (XmlNode xnode in xRoot)
 			{
 				if (xnode.Name == nodeName)
 				{
@@ -28,17 +29,23 @@ namespace Toys
 			if (xGeometry == null)
 				throw new Exception();
 
-			dgc = new List<DAEGeometryContainer>(xGeometry.ChildNodes.Count);
+			DAEGeometry = new List<DAEGeometryContainer>(xGeometry.ChildNodes.Count);
 			foreach (XmlNode mesh in xGeometry.ChildNodes)
 			{
-				ReadMesh(mesh);
+                try
+                {
+                    ReadMesh(mesh);
+                }
+                catch (Exception e)
+                {
+                    logger.Warning("Error Parsing Mesh", e.Source);
+                }
 			}
 
 			foreach (XmlNode mesh in xRoot.FindNodes("library_controllers")[0].ChildNodes)
 			{
-			         ReadWeigth(mesh);
+			    ReadWeigth(mesh);
 			}
-			Console.WriteLine(max);
 		}
 
 		void ReadMesh(XmlNode geometry)
@@ -50,15 +57,12 @@ namespace Toys
 			XmlNode mesh = geometry.FirstChild;
 			DAEGeometryContainer gc = null;
 
-			//Console.WriteLine("{0}", mesh.Attributes.GetNamedItem("name").Value);
-
 			//initializing mesh data
 			foreach (XmlNode source in mesh.FindNodes("triangles"))
 			{
 				var cnt = source.Attributes.GetNamedItem("count").Value;
 				int[] indexes = null;
 				mat = source.Attributes.GetNamedItem("material").Value;
-
 
 				foreach (XmlNode input in source.ChildNodes)
 				{
@@ -84,7 +88,7 @@ namespace Toys
 				}
 
 				gc = new DAEGeometryContainer((uint)indexes.Max() + 1);
-				dgc.Add(gc);
+				DAEGeometry.Add(gc);
 				gc.Indeces = indexes;
 
 			}
@@ -93,8 +97,8 @@ namespace Toys
 			gc.ID = geometry.Attributes.GetNamedItem("id").Value;
 			gc.Name = geometry.Attributes.GetNamedItem("name").Value;
 			gc.MaterialName = mat;
-			//vertices
-
+            //vertices
+            
 			XmlNode vertS = mesh.FindId(vertID);
 			var inpts = vertS.FindNodes("input");
 			if (inpts[0].Attributes != null && inpts[0].Attributes.GetNamedItem("semantic") != null)
@@ -148,21 +152,22 @@ namespace Toys
 				}
 			}
 
-			//get texcoord
-			//Console.WriteLine(textID);
-			XmlNode uvtex = mesh.FindId(textID);
-			var fluv = uvtex.FindNodes("float_array");
-			float[] fls1 = StringParser.readFloat(fluv[0].InnerText);
-			 i = 0;
-			//Console.WriteLine(fls1.Length);
+            //get texcoord
+            if (textID != "")
+            {
+                XmlNode uvtex = mesh.FindId(textID);
+                var fluv = uvtex.FindNodes("float_array");
+                float[] fls1 = StringParser.readFloat(fluv[0].InnerText);
+                i = 0;
+                //Console.WriteLine(fls1.Length);
 
-			for (int n = 0; n < fls1.Length && i < gc.UVs.Length; n += 2)
-			{
-				gc.UVs[i] = new Vector2(fls1[n] * 2f, (1 - fls1[n + 1]));    
-				i++;
-			}
-
-		}
+                for (int n = 0; n < fls1.Length && i < gc.UVs.Length; n += 2)
+                {
+                    gc.UVs[i] = new Vector2(fls1[n] * 2f, (1 - fls1[n + 1]));
+                    i++;
+                }
+            }
+        }
 
 
 		void ReadWeigth(XmlNode controller)
@@ -170,7 +175,7 @@ namespace Toys
 			XmlNode skin = controller.FirstChild;
 
 			string geometryID = skin.Attributes.GetNamedItem("source").Value;
-			var geometry = dgc.Find(inst => inst.ID == geometryID.Replace("#","") );
+			var geometry = DAEGeometry.Find(inst => inst.ID == geometryID.Replace("#","") );
 
 			var weighth = skin.FindNodes("vertex_weights");
 			var inputs = weighth[0].FindNodes("input");
@@ -234,7 +239,7 @@ namespace Toys
 
 			int offset = 0;
 			int vertsOffset = 0;
-			foreach (var gc in dgc)
+			foreach (var gc in DAEGeometry)
 			{
 				for (int n = 0; n < gc.Positions.Length; n++)
 				{

@@ -16,8 +16,9 @@ namespace Toys
         Queue<ScriptingComponent> awakeQueue = new Queue<ScriptingComponent>();
         Queue<ScriptingComponent> startQueue = new Queue<ScriptingComponent>();
         List<Message> updates = new List<Message>();
-        List<Message> prerender = new List<Message>();
+        List<Message> preRender = new List<Message>();
         List<Message> postRender = new List<Message>();
+        List<Message> onDestroy = new List<Message>();
 
 
         internal ScriptingEngine()
@@ -62,11 +63,15 @@ namespace Toys
                     updates.Add(new Message(sc,mess));
                 mess = GetMessage(sc, "PreRender");
                 if (mess != null)
-                    prerender.Add(new Message(sc, mess));
+                    preRender.Add(new Message(sc, mess));
 
                 mess = GetMessage(sc, "PostRender");
                 if (mess != null)
                     postRender.Add(new Message(sc, mess));
+
+                mess = GetMessage(sc, "OnDestroy");
+                if (mess != null)
+                    onDestroy.Add(new Message(sc, mess));
             }
         }
 
@@ -86,7 +91,7 @@ namespace Toys
         {
             scripts.Remove(sc);
             updates.RemoveAll((m) => m.ScriptingObject == sc);
-            prerender.RemoveAll((m) => m.ScriptingObject == sc);
+            preRender.RemoveAll((m) => m.ScriptingObject == sc);
         }
 
         internal void Update()
@@ -97,13 +102,19 @@ namespace Toys
 
         internal void PreRender()
         {
-            foreach (var prr in prerender)
+            foreach (var prr in preRender)
                 prr.Method();
         }
 
         internal void PostRender()
         {
             foreach (var prr in postRender)
+                prr.Method();
+        }
+
+        internal void Destroy()
+        {
+            foreach (var prr in onDestroy)
                 prr.Method();
         }
     }

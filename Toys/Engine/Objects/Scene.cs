@@ -13,14 +13,6 @@ namespace Toys
 
 		public void OnLoad()
 		{
-            var camera = new Camera();
-            SceneNode node = new SceneNode();
-            node.AddComponent(camera);
-            node.AddComponent<CameraControllScript>();
-            node.GetTransform.Position = new Vector3(0, 1, 3);
-            nodes.Add(node);
-            node.AddComponent<DynamicFormScript>();
-            camera.Background = new BackgroundSkybox();
             light = new LightSource();
         }
 

@@ -99,6 +99,12 @@ namespace Toys
             
         }
 
+        void OnDestroy()
+        {
+            imageBitmap.Dispose();
+            form.Dispose();
+        }
+
         private void LeftMouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             offsetX = form.Left - Cursor.Position.X;

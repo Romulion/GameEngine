@@ -56,6 +56,7 @@ namespace Toys
         private void CoreEngine_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             pEngine.Dispose();
+            sEngine.Destroy();
         }
 
         //for Load event

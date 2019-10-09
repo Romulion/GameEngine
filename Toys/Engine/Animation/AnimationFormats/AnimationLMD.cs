@@ -136,7 +136,6 @@ namespace Toys
             for (int i = 0; i < maxFrames; i++)
                 bonePosesInterpretated[i] = new List<BonePosition>();
 
-            Console.WriteLine(bones.Count);
             float framePart = 1f / maxFrames;
             for (int n = 0; n < bones.Count; n++)
             {
