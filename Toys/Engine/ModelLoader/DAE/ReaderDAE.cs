@@ -52,7 +52,8 @@ namespace Toys
 				var matTemplate = matsList.Find((obj) => obj.Name == meshItem.MaterialName + "_mat" );
 				mats[i] = matTemplate.Clone();
 				mats[i].Name = meshItem.Name;
-				mats[i].Count = meshItem.Indeces.Length;
+                mats[i].UniManager.Set("ambient_color", Vector3.One);
+                mats[i].Count = meshItem.Indeces.Length;
 				mats[i].Offset = meshItem.Offset;
 			}
 		}

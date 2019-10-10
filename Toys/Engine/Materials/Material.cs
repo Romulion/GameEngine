@@ -15,7 +15,7 @@ namespace Toys
 		public string Name { get; set; }
 		public int Offset { get; set; }
 		public int Count { get; set; }
-        public ShaderUniformManager UniManager { get; private set; }
+        public ShaderUniformManager UniManager { get; protected set; }
 
         protected Dictionary<TextureType, Texture2D> textures;
 		protected Shader shaderProgram;

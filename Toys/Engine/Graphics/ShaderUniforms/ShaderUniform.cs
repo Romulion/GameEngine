@@ -25,7 +25,7 @@ namespace Toys
         public void SetValue(object val)
         {
             
-            if (!(CheckCompability(val)))
+            if (!CheckCompability(val))
                 return;
 
             defaultValue = val;

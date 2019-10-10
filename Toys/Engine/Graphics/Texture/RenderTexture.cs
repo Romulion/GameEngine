@@ -7,6 +7,7 @@ namespace Toys
 {
     class RenderTexture : Texture
     {
+        Rectangle imageRectanglel;
         public RenderTexture(int width, int height)
         {
             GenerateTextureID();
@@ -20,6 +21,8 @@ namespace Toys
             wrapModeU = TextureWrapMode.ClampToEdge;
             wrapModeV = TextureWrapMode.ClampToEdge;
             FillterMode = TextureFillterMode.Bilinear;
+
+            imageRectanglel = new Rectangle(0, 0, Width, Height);
         }
 
 
@@ -32,7 +35,7 @@ namespace Toys
         public void GetImage(Bitmap image)
         {
             BindTexture();
-            var imageBits = image.LockBits(new Rectangle(0, 0, Width, Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var imageBits = image.LockBits(imageRectanglel, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             GetImage(imageBits.Scan0);
             image.UnlockBits(imageBits);
         }

@@ -130,10 +130,10 @@ namespace Toys
 				rddir.HasEdges = true;
 				shdrst.TextureDiffuse = true;
 				shdrst.DiscardInvisible = true;
-				var mat  = new MaterialPMX(shdrst, rddir);
+                shdrst.Ambient = true;
+                var mat  = new MaterialPMX(shdrst, rddir);
 				mat.Name = DAEMaterials[i].Name;
                 mat.UniManager.Set("ambient_color", Vector3.One);
-                mat.UniManager.Set("diffuse_color", Vector4.One);
                 mat.SetTexture(DAEMaterials[i].DiffuseTexture, TextureType.Diffuse);
 
 				mats.Add(mat);

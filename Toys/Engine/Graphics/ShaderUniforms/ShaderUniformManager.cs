@@ -77,5 +77,14 @@ namespace Toys
                     material.RenderDirrectives.IsRendered = true;
             }
         }
+
+        public ShaderUniform[] CopyUniforms()
+        {
+            ShaderUniform[] unis = new ShaderUniform[uniforms.Length];
+            for (int i = 0; i < uniforms.Length; i++)
+                unis[i] = uniforms[i].Clone();
+
+            return unis;
+        }
     }
 }

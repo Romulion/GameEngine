@@ -61,7 +61,7 @@ namespace Toys
             var material = new MaterialPMX(ShaderSettings, RenderDirrectives);
             foreach (var texture in textures)
                 material.SetTexture(texture.Value, texture.Key);
-
+            //material.UniManager = new ShaderUniformManager(UniManager.CopyUniforms(), material);
             return material;
         }
 
