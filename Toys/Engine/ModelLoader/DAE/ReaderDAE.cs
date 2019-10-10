@@ -92,7 +92,6 @@ namespace Toys
 			}
             //set local to global space
             //SetGlobalLocalSpace(bones[0], Matrix4.Identity);
-
         }
 
 		void getBone(XmlNode xmlNode, int parent)

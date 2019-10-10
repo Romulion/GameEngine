@@ -224,7 +224,7 @@ namespace Toys
 						geometry.BoneWeigths[i] = new Vector4(weigths[bindedBones[offset + 1]], weigths[bindedBones[offset + 3]],weigths[bindedBones[offset + 5]], weigths[bindedBones[offset + 7]]);
 						break;
 				}
-				geometry.BoneWeigths[i].Normalize();
+				//geometry.BoneWeigths[i].Normalize();
 				offset += count * 2;
 			}
 

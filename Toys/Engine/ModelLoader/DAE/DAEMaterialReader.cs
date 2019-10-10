@@ -132,7 +132,9 @@ namespace Toys
 				shdrst.DiscardInvisible = true;
 				var mat  = new MaterialPMX(shdrst, rddir);
 				mat.Name = DAEMaterials[i].Name;
-				mat.SetTexture(DAEMaterials[i].DiffuseTexture, TextureType.Diffuse);
+                mat.UniManager.Set("ambient_color", Vector3.One);
+                mat.UniManager.Set("diffuse_color", Vector4.One);
+                mat.SetTexture(DAEMaterials[i].DiffuseTexture, TextureType.Diffuse);
 
 				mats.Add(mat);
 			}

@@ -58,9 +58,9 @@ namespace Toys
                 mat.SetTexture(texture, TextureType.Diffuse);
             }
             */
-           // Console.WriteLine(bc.GetBone(3).LocalMatrix);
-           // Console.WriteLine(bc.GetBone(3).InitialLocalTransform);
-            //Console.WriteLine(bc.GetBone(5).Bone.Name);
+            //Console.WriteLine(bc.GetBone(13).LocalMatrix);
+            //Console.WriteLine(bc.GetBone(13).World2BoneInitial);
+            //Console.WriteLine(bc.GetBone(13).TransformMatrix);
             //Console.WriteLine(bc.GetBone(3).BoneMatrix);
             // bc.GetBone(0).SetTransform(new Quaternion(0, 0, 0), new Vector3(0, 0.5f, 0));
 

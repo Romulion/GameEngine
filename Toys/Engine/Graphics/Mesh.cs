@@ -172,7 +172,6 @@ namespace Toys
 		//updating mesh for vertex morph and skinning
 		public void UpdateMeshRigged()
 		{
-			Vertices[100].Position.X += 0.01f;
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 			int vertSize = Marshal.SizeOf(typeof(VertexRigged3D));
 			GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, vertSize * VertexCount, Vertices);
