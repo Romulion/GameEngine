@@ -12,6 +12,14 @@ namespace Toys
 		const string libeff = "library_effects";
 		public List<DAEMaterial> DAEMaterials;
 
+        Dictionary<string, TextureWrapMode> wrapModes = new Dictionary<string, TextureWrapMode>
+        {
+            ["WRAP"] = TextureWrapMode.Repeat,
+            ["MIRROR"] = TextureWrapMode.MirrorRepeat,
+            ["CLAMP"] = TextureWrapMode.ClampToEdge,
+            ["BORDER"] = TextureWrapMode.ClampToBorder,
+            ["NONE"] = TextureWrapMode.ClampToBorder,
+        };
 
 		public DAEMaterialReader(XmlElement xRoot)
 		{
@@ -104,7 +112,14 @@ namespace Toys
 			}
 			mat.TextureName += "." + surf.FindNodes("format")[0].InnerText.ToLower();
 			mat.DiffuseTexture = new Texture2D(mat.TextureName, TextureType.Diffuse);
-			DAEMaterials.Add(mat);
+
+            var wrapS = sampler.FindNodes("wrap_s");
+            if (wrapS.Length > 0)
+                mat.DiffuseTexture.WrapModeU = wrapModes[wrapS[0].InnerText];
+            var wrapT = sampler.FindNodes("wrap_t");
+            if (wrapT.Length > 0)
+                mat.DiffuseTexture.WrapModeV = wrapModes[wrapT[0].InnerText];
+            DAEMaterials.Add(mat);
 		}
 
 		Vector4 GetColor(XmlNode setting)

@@ -163,7 +163,7 @@ namespace Toys
 
                 for (int n = 0; n < fls1.Length && i < gc.UVs.Length; n += 2)
                 {
-                    gc.UVs[i] = new Vector2(fls1[n] * 2f, (1 - fls1[n + 1]));
+                    gc.UVs[i] = new Vector2(fls1[n], fls1[n + 1]);
                     i++;
                 }
             }
