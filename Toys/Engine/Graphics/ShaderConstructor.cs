@@ -148,10 +148,11 @@ namespace Toys
 					+ "\treturn (2.0 * near_plane * far_plane) / (far_plane + near_plane - z * (far_plane - near_plane));\n"
 					+ "}\n";
 				*/
-				rawFragment += "float ShadowCalculation()\n"
-					+ "{\n"
-					+ "\tfloat bias = 0.005;\n"
-					+ "\tvec3 projCoords = fs_in.lightSpace.xyz / fs_in.lightSpace.w;\n"
+				rawFragment += "float ShadowCalculation(vec3 normal, vec3 lightDir)\n"
+                    + "{\n"
+					//+ "\tfloat bias = 0.006;\n"
+                    + "\tfloat bias = max(0.01 * (1.0 - dot(normal, lightDir)), 0.005);"
+                    + "\tvec3 projCoords = fs_in.lightSpace.xyz / fs_in.lightSpace.w;\n"
                     + "\tprojCoords = projCoords * 0.5 + 0.5;\n"
 					+ "\tprojCoords.z -= bias;"
 					+ "\tfloat shadow = 1 - texture(shadowMap, projCoords);\n"
@@ -190,7 +191,7 @@ namespace Toys
 
             //shadowing section
             if (setting.RecieveShadow)
-				rawFragment += "float shadow = ShadowCalculation();\n";
+				rawFragment += "float shadow = ShadowCalculation(normal,lightDir);\n";
 
 
 			if (setting.AffectedByLight)

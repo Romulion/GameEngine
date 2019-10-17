@@ -1,7 +1,6 @@
 ﻿using System;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
-using System.Runtime.InteropServices;
 
 namespace Toys
 {
