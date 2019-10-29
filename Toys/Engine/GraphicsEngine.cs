@@ -140,13 +140,13 @@ namespace Toys
 
             //shadow pass
             SetCullMode(FaceCullMode.Back);
-            GL.Disable(EnableCap.Multisample);
+            //GL.Disable(EnableCap.Multisample);
 			renderScene.GetLight.RenderShadow(meshes);
 
             //clear display buffer
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            GL.Enable(EnableCap.Multisample);
+            //GL.Enable(EnableCap.Multisample);
             if (MainCamera != null)
             {
                 MainCamera.CalcLook();
