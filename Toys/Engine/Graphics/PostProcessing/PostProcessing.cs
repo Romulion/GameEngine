@@ -10,6 +10,7 @@ namespace Toys
         int renderBuffer;
         public RenderTexture OutputTexture { get; private set; }
         Camera camera;
+        public bool ClearColorBuffer { get; set; }
 
         public PostProcessing(Camera camera)
 		{
@@ -59,6 +60,8 @@ namespace Toys
 		public void RenderScreen()
 		{
             GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, renderBuffer);
+            if (ClearColorBuffer)
+                GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.BindVertexArray(VAO);
             GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
         }
