@@ -10,46 +10,91 @@ namespace Toys
     class RenderBuffer
     {
         public RenderTexture RenderTexture { get; private set; }
-        public int RenderBufferMS { get; }
+        public int RenderBufferDraw { get; private set; }
 
-        public int RenderBufferPost { get; }
-        int textureMS, rbo, Width, Height;
-        int samples = 4;
-        public RenderBuffer(Camera camera)
+        int RenderBufferOut { get; set; }
+        int textureMS, rbo, rboOut, Width, Height;
+        readonly int samples;
+        bool depthStencil;
+        public RenderBuffer(Camera camera,int samplesCount, bool depthStencil)
         {
             Width = camera.Width;
             Height = camera.Height;
-            //create multisampled buffer
-            RenderBufferMS = GL.GenFramebuffer();
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, RenderBufferMS);
-            //create multisampled texture
-            textureMS = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2DMultisample, textureMS);
-            GL.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, samples, PixelInternalFormat.Rgba, camera.Width, camera.Height, true);
-            GL.BindTexture(TextureTarget.Texture2DMultisample, 0);
-            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2DMultisample, textureMS, 0);
-            //additional render buffer
-            rbo = GL.GenRenderbuffer();
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, rbo);
-            GL.RenderbufferStorageMultisample(RenderbufferTarget.Renderbuffer, samples, RenderbufferStorage.Depth24Stencil8, camera.Width, camera.Height);
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
-            GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, rbo);
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-
-            //create out buffer
-            RenderBufferPost = GL.GenFramebuffer();
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, RenderBufferPost);
-            RenderTexture = new RenderTexture(camera.Width, camera.Height);
-            RenderTexture.AttachToCurrentBuffer();
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            samples = samplesCount;
+            this.depthStencil = depthStencil;
+            //create render buffer
+            InitializeBuffers();
         }
 
         //downsample multisampled texture
         public void DownSample()
         {
-            GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, RenderBufferMS);
-            GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, RenderBufferPost);
-            GL.BlitFramebuffer(0, 0, Width, Height, 0, 0, Width, Height, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
+            if (samples > 0)
+            {
+                GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, RenderBufferDraw);
+                GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, RenderBufferOut);
+                GL.BlitFramebuffer(0, 0, Width, Height, 0, 0, Width, Height, 
+                    ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit, 
+                    BlitFramebufferFilter.Nearest);
+            }
+        }
+
+
+        public void OnResize(int width, int height)
+        {
+            Width = width;
+            Height = height;
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, rbo);
+            if (samples > 0)
+            {
+                GL.BindTexture(TextureTarget.Texture2DMultisample, textureMS);
+                GL.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, samples, PixelInternalFormat.Rgba, Width, Height, true);
+    
+                GL.RenderbufferStorageMultisample(RenderbufferTarget.Renderbuffer, samples, RenderbufferStorage.Depth24Stencil8, Width, Height);
+            }
+            else
+            {
+                GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, Width, Height);
+            }
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
+            RenderTexture.ResizeTexture(Width, Height);
+        }
+
+        void InitializeBuffers()
+        {
+            RenderTexture = new RenderTexture(Width, Height);
+            RenderBufferOut = GL.GenFramebuffer();
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, RenderBufferOut);
+            RenderTexture.AttachToCurrentBuffer();
+            rboOut = GL.GenRenderbuffer();
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, rboOut);
+            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, Width, Height);
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
+            GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, rboOut);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            //create multisampled texture
+            if (samples > 0)
+            {
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                RenderBufferDraw = GL.GenFramebuffer();
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, RenderBufferDraw);
+                textureMS = GL.GenTexture();
+                GL.BindTexture(TextureTarget.Texture2DMultisample, textureMS);
+                GL.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, samples, PixelInternalFormat.Rgba, Width, Height, true);
+                GL.BindTexture(TextureTarget.Texture2DMultisample, 0);
+                GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2DMultisample, textureMS, 0);
+                //additional render buffer
+                rbo = GL.GenRenderbuffer();
+                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, rbo);
+                GL.RenderbufferStorageMultisample(RenderbufferTarget.Renderbuffer, samples, RenderbufferStorage.Depth24Stencil8, Width, Height);
+                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
+                GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, rbo);
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            }
+            else
+            {
+                RenderBufferDraw = RenderBufferOut;
+            }
         }
     }
 }
