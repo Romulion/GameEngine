@@ -44,18 +44,20 @@ namespace Toys
         {
             Width = width;
             Height = height;
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, rbo);
+            
             if (samples > 0)
             {
+                
                 GL.BindTexture(TextureTarget.Texture2DMultisample, textureMS);
                 GL.TexImage2DMultisample(TextureTargetMultisample.Texture2DMultisample, samples, PixelInternalFormat.Rgba, Width, Height, true);
-    
+
+                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, rbo);
                 GL.RenderbufferStorageMultisample(RenderbufferTarget.Renderbuffer, samples, RenderbufferStorage.Depth24Stencil8, Width, Height);
+                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
             }
-            else
-            {
-                GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, Width, Height);
-            }
+
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, rboOut);
+            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, Width, Height);
             GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
             RenderTexture.ResizeTexture(Width, Height);
         }

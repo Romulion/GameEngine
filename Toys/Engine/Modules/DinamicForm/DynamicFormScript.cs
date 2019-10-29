@@ -38,8 +38,8 @@ namespace Toys
             width = camera.Width;
             height = camera.Height;
 
-            renderBuffer = new RenderBuffer(camera);
-            renderBufferId = renderBuffer.RenderBufferMS;
+            renderBuffer = new RenderBuffer(camera,0,false);
+            renderBufferId = renderBuffer.RenderBufferDraw;
             renderTex = renderBuffer.RenderTexture;
             imageBitmap = new Bitmap(width, height);
             form = new DynamicForm();
@@ -54,9 +54,9 @@ namespace Toys
             shaderPP = shdrm.GetShader("FormPP");
             shaderPP.ApplyShader();
             shaderPP.SetUniform(0,"texture_diffuse");
-            shaderPP.SetUniform(new Vector3(0.01f,0.005f,-0.01f), "colorOffset");
-            aberation = (ShaderUniformVector3)shaderPP.GetUniforms[0];
-            pixelAberation /= width;
+            //shaderPP.SetUniform(new Vector3(0.01f,0.005f,-0.01f), "colorOffset");
+            //aberation = (ShaderUniformVector3)shaderPP.GetUniforms[0];
+            //pixelAberation /= width;
         }
 
 
@@ -67,7 +67,7 @@ namespace Toys
             {
                 width = camera.Width;
                 height = camera.Height;
-                renderTex.ResizeTexture(width, height);
+                renderBuffer.OnResize(width, height);
                 form.Width = camera.Width;
                 form.Height = camera.Height;
             }
@@ -77,12 +77,14 @@ namespace Toys
             {
                 if (camera.RenderBuffer != 0)
                 {
+                    ppSh.ClearColorBuffer = false;
                     camera.Background = backgroundBackup;
                     camera.RenderBuffer = 0;
                     form.Hide();
                 }
                 else
                 {
+                    ppSh.ClearColorBuffer = true;
                     backgroundBackup = camera.Background;
                     camera.Background = null;
                     camera.RenderBuffer = renderBufferId;
@@ -106,8 +108,8 @@ namespace Toys
                 GL.ActiveTexture(TextureUnit.Texture0);
                 renderTex.BindTexture();
                 //
-                float attitude = (float)Math.Sin((double)n / 45 * Math.PI);
-                aberation.SetValue(pixelAberation * attitude);
+                //float attitude = (float)Math.Sin((double)n / 45 * Math.PI);
+                //aberation.SetValue(pixelAberation * attitude);
                 //
                 ppSh.RenderScreen();
                 ppSh.OutputTexture.GetImage(imageBitmap);
