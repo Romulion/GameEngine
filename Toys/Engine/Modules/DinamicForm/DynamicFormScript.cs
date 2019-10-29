@@ -7,6 +7,7 @@ using OpenTK.Input;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.Windows.Forms;
+using OpenTK;
 
 namespace Toys
 {
@@ -22,8 +23,15 @@ namespace Toys
         RenderBuffer renderBuffer;
         bool isLeftButtonMouseDown = false;
         bool keyPressed = false;
-        
-        
+        BackgroundBase backgroundBackup;
+
+        //post processing
+        PostProcessing ppSh;
+        Shader shaderPP;
+        ShaderUniformVector3 aberation;
+        Vector3 pixelAberation = new Vector3(5,3, -7);
+        int n = 0;
+
         void Awake()
         {
             camera = CoreEngine.gEngine.MainCamera;
@@ -38,6 +46,17 @@ namespace Toys
 
             form.LeftMouseDown += LeftMouseDown;
             form.LeftMouseUp += LeftMouseUp;
+
+            //postprocessing testing
+            ppSh = new PostProcessing(camera);
+            ShaderManager shdrm = ShaderManager.GetInstance;
+            shdrm.LoadShader("FormPP");
+            shaderPP = shdrm.GetShader("FormPP");
+            shaderPP.ApplyShader();
+            shaderPP.SetUniform(0,"texture_diffuse");
+            shaderPP.SetUniform(new Vector3(0.01f,0.005f,-0.01f), "colorOffset");
+            aberation = (ShaderUniformVector3)shaderPP.GetUniforms[0];
+            pixelAberation /= width;
         }
 
 
@@ -58,11 +77,14 @@ namespace Toys
             {
                 if (camera.RenderBuffer != 0)
                 {
+                    camera.Background = backgroundBackup;
                     camera.RenderBuffer = 0;
                     form.Hide();
                 }
                 else
                 {
+                    backgroundBackup = camera.Background;
+                    camera.Background = null;
                     camera.RenderBuffer = renderBufferId;
                     form.Show();
                 }
@@ -78,12 +100,24 @@ namespace Toys
         {
             if (camera.RenderBuffer != 0)
             {
-                renderBuffer.Update();
-                renderTex.GetImage(imageBitmap);
-                imageBitmap.RotateFlip(RotateFlipType.Rotate180FlipX);
+                renderBuffer.DownSample();
+               
+                shaderPP.ApplyShader();
+                GL.ActiveTexture(TextureUnit.Texture0);
+                renderTex.BindTexture();
+                //
+                float attitude = (float)Math.Sin((double)n / 45 * Math.PI);
+                aberation.SetValue(pixelAberation * attitude);
+                //
+                ppSh.RenderScreen();
+                ppSh.OutputTexture.GetImage(imageBitmap);
+                //renderTex.GetImage(imageBitmap);
+                //imageBitmap.RotateFlip(RotateFlipType.Rotate180FlipX);
                 form.UpdateFormDisplay(imageBitmap);
-            }
 
+                n++;
+            }
+            
 
             if (isLeftButtonMouseDown)
             {

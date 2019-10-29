@@ -45,7 +45,7 @@ namespace Toys
         }
 
         //downsample multisampled texture
-        public void Update()
+        public void DownSample()
         {
             GL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, RenderBufferMS);
             GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, RenderBufferPost);
