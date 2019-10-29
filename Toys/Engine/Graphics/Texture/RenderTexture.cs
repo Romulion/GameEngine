@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace Toys
 {
-    class RenderTexture : Texture
+    public class RenderTexture : Texture
     {
         Rectangle imageRectanglel;
         public RenderTexture(int width, int height)
@@ -44,13 +44,14 @@ namespace Toys
             GL.GetTexImage(textureType, 0, PixelFormat.Bgra, PixelType.UnsignedByte, imagePointer);
         }
 
-        internal void ResizeTexture(int width, int heigth)
+        internal void ResizeTexture(int width, int height)
         {
             Width = width;
-            Height = heigth;
+            Height = height;
             BindTexture();
             GL.TexImage2D(textureType, 0, PixelInternalFormat.Rgba,
-                          width, heigth, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
+                          width, height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
+            imageRectanglel = new Rectangle(0, 0, Width, Height);
         }
     }
 }
