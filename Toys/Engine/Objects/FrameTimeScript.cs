@@ -9,7 +9,7 @@ namespace Toys
     /// <summary>
     /// Script for displaing update and render times
     /// </summary>
-    class FrameTimeScript : ScriptingComponent
+    public class FrameTimeScript : ScriptingComponent
     {
         long frames = 1;
         long framesMax = 60;

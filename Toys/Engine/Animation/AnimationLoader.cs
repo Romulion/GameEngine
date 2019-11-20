@@ -14,7 +14,7 @@ namespace Toys
         LMD,
     }
 
-    class AnimationLoader
+    public class AnimationLoader
     {
 
         public static Animation Load(string path)

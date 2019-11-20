@@ -7,7 +7,7 @@ using OpenTK;
 
 namespace Toys
 {
-    class BackgroundPlane : BackgroundBase
+    public class BackgroundPlane : BackgroundBase
     {
 
         public BackgroundPlane()

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Toys
 {
-    class AnimationFrame
+    public class AnimationFrame
     {
-        public BonePosition[] BonePoritions { get; private set; }
+        internal BonePosition[] BonePoritions { get; private set; }
 
-        public AnimationFrame(BonePosition[] pos)
+        internal AnimationFrame(BonePosition[] pos)
         {
             BonePoritions = pos;
         }

@@ -10,7 +10,7 @@ namespace Toys
     {
         public bool IsInstalized { get; internal set; }
 
-        internal ScriptingComponent() : base(typeof(ScriptingComponent))
+        public ScriptingComponent() : base(typeof(ScriptingComponent))
         {
             IsInstalized = true;
         }

@@ -9,7 +9,7 @@ using OpenTK;
 
 namespace Toys
 {
-    class BackgroundSkybox : BackgroundBase
+    public class BackgroundSkybox : BackgroundBase
     {
         int skyboxVAO, skyboxVBO, cubemapTexture;
         string[] textureSides = {

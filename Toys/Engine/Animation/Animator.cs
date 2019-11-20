@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Toys
 {
-    class Animator : Component
+    public class Animator : Component
     {
         public BoneController BoneController { get; private set; }
         Animation _animation;

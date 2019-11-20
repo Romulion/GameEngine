@@ -11,7 +11,7 @@ using OpenTK;
 
 namespace Toys
 {
-    class DynamicFormScript : ScriptingComponent
+    public class DynamicFormScript : ScriptingComponent
     {
         int renderBufferId = 0;
         int offsetX, offsetY;
@@ -38,7 +38,7 @@ namespace Toys
             width = camera.Width;
             height = camera.Height;
 
-            renderBuffer = new RenderBuffer(camera,0,false);
+            renderBuffer = new RenderBuffer(camera,4,false);
             renderBufferId = renderBuffer.RenderBufferDraw;
             renderTex = renderBuffer.RenderTexture;
             imageBitmap = new Bitmap(width, height);
@@ -116,7 +116,6 @@ namespace Toys
                 //renderTex.GetImage(imageBitmap);
                 //imageBitmap.RotateFlip(RotateFlipType.Rotate180FlipX);
                 form.UpdateFormDisplay(imageBitmap);
-
                 n++;
             }
             

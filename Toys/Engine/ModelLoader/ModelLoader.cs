@@ -42,18 +42,27 @@ namespace Toys
 		public static IModelLoader Load(string filename, ModelFormat type)
 		{
 			IModelLoader modelLoader = null;
-			switch (type)
-			{
-				case ModelFormat.PMX :
-					modelLoader = new PmxReader(filename);
-					break;
-				case ModelFormat.DAE :
-					modelLoader = new ReaderDAE(filename);
-					break;
-                case ModelFormat.LMD:
-                    modelLoader = new ReaderLMD(filename);
-                    break;
+
+            try
+            {
+                switch (type)
+                {
+                    case ModelFormat.PMX:
+                        modelLoader = new PmxReader(filename);
+                        break;
+                    case ModelFormat.DAE:
+                        modelLoader = new ReaderDAE(filename);
+                        break;
+                    case ModelFormat.LMD:
+                        modelLoader = new ReaderLMD(filename);
+                        break;
+                }
             }
+            catch (Exception)
+            {
+
+            }
+
 			return modelLoader;
 		}
 	}

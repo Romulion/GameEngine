@@ -4,7 +4,7 @@ using OpenTK.Input;
 
 namespace Toys
 {
-    class CameraControllScript : ScriptingComponent
+    public class CameraControllScript : ScriptingComponent
     {
         GameWindow game;
         Transformation transform;

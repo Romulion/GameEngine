@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Toys
 {
     
-    class Animation
+    public class Animation
     {
         public enum RotationType
         {

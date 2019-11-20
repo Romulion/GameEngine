@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Toys
 {
-    class MorphMaterial : Morph
+    public class MorphMaterial : Morph
     {
         float degree = 0f;
         public List<MaterialMorpher> MaterialMorphers;
