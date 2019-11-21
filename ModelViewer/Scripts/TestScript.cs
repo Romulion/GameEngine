@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 //using BulletSharp;
 //using BulletSharp.Math;
-using OpenTK.Input;
-using OpenTK;
+//using OpenTK.Input;
+//using OpenTK;
 using Toys;
 
 namespace ModelViewer

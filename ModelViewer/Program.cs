@@ -1,8 +1,7 @@
-﻿using System;
-using Toys;
-using OpenTK;
+﻿using Toys;
 using System.Threading.Tasks;
 using Gtk;
+using OpenTK;
 
 namespace ModelViewer
 {
@@ -37,11 +36,6 @@ namespace ModelViewer
             //node.phys.ReinstalizeBodys();
 
             //need sync
-            /*
-            var tb = new TextBox();
-            node.AddComponent(tb);
-            tb.SetText("牡丹制服高校(アニメ版)ver3");
-            */
             scene.AddObject(node);
             TestScript ts = (TestScript)node.AddComponent<TestScript>();
             FrameTimeScript ft = (FrameTimeScript)node.AddComponent<FrameTimeScript>();

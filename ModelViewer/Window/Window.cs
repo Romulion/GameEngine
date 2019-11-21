@@ -33,36 +33,39 @@ namespace ModelViewer
 		void SetList(Material[] mats)
 		{
 			int y = 0;
-			var disable = new Gdk.Color(10, 100, 10);
-			var enable = new Gdk.Color(150, 150, 150);
+            //var disable = new Gdk.Color(10, 100, 10);
+            //var enable = new Gdk.Color(150, 150, 150);
+            var disable = new Gdk.RGBA();
+            disable.Red = 1;
+            var enable = new Gdk.RGBA();
+            enable.Green = 1;
 
-			foreach (var mat in mats)
+            foreach (var mat in mats)
 			{
 				Button btn = new Button();
 				btn.Label = mat.Name;
 				btn.Name = "btn";
-				btn.ModifyBg(StateType.Normal, disable);
+                //btn.ModifyBg(StateType.Normal, disable);
+                var renderDir = mat.RenderDirrectives;
 
-				btn.Clicked += (sender, e) =>
+                btn.Clicked += (sender, e) =>
 				{
-					var renderDir = mat.RenderDirrectives;
+					//var renderDir = mat.RenderDirrectives;
 					renderDir.IsRendered = !renderDir.IsRendered;
-					if (renderDir.IsRendered)
-						btn.ModifyBg(StateType.Normal, disable);
-					else 
-						btn.ModifyBg(StateType.Active, enable);	
-					
-				};
-				/*
-				if (mat.dontDraw)
-					btn.ModifyBg(StateType.Normal, disable);
-				else 
-					btn.ModifyBg(StateType.Normal, enable);
-					*/
+                    if (renderDir.IsRendered)
+                        btn.SetStateFlags(StateFlags.Normal,true);
+                    else
+                        btn.SetStateFlags(StateFlags.Checked, true);
+                };
 
-				fixed2.Put(btn, 0, y);
+                if (renderDir.IsRendered)
+                    btn.SetStateFlags(StateFlags.Normal, true);
+                else
+                    btn.SetStateFlags(StateFlags.Checked, true);
+
+                fixed2.Put(btn, 0, y);
 				btn.Show();
-				y += 25;
+				y += 35;
 			}
 		}
 
