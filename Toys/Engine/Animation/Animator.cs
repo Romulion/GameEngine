@@ -6,6 +6,7 @@ namespace Toys
 {
     public class Animator : Component
     {
+        Logger logger = new Logger("Animator");
         public BoneController BoneController { get; private set; }
         Animation _animation;
         bool _isPlaing = false;
@@ -81,8 +82,7 @@ namespace Toys
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                logger.Error(e.Message, e.StackTrace);
             }
         }
 
@@ -90,8 +90,13 @@ namespace Toys
 		{
 			_isPlaing = false;
 			_time = 0;
-			BoneController.DefaultPos();
 		}
+
+        public void Reset()
+        {
+            Stop();
+            BoneController.DefaultPos();
+        }
 
         void UpdateBoneReference()
         {

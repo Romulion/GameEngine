@@ -15,10 +15,8 @@ namespace ModelViewer
 			Build();
 			DeleteEvent += delegate { Application.Quit(); };
 			var disable = new Gdk.Color(10, 200, 10);
-			fixed1.ModifyBg(StateType.Normal, disable);
 
-
-			var render = (MeshDrawer) node.GetComponent(typeof(MeshDrawer));
+			var render = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
 			if (render.Materials != null)
 				SetList(render.Materials);
 			if (render.Morphes != null)
@@ -33,24 +31,16 @@ namespace ModelViewer
 		void SetList(Material[] mats)
 		{
 			int y = 0;
-            //var disable = new Gdk.Color(10, 100, 10);
-            //var enable = new Gdk.Color(150, 150, 150);
-            var disable = new Gdk.RGBA();
-            disable.Red = 1;
-            var enable = new Gdk.RGBA();
-            enable.Green = 1;
 
             foreach (var mat in mats)
 			{
 				Button btn = new Button();
 				btn.Label = mat.Name;
-				btn.Name = "btn";
-                //btn.ModifyBg(StateType.Normal, disable);
-                var renderDir = mat.RenderDirrectives;
+                btn.Name = "btn";
 
+                var renderDir = mat.RenderDirrectives;
                 btn.Clicked += (sender, e) =>
 				{
-					//var renderDir = mat.RenderDirrectives;
 					renderDir.IsRendered = !renderDir.IsRendered;
                     if (renderDir.IsRendered)
                         btn.SetStateFlags(StateFlags.Normal,true);
@@ -74,23 +64,28 @@ namespace ModelViewer
 			int y = 0;
 			foreach (var morph in morphs)
 			{
-				//skip non vertex morphs
-				//if (!(morph is MorphVertex) && !(morph is MorphMaterial))
-				//	continue;
+
 				if (!(morph is MorphVertex) && !(morph is MorphMaterial) && !(morph is MorphUV))
 					continue;
 
-
-
-				Label lbl = new Label();
+                //display morph type
+                string prefix = "";
+                if (morph is MorphVertex)
+                    prefix = "(V)";
+                else if (morph is MorphMaterial)
+                    prefix = "(M)";
+                else if (morph is MorphUV)
+                    prefix = "(UV)";
+                
+                Label lbl = new Label();
 				lbl.Name = "lbl";
-				lbl.Text = morph.Name;
+				lbl.Text = prefix + morph.Name;
 
 				fixed3.Put(lbl, 0, y);
 				lbl.Show();
 				y += 20;
 
-				HScale scale = new HScale(0, 1, 0.5);
+				HScale scale = new HScale(0, 1, 0.1);
 				scale.WidthRequest = 180;
 				scale.Name = "scale";
 
@@ -162,9 +157,15 @@ namespace ModelViewer
 			button3.Clicked += (sender, e) =>
 			{
 				if (an != null)
-					anim.Stop();;
+					anim.Stop();
 			};
-			/*
+
+            button4.Clicked += (sender, e) =>
+            {
+                if (an != null)
+                    anim.Reset();
+            };
+            /*
 			if (mat.dontDraw)
 				btn.ModifyBg(StateType.Normal, disable);
 			else 
@@ -175,6 +176,6 @@ namespace ModelViewer
 			btn.Show();
 			y += 25;
 */
-		}
+        }
 	}
 }

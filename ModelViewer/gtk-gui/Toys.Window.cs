@@ -21,7 +21,9 @@ namespace ModelViewer
 
 		private Button button3;
 
-		protected virtual void Build()
+        private Button button4;
+
+        protected virtual void Build()
 		{
 			Stetic.Gui.Initialize(this);
 			// Widget Toys.Window
@@ -101,7 +103,18 @@ namespace ModelViewer
 			Fixed.FixedChild w11 = (Fixed.FixedChild)fixed1[button3];
 			w11.X = 379;
 			w11.Y = 108;
-			Add(fixed1);
+            // Container child fixed1.Gtk.Fixed+FixedChild
+            button4 = new Button();
+            button4.WidthRequest = 110;
+            button4.CanFocus = true;
+            button4.Name = "button4";
+            button4.UseUnderline = true;
+            button4.Label = "Reset";
+            fixed1.Add(button4);
+            Fixed.FixedChild w12 = (Fixed.FixedChild)fixed1[button4];
+            w12.X = 379;
+            w12.Y = 153;
+            Add(fixed1);
 			if (Child != null)
 			{
 				Child.ShowAll();
