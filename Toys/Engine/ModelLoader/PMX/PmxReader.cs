@@ -306,6 +306,10 @@ namespace Toys
                 mat.UniManager.Set("ambient_color", ambientColour);
                 mat.UniManager.Set("specular_power", specularPower);
                 mat.UniManager.Set("diffuse_color", difColor);
+
+                if (mat.DiffuseColor.W < 0.001f)
+                    mat.RenderDirrectives.IsRendered = false;
+
                 mat.Offset = offset;
 				mat.Count = count;
 				mats[i] = mat;
@@ -485,7 +489,7 @@ namespace Toys
 							int idx = reader.readVal(header.GetMaterialIndexSize);
                             Material mat = null;
                             if (idx >= 0 && idx < mats.Length)
-                                mat = (Material)mats[idx];
+                                mat = mats[idx];
 
                             var MMorpher = new MaterialMorpher(mat);
                             MMorpher.mode = file.ReadByte();

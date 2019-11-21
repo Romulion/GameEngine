@@ -28,7 +28,7 @@ namespace Toys
         }
 
         //retrieving active uniforms
-		void GetUniforms()
+        new void GetUniforms()
 		{
             List<ShaderUniform> uniforms = new List<ShaderUniform>();
 

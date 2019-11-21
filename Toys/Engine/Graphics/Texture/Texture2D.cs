@@ -18,7 +18,7 @@ namespace Toys
 
 	public class Texture2D : Texture
 	{
-        new TextureType type;
+        TextureType type;
 		public string Name { private set; get; }
         public int Width { get; protected set; }
         public int Height { get; protected set; }

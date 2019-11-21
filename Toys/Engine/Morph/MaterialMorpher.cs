@@ -35,14 +35,18 @@ namespace Toys
                 material.UniManager.Modify(this, ambientName, (Vector3.One - (Vector3.One - AmbientColor) * degree), ModifyType.Multiply);
                 material.UniManager.Modify(this, specularName, (Vector3.One - (Vector3.One - SpecularColor) * degree), ModifyType.Multiply);
             }
-            //diffuseUni.AddModifier(this,(Vector4.One + (Vector4.One - diffuse) * degree),ModifyType.Multiply);
             else if (mode == 1)
             {
                 material.UniManager.Modify(this, diffuseName, DiffuseColor * degree, ModifyType.Add);
                 material.UniManager.Modify(this, ambientName, AmbientColor * degree, ModifyType.Add);
                 material.UniManager.Modify(this, specularName, SpecularColor * degree, ModifyType.Add);
             }
-            // diffuseUni.AddModifier(this, diffuse * degree, ModifyType.Add);
+
+            var diffUniform = material.UniManager.GetUniform(diffuseName);
+            if (((Vector4)diffUniform.GetValue()).W < 0.001f)
+                material.RenderDirrectives.IsRendered = false;
+            else
+                material.RenderDirrectives.IsRendered = true;
         }
     }
 }

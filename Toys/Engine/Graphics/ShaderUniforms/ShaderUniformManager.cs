@@ -31,7 +31,7 @@ namespace Toys
             if (uniformVariable != null)
             {
                 uniformVariable.SetValue(val);
-                VisibilityCheck(name, uniformVariable);
+                //VisibilityCheck(name, uniformVariable);
             }
 
 
@@ -44,7 +44,7 @@ namespace Toys
             if (uniformVariable != null)
             {
                 uniformVariable.AddModifier(caller, val, type);
-                VisibilityCheck(name, uniformVariable);
+                //VisibilityCheck(name, uniformVariable);
             }
         }
 
@@ -54,7 +54,7 @@ namespace Toys
                 uniformVariable.Assign();
         }
 
-        ShaderUniform GetUniform(string name)
+        internal ShaderUniform GetUniform(string name)
         {
             var query = from v in uniforms
                         where v.Name == name
