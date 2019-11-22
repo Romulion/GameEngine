@@ -22,6 +22,7 @@ namespace ModelViewer
 		private Button button3;
 
         private Button button4;
+        private Button button5;
 
         protected virtual void Build()
 		{
@@ -109,7 +110,7 @@ namespace ModelViewer
             button4.CanFocus = true;
             button4.Name = "button4";
             button4.UseUnderline = true;
-            button4.Label = "Reset";
+            button4.Label = "Pause";
             fixed1.Add(button4);
             Fixed.FixedChild w12 = (Fixed.FixedChild)fixed1[button4];
             w12.X = 379;

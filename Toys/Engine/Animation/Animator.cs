@@ -90,12 +90,17 @@ namespace Toys
 		{
 			_isPlaing = false;
 			_time = 0;
-		}
-
-        public void Reset()
-        {
             Stop();
-            BoneController.DefaultPos();
+        }
+
+        public void Pause()
+        {
+            _isPlaing = false;
+        }
+
+        public void Resume()
+        {
+            _isPlaing = true;
         }
 
         void UpdateBoneReference()

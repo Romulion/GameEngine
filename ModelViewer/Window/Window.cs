@@ -146,16 +146,21 @@ namespace ModelViewer
 			};
 
 
-			//Play
+            //Play
+            bool play = false;
+            bool pause = false;
 
-			button2.Clicked += (sender, e) =>
+            button2.Clicked += (sender, e) =>
 			{
 				if (an != null)
 					anim.Play(an);
-			};
+                play = true;
+
+            };
 
 			button3.Clicked += (sender, e) =>
 			{
+                play = false;
 				if (an != null)
 					anim.Stop();
 			};
@@ -163,8 +168,22 @@ namespace ModelViewer
             button4.Clicked += (sender, e) =>
             {
                 if (an != null)
-                    anim.Reset();
+                {
+                    if (play && !pause)
+                    {
+                        anim.Pause();
+                        button4.Label = "Resume";
+                        pause = !pause;
+                    }
+                    else if (play)
+                    {
+                        anim.Resume();
+                        button4.Label = "Pause";
+                        pause = !pause;
+                    }
+                }
             };
+
             /*
 			if (mat.dontDraw)
 				btn.ModifyBg(StateType.Normal, disable);
