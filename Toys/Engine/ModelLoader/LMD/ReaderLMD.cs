@@ -308,8 +308,8 @@ namespace Toys
                 foreach (MeshDrawerRigged mesh in mesDrawlers)
                 {
                     node.AddComponent(mesh);
-                    node.AddComponent(new Animator(mesh.skeleton));
                 }
+                node.AddComponent(new Animator(boneControll));
                 node.AddComponent<ScriptChangeExpression>();
                 return node;
             }
