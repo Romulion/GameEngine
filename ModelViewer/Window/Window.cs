@@ -120,7 +120,7 @@ namespace ModelViewer
 				*/
             }
         }
-
+/*
         void SetAnimator(Animator anim)
         {
             //FileChooserButton btn1 = new FileChooserButton("Load Animation", FileChooserAction.Open);
@@ -188,7 +188,7 @@ namespace ModelViewer
 			btn.Show();
 			y += 25;
 */
-        }
+      //  }
 
         void DrawScene(Scene scene)
         {
@@ -198,24 +198,12 @@ namespace ModelViewer
                 Button btn = new Button();
                 btn.Label = node.Name;
                 btn.Name = "btn";
-
+                btn.HeightRequest = 20;
                 btn.Clicked += (sender, e) =>
                 {
                     DrawComponents(node);
-                    /*
-                    renderDir.IsRendered = !renderDir.IsRendered;
-                    if (renderDir.IsRendered)
-                        btn.SetStateFlags(StateFlags.Normal, true);
-                    else
-                        btn.SetStateFlags(StateFlags.Checked, true);
-                        */
                 };
-                /*
-                if (renderDir.IsRendered)
-                    btn.SetStateFlags(StateFlags.Normal, true);
-                else
-                    btn.SetStateFlags(StateFlags.Checked, true);
-                    */
+
                 fixed2.Put(btn, 0, y);
                 btn.Show();
                 y += 35;
@@ -247,6 +235,16 @@ namespace ModelViewer
                 {
                     Button btn = new Button();
                     btn.Label = "MeshDrawer";
+                    btn.Name = "btnComp";
+                    fixed3.Put(btn, 0, y);
+                    btn.Show();
+                    y += 35;
+                }
+                else if (component is Animator)
+                {
+                    Button btn = new Button();
+                    btn.Label = "Animator";
+                    btn.Clicked += (sender, e) => { AnimatorWindow((Animator)component); };
                     btn.Name = "btnComp";
                     fixed3.Put(btn, 0, y);
                     btn.Show();
@@ -288,6 +286,99 @@ namespace ModelViewer
                 btn.Show();
                 y += 35;
             }
+        }
+
+        void AnimatorWindow(Animator animator)
+        {
+            var timer = new Time();
+            
+            ClearChildrens(fixed4);
+            timer.Start();
+            fileChooser = new FileChooserButton("Select a File", FileChooserAction.Open);
+            Console.WriteLine(timer.Stop());
+            fileChooser.WidthRequest = 124;
+            fileChooser.Name = "filechooserbutton2";
+            fileChooser.Show();
+            Console.WriteLine(timer.Stop());
+            fixed4.Put(fileChooser, 0, 19);
+            fileChooser.Show();
+            Console.WriteLine(timer.Stop());
+            fileChooser.Show();
+            Console.WriteLine(timer.Stop());
+            // Container child fixed1.Gtk.Fixed+FixedChild
+            var btnStart = new Button();
+            btnStart.WidthRequest = 109;
+            btnStart.Name = "button2";
+            btnStart.Label = "Play";
+            fixed4.Put(btnStart, 0, 63);
+            btnStart.Show();
+            // Container child fixed1.Gtk.Fixed+FixedChild
+            var btn = new Button();
+            btn.WidthRequest = 110;
+            btn.CanFocus = true;
+            btn.Name = "button3";
+            btn.Label = "Stop";
+            fixed4.Put(btn, 0, 108);
+            btn.Show();
+            // Container child fixed1.Gtk.Fixed+FixedChild
+            var btnPR = new Button();
+            btnPR.WidthRequest = 110;
+            btnPR.CanFocus = true;
+            btnPR.Name = "button4";
+            btnPR.Label = "Pause";
+            fixed4.Put(btnPR, 0 , 153);
+            btnPR.Show();
+            Animation an = null;
+
+            fileChooser.FileSet += (sender, e) =>
+            {
+                try
+                {
+                    an = AnimationLoader.Load(fileChooser.Filename);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("cant load animation\n{0}\n{1}", ex.Message, ex.StackTrace);
+                }
+            };
+
+            //Play
+            bool play = false;
+            bool pause = false;
+
+            btnStart.Clicked += (sender, e) =>
+            {
+                if (an != null)
+                    animator.Play(an);
+                play = true;
+
+            };
+
+            btn.Clicked += (sender, e) =>
+            {
+                play = false;
+                if (an != null)
+                    animator.Stop();
+            };
+
+            btnPR.Clicked += (sender, e) =>
+            {
+                if (an != null)
+                {
+                    if (play && !pause)
+                    {
+                        animator.Pause();
+                        btnPR.Label = "Resume";
+                        pause = !pause;
+                    }
+                    else if (play)
+                    {
+                        animator.Resume();
+                        btnPR.Label = "Pause";
+                        pause = !pause;
+                    }
+                }
+            };
         }
 
         void ClearChildrens(Fixed fixd)

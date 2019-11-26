@@ -1,0 +1,10 @@
+﻿button {
+    border-radius: 0;
+    border-width: 3px;
+    background-image: none;
+    background-color: white;
+}
+
+    button:hover {
+        background-color: black;
+    }
