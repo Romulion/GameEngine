@@ -17,9 +17,10 @@ namespace ModelViewer
 
             //string str = "";
             SceneNode node = ResourcesManager.LoadAsset<SceneNode>(args[0]);
-            
+            node.Name = "model";
             var camera = new Camera();
             SceneNode sceneNode = new SceneNode();
+            sceneNode.Name = "Camera";
             sceneNode.AddComponent(camera);
             sceneNode.AddComponent<CameraControllScript>();
             sceneNode.GetTransform.Position = new Vector3(0, 1, 3);
@@ -43,7 +44,7 @@ namespace ModelViewer
             var task = new Task(() =>
             {
                 Application.Init();
-                Window wndw = new Window(node, core);
+                Window wndw = new Window(scene, core);
                 Application.Run();
             });
             task.Start();

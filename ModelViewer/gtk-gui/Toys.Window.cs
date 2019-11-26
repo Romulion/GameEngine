@@ -22,7 +22,8 @@ namespace ModelViewer
 		private Button button3;
 
         private Button button4;
-        private Button button5;
+        private Fixed fixed4;
+        private ScrolledWindow scrolledwindow3;
 
         protected virtual void Build()
 		{
@@ -74,53 +75,77 @@ namespace ModelViewer
 			fixed1.Add(scrolledwindow2);
 			Fixed.FixedChild w8 = (Fixed.FixedChild)fixed1[scrolledwindow2];
 			w8.X = 165;
-			// Container child fixed1.Gtk.Fixed+FixedChild
-			filechooserbutton2 = new FileChooserButton("Select a File", 0);
-            filechooserbutton2.WidthRequest = 124;
-			filechooserbutton2.Name = "filechooserbutton2";
-			fixed1.Add(filechooserbutton2);
-			Fixed.FixedChild w9 = (Fixed.FixedChild)fixed1[filechooserbutton2];
-			w9.X = 379;
-			w9.Y = 19;
-			// Container child fixed1.Gtk.Fixed+FixedChild
-			button2 = new Button();
-			button2.WidthRequest = 109;
-			button2.CanFocus = true;
-			button2.Name = "button2";
-			button2.UseUnderline = true;
-			button2.Label = "Play";
-			fixed1.Add(button2);
-			Fixed.FixedChild w10 = (Fixed.FixedChild)fixed1[button2];
-			w10.X = 379;
-			w10.Y = 63;
-			// Container child fixed1.Gtk.Fixed+FixedChild
-			button3 = new Button();
-			button3.WidthRequest = 110;
-			button3.CanFocus = true;
-			button3.Name = "button3";
-			button3.UseUnderline = true;
-			button3.Label = "Stop";
-			fixed1.Add(button3);
-			Fixed.FixedChild w11 = (Fixed.FixedChild)fixed1[button3];
-			w11.X = 379;
-			w11.Y = 108;
-            // Container child fixed1.Gtk.Fixed+FixedChild
-            button4 = new Button();
-            button4.WidthRequest = 110;
-            button4.CanFocus = true;
-            button4.Name = "button4";
-            button4.UseUnderline = true;
-            button4.Label = "Pause";
-            fixed1.Add(button4);
-            Fixed.FixedChild w12 = (Fixed.FixedChild)fixed1[button4];
-            w12.X = 379;
-            w12.Y = 153;
+            /*
+                        // Container child fixed1.Gtk.Fixed+FixedChild
+                        filechooserbutton2 = new FileChooserButton("Select a File", 0);
+                        filechooserbutton2.WidthRequest = 124;
+                        filechooserbutton2.Name = "filechooserbutton2";
+                        fixed1.Add(filechooserbutton2);
+                        Fixed.FixedChild w9 = (Fixed.FixedChild)fixed1[filechooserbutton2];
+                        w9.X = 379;
+                        w9.Y = 19;
+                        // Container child fixed1.Gtk.Fixed+FixedChild
+                        button2 = new Button();
+                        button2.WidthRequest = 109;
+                        button2.CanFocus = true;
+                        button2.Name = "button2";
+                        button2.UseUnderline = true;
+                        button2.Label = "Play";
+                        fixed1.Add(button2);
+                        Fixed.FixedChild w10 = (Fixed.FixedChild)fixed1[button2];
+                        w10.X = 379;
+                        w10.Y = 63;
+                        // Container child fixed1.Gtk.Fixed+FixedChild
+                        button3 = new Button();
+                        button3.WidthRequest = 110;
+                        button3.CanFocus = true;
+                        button3.Name = "button3";
+                        button3.UseUnderline = true;
+                        button3.Label = "Stop";
+                        fixed1.Add(button3);
+                        Fixed.FixedChild w11 = (Fixed.FixedChild)fixed1[button3];
+                        w11.X = 379;
+                        w11.Y = 108;
+                        // Container child fixed1.Gtk.Fixed+FixedChild
+                        button4 = new Button();
+                        button4.WidthRequest = 110;
+                        button4.CanFocus = true;
+                        button4.Name = "button4";
+                        button4.UseUnderline = true;
+                        button4.Label = "Pause";
+                        fixed1.Add(button4);
+                        Fixed.FixedChild w12 = (Fixed.FixedChild)fixed1[button4];
+                        w12.X = 379;
+                        w12.Y = 153;
+            */
+            
+            scrolledwindow3 = new ScrolledWindow();
+            scrolledwindow3.WidthRequest = 200;
+            scrolledwindow3.HeightRequest = 300;
+            scrolledwindow3.CanFocus = true;
+            scrolledwindow3.Name = "scrolledwindow3";
+            scrolledwindow3.VscrollbarPolicy = 0;
+            scrolledwindow3.HscrollbarPolicy = (PolicyType)2;
+            scrolledwindow3.ShadowType = (ShadowType)1;
+            // Container child scrolledwindow1.Gtk.Container+ContainerChild
+            Viewport w4 = new Viewport();
+            w4.ShadowType = 0;
+            // Container child GtkViewport.Gtk.Container+ContainerChild
+            fixed4 = new Fixed();
+            fixed4.Name = "fixed4";
+            fixed4.HasWindow = false;
+            w4.Add(fixed4);
+            scrolledwindow3.Add(w4);
+            fixed1.Add(scrolledwindow3);
+            Fixed.FixedChild w6 = (Fixed.FixedChild)fixed1[scrolledwindow3];
+            w6.X = 330;
+
             Add(fixed1);
 			if (Child != null)
 			{
 				Child.ShowAll();
 			}
-			DefaultWidth = 567;
+			DefaultWidth = 700;
 			DefaultHeight = 342;
 			Show();
 		}

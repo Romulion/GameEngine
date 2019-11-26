@@ -4,30 +4,24 @@ using Toys;
 
 namespace ModelViewer
 {
-	public partial class Window : Gtk.Window
-	{
-		CoreEngine core;
-
-		public Window(SceneNode node, CoreEngine core) :
-				base(WindowType.Toplevel)
-		{
+    public partial class Window : Gtk.Window
+    {
+        CoreEngine core;
+        delegate void DisplayComponent();
+        public Window(Scene scene, CoreEngine core) :
+                base(WindowType.Toplevel)
+        {
             this.core = core;
-			Build();
-			DeleteEvent += delegate { Application.Quit(); };
-			var disable = new Gdk.Color(10, 200, 10);
+            Build();
+            DeleteEvent += delegate { Application.Quit(); };
+            var disable = new Gdk.Color(10, 200, 10);
 
-			var render = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
-			if (render.Materials != null)
-				SetList(render.Materials);
-			if (render.Morphes != null)
-				SetMorphList(render.Morphes);
+            DrawScene(scene);
+            //SetAnimator(anim);
 
-			var anim = (Animator)node.GetComponent(typeof(Animator));
-			SetAnimator(anim);
-
-			ShowAll();
-		}
-
+            ShowAll();
+        }
+        /*
 		void SetList(Material[] mats)
 		{
 			int y = 0;
@@ -58,15 +52,15 @@ namespace ModelViewer
 				y += 35;
 			}
 		}
+        */
+        void SetMorphList(Morph[] morphs)
+        {
+            int y = 0;
+            foreach (var morph in morphs)
+            {
 
-		void SetMorphList(Morph[] morphs)
-		{
-			int y = 0;
-			foreach (var morph in morphs)
-			{
-
-				if (!(morph is MorphVertex) && !(morph is MorphMaterial) && !(morph is MorphUV))
-					continue;
+                if (!(morph is MorphVertex) && !(morph is MorphMaterial) && !(morph is MorphUV))
+                    continue;
 
                 //display morph type
                 string prefix = "";
@@ -76,30 +70,30 @@ namespace ModelViewer
                     prefix = "(M)";
                 else if (morph is MorphUV)
                     prefix = "(UV)";
-                
+
                 Label lbl = new Label();
-				lbl.Name = "lbl";
-				lbl.Text = prefix + morph.Name;
+                lbl.Name = "lbl";
+                lbl.Text = prefix + morph.Name;
 
-				fixed3.Put(lbl, 0, y);
-				lbl.Show();
-				y += 20;
+                fixed3.Put(lbl, 0, y);
+                lbl.Show();
+                y += 20;
 
-				HScale scale = new HScale(0, 1, 0.1);
-				scale.WidthRequest = 180;
-				scale.Name = "scale";
+                HScale scale = new HScale(0, 1, 0.1);
+                scale.WidthRequest = 180;
+                scale.Name = "scale";
 
-				scale.ValueChanged += (sender, e) =>
-				{
-					core.addTask = () => morph.MorphDegree =(float)scale.Value;
-				};
+                scale.ValueChanged += (sender, e) =>
+                {
+                    core.addTask = () => morph.MorphDegree = (float)scale.Value;
+                };
 
 
-				fixed3.Put(scale, 0, y);
-				scale.Show();
-				y += 40;
+                fixed3.Put(scale, 0, y);
+                scale.Show();
+                y += 40;
 
-				/*
+                /*
 				btn.ModifyBg(StateType.Normal, disable);
 
 				btn.Clicked += (sender, e) =>
@@ -113,57 +107,56 @@ namespace ModelViewer
 					
 				};
 				*/
-				/*
+                /*
 				if (mat.dontDraw)
 					btn.ModifyBg(StateType.Normal, disable);
 				else 
 					btn.ModifyBg(StateType.Normal, enable);
 					*/
-				/*
+                /*
 				fixed2.Put(btn, 0, y);
 				btn.Show();
 				y += 25;
 				*/
-			}
-		}
+            }
+        }
 
-		void SetAnimator(Animator anim)
-		{
-			//FileChooserButton btn1 = new FileChooserButton("Load Animation", FileChooserAction.Open);
-			//btn1.Name = "btnLoadAnim";
-			Animation an = null;
+        void SetAnimator(Animator anim)
+        {
+            //FileChooserButton btn1 = new FileChooserButton("Load Animation", FileChooserAction.Open);
+            //btn1.Name = "btnLoadAnim";
+            Animation an = null;
 
-			filechooserbutton2.FileSet += (sender, e) => 
-			{
-				try
-				{
-					an = AnimationLoader.Load(filechooserbutton2.Filename);
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine("cant load animation\n{0}\n{1}",ex.Message,ex.StackTrace);
-				}
-			};
-
+            filechooserbutton2.FileSet += (sender, e) =>
+            {
+                try
+                {
+                    an = AnimationLoader.Load(filechooserbutton2.Filename);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("cant load animation\n{0}\n{1}", ex.Message, ex.StackTrace);
+                }
+            };
 
             //Play
             bool play = false;
             bool pause = false;
 
             button2.Clicked += (sender, e) =>
-			{
-				if (an != null)
-					anim.Play(an);
+            {
+                if (an != null)
+                    anim.Play(an);
                 play = true;
 
             };
 
-			button3.Clicked += (sender, e) =>
-			{
+            button3.Clicked += (sender, e) =>
+            {
                 play = false;
-				if (an != null)
-					anim.Stop();
-			};
+                if (an != null)
+                    anim.Stop();
+            };
 
             button4.Clicked += (sender, e) =>
             {
@@ -196,5 +189,113 @@ namespace ModelViewer
 			y += 25;
 */
         }
-	}
+
+        void DrawScene(Scene scene)
+        {
+            int y = 0;
+            foreach (var node in scene.GetNodes())
+            {
+                Button btn = new Button();
+                btn.Label = node.Name;
+                btn.Name = "btn";
+
+                btn.Clicked += (sender, e) =>
+                {
+                    DrawComponents(node);
+                    /*
+                    renderDir.IsRendered = !renderDir.IsRendered;
+                    if (renderDir.IsRendered)
+                        btn.SetStateFlags(StateFlags.Normal, true);
+                    else
+                        btn.SetStateFlags(StateFlags.Checked, true);
+                        */
+                };
+                /*
+                if (renderDir.IsRendered)
+                    btn.SetStateFlags(StateFlags.Normal, true);
+                else
+                    btn.SetStateFlags(StateFlags.Checked, true);
+                    */
+                fixed2.Put(btn, 0, y);
+                btn.Show();
+                y += 35;
+            }
+        }
+        /*
+        DisplayComponent GetComponents(SceneNode node)
+        {
+            if ()
+        }
+        */
+        void DrawComponents(SceneNode node)
+        {
+            int y = 0;
+            ClearChildrens(fixed3);
+            foreach (var component in node.GetComponents())
+            {
+                if (component is MeshDrawerRigged)
+                {
+                    Button btn = new Button();
+                    btn.Label = "MeshDrawerRigged";
+                    btn.Name = "btnComp";
+                    btn.Clicked += (sender, e) => { MeshDrawerRig((MeshDrawerRigged)component); };
+                    fixed3.Put(btn, 0, y);
+                    btn.Show();
+                    y += 35;
+                }
+                else if (component is MeshDrawer)
+                {
+                    Button btn = new Button();
+                    btn.Label = "MeshDrawer";
+                    btn.Name = "btnComp";
+                    fixed3.Put(btn, 0, y);
+                    btn.Show();
+                    y += 35;
+                }
+            }
+        }
+
+        void MeshDrawerRig(MeshDrawerRigged meshDrawer)
+        {
+            ClearChildrens(fixed4);
+            int y = 0;
+            foreach (var mat in meshDrawer.Materials)
+            {
+                var renderDir = mat.RenderDirrectives;
+
+                Button btn = new Button();
+                btn.Label = mat.Name;
+                btn.Name = "btn";
+                btn.Clicked += (sender, e) =>
+                {
+
+                    renderDir.IsRendered = !renderDir.IsRendered;
+                    if (renderDir.IsRendered)
+                        btn.SetStateFlags(StateFlags.Normal, true);
+                    else
+                        btn.SetStateFlags(StateFlags.Checked, true);
+
+                };
+
+
+                if (renderDir.IsRendered)
+                    btn.SetStateFlags(StateFlags.Normal, true);
+                else
+                    btn.SetStateFlags(StateFlags.Checked, true);
+
+
+                fixed4.Put(btn, 0, y);
+                btn.Show();
+                y += 35;
+            }
+        }
+
+        void ClearChildrens(Fixed fixd)
+        {
+            foreach (var wid in fixd.Children)
+            {
+                wid.Dispose();
+            }
+        }
+    }
 }

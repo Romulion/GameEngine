@@ -108,7 +108,12 @@ namespace Toys
 			return result.ToArray();
 		}
 
-		internal override void Unload()
+        public Component[] GetComponents()
+        {
+            return components.ToArray();
+        }
+
+        internal override void Unload()
 		{
 			foreach (var comp in components)
 				comp.Unload();

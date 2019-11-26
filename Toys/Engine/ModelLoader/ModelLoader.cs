@@ -13,7 +13,7 @@ namespace Toys
 
 	public class ModelLoader
 	{
-
+        static Logger logger = new Logger("Model Loading");
 
 		public static IModelLoader Load(string filename)
 		{
@@ -58,9 +58,9 @@ namespace Toys
                         break;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                logger.Error(e.Message, e.Source);
             }
 
 			return modelLoader;
