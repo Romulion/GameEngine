@@ -41,16 +41,19 @@ namespace Toys
 
         public float NearPlane { get; private set;}
         public float FarPlane { get; private set;}
+        public float FOV { get; private set; }
         public Matrix4 Projection { get; private set; }
         public int Width;
         public int Height;
         public int OrthSize;
 
 
+        int cameraHeigth = 2;
         public Camera() : base(typeof(Camera))
 		{
             NearPlane = 0.1f;
             FarPlane = 100.0f;
+            FOV = 30;
             projType = ProjectionType.Perspective;
             Main = true;
         }
@@ -58,9 +61,9 @@ namespace Toys
         internal void CalcProjection()
         {
             if (projType == ProjectionType.Perspective)
-                Projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (30 / 180f), Width / (float)Height, NearPlane, FarPlane);
+                Projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (FOV / 180f), Width / (float)Height, NearPlane, FarPlane);
             else if (projType == ProjectionType.Orthographic)
-                Projection = Matrix4.CreateOrthographic(Width, Height, NearPlane, FarPlane);
+                Projection = Matrix4.CreateOrthographic(cameraHeigth * Width / (float)Height, cameraHeigth, NearPlane, FarPlane);
         }
 
         #region Transforms

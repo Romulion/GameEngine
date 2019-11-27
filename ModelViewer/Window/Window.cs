@@ -1,6 +1,7 @@
 ﻿using System;
 using Gtk;
 using Toys;
+using System.Reflection;
 
 namespace ModelViewer
 {
@@ -21,38 +22,7 @@ namespace ModelViewer
 
             ShowAll();
         }
-        /*
-		void SetList(Material[] mats)
-		{
-			int y = 0;
 
-            foreach (var mat in mats)
-			{
-				Button btn = new Button();
-				btn.Label = mat.Name;
-                btn.Name = "btn";
-
-                var renderDir = mat.RenderDirrectives;
-                btn.Clicked += (sender, e) =>
-				{
-					renderDir.IsRendered = !renderDir.IsRendered;
-                    if (renderDir.IsRendered)
-                        btn.SetStateFlags(StateFlags.Normal,true);
-                    else
-                        btn.SetStateFlags(StateFlags.Checked, true);
-                };
-
-                if (renderDir.IsRendered)
-                    btn.SetStateFlags(StateFlags.Normal, true);
-                else
-                    btn.SetStateFlags(StateFlags.Checked, true);
-
-                fixed2.Put(btn, 0, y);
-				btn.Show();
-				y += 35;
-			}
-		}
-        */
         void SetMorphList(Morph[] morphs)
         {
             int y = 0;
@@ -197,6 +167,7 @@ namespace ModelViewer
             {
                 Button btn = new Button();
                 btn.Label = node.Name;
+                btn.TooltipText = node.Name;
                 btn.Name = "btn";
                 btn.HeightRequest = 20;
                 btn.Clicked += (sender, e) =>
@@ -209,16 +180,12 @@ namespace ModelViewer
                 y += 35;
             }
         }
-        /*
-        DisplayComponent GetComponents(SceneNode node)
-        {
-            if ()
-        }
-        */
+
         void DrawComponents(SceneNode node)
         {
             int y = 0;
             ClearChildrens(fixed3);
+            ClearChildrens(fixed4);
             foreach (var component in node.GetComponents())
             {
                 if (component is MeshDrawerRigged)
@@ -264,6 +231,7 @@ namespace ModelViewer
                 Button btn = new Button();
                 btn.Label = mat.Name;
                 btn.Name = "btn";
+                btn.TooltipText = mat.Name;
                 btn.Clicked += (sender, e) =>
                 {
 

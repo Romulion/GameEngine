@@ -35,7 +35,7 @@ namespace ModelViewer
             //MeshDrawer md = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
             //node.GetTransform.Position = new Vector3(0f, 1.0f, 0.0f);
             //node.phys.ReinstalizeBodys();
-
+            //window.Visible = false;
             //need sync
             scene.AddObject(node);
             TestScript ts = (TestScript)node.AddComponent<TestScript>();
