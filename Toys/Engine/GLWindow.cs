@@ -14,6 +14,8 @@ namespace Toys
     {
         public CoreEngine Engine { get; private set; }
         internal static GLWindow gLWindow;
+        bool pause = false;
+        bool pauseKey= false;
         public GLWindow() : base(640, 480, new GraphicsMode(32, 8, 8, 4))
         {
             gLWindow = this;
@@ -38,7 +40,6 @@ namespace Toys
             {
                 Engine.Resize(Width, Height);
             };
-            Visible = false;
         }
 
         void Update(object sender, EventArgs e)
@@ -61,16 +62,27 @@ namespace Toys
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
             }
 
+            if (keystate[Key.O] && !pauseKey)
+            {
+                pause = !pause;
+                pauseKey = true;
+            }
+            else if (!keystate[Key.O] && pauseKey)
+                pauseKey = false;
+
+
             if (keystate[Key.V])
             {
                 Visible = !Visible;
             }
-            Engine.Update();
+            if (!pause)
+                Engine.Update();
         }
 
         void Render(object sender, EventArgs e)
         {
-            Engine.Render();
+            if (!pause)
+                Engine.Render();
             SwapBuffers();
         }
     }
