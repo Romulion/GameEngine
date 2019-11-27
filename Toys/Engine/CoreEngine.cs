@@ -106,7 +106,7 @@ namespace Toys
 				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
 			}
             //physics
-#if (PHYS)
+#if PHYS
             pEngine.Update(elapsed);
 #endif
             sEngine.PreRender();

@@ -293,18 +293,12 @@ namespace ModelViewer
             var timer = new Time();
             
             ClearChildrens(fixed4);
-            timer.Start();
+
             fileChooser = new FileChooserButton("Select a File", FileChooserAction.Open);
-            Console.WriteLine(timer.Stop());
             fileChooser.WidthRequest = 124;
             fileChooser.Name = "filechooserbutton2";
-            fileChooser.Show();
-            Console.WriteLine(timer.Stop());
             fixed4.Put(fileChooser, 0, 19);
             fileChooser.Show();
-            Console.WriteLine(timer.Stop());
-            fileChooser.Show();
-            Console.WriteLine(timer.Stop());
             // Container child fixed1.Gtk.Fixed+FixedChild
             var btnStart = new Button();
             btnStart.WidthRequest = 109;
@@ -353,7 +347,7 @@ namespace ModelViewer
                 play = true;
 
             };
-
+             
             btn.Clicked += (sender, e) =>
             {
                 play = false;

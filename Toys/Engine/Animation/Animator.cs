@@ -90,7 +90,7 @@ namespace Toys
 		{
 			_isPlaing = false;
 			_time = 0;
-            Stop();
+            Instalize(_animation.frames[0]);
         }
 
         public void Pause()

@@ -7,6 +7,7 @@ namespace Toys
 {
 	public class SceneNode : Resource
     {
+        Logger logger = new Logger("SceneNode");
         List<SceneNode> childs;
         public SceneNode Parent;
         Transformation transform;
@@ -75,7 +76,7 @@ namespace Toys
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                logger.Error(e.Message,e.StackTrace);
             }
                 
             return null;
