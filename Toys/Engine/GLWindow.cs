@@ -16,6 +16,7 @@ namespace Toys
         internal static GLWindow gLWindow;
         bool pause = false;
         bool pauseKey= false;
+        bool visibleKey = false;
         public GLWindow() : base(640, 480, new GraphicsMode(32, 8, 8, 4))
         {
             gLWindow = this;
@@ -70,11 +71,14 @@ namespace Toys
             else if (!keystate[Key.O] && pauseKey)
                 pauseKey = false;
 
-
-            if (keystate[Key.V])
+            if (keystate[Key.V] && !visibleKey)
             {
                 Visible = !Visible;
+                visibleKey = true;
             }
+            else if (!keystate[Key.V] && visibleKey)
+                visibleKey = false;
+
             if (!pause)
                 Engine.Update();
         }

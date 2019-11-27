@@ -56,8 +56,6 @@ namespace Toys
         public BoneTransform AddParent;
         public float AddRatio;
         public IKResolver IK;
-        
-        bool changed;
 
         public BoneTransform(Bone bone)
         {

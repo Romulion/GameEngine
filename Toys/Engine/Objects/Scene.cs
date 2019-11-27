@@ -9,8 +9,6 @@ namespace Toys
         List<SceneNode> nodes = new List<SceneNode>();
 		LightSource light;
 
-        int i = 0;
-
 		public void OnLoad()
 		{
             light = new LightSource();
