@@ -11,9 +11,9 @@ namespace ModelViewer
         {
             if (args.Length == 0)
                 return;
-            CoreEngine core = new CoreEngine();
+            GLWindow window = new GLWindow();
             
-            var scene = core.mainScene;
+            var scene = window.Engine.mainScene;
 
             //string str = "";
             SceneNode node = ResourcesManager.LoadAsset<SceneNode>(args[0]);
@@ -44,12 +44,12 @@ namespace ModelViewer
             var task = new Task(() =>
             {
                 Application.Init();
-                Window wndw = new Window(scene, core);
+                Window wndw = new Window(scene, window.Engine);
                 Application.Run();
             });
             task.Start();
-
-            core.Run(60);
+            window.Title = "ModelViewer";
+            window.Run(60);
         }
     }
 }

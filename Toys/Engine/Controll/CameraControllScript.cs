@@ -26,7 +26,7 @@ namespace Toys
         {
             transform = Node.GetTransform;
             r = 3.5f;
-            game = CoreEngine.ActiveCore;
+            game = GLWindow.gLWindow;
             camera = (Camera)Node.GetComponent<Camera>();
             camera.Target = Vector3.UnitY;
             camera.Target -= new Vector3(0,0.25f,0);

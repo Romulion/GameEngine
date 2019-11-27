@@ -10,7 +10,7 @@ using System.Diagnostics;
 namespace Toys
 {
 	public delegate void queue();
-	public class CoreEngine : GameWindow
+	public class CoreEngine 
 	{
 
 		internal static GraphicsEngine gEngine;
@@ -24,7 +24,7 @@ namespace Toys
 
 		public Scene mainScene;
 
-		public CoreEngine() : base(640, 480, new GraphicsMode(32, 8, 8, 4))
+		public CoreEngine()
 		{
 			Instalize();
 			ActiveCore = this;
@@ -33,7 +33,6 @@ namespace Toys
 		void Instalize()
 		{
 
-			Title = "MMD Test";
 			try
 			{
 				mainScene = new Scene();
@@ -41,10 +40,6 @@ namespace Toys
 				pEngine = new PhysicsEngine();
                 sEngine = new ScriptingEngine();
                 time = new Time();
-                Load += OnLoad;
-				UpdateFrame += Update;
-				RenderFrame += OnRender;
-                Closing += CoreEngine_Closing;
 			}
 			catch (Exception e)
 			{
@@ -53,7 +48,7 @@ namespace Toys
 			}
 		}
 
-        private void CoreEngine_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        internal void Close()
         {
             pEngine.Dispose();
             sEngine.Destroy();
@@ -61,23 +56,22 @@ namespace Toys
 
         //for Load event
         //
-        void OnLoad(object sender, EventArgs e)
+        internal void OnLoad()
 		{
-			VSync = VSyncMode.On;
 			gEngine.OnLoad();
-			Resize += (s, ev) =>
-			{
-				gEngine.Resize(Width, Height);
-			};
 		}
 
+        internal void Resize(int width, int height)
+        {
+            gEngine.Resize(width, height);
+        }
 
 
 		//
-		void Update(object sender, FrameEventArgs e)
+		internal void Update()
 		{
             time.Start();
-            elapsed = (float)(UpdateTime + RenderTime);
+            elapsed = (float)(time.UpdateTime + time.RenderTime);
             sEngine.Awake();
             sEngine.Start();
             sEngine.Update();
@@ -88,23 +82,7 @@ namespace Toys
 				task = null;
 			}
 			mainScene.Update(elapsed);
-			var keystate = Keyboard.GetState();
-			if (keystate[Key.Escape])
-			{
-				Exit();
-			}
-			if (keystate[Key.F])
-			{
-				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-			}
-			if (keystate[Key.L])
-			{
-				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-			}
-			if (keystate[Key.P])
-			{
-				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
-			}
+			
             //physics
 #if PHYS
             pEngine.Update(elapsed);
@@ -114,7 +92,7 @@ namespace Toys
         }
 
 
-        void OnRender (object sender, FrameEventArgs e)
+        internal void Render ()
         {
             time.Start();
             //render main scene
@@ -124,7 +102,6 @@ namespace Toys
             time.RenderTime = time.Stop();
 
             sEngine.PostRender();
-            SwapBuffers();
         }
 
 

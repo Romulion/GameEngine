@@ -81,6 +81,7 @@
     <Compile Include="Engine\CalculateVertNormals.cs" />
     <Compile Include="Engine\Controll\CameraControllScript.cs" />
     <Compile Include="Engine\Controll\InputHandler.cs" />
+    <Compile Include="Engine\GLWindow.cs" />
     <Compile Include="Engine\GraphicsEngine.cs" />
     <Compile Include="Engine\Graphics\Background\BackgroundBase.cs" />
     <Compile Include="Engine\Graphics\Background\BackgroundPlane.cs" />
