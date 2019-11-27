@@ -18,6 +18,7 @@ namespace Toys
         internal static ScriptingEngine sEngine;
         internal static CoreEngine ActiveCore;
         public static Time time;
+        public static Time frameTimer;
         queue task;
 
 		float elapsed = 0.01f;
@@ -40,7 +41,9 @@ namespace Toys
 				pEngine = new PhysicsEngine();
                 sEngine = new ScriptingEngine();
                 time = new Time();
-			}
+                frameTimer = new Time();
+                frameTimer.Start();
+            }
 			catch (Exception e)
 			{
 				Console.WriteLine(e.Message);
@@ -66,12 +69,13 @@ namespace Toys
             gEngine.Resize(width, height);
         }
 
-
-		//
 		internal void Update()
 		{
+            elapsed = (float)frameTimer.Stop();
+            elapsed *= .001f;
+            frameTimer.Start();
             time.Start();
-            elapsed = (float)(time.UpdateTime + time.RenderTime);
+            
             sEngine.Awake();
             sEngine.Start();
             sEngine.Update();
