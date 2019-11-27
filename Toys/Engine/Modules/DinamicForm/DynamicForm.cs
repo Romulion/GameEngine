@@ -93,9 +93,8 @@ namespace Toys
         {
             IntPtr screenDc = GetDC(IntPtr.Zero);
             IntPtr memDc = CreateCompatibleDC(screenDc);
-            IntPtr oldBitmap = IntPtr.Zero;
 
-            oldBitmap = SelectObject(memDc, Bitmap);
+            IntPtr oldBitmap = SelectObject(memDc, Bitmap);
             Vector2 size = new Vector2(Width, Height);
             Vector2 pointSource = new Vector2(0, 0);
             Vector2 topPos = new Vector2(Left, Top);

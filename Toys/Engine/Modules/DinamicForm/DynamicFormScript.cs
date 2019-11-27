@@ -62,7 +62,6 @@ namespace Toys
 
         void Update()
         {
-            
             if (width != camera.Width || height != camera.Height)
             {
                 width = camera.Width;
@@ -70,6 +69,9 @@ namespace Toys
                 renderBuffer.OnResize(width, height);
                 form.Width = camera.Width;
                 form.Height = camera.Height;
+                ppSh.OnResize(width, height);
+                imageBitmap.Dispose();
+                imageBitmap = new Bitmap(width, height);
             }
             
             KeyboardState keyState = Keyboard.GetState();
