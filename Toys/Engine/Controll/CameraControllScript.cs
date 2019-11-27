@@ -12,9 +12,11 @@ namespace Toys
         //mouse controll variables;
         float lastX, lastY;
         int phi = 90, theta = 90, thetaMax = 170, thetaMin = 70;
-        int angleStep = 4, angleThresold = 2;
-        bool mousePressed;
-        float speed = 0.01f;
+        public int angleStep = 4, angleThresold = 2;
+        public float speed = 0.01f;
+
+        private int wheel = 0;
+        private bool mousePressed;
 
         //camera space
         const float R = 3.5f;
@@ -31,22 +33,6 @@ namespace Toys
             camera.Target = Vector3.UnitY;
             camera.Target -= new Vector3(0,0.25f,0);
             transform.Position = camera.Target + CalcPos(r, phi, theta);
-            Control();
-        }
-
-        public void Control()
-        {
-            game.UpdateFrame += Movement;
-
-            game.MouseWheel += (sender, e) =>
-            {
-                if (e.Delta > 0)
-                    r -= speed * 5f;
-                else if (e.Delta < 0)
-                    r += speed * 5f;
-
-                transform.Position = camera.Target + CalcPos(r, phi, theta);
-            };
         }
 
         void MouseOrbit()
@@ -87,10 +73,19 @@ namespace Toys
             else
                 mousePressed = false;
 
+            int mDelta = mouseState.Wheel - wheel;
+            if (mDelta == 0)
+                return;
+            if (mDelta > 0)
+                r -= speed * 8f;
+            else if (mDelta < 0)
+                r += speed * 8f;
+            wheel = mouseState.Wheel;
+            transform.Position = camera.Target + CalcPos(r, phi, theta);
         }
 
         //setuping camera movement
-        void Movement(object sender, FrameEventArgs e)
+        void Update()
         {
             MouseOrbit();
             var keyState = Keyboard.GetState();
