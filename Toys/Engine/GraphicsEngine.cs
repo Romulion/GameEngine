@@ -17,6 +17,8 @@ namespace Toys
     {
         int Width, Height;
 
+        int outputBuffer = 0;
+
         internal static MainRenderer MainRender;
 		internal static TextRenderer TextRender;
 		//test
@@ -144,7 +146,7 @@ namespace Toys
 			renderScene.GetLight.RenderShadow(meshes);
 
             //clear display buffer
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, outputBuffer);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             //GL.Enable(EnableCap.Multisample);
             if (MainCamera != null)
@@ -164,7 +166,7 @@ namespace Toys
             }
 
             //render ui
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, outputBuffer);
             TextRender.RenderText();
         }
 

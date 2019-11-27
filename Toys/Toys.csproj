@@ -102,6 +102,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Engine\Modules\DinamicForm\DynamicFormScript.cs" />
+    <Compile Include="Engine\NoWindow.cs" />
     <Compile Include="Engine\Objects\FrameTimeScript.cs" />
     <Compile Include="Engine\Objects\SceneNode.cs" />
     <Compile Include="Engine\Objects\ScriptingComponent.cs" />

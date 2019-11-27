@@ -20,8 +20,6 @@ namespace Toys
 	{
         TextureType type;
 		public string Name { private set; get; }
-        public int Width { get; protected set; }
-        public int Height { get; protected set; }
 
         //default texture
         static Texture2D defaultTexture;

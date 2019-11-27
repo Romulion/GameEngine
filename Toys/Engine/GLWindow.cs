@@ -38,6 +38,7 @@ namespace Toys
             {
                 Engine.Resize(Width, Height);
             };
+            Visible = false;
         }
 
         void Update(object sender, EventArgs e)
@@ -60,6 +61,10 @@ namespace Toys
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
             }
 
+            if (keystate[Key.V])
+            {
+                Visible = !Visible;
+            }
             Engine.Update();
         }
 

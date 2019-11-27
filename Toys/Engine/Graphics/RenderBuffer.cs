@@ -77,7 +77,7 @@ namespace Toys
             //create multisampled texture
             if (samples > 0)
             {
-                GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                //GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
                 RenderBufferDraw = GL.GenFramebuffer();
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, RenderBufferDraw);
                 textureMS = GL.GenTexture();
