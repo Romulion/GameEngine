@@ -2,13 +2,19 @@
 using Gtk;
 using Toys;
 using System.Reflection;
+using UtilityClient;
 
 namespace ModelViewer
 {
+    public delegate void ExecuteMethod(byte[] data);
     public partial class Window : Gtk.Window
     {
         CoreEngine core;
         delegate void DisplayComponent();
+        ClientMaster connection;
+        ClientMaster connection2;
+        public ExecuteMethod Execute;
+        public volatile bool stream;
         public Window(Scene scene, CoreEngine core) :
                 base(WindowType.Toplevel)
         {
@@ -19,7 +25,7 @@ namespace ModelViewer
 
             DrawScene(scene);
             //SetAnimator(anim);
-
+            CreateConnection();
             ShowAll();
         }
 
@@ -343,7 +349,105 @@ namespace ModelViewer
             };
         }
 
+        void CreateConnection()
+        {
+            //btnStart.Clicked += BtnStart_Clicked;
+        }
+
+        private void BtnStart_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                ClearChildrens(hbox1);
+                int x = 570;
+                int y = 60;
+                var servers = ClientMaster.ScanLocalNetwork(9000);
+                if (servers == null)
+                    return;
+
+                foreach (var server in servers)
+                {
+                    Button btn = new Button();
+                    btn.Name = "btnHost";
+                    btn.Label = server.GetHostname;
+                    btn.Clicked += (s, ev) => {
+                        if (connection != null)
+                            connection.Disconnect();
+                        connection = new ClientMaster(server.GetIP, (ushort)server.GetIP.Port);
+                        connection2 = new ClientMaster(server.GetIP, (ushort)server.GetIP.Port);
+                        ClearChildrens(hbox2);
+                        ClearChildrens(hbox3);
+                        label1.Text = String.Format("connected to {0} {1}", server.GetHostname, server.GetIP.Address);
+                        DrawMethods(hbox2, connection.GetMethods(Methods.Simple), Methods.Simple);
+                        DrawMethods(hbox3, connection.GetMethods(Methods.Data), Methods.Data);
+                    };
+
+                    hbox1.Add(btn);
+                    btn.Show();
+                    y += 35;
+                }
+                
+            }
+            catch (Exception em)
+            {
+                Console.WriteLine(em.Message);
+                Console.WriteLine(em.StackTrace);
+            }
+        }
+
+        
+        public void DrawMethods(Box f, string[] names, Methods m)
+        {
+            int y = 20;
+            for (int i = 0; i < names.Length; i++)
+            {
+                if (names[i] == "")
+                    continue;
+                Button btn = new Button();
+                btn.Name = "btn";
+                btn.Label = names[i];
+                byte b = (byte)i;
+                if (m == Methods.Data)
+                    btn.Clicked += (s, ev) =>
+                    {
+                        stream = !stream;
+                        try
+                        {
+                            if (connection.Connected)
+                                Execute = (data) => connection2.ExecuteMethod(m, b, data);
+                            else
+                                label1.Text.Replace("connected to", "disconnected from");
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
+                        
+                    };
+                else
+                    btn.Clicked += (s, ev) =>
+                    {
+                        if (connection.Connected)
+                            connection.ExecuteMethod(m, b);
+                        else
+                            label1.Text.Replace("connected to", "disconnected from");
+                    };
+                f.Add(btn);
+                y += 25;
+            }
+
+            ShowAll();
+        }
+        
         void ClearChildrens(Fixed fixd)
+        {
+            foreach (var wid in fixd.Children)
+            {
+                wid.Dispose();
+            }
+        }
+
+        void ClearChildrens(Box fixd)
         {
             foreach (var wid in fixd.Children)
             {

@@ -103,6 +103,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Engine\Modules\DinamicForm\DynamicFormScript.cs" />
+    <Compile Include="Engine\Modules\DinamicForm\DynamicFormStream.cs" />
     <Compile Include="Engine\Objects\FrameTimeScript.cs" />
     <Compile Include="Engine\Objects\SceneNode.cs" />
     <Compile Include="Engine\Objects\ScriptingComponent.cs" />
@@ -229,6 +230,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assamble\" />
+    <Folder Include="UtilityClient\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

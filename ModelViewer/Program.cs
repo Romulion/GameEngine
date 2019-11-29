@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using Gtk;
 using OpenTK;
+using System.IO;
+using System;
 
 namespace ModelViewer
 {
@@ -24,7 +26,8 @@ namespace ModelViewer
             sceneNode.AddComponent(camera);
             sceneNode.AddComponent<CameraControllScript>();
             sceneNode.GetTransform.Position = new Vector3(0, 1, 3);
-            sceneNode.AddComponent<DynamicFormScript>();
+            var script = (DynamicFormStream)sceneNode.AddComponent<DynamicFormStream>();
+            //sceneNode.AddComponent<DynamicFormScript>();
             scene.AddObject(sceneNode);
             camera.Background = new BackgroundSkybox();
 
@@ -40,14 +43,20 @@ namespace ModelViewer
             scene.AddObject(node);
             TestScript ts = (TestScript)node.AddComponent<TestScript>();
             FrameTimeScript ft = (FrameTimeScript)node.AddComponent<FrameTimeScript>();
+            Window wndw = null;
+            var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
+            ISS.SetDSS(script);
+            
 
             var task = new Task(() =>
             {
                 Application.Init();
-                Window wndw = new Window(scene, window.Engine);
+                wndw = new Window(scene, window.Engine);
+                ISS.wndw = wndw;
                 Application.Run();
             });
             task.Start();
+
             window.Title = "ModelViewer";
             window.Run(60);
         }

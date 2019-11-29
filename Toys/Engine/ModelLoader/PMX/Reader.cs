@@ -20,7 +20,7 @@ namespace Toys
 		{
 			int length = stream.ReadInt32();
 
-			byte[] buffer = buffer = stream.ReadBytes(length);
+			byte[] buffer = stream.ReadBytes(length);
 
 			if (Encoding == 1)
 			{
@@ -36,7 +36,7 @@ namespace Toys
         public string readStringB()
         {
             int length = stream.ReadByte();
-            byte[] buffer = buffer = stream.ReadBytes(length);
+            byte[] buffer = stream.ReadBytes(length);
 
             if (Encoding == 1)
             {

@@ -12,8 +12,14 @@ namespace ModelViewer
 		private ScrolledWindow scrolledwindow2;
 		private Fixed fixed3;
         private Fixed fixed4;
+        private Fixed fixed5;
         private ScrolledWindow scrolledwindow3;
         private FileChooserButton fileChooser;
+        private Label label1;
+        private Notebook notebook = new Notebook();
+        private Box hbox1;
+        private Box hbox2;
+        private Box hbox3;
 
         protected virtual void Build()
         {
@@ -22,6 +28,7 @@ namespace ModelViewer
             Name = "ModelViewer";
             Title = "Window";
             WindowPosition = (WindowPosition)4;
+            notebook = new Notebook();
             // Container child Toys.Window.Gtk.Container+ContainerChild
             fixed1 = new Fixed();
             fixed1.Name = "fixed1";
@@ -129,8 +136,24 @@ namespace ModelViewer
             fixed1.Add(scrolledwindow3);
             Fixed.FixedChild w6 = (Fixed.FixedChild)fixed1[scrolledwindow3];
             w6.X = 370;
+            notebook.AppendPage(fixed1, new Label("test"));
+            BuildClient();
+            /*
+        self.page1.set_border_width(10)
+        self.page1.add(Gtk.Label('Default Page!'))
+        self.notebook.append_page(self.page1, Gtk.Label('Plain Title'))
 
-            Add(fixed1);
+        self.page2 = Gtk.Box()
+        self.page2.set_border_width(10)
+        self.page2.add(Gtk.Label('A page with an image for a Title.'))
+        self.notebook.append_page(
+            self.page2,
+            Gtk.Image.new_from_icon_name(
+                "help-about",
+                Gtk.IconSize.MENU
+            )
+            */
+            Add(notebook);
             if (Child != null)
             {
                 Child.ShowAll();
@@ -145,6 +168,33 @@ namespace ModelViewer
             provider.LoadFromData(css);
             StyleContext.AddProviderForScreen(Gdk.Screen.Default, provider, StyleProviderPriority.User);
             */
+        }
+
+        void BuildClient()
+        {
+            fixed5 = new Fixed();
+
+            label1 = new Label("Hosts");
+            fixed5.Put(label1, 5, 0);
+            var btnStart = new Button();
+            btnStart.WidthRequest = 109;
+            btnStart.Label = "ScanServers";
+            btnStart.Clicked += BtnStart_Clicked;
+            fixed5.Put(btnStart, 5, 30);
+            hbox1 = new Box(Orientation.Vertical, 30);
+            fixed5.Put(hbox1,5,70);
+
+            var label2 = new Label("Methods");
+            var label3 = new Label("DataMethods");
+            hbox2 = new Box(Orientation.Vertical, 10);
+            hbox3 = new Box(Orientation.Vertical, 10);
+            hbox2.Spacing = 5;
+            hbox3.Spacing = 5;
+            fixed5.Put(hbox2, 200, 40);
+            fixed5.Put(hbox3, 350, 40);
+            fixed5.Put(label2, 200, 10);
+            fixed5.Put(label3, 350, 10);
+            notebook.AppendPage(fixed5, new Label("StreamClient"));
         }
 
         static string ReadFromAssetStream(string path)
