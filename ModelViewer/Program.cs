@@ -30,7 +30,6 @@ namespace ModelViewer
             //sceneNode.AddComponent<DynamicFormScript>();
             scene.AddObject(sceneNode);
             camera.Background = new BackgroundSkybox();
-
             //node.Name = "Model1";
             //var loader = new ReaderLMD(args[0]);
             //SceneNode node = loader.GetModel;

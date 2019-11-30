@@ -73,14 +73,17 @@ namespace Toys
             else
                 mousePressed = false;
 
-            int mDelta = mouseState.Wheel - wheel;
-            if (mDelta == 0)
-                return;
-            if (mDelta > 0)
-                r -= speed * 8f;
-            else if (mDelta < 0)
-                r += speed * 8f;
-            wheel = mouseState.Wheel;
+            if (game.Focused)
+            {
+                int mDelta = mouseState.Wheel - wheel;
+                if (mDelta == 0)
+                    return;
+                if (mDelta > 0)
+                    r -= speed * 8f;
+                else if (mDelta < 0)
+                    r += speed * 8f;
+                wheel = mouseState.Wheel;
+            }
             transform.Position = camera.Target + CalcPos(r, phi, theta);
         }
 

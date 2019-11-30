@@ -24,6 +24,7 @@ namespace ModelViewer
         private Fixed fixed6;
         private ScrolledWindow scrolledwindow4;
         private Fixed fixed7;
+        private int morphPanel = -1;
 
         protected virtual void Build()
         {
@@ -142,7 +143,6 @@ namespace ModelViewer
             w6.X = 370;
             notebook.AppendPage(fixed1, new Label("Scene"));
             BuildClient();
-            BuildMorphs();
             /*
         self.page1.set_border_width(10)
         self.page1.add(Gtk.Label('Default Page!'))
@@ -173,6 +173,7 @@ namespace ModelViewer
             provider.LoadFromData(css);
             StyleContext.AddProviderForScreen(Gdk.Screen.Default, provider, StyleProviderPriority.User);
             */
+            BuildMorphs();
         }
 
         void BuildClient()
@@ -205,7 +206,6 @@ namespace ModelViewer
         void BuildMorphs()
         {
             fixed6 = new Fixed();
-
             scrolledwindow4 = new ScrolledWindow();
             scrolledwindow4.WidthRequest = 300;
             scrolledwindow4.HeightRequest = 300;
@@ -226,7 +226,18 @@ namespace ModelViewer
 
             //Fixed.FixedChild w8 = (Fixed.FixedChild)fixed6[scrolledwindow4];
             //w8.X = 165;
-            notebook.AppendPage(fixed6, new Label("Morphs"));
+            morphPanel = notebook.AppendPage(fixed6, new Label("Morphs"));
+            fixed6.ShowAll();
+            fixed6.Hide();
+            int prevPage = -1;
+            notebook.SwitchPage += (s, e) => {
+                if (prevPage == morphPanel)
+                {
+                    ClearChildrens(fixed7);
+                    fixed6.Hide();
+                }
+                prevPage = notebook.Page;
+            };
         }
 
 

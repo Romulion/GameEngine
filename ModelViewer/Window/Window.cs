@@ -25,8 +25,7 @@ namespace ModelViewer
 
             DrawScene(scene);
             //SetAnimator(anim);
-            CreateConnection();
-            ShowAll();
+
         }
 
         void SetMorphList(Morph[] morphs)
@@ -166,7 +165,6 @@ namespace ModelViewer
             int y = 0;
             ClearChildrens(fixed3);
             ClearChildrens(fixed4);
-            ClearChildrens(fixed7);
             foreach (var component in node.GetComponents())
             {
                 if (component is MeshDrawerRigged)
@@ -204,7 +202,6 @@ namespace ModelViewer
         void MeshDrawerRig(MeshDrawerRigged meshDrawer)
         {
             ClearChildrens(fixed4);
-            ClearChildrens(fixed7);
             int y = 0;
             if (meshDrawer.Morphes != null)
             {
@@ -214,7 +211,7 @@ namespace ModelViewer
                 fixed4.Put(btn, 0, y);
                 btn.Show();
                 y += 35;
-                btn.Clicked += (s, e) => { SetMorphList(meshDrawer.Morphes); notebook.Page = 2; };
+                btn.Clicked += (s, e) => { SetMorphList(meshDrawer.Morphes); fixed6.Show();  notebook.Page = morphPanel; };
             }
             foreach (var mat in meshDrawer.Materials)
             {
@@ -254,7 +251,6 @@ namespace ModelViewer
             var timer = new Time();
             
             ClearChildrens(fixed4);
-            ClearChildrens(fixed7);
             fileChooser = new FileChooserButton("Select a File", FileChooserAction.Open);
             fileChooser.WidthRequest = 124;
             fileChooser.Name = "filechooserbutton2";
@@ -334,11 +330,6 @@ namespace ModelViewer
                     }
                 }
             };
-        }
-
-        void CreateConnection()
-        {
-            //btnStart.Clicked += BtnStart_Clicked;
         }
 
         private void BtnStart_Clicked(object sender, EventArgs e)

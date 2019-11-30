@@ -35,7 +35,6 @@ namespace Toys
             GenerateTextureID();
 
             Bitmap tex1;
-            Console.WindowHeight = 50;
             //check texture
             try
 			{
