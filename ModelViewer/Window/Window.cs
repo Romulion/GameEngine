@@ -51,9 +51,9 @@ namespace ModelViewer
                 lbl.Name = "lbl";
                 lbl.Text = prefix + morph.Name;
 
-                fixed3.Put(lbl, 0, y);
+                fixed7.Put(lbl, 0, y);
                 lbl.Show();
-                y += 20;
+               // y += 30;
 
                 HScale scale = new HScale(0, 1, 0.1);
                 scale.WidthRequest = 180;
@@ -65,35 +65,9 @@ namespace ModelViewer
                 };
 
 
-                fixed3.Put(scale, 0, y);
+                fixed7.Put(scale, 100, y);
                 scale.Show();
                 y += 40;
-
-                /*
-				btn.ModifyBg(StateType.Normal, disable);
-
-				btn.Clicked += (sender, e) =>
-				{
-					var renderDir = mat.rndrDirrectives;
-				renderDir.render = !renderDir.render;
-					if (renderDir.render)
-						btn.ModifyBg(StateType.Normal, disable);
-					else 
-						btn.ModifyBg(StateType.Active, enable);	
-					
-				};
-				*/
-                /*
-				if (mat.dontDraw)
-					btn.ModifyBg(StateType.Normal, disable);
-				else 
-					btn.ModifyBg(StateType.Normal, enable);
-					*/
-                /*
-				fixed2.Put(btn, 0, y);
-				btn.Show();
-				y += 25;
-				*/
             }
         }
 /*
@@ -192,6 +166,7 @@ namespace ModelViewer
             int y = 0;
             ClearChildrens(fixed3);
             ClearChildrens(fixed4);
+            ClearChildrens(fixed7);
             foreach (var component in node.GetComponents())
             {
                 if (component is MeshDrawerRigged)
@@ -199,7 +174,7 @@ namespace ModelViewer
                     Button btn = new Button();
                     btn.Label = "MeshDrawerRigged";
                     btn.Name = "btnComp";
-                    btn.Clicked += (sender, e) => { MeshDrawerRig((MeshDrawerRigged)component); };
+                    btn.Clicked += (sender, e) => { MeshDrawerRig((MeshDrawerRigged)component);};
                     fixed3.Put(btn, 0, y);
                     btn.Show();
                     y += 35;
@@ -229,7 +204,18 @@ namespace ModelViewer
         void MeshDrawerRig(MeshDrawerRigged meshDrawer)
         {
             ClearChildrens(fixed4);
+            ClearChildrens(fixed7);
             int y = 0;
+            if (meshDrawer.Morphes != null)
+            {
+                Button btn = new Button();
+                btn.Label = "Morhps";
+                btn.Name = "btn";
+                fixed4.Put(btn, 0, y);
+                btn.Show();
+                y += 35;
+                btn.Clicked += (s, e) => { SetMorphList(meshDrawer.Morphes); notebook.Page = 2; };
+            }
             foreach (var mat in meshDrawer.Materials)
             {
                 var renderDir = mat.RenderDirrectives;
@@ -260,6 +246,7 @@ namespace ModelViewer
                 btn.Show();
                 y += 35;
             }
+            
         }
 
         void AnimatorWindow(Animator animator)
@@ -267,7 +254,7 @@ namespace ModelViewer
             var timer = new Time();
             
             ClearChildrens(fixed4);
-
+            ClearChildrens(fixed7);
             fileChooser = new FileChooserButton("Select a File", FileChooserAction.Open);
             fileChooser.WidthRequest = 124;
             fileChooser.Name = "filechooserbutton2";

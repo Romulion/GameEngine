@@ -20,6 +20,10 @@ namespace ModelViewer
         private Box hbox1;
         private Box hbox2;
         private Box hbox3;
+        //morphs
+        private Fixed fixed6;
+        private ScrolledWindow scrolledwindow4;
+        private Fixed fixed7;
 
         protected virtual void Build()
         {
@@ -136,8 +140,9 @@ namespace ModelViewer
             fixed1.Add(scrolledwindow3);
             Fixed.FixedChild w6 = (Fixed.FixedChild)fixed1[scrolledwindow3];
             w6.X = 370;
-            notebook.AppendPage(fixed1, new Label("test"));
+            notebook.AppendPage(fixed1, new Label("Scene"));
             BuildClient();
+            BuildMorphs();
             /*
         self.page1.set_border_width(10)
         self.page1.add(Gtk.Label('Default Page!'))
@@ -196,6 +201,34 @@ namespace ModelViewer
             fixed5.Put(label3, 350, 10);
             notebook.AppendPage(fixed5, new Label("StreamClient"));
         }
+
+        void BuildMorphs()
+        {
+            fixed6 = new Fixed();
+
+            scrolledwindow4 = new ScrolledWindow();
+            scrolledwindow4.WidthRequest = 300;
+            scrolledwindow4.HeightRequest = 300;
+            scrolledwindow4.CanFocus = true;
+            scrolledwindow4.Name = "scrolledwindow2";
+            scrolledwindow4.HscrollbarPolicy = (PolicyType)2;
+            scrolledwindow4.ShadowType = (ShadowType)1;
+            // Container child scrolledwindow2.Gtk.Container+ContainerChild
+            Viewport w5 = new Viewport();
+            w5.ShadowType = 0;
+            // Container child GtkViewport1.Gtk.Container+ContainerChild
+            fixed7 = new Fixed();
+            fixed7.Name = "fixed3";
+            fixed7.HasWindow = false;
+            w5.Add(fixed7);
+            scrolledwindow4.Add(w5);
+            fixed6.Add(scrolledwindow4);
+
+            //Fixed.FixedChild w8 = (Fixed.FixedChild)fixed6[scrolledwindow4];
+            //w8.X = 165;
+            notebook.AppendPage(fixed6, new Label("Morphs"));
+        }
+
 
         static string ReadFromAssetStream(string path)
         {
