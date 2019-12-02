@@ -25,7 +25,7 @@ namespace ModelViewer
 
             DrawScene(scene);
             //SetAnimator(anim);
-
+            //CreateWindow();
         }
 
         void SetMorphList(Morph[] morphs)
@@ -57,7 +57,7 @@ namespace ModelViewer
                 HScale scale = new HScale(0, 1, 0.1);
                 scale.WidthRequest = 180;
                 scale.Name = "scale";
-
+                scale.Value = morph.MorphDegree;
                 scale.ValueChanged += (sender, e) =>
                 {
                     core.addTask = () => morph.MorphDegree = (float)scale.Value;
@@ -431,6 +431,23 @@ namespace ModelViewer
             {
                 wid.Dispose();
             }
+        }
+
+        /// <summary>
+        /// test window for dynamic form script
+        /// </summary>
+        void CreateWindow()
+        {
+            var window = new Gtk.Window(WindowType.Toplevel);
+            var image = new Image();
+            image.File = "test.png";
+            window.Decorated = false;
+            window.Visual = window.Screen.RgbaVisual;
+            CssProvider cssp = new CssProvider();
+            cssp.LoadFromData("window { background-color: transparent; }");
+            window.StyleContext.AddProvider(cssp, StyleProviderPriority.Application);
+            window.Add(image);
+            window.ShowAll();
         }
     }
 }

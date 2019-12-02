@@ -25,9 +25,10 @@ namespace ModelViewer
             sceneNode.Name = "Camera";
             sceneNode.AddComponent(camera);
             sceneNode.AddComponent<CameraControllScript>();
-            sceneNode.GetTransform.Position = new Vector3(0, 1, 3);
-            var script = (DynamicFormStream)sceneNode.AddComponent<DynamicFormStream>();
-            //sceneNode.AddComponent<DynamicFormScript>();
+            sceneNode.GetTransform.Position = new Vector3(0, 1f, 3);
+            //var script = (DynamicFormStream)sceneNode.AddComponent<DynamicFormStream>();
+            sceneNode.AddComponent<DynamicFormScript>();
+
             scene.AddObject(sceneNode);
             camera.Background = new BackgroundSkybox();
             //node.Name = "Model1";
@@ -43,15 +44,15 @@ namespace ModelViewer
             TestScript ts = (TestScript)node.AddComponent<TestScript>();
             FrameTimeScript ft = (FrameTimeScript)node.AddComponent<FrameTimeScript>();
             Window wndw = null;
-            var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
-            ISS.SetDSS(script);
-            
+            //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
+            //ISS.SetDSS(script);
+
 
             var task = new Task(() =>
             {
                 Application.Init();
                 wndw = new Window(scene, window.Engine);
-                ISS.wndw = wndw;
+                //ISS.wndw = wndw;
                 Application.Run();
             });
             task.Start();
