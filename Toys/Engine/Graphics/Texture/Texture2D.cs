@@ -18,6 +18,7 @@ namespace Toys
 
 	public class Texture2D : Texture
 	{
+        Logger logger = new Logger("Texture");
         TextureType type;
 		public string Name { private set; get; }
 
@@ -67,8 +68,7 @@ namespace Toys
             }
 			catch (Exception)
 			{
-				Console.Write("cant load texture  ");
-                Console.WriteLine(path);
+                logger.Error("cant load texture " + path,"");
                 Texture2D empty = LoadEmpty();
                 textureID = empty.textureID;
                 Name = empty.Name;

@@ -11,25 +11,30 @@ namespace ModelViewer
     {
         static void Main(params string[] args)
         {
-            if (args.Length == 0)
-                return;
+            
             GLWindow window = new GLWindow();
             
             var scene = window.Engine.mainScene;
 
             //string str = "";
-            SceneNode node = ResourcesManager.LoadAsset<SceneNode>(args[0]);
-            node.Name = "model";
+            if (args.Length != 0)
+            {
+                SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
+                modelNode.Name = "model";
+                scene.AddObject(modelNode);
+                TestScript ts = (TestScript)modelNode.AddComponent<TestScript>();
+            }
             var camera = new Camera();
-            SceneNode sceneNode = new SceneNode();
-            sceneNode.Name = "Camera";
-            sceneNode.AddComponent(camera);
-            sceneNode.AddComponent<CameraControllScript>();
-            sceneNode.GetTransform.Position = new Vector3(0, 1f, 3);
+            SceneNode cameraNode = new SceneNode();
+            cameraNode.Name = "Camera";
+            cameraNode.AddComponent(camera);
+            cameraNode.AddComponent<CameraControllScript>();
+            cameraNode.AddComponent<FrameTimeScript>();
+            cameraNode.GetTransform.Position = new Vector3(0, 1f, 3);
             //var script = (DynamicFormStream)sceneNode.AddComponent<DynamicFormStream>();
-            sceneNode.AddComponent<DynamicFormScript>();
+            cameraNode.AddComponent<DynamicFormScript>();
 
-            scene.AddObject(sceneNode);
+            scene.AddObject(cameraNode);
             camera.Background = new BackgroundSkybox();
             //node.Name = "Model1";
             //var loader = new ReaderLMD(args[0]);
@@ -39,11 +44,8 @@ namespace ModelViewer
             //node.GetTransform.Position = new Vector3(0f, 1.0f, 0.0f);
             //node.phys.ReinstalizeBodys();
             //window.Visible = false;
-            //need sync
-            scene.AddObject(node);
-            TestScript ts = (TestScript)node.AddComponent<TestScript>();
-            FrameTimeScript ft = (FrameTimeScript)node.AddComponent<FrameTimeScript>();
-            Window wndw = null;
+            //need sync 
+            
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
             //ISS.SetDSS(script);
 
@@ -51,7 +53,7 @@ namespace ModelViewer
             var task = new Task(() =>
             {
                 Application.Init();
-                wndw = new Window(scene, window.Engine);
+                Window wndw = new Window(scene, window.Engine);
                 //ISS.wndw = wndw;
                 Application.Run();
             });

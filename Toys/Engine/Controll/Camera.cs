@@ -24,6 +24,8 @@ namespace Toys
         public bool Active { get; set;}
         public bool Main { get; internal set; }
 
+        public int RenderMask { get; set; }
+
         public BackgroundBase Background;
 
         internal int RenderBuffer = 0;
