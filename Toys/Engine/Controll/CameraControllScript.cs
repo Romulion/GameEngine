@@ -7,7 +7,7 @@ namespace Toys
     public class CameraControllScript : ScriptingComponent
     {
         GameWindow game;
-        Transformation transform;
+        Transform transform;
         Camera camera;
         //mouse controll variables;
         float lastX, lastY;

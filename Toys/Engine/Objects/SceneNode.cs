@@ -10,7 +10,7 @@ namespace Toys
         Logger logger = new Logger("SceneNode");
         List<SceneNode> childs;
         public SceneNode Parent;
-        Transformation transform;
+        Transform transform;
 		public string Name;
 		public bool Active = true;
 		List<Component> components;
@@ -20,10 +20,10 @@ namespace Toys
             childs = new List<SceneNode>();
 			components = new List<Component>();
             Parent = null;
-            transform = new Transformation(this);
+            transform = new Transform(this);
         }
 
-        public Transformation GetTransform
+        public Transform GetTransform
         {
             get
             {

@@ -92,8 +92,10 @@
     <Compile Include="Engine\Graphics\Texture\RenderTexture.cs" />
     <Compile Include="Engine\Graphics\ShaderConstructorNew.cs" />
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector2.cs" />
-    <Compile Include="Engine\Graphics\TextRendering\TextBox.cs" />
-    <Compile Include="Engine\Graphics\TextRendering\TextCanvas.cs" />
+    <Compile Include="Engine\UserInterface\RectTransform.cs" />
+    <Compile Include="Engine\UserInterface\VisualComponent.cs" />
+    <Compile Include="Engine\UserInterface\TextRendering\TextBox.cs" />
+    <Compile Include="Engine\UserInterface\TextRendering\TextCanvas.cs" />
     <Compile Include="Engine\Graphics\Texture\Texture.cs" />
     <Compile Include="Engine\Materials\MaterialCustom.cs" />
     <Compile Include="Engine\Materials\MaterialPM.cs" />
@@ -107,10 +109,13 @@
     <Compile Include="Engine\Objects\FrameTimeScript.cs" />
     <Compile Include="Engine\Objects\SceneNode.cs" />
     <Compile Include="Engine\Objects\ScriptingComponent.cs" />
-    <Compile Include="Engine\Objects\Transformation.cs" />
+    <Compile Include="Engine\Objects\Transform.cs" />
     <Compile Include="Engine\Systen\Message.cs" />
     <Compile Include="Engine\Systen\ScriptingEngine.cs" />
     <Compile Include="Engine\Systen\Time.cs" />
+    <Compile Include="Engine\UserInterface\UICanvas.cs" />
+    <Compile Include="Engine\UserInterface\UIElement.cs" />
+    <Compile Include="Engine\UserInterface\UIEngine.cs" />
     <Compile Include="ExternalCode\libktxsharp\KtxBitFiddling.cs" />
     <Compile Include="ExternalCode\libktxsharp\KtxCommon.cs" />
     <Compile Include="ExternalCode\libktxsharp\KtxErrors.cs" />
@@ -204,8 +209,8 @@
     <Compile Include="Engine\Systen\Resource.cs" />
     <Compile Include="Engine\Systen\Component.cs" />
     <Compile Include="Engine\Graphics\MeshDrawerRigged.cs" />
-    <Compile Include="Engine\Graphics\TextRendering\TextRenderer.cs" />
-    <Compile Include="Engine\Graphics\TextRendering\Character.cs" />
+    <Compile Include="Engine\UserInterface\TextRendering\TextRenderer.cs" />
+    <Compile Include="Engine\UserInterface\TextRendering\Character.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="BulletSharp, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">

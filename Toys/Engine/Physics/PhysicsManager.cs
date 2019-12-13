@@ -13,14 +13,14 @@ namespace Toys
         Joint[] joints;
         BoneBodySyncer prePhysics;
         BoneBodySyncer postPhysics;
-        Transformation worldTrans;
+        Transform worldTrans;
 
         DiscreteDynamicsWorld World;
 
         RigidContainer[] Rigits;
         JointContainer[] Jcons;
 
-        public PhysicsManager(RigidContainer[] rigits, JointContainer[] jcons, BoneController bons, Transformation trans)
+        public PhysicsManager(RigidContainer[] rigits, JointContainer[] jcons, BoneController bons, Transform trans)
         {
             //setup world physics
             bones = bons;
