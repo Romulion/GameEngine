@@ -19,6 +19,7 @@ namespace Toys
         static Material defaultMaterial;
         ShaderUniform shaderUniform;
         ShaderUniform colorUniform;
+        Vector3 color;
         internal ButtonStates State { get; private set;}
         public ButtonComponent() : base(typeof(ButtonComponent))
         {
@@ -55,6 +56,7 @@ namespace Toys
         {
 
             Material.ApplyMaterial();
+            colorUniform.SetValue(color);
             shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
             base.Draw();
         }
@@ -65,7 +67,7 @@ namespace Toys
             {
                 OnClick();
                 State = ButtonStates.Clicked;
-                colorUniform.SetValue(new Vector3(1,0,0));
+                color = new Vector3(1,0,0);
             }
         }
 
@@ -75,7 +77,7 @@ namespace Toys
             if (State == ButtonStates.Clicked || State == ButtonStates.Normal)
             {
                 State = ButtonStates.Hover;
-                colorUniform.SetValue(new Vector3(0, 1, 0));
+                color = new Vector3(0, 1, 0);
             }
         }
 
@@ -85,7 +87,7 @@ namespace Toys
             if (State == ButtonStates.Clicked || State == ButtonStates.Hover)
             {
                 State = ButtonStates.Normal;
-                colorUniform.SetValue(new Vector3(0, 0, 1));
+                color = new Vector3(0, 0, 1);
             }
         }
     }
