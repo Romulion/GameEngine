@@ -7,7 +7,7 @@ using OpenTK;
 
 namespace Toys
 {
-    class TextBox : Component
+    class TextBox : VisualComponent
     {
         string Text;
         Vector2 pos = Vector2.Zero;
@@ -36,8 +36,9 @@ namespace Toys
         }
 
 
-        internal override void AddComponent(SceneNode node)
+        internal override void AddComponent(UIElement node)
         {
+
         }
 
         internal override void RemoveComponent()

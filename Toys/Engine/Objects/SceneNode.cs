@@ -8,7 +8,7 @@ namespace Toys
 	public class SceneNode : Resource
     {
         Logger logger = new Logger("SceneNode");
-        List<SceneNode> childs;
+        public List<SceneNode> Childs { get; private set; }
         public SceneNode Parent;
         Transform transform;
 		public string Name;
@@ -17,7 +17,7 @@ namespace Toys
 
 		public SceneNode() : base (typeof(SceneNode))
         {
-            childs = new List<SceneNode>();
+            Childs = new List<SceneNode>();
 			components = new List<Component>();
             Parent = null;
             transform = new Transform(this);
@@ -37,14 +37,14 @@ namespace Toys
                 Parent.RemoveChild(this);
 
             Parent = node;
-
+            Parent.AddChilld(this);
             UpdateTransform();
         }
 
         public void UpdateTransform()
         {
             transform.UpdateGlobalTransform();
-            foreach (var child in childs)
+            foreach (var child in Childs)
             {
                 child.UpdateTransform();
             }
@@ -52,12 +52,16 @@ namespace Toys
 
         private void RemoveChild(SceneNode node)
         {
-            childs.Remove(node);
+            Childs.Remove(node);
         }
 
+        internal void AddChilld(SceneNode node)
+        {
+            Childs.Add(node);
+        }
 
-		//component framework
-		public void AddComponent(Component comp)
+        //component framework
+        public void AddComponent(Component comp)
 		{
             comp.AddComponent(this);
             components.Add(comp);

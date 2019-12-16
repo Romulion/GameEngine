@@ -92,6 +92,8 @@
     <Compile Include="Engine\Graphics\Texture\RenderTexture.cs" />
     <Compile Include="Engine\Graphics\ShaderConstructorNew.cs" />
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector2.cs" />
+    <Compile Include="Engine\UserInterface\ButtonComponent.cs" />
+    <Compile Include="Engine\UserInterface\RawImage.cs" />
     <Compile Include="Engine\UserInterface\RectTransform.cs" />
     <Compile Include="Engine\UserInterface\VisualComponent.cs" />
     <Compile Include="Engine\UserInterface\TextRendering\TextBox.cs" />
@@ -113,7 +115,7 @@
     <Compile Include="Engine\Systen\Message.cs" />
     <Compile Include="Engine\Systen\ScriptingEngine.cs" />
     <Compile Include="Engine\Systen\Time.cs" />
-    <Compile Include="Engine\UserInterface\UICanvas.cs" />
+    <Compile Include="Engine\UserInterface\Canvas.cs" />
     <Compile Include="Engine\UserInterface\UIElement.cs" />
     <Compile Include="Engine\UserInterface\UIEngine.cs" />
     <Compile Include="ExternalCode\libktxsharp\KtxBitFiddling.cs" />
@@ -242,10 +244,11 @@
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Resourses\shaders\PM.fsh" />
-    <EmbeddedResource Include="Resourses\shaders\TestTexture.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\TextureImage.fsh" />
     <EmbeddedResource Include="Resourses\Fonts\reddelicious.ttf" />
     <EmbeddedResource Include="Resourses\shaders\Skybox.fsh" />
     <EmbeddedResource Include="Resourses\shaders\FormPP.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\ButtonColor.fsh" />
     <None Include="VertexRigged.manifest" />
     <None Include="Resourses\textures\toon_blank.bmp" />
     <None Include="Engine\Graphics\ShaderUniforms\ShaderUniformTyped.cs" />
@@ -274,7 +277,7 @@
     <EmbeddedResource Include="Resourses\shaders\PM.vsh" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resourses\shaders\TestTexture.vsh" />
+    <EmbeddedResource Include="Resourses\shaders\TextureImage.vsh" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resourses\textures\PMX\toon01.bmp" />

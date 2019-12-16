@@ -9,7 +9,7 @@ namespace Toys
     public class UIElement : Resource
     {
         Logger logger = new Logger("SceneNode");
-        List<UIElement> childs;
+        public List<UIElement> Childs { get; private set; }
         public UIElement Parent;
         RectTransform transform;
         public string Name;
@@ -18,9 +18,10 @@ namespace Toys
 
         public UIElement() : base(typeof(UIElement))
         {
-            childs = new List<UIElement>();
+            Childs = new List<UIElement>();
             components = new List<VisualComponent>();
             Parent = null;
+            transform = new RectTransform(this);
         }
 
         public RectTransform GetTransform
@@ -37,24 +38,31 @@ namespace Toys
                 Parent.RemoveChild(this);
 
             Parent = node;
-
-            UpdateTransform();
+            Parent.AddChilld(this);
+            //UpdateTransform();
         }
 
         public void UpdateTransform()
         {
-            transform.UpdateGlobalTransform();
-            foreach (var child in childs)
+            transform.UpdateGlobalPosition();
+        }
+        public void UpdateTransformRecursive()
+        {
+            transform.UpdateGlobalPosition();
+            foreach (var child in Childs)
             {
-                child.UpdateTransform();
+                child.UpdateTransformRecursive();
             }
         }
 
         internal void RemoveChild(UIElement node)
         {
-            childs.Remove(node);
+            Childs.Remove(node);
         }
-
+        internal void AddChilld(UIElement node)
+        {
+            Childs.Add(node);
+        }
 
         //component framework
         public void AddComponent(VisualComponent comp)
@@ -63,7 +71,7 @@ namespace Toys
             components.Add(comp);
         }
 
-        internal VisualComponent AddComponent<T>() where T : VisualComponent
+        public VisualComponent AddComponent<T>() where T : VisualComponent
         {
             Type t = typeof(T);
             try

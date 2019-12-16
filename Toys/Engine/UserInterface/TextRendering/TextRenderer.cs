@@ -46,7 +46,7 @@ namespace Toys
                 face = new Face(lib, ReadFont(assembly.GetManifestResourceStream(defPath)), 0);
             }
 
-            face.SetPixelSizes(0, 48);
+            face.SetPixelSizes(0, 30);
             projection = Matrix4.CreateOrthographicOffCenter(0, 800, 0, 600, 0f, -0.01f);
             ShaderManager shdmMgmt = ShaderManager.GetInstance;
             shdmMgmt.LoadShader("text");
@@ -56,8 +56,6 @@ namespace Toys
 
             shdr.GetUniforms[0].SetValue(projection);
             charmap = Texture2D.CreateCharMap(mapSize, mapSize);
-            //test
-            //CreateTestTextureMap();
         }
 
 
@@ -202,23 +200,5 @@ namespace Toys
 			lib.Dispose();
 			face.Dispose();
 		}
-
-        private void CreateTestTextureMap()
-        {
-            debugTextmap = CreateCanvas();
-
-            float[,] vertics = {
-                    { 0,    480,   0, 0},
-                    { 0,     0,      0, 1},
-                    { 480, 0,       1, 1},
-                    { 0,    480,  0, 0},
-                    { 480, 0,       1 , 1},
-                    { 480, 480,   1 , 0 }
-                };
-            GL.BindBuffer(BufferTarget.ArrayBuffer, debugTextmap.VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, 6 * 4 * 4, vertics, BufferUsageHint.StaticDraw);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            debugTextmap.Length = 6;
-        }
 	}
 }

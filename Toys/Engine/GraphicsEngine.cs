@@ -15,12 +15,14 @@ namespace Toys
 
     class GraphicsEngine
     {
-        int Width, Height;
+        public int Width { get; private set; }
+        public int Height { get; private set; }
 
         int outputBuffer = 0;
 
         internal static MainRenderer MainRender;
 		internal static TextRenderer TextRender;
+        internal UIEngine UIEngine;
 		//test
 		int VBO, VAO, FBO;
 		Shader sh;
@@ -44,7 +46,7 @@ namespace Toys
 			renderScene.OnLoad();
 			MainRender = new MainRenderer(renderScene);
 			TextRender = new TextRenderer();
-			renderScene.GetLight.BindShadowMap();
+            renderScene.GetLight.BindShadowMap();
             //TestTriangle();
         }
 
@@ -79,7 +81,8 @@ namespace Toys
 
         void Instalize()
         {
-			var settings = Settings.GetInstance();
+            UIEngine = new UIEngine();
+            var settings = Settings.GetInstance();
 			Width = settings.Graphics.Width;
 			Height = settings.Graphics.Height;
             try
@@ -167,6 +170,7 @@ namespace Toys
 
             //render ui
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, outputBuffer);
+            UIEngine.DrawUI();
             TextRender.RenderText();
         }
 

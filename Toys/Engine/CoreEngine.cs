@@ -86,7 +86,8 @@ namespace Toys
 				task = null;
 			}
 			mainScene.Update(elapsed);
-			
+            gEngine.UIEngine.UpdateUI();
+            gEngine.UIEngine.CheckMouse();
             //physics
 #if PHYS
             pEngine.Update(elapsed);

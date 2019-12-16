@@ -45,7 +45,20 @@ namespace ModelViewer
             //node.phys.ReinstalizeBodys();
             //window.Visible = false;
             //need sync 
-            
+
+            var canvas = (Canvas)cameraNode.AddComponent<Canvas>();
+            var ui = new UIElement();
+            ui.GetTransform.anchorMax = new Vector2(0.7f, 0f);
+            ui.GetTransform.anchorMin = new Vector2(0.3f, 0f);
+            ui.GetTransform.offsetMax = new Vector2(0, 200);
+            ui.GetTransform.offsetMin = new Vector2(0, 100);
+
+            ui.GetTransform.UpdateGlobalPosition();
+            canvas.Root = ui;
+            canvas.AddObject(ui);
+
+            var image = (ButtonComponent)ui.AddComponent<ButtonComponent>();
+            image.OnClick = () => Console.WriteLine("clicked");
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
             //ISS.SetDSS(script);
 

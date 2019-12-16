@@ -181,6 +181,7 @@ namespace Toys
 					tex.ChangeType(TextureType.Diffuse);
 					tex.WrapMode =TextureWrapMode.Repeat;
 				}
+
 				textures[i] = tex;
             }
 		}
