@@ -48,20 +48,33 @@ namespace ModelViewer
 
             var canvas = (Canvas)cameraNode.AddComponent<Canvas>();
             var ui = new UIElement();
-            ui.GetTransform.anchorMax = new Vector2(0.7f, 0f);
-            ui.GetTransform.anchorMin = new Vector2(0.3f, 0f);
-            ui.GetTransform.offsetMax = new Vector2(0, 200);
-            ui.GetTransform.offsetMin = new Vector2(0, 100);
+            ui.GetTransform.anchorMax = new Vector2(0f, 1f);
+            ui.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui.GetTransform.offsetMax = new Vector2(100, -40);
+            ui.GetTransform.offsetMin = new Vector2(20, -200);
 
-            ui.GetTransform.UpdateGlobalPosition();
             canvas.Root = ui;
             canvas.AddObject(ui);
 
-            var image = (ButtonComponent)ui.AddComponent<ButtonComponent>();
-            image.OnClick = () => Console.WriteLine("clicked");
+            var ui1 = new UIElement();
+            ui1.GetTransform.anchorMax = new Vector2(1f, 1f);
+            ui1.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui1.GetTransform.offsetMax = new Vector2(0, 0);
+            ui1.GetTransform.offsetMin = new Vector2(0, -20);
+            var image1 = (ButtonComponent)ui1.AddComponent<ButtonComponent>();
+            image1.OnClick = () => Console.WriteLine("clicked1");
+
+            var ui2 = new UIElement();
+            ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
+            ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui2.GetTransform.offsetMax = new Vector2(0, -30);
+            ui2.GetTransform.offsetMin = new Vector2(0, -50);
+            var image2 = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
+            image2.OnClick = () => Console.WriteLine("clicked2");
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
             //ISS.SetDSS(script);
-
+            ui1.SetParent(ui);
+            ui2.SetParent(ui);
 
             var task = new Task(() =>
             {

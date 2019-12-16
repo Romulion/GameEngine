@@ -80,18 +80,18 @@ namespace Toys
             if (!GLWindow.gLWindow.Focused)
                 return;
 
-            var windowPosition = GLWindow.gLWindow.Location;
-            var windowSize = GLWindow.gLWindow.Size;
             MouseState ms = Mouse.GetCursorState();
-            Vector2 cursorWindowPosition = new Vector2(ms.X - windowPosition.X, ms.Y - windowPosition.Y);
+            var point = GLWindow.gLWindow.PointToClient(new System.Drawing.Point(ms.X, ms.Y));
+            
+            Vector2 cursorWindowPosition = new Vector2(point.X, point.Y);
 
             //skip out of boundary
-            if (cursorWindowPosition.X < 0 || cursorWindowPosition.Y < 0 || cursorWindowPosition.X > windowSize.Width || cursorWindowPosition.Y > windowSize.Height)
+            if (cursorWindowPosition.X < 0 || cursorWindowPosition.Y < 0 || cursorWindowPosition.X > GLWindow.gLWindow.Width || cursorWindowPosition.Y > GLWindow.gLWindow.Height)
                 return;
 
             //normalizing
-            cursorWindowPosition.X /= windowSize.Width;
-            cursorWindowPosition.Y /= windowSize.Height;
+            cursorWindowPosition.X /= GLWindow.gLWindow.Width;
+            cursorWindowPosition.Y /= GLWindow.gLWindow.Height;
             cursorWindowPosition.Y = 1 - cursorWindowPosition.Y;
 
             foreach (var button in activeButtons)
