@@ -3,9 +3,10 @@ layout (location = 0) in vec4 vertex;
 out vec2 TexCoords;
 
 uniform mat4 projection;
+uniform vec3 position_scale;
 
 void main()
 {
-    gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);
+    gl_Position = (projection * vec4(vertex.xy * position_scale.z, 0.0, 1.0)) + vec4(position_scale.xy,0,0);
     TexCoords = vertex.zw;
 }  

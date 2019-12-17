@@ -21,7 +21,7 @@ namespace Toys
         int outputBuffer = 0;
 
         internal static MainRenderer MainRender;
-		internal static TextRenderer TextRender;
+		internal TextRenderer TextRender;
         internal UIEngine UIEngine;
 		//test
 		int VBO, VAO, FBO;

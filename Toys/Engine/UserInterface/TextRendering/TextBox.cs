@@ -7,21 +7,22 @@ using OpenTK;
 
 namespace Toys
 {
-    class TextBox : VisualComponent
+    public class TextBox : VisualComponent
     {
         string Text;
         Vector2 pos = Vector2.Zero;
         float scale = 1;
 
-        TextCanvas textCanvas;
+        public TextCanvas textCanvas { get; private set; }
 
         TextRenderer textRenderer;
     
         public TextBox() : base (typeof(TextBox))
         {
-            textRenderer = GraphicsEngine.TextRender;
+            textRenderer = CoreEngine.gEngine.TextRender;
             textCanvas = textRenderer.CreateCanvas();
-            textCanvas.Position = new Vector2(25);
+            textCanvas.alignHorizontal = TextAlignHorizontal.Left;
+            textCanvas.alignVertical = TextAlignVertical.Center;
         }
 
         public void SetText(string text)
@@ -30,19 +31,29 @@ namespace Toys
             textRenderer.UpdateText(textCanvas);
         }
 
+        public void SetScale(float scale)
+        {
+            textCanvas.Scale = scale;
+            if (textCanvas.Text != "")
+                textRenderer.UpdateText(textCanvas);
+        }
+
         internal override void Unload()
         {
-            
         }
 
 
         internal override void AddComponent(UIElement node)
         {
-
+            CoreEngine.gEngine.TextRender.textBoxes.Add(this);
+            Node = node;
         }
 
         internal override void RemoveComponent()
         {
+            if (Node)
+                Node = null;
+            CoreEngine.gEngine.TextRender.textBoxes.Remove(this);
         }
     }
 }

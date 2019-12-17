@@ -19,14 +19,13 @@ namespace Toys
         static int mapSize = 1024;
         Texture2D charmap;
 		Shader shdr;
-
+        Vector3 position = Vector3.Zero;
         int x, y, ymax;
 
-        //for testing purpose
-        TextCanvas debugTextmap;
-
         List<TextCanvas> texts = new List<TextCanvas>();
+        internal List<TextBox> textBoxes = new List<TextBox>();
 
+        int ScreenWidth, ScreenHeigth;
 
         internal TextRenderer()
         {
@@ -109,7 +108,6 @@ namespace Toys
             texts.Add(canvas);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            //GL.MemoryBarrier(MemoryBarrierFlags.ElementArrayBarrierBit);
             GL.BufferData(BufferTarget.ArrayBuffer, 1000 * 4, IntPtr.Zero, BufferUsageHint.DynamicDraw);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             return canvas;
@@ -119,10 +117,10 @@ namespace Toys
         {
             GL.ActiveTexture(TextureUnit.Texture0);
             charmap.BindTexture();
-           
+
             float[] vertices = new float[6 * 4* canvas.Text.Length];
-            int x = (int)canvas.Position.X;
-            int y = (int)canvas.Position.Y;
+            int x = 0;
+            int y = 0;
             int i = 0;
             foreach (var c in canvas.Text)
             {
@@ -130,10 +128,16 @@ namespace Toys
                     continue;
 
                 var chr = GetCharacter(c);
-                float xpos = x + chr.Bearing.X * canvas.Scale;
-                float ypos = y - (chr.Size.Y - chr.Bearing.Y) * canvas.Scale;
-                float w = chr.Size.X * canvas.Scale;
-                float h = chr.Size.Y * canvas.Scale;
+                float xpos = x + chr.Bearing.X;
+                float ypos = y - (chr.Size.Y - chr.Bearing.Y);
+                float w = chr.Size.X;
+                float h = chr.Size.Y;
+
+                //update text size
+                if (canvas.Heigth < ypos + h)
+                    canvas.Heigth = ypos + h;
+                if (canvas.Width < xpos + w)
+                    canvas.Width = xpos + w;
 
                 float[] verts = {
                      xpos,    ypos + h,   chr.Position.X, chr.Position.Y,
@@ -145,7 +149,7 @@ namespace Toys
                 };
 
                 Array.Copy(verts, 0, vertices, i, verts.Length);
-                x += (int)((chr.Advance >> 6) * canvas.Scale);
+                x += (int)((chr.Advance >> 6) );
 
                 i += 24;
             }
@@ -154,7 +158,7 @@ namespace Toys
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, vertices.Length * 4, vertices);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
-            canvas.Length = canvas.Text.Length * 6;
+            canvas.StringLength = canvas.Text.Length * 6;
         }
         
 		byte[] ReadFont(Stream strm)
@@ -171,26 +175,27 @@ namespace Toys
 			}
 		}
 
-		internal void Resize(int Width, int Heigth)
+		internal void Resize(int width, int heigth)
 		{
-			projection = Matrix4.CreateOrthographicOffCenter(0, Width, 0, Heigth, 0f, -0.01f);
+            ScreenWidth = width;
+            ScreenHeigth = heigth;
+            projection = Matrix4.CreateOrthographicOffCenter(0, width, 0, heigth, 0f, -0.01f);
 			shdr.GetUniforms[0].SetValue(projection);
 		}
 
 		internal void RenderText()
-		{
-			var color = Vector3.One;
-                   
+		{                   
             shdr.ApplyShader();
-            shdr.GetUniforms[1].SetValue(color);
-
-            GL.ActiveTexture(TextureUnit.Texture0);
-            charmap.BindTexture();
-
-            foreach (var t in texts)
-			{
-                GL.BindVertexArray(t.VAO);
-                GL.DrawArrays(PrimitiveType.Triangles, 0, 6 * t.Length);
+            foreach (var text in textBoxes)
+            {
+                shdr.GetUniforms[2].SetValue(text.textCanvas.colour);
+                position = CalculatePosition(text.textCanvas,text.Node.GetTransform);
+                position.Z = text.textCanvas.Scale;
+                shdr.GetUniforms[1].SetValue(position);
+                GL.ActiveTexture(TextureUnit.Texture0);
+                charmap.BindTexture();
+                GL.BindVertexArray(text.textCanvas.VAO);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, 6 * text.textCanvas.StringLength);
             }
             GL.BindVertexArray(0);
 		}
@@ -200,5 +205,37 @@ namespace Toys
 			lib.Dispose();
 			face.Dispose();
 		}
+
+        private Vector3 CalculatePosition(TextCanvas textCanvas, RectTransform transform)
+        {
+            Vector3 location = Vector3.UnitZ;
+
+            switch (textCanvas.alignVertical)
+            {
+                case TextAlignVertical.Bottom:
+                    location.Y = transform.Min.Y * 2;
+                    break;
+                case TextAlignVertical.Top:
+                    location.Y = (transform.Max.Y - textCanvas.Heigth * textCanvas.Scale / (float)ScreenHeigth) * 2;
+                    break;
+                case TextAlignVertical.Center:
+                    location.Y = transform.Min.Y + transform.Max.Y - textCanvas.Heigth * textCanvas.Scale / (float)ScreenHeigth;
+                    break;
+            }
+
+            switch (textCanvas.alignHorizontal)
+            {
+                case TextAlignHorizontal.Left:
+                    location.X = transform.Min.X * 2;
+                    break;
+                case TextAlignHorizontal.Right:
+                    location.X = (transform.Max.X - textCanvas.Width * textCanvas.Scale / (float)ScreenHeigth) * 2;
+                    break;
+                case TextAlignHorizontal.Center:
+                    location.X = transform.Min.X + transform.Max.X - textCanvas.Width * textCanvas.Scale / (float)ScreenWidth;
+                    break;
+            }
+            return location;
+        }
 	}
 }
