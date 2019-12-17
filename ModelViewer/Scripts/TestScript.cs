@@ -16,6 +16,9 @@ namespace ModelViewer
         BoneController bc;
         Material mat;
         public static Texture2D texture;
+        PhysicsEngine physics;
+        bool active;
+        int i = 0;
         void Awake()
         {
             var canvas = (Canvas)Node.AddComponent<Canvas>();
@@ -34,13 +37,13 @@ namespace ModelViewer
             ui1.GetTransform.offsetMax = new Vector2(0, 0);
             ui1.GetTransform.offsetMin = new Vector2(0, -25);
             var image1 = (ButtonComponent)ui1.AddComponent<ButtonComponent>();
-            image1.OnClick = () => {Console.WriteLine("clicked1");};
+            
             var butLabel1 = (TextBox)ui1.AddComponent<TextBox>();
             butLabel1.textCanvas.colour = new Vector3(1, 0, 0);
             butLabel1.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
             butLabel1.textCanvas.alignVertical = TextAlignVertical.Center;
             
-            butLabel1.SetText("button 1");
+            butLabel1.SetText("wind ON");
             butLabel1.textCanvas.Scale = 0.5f;
 
             var ui2 = new UIElement();
@@ -50,14 +53,16 @@ namespace ModelViewer
             ui2.GetTransform.offsetMin = new Vector2(0, -55);
             var butLabel2 = (TextBox)ui2.AddComponent<TextBox>();
             
-            butLabel2.SetText("button 2");
+            butLabel2.SetText("wind OFF");
             butLabel2.textCanvas.Scale = 0.5f;
 
             butLabel2.textCanvas.colour = new Vector3(1, 1, 0);
             butLabel2.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
             butLabel2.textCanvas.alignVertical = TextAlignVertical.Center;
             var image2 = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
-            image2.OnClick = () => { Console.WriteLine("clicked2");};
+
+            image1.OnClick = () => { active = true; };
+            image2.OnClick = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };
 
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
             //ISS.SetDSS(script);
@@ -69,6 +74,7 @@ namespace ModelViewer
             if (msd != null)
                 bc = msd.BoneController;
             */
+            physics = CoreEngine.pEngine;
         }
 
         void Start()
@@ -166,6 +172,13 @@ namespace ModelViewer
 
         void Update()
         {
+            if (active)
+            {
+                i++;
+                Vector3 force = new Vector3(0,-10,0);
+                force.Z = (float)(7 + 8 * Math.Sin(i*6)* Math.Cos(i * 4)* Math.Sin(i * 5));
+                physics.SetGravity(force);
+            }
             // update++;
             // bc.GetBone(3).SetTransform(new Quaternion(0, 0, (float)(dec2rad(45) * Math.Cos(update * 3 * Math.PI / 180))), new Vector3(0, 0, 0));
             //update += .UpdateTime * 1000;

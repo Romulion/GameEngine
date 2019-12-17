@@ -102,6 +102,11 @@ namespace Toys
             }
         }
 
+        public void SetGravity(OpenTK.Vector3 grav)
+        {
+            World.Gravity = new Vector3(grav.X, grav.Y, grav.Z);
+        }
+
         public void Dispose()
         {
             //remove/dispose constraints

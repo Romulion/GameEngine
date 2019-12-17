@@ -13,12 +13,12 @@ namespace Toys
 	public class CoreEngine 
 	{
 
-		internal static GraphicsEngine gEngine;
-		internal static PhysicsEngine pEngine;
-        internal static ScriptingEngine sEngine;
-        internal static CoreEngine ActiveCore;
-        public static Time time;
-        public static Time frameTimer;
+		internal static GraphicsEngine gEngine { get; private set; }
+        public static PhysicsEngine pEngine { get; private set; }
+        internal static ScriptingEngine sEngine { get; private set; }
+        internal static CoreEngine ActiveCore { get; private set; }
+        public static Time time { get; private set; }
+        public static Time frameTimer { get; private set; }
         queue task;
 
 		float elapsed = 0.01f;
