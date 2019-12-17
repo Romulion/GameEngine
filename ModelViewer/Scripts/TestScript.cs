@@ -21,6 +21,7 @@ namespace ModelViewer
         int i = 0;
         void Awake()
         {
+            physics = CoreEngine.pEngine;
             var canvas = (Canvas)Node.AddComponent<Canvas>();
             var ui = new UIElement();
             ui.GetTransform.anchorMax = new Vector2(0f, 1f);
@@ -74,7 +75,6 @@ namespace ModelViewer
             if (msd != null)
                 bc = msd.BoneController;
             */
-            physics = CoreEngine.pEngine;
         }
 
         void Start()
