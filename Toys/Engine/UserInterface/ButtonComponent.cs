@@ -71,7 +71,7 @@ namespace Toys
 
         internal void CkickedState()
         {
-            if (State == ButtonStates.Hover || State == ButtonStates.Normal)
+            if (State == ButtonStates.Hover)
             {
                 OnClick();
                 State = ButtonStates.Clicked;

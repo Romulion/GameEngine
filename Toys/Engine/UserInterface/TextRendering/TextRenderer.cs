@@ -13,7 +13,7 @@ namespace Toys
 	{
 		Library lib;
 		Face face;
-		string font = "font.TTF";
+		string font = "font.ttf";
 		Dictionary<char, Character> chars = new Dictionary<char, Character>();
 		Matrix4 projection;
         static int mapSize = 1024;

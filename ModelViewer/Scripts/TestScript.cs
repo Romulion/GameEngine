@@ -176,7 +176,7 @@ namespace ModelViewer
             {
                 i++;
                 Vector3 force = new Vector3(0,-10,0);
-                force.Z = (float)(7 + 8 * Math.Sin(i*6)* Math.Cos(i * 4)* Math.Sin(i * 5));
+                force.Z = (float)(6 + 4 * Math.Sin(i*2) +  5 * Math.Cos(i  * 0.4f + 24) + 3 * Math.Sin(i * 1.5f + 10) + 4 * Math.Cos(i * 0.1f + 76) + 3 * Math.Sin(i * 2.9f + 154));
                 physics.SetGravity(force);
             }
             // update++;
