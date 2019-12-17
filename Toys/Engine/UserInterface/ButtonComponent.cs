@@ -18,14 +18,17 @@ namespace Toys
         public Action OnClick;
         static Material defaultMaterial;
         ShaderUniform shaderUniform;
-        ShaderUniform colorUniform;
+        ShaderUniform colorMask;
+        public static Texture2D Texture;
+
         Vector3 color;
         internal ButtonStates State { get; private set;}
         public ButtonComponent() : base(typeof(ButtonComponent))
         {
             Material = defaultMaterial;
             shaderUniform = Material.UniManager.GetUniform("model");
-            colorUniform = Material.UniManager.GetUniform("col");
+            colorMask = Material.UniManager.GetUniform("color_mask");
+            color = Vector3.One;
         }
 
         static ButtonComponent()
@@ -38,6 +41,9 @@ namespace Toys
             ss.TextureDiffuse = true;
             defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
             defaultMaterial.Name = "Texture";
+            var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
+            var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.button2.png"));
+            Texture = new Texture2D(pic, TextureType.Toon, "def");
         }
 
         internal override void AddComponent(UIElement nod)
@@ -56,8 +62,10 @@ namespace Toys
         {
 
             Material.ApplyMaterial();
-            colorUniform.SetValue(color);
+            colorMask.SetValue(color);
             shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
+            if (Texture)
+                Texture.BindTexture();
             base.Draw();
         }
 
@@ -67,7 +75,7 @@ namespace Toys
             {
                 OnClick();
                 State = ButtonStates.Clicked;
-                color = new Vector3(1,0,0);
+                color = new Vector3(0.5f,0.5f,0.5f);
             }
         }
 
@@ -77,7 +85,7 @@ namespace Toys
             if (State == ButtonStates.Clicked || State == ButtonStates.Normal)
             {
                 State = ButtonStates.Hover;
-                color = new Vector3(0, 1, 0);
+                color = new Vector3(0.8f, 1, 0.8f);
             }
         }
 
@@ -87,7 +95,7 @@ namespace Toys
             if (State == ButtonStates.Clicked || State == ButtonStates.Hover)
             {
                 State = ButtonStates.Normal;
-                color = new Vector3(0, 0, 1);
+                color = new Vector3(1, 1, 1);
             }
         }
     }

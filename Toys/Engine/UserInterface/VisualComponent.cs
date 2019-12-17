@@ -9,18 +9,18 @@ namespace Toys
 {
     public abstract class VisualComponent : Resource
     {
-        public Mesh Mesh { get; private set; }
+        internal Mesh Mesh { get; private set; }
         public Material Material { get; set; }
         protected VisualComponent(Type t) : base(t)
         {
             Vertex3D[] verts = new Vertex3D[]
            {
-                new Vertex3D(new Vector2(-1,1), new Vector2(0,1)),
-                new Vertex3D(new Vector2(-1,-1), new Vector2(0,0)),
-                new Vertex3D(new Vector2(1,-1), new Vector2(1,0)),
-                new Vertex3D(new Vector2(-1,1), new Vector2(0,1)),
-                new Vertex3D(new Vector2(1,-1), new Vector2(1,0)),
-                new Vertex3D(new Vector2(1,1), new Vector2(1,1)),
+                new Vertex3D(new Vector2(-1,1), new Vector2(0,0)),
+                new Vertex3D(new Vector2(-1,-1), new Vector2(0,1)),
+                new Vertex3D(new Vector2(1,-1), new Vector2(1,1)),
+                new Vertex3D(new Vector2(-1,1), new Vector2(0,0)),
+                new Vertex3D(new Vector2(1,-1), new Vector2(1,1)),
+                new Vertex3D(new Vector2(1,1), new Vector2(1,0)),
            };
             Mesh = new Mesh(verts, new int[] { 0, 1, 2, 3, 4, 5 });
         }

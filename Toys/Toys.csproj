@@ -306,6 +306,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Resourses\shaders\FormPP.vsh" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resourses\textures\button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resourses\textures\button2.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

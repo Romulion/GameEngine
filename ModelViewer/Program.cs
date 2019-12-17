@@ -60,7 +60,7 @@ namespace ModelViewer
             ui1.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui1.GetTransform.anchorMin = new Vector2(0f, 1f);
             ui1.GetTransform.offsetMax = new Vector2(0, 0);
-            ui1.GetTransform.offsetMin = new Vector2(0, -20);
+            ui1.GetTransform.offsetMin = new Vector2(0, -25);
             var image1 = (ButtonComponent)ui1.AddComponent<ButtonComponent>();
             image1.OnClick = () => Console.WriteLine("clicked1");
 
@@ -68,7 +68,7 @@ namespace ModelViewer
             ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
             ui2.GetTransform.offsetMax = new Vector2(0, -30);
-            ui2.GetTransform.offsetMin = new Vector2(0, -50);
+            ui2.GetTransform.offsetMin = new Vector2(0, -55);
             var image2 = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
             image2.OnClick = () => Console.WriteLine("clicked2");
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
