@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 //using BulletSharp;
 //using BulletSharp.Math;
 //using OpenTK.Input;
-//using OpenTK;
+using OpenTK;
 using Toys;
 
 namespace ModelViewer
@@ -18,37 +18,57 @@ namespace ModelViewer
         public static Texture2D texture;
         void Awake()
         {
-            /*
-            Vertex3D[] verts = new Vertex3D[]
-            {
-                new Vertex3D(new Vector2(-640,480), new Vector2(0,1)),
-                new Vertex3D(new Vector2(-640,0), new Vector2(0,0)),
-                new Vertex3D(new Vector2(0,0), new Vector2(1,0)),
-                new Vertex3D(new Vector2(-640,480), new Vector2(0,1)),
-                new Vertex3D(new Vector2(0,0), new Vector2(1,0)),
-                new Vertex3D(new Vector2(0,480), new Vector2(1,1)),
-            };
+            var canvas = (Canvas)Node.AddComponent<Canvas>();
+            var ui = new UIElement();
+            ui.GetTransform.anchorMax = new Vector2(0f, 1f);
+            ui.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui.GetTransform.offsetMax = new Vector2(100, -40);
+            ui.GetTransform.offsetMin = new Vector2(20, -200);
+
+            canvas.Root = ui;
+            canvas.AddObject(ui);
+
+            var ui1 = new UIElement();
+            ui1.GetTransform.anchorMax = new Vector2(1f, 1f);
+            ui1.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui1.GetTransform.offsetMax = new Vector2(0, 0);
+            ui1.GetTransform.offsetMin = new Vector2(0, -25);
+            var image1 = (ButtonComponent)ui1.AddComponent<ButtonComponent>();
+            image1.OnClick = () => {Console.WriteLine("clicked1");};
+            var butLabel1 = (TextBox)ui1.AddComponent<TextBox>();
+            butLabel1.textCanvas.colour = new Vector3(1, 0, 0);
+            butLabel1.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
+            butLabel1.textCanvas.alignVertical = TextAlignVertical.Center;
             
-            Mesh mesh = new Mesh(verts, new int[] { 0, 1, 2, 3, 4, 5 });
-            ShaderSettings ss = new ShaderSettings();
-            RenderDirectives rd = new RenderDirectives();
-            string path = "Toys.Resourses.shaders.";
-            string vs = ShaderManager.ReadFromAssetStream(path + "TestTexture.vsh");
-            string fs = ShaderManager.ReadFromAssetStream(path + "TestTexture.fsh");
-            ss.TextureDiffuse = true;
-            mat = new MaterialCustom(ss,rd,vs,fs);
-            mat.Name = "Texture";
-            mat.UniManager.Set("resolution", new Vector3(640, 480,0));
-            MeshDrawer md = new MeshDrawer(mesh,mat);
-            node.AddComponent(md);
-           */
-           
+            butLabel1.SetText("button 1");
+            butLabel1.textCanvas.Scale = 0.5f;
+
+            var ui2 = new UIElement();
+            ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
+            ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui2.GetTransform.offsetMax = new Vector2(0, -30);
+            ui2.GetTransform.offsetMin = new Vector2(0, -55);
+            var butLabel2 = (TextBox)ui2.AddComponent<TextBox>();
+            
+            butLabel2.SetText("button 2");
+            butLabel2.textCanvas.Scale = 0.5f;
+
+            butLabel2.textCanvas.colour = new Vector3(1, 1, 0);
+            butLabel2.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
+            butLabel2.textCanvas.alignVertical = TextAlignVertical.Center;
+            var image2 = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
+            image2.OnClick = () => { Console.WriteLine("clicked2");};
+
+            //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
+            //ISS.SetDSS(script);
+            ui1.SetParent(ui);
+            ui2.SetParent(ui);
+
+            /*
             var msd = (Animator)Node.GetComponent<Animator>();
             if (msd != null)
                 bc = msd.BoneController;
-                
-            //World = CoreEngine.pEngine.World;
-            
+            */
         }
 
         void Start()

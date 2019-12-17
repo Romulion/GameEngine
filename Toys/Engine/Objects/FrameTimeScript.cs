@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 
 namespace Toys
 {
@@ -15,9 +16,21 @@ namespace Toys
         long framesMax = 60;
         double update = 0, render = 0;
         TextBox text;
+        Canvas canvas;
+        RectTransform rect;
+        RawImage img;
         void Awake()
         {
-            text = new TextBox();
+            canvas = (Canvas)Node.AddComponent<Canvas>();
+            canvas.Root = new UIElement();
+            text = (TextBox)canvas.Root.AddComponent<TextBox>();
+            rect = canvas.Root.GetTransform;
+            text.textCanvas.colour = Vector3.Zero;
+            img = (RawImage)canvas.Root.AddComponent<RawImage>();
+            rect.anchorMax = new Vector2(0, 1);
+            rect.anchorMin = new Vector2(0, 1);
+            rect.offsetMin = new Vector2(20,-32);
+            rect.offsetMax = new Vector2(160,-8);
         }
 
         void Update()
