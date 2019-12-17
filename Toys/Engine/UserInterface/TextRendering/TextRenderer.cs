@@ -25,6 +25,10 @@ namespace Toys
         List<TextCanvas> texts = new List<TextCanvas>();
         internal List<TextBox> textBoxes = new List<TextBox>();
 
+        ShaderUniform projUniform;
+        ShaderUniform colorUniform;
+        ShaderUniform posUniform;
+
         int ScreenWidth, ScreenHeigth;
 
         internal TextRenderer()
@@ -53,7 +57,16 @@ namespace Toys
             shdr.ApplyShader();
             shdr.SetUniform((int)TextureType.Diffuse, "text");
 
-            shdr.GetUniforms[0].SetValue(projection);
+            foreach (var uniform in shdr.GetUniforms)
+            {
+                if (uniform.Name == "projection")
+                    projUniform = uniform;
+                else if (uniform.Name == "position_scale")
+                    posUniform = uniform;
+                else if (uniform.Name == "textColor")
+                    colorUniform = uniform;
+            }
+            projUniform.SetValue(projection);
             charmap = Texture2D.CreateCharMap(mapSize, mapSize);
         }
 
@@ -180,7 +193,7 @@ namespace Toys
             ScreenWidth = width;
             ScreenHeigth = heigth;
             projection = Matrix4.CreateOrthographicOffCenter(0, width, 0, heigth, 0f, -0.01f);
-			shdr.GetUniforms[0].SetValue(projection);
+			projUniform.SetValue(projection);
 		}
 
 		internal void RenderText()
@@ -188,10 +201,10 @@ namespace Toys
             shdr.ApplyShader();
             foreach (var text in textBoxes)
             {
-                shdr.GetUniforms[2].SetValue(text.textCanvas.colour);
+                colorUniform.SetValue(text.textCanvas.colour);
                 position = CalculatePosition(text.textCanvas,text.Node.GetTransform);
                 position.Z = text.textCanvas.Scale;
-                shdr.GetUniforms[1].SetValue(position);
+                posUniform.SetValue(position);
                 GL.ActiveTexture(TextureUnit.Texture0);
                 charmap.BindTexture();
                 GL.BindVertexArray(text.textCanvas.VAO);
