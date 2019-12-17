@@ -98,8 +98,10 @@ namespace Toys
             {
                 if (button.Node.GetTransform.GlobalRect.Contains(cursorWindowPosition.X, cursorWindowPosition.Y))
                 {
-                    button.Hover();
-                    //button.OnClick();
+                    if (ms.IsButtonDown(MouseButton.Left))
+                        button.CkickedState();
+                    else
+                        button.Hover();
                 }
                 else
                     button.Normal();
