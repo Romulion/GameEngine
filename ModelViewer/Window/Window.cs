@@ -386,23 +386,62 @@ namespace ModelViewer
                 btn.Label = names[i];
                 byte b = (byte)i;
                 if (m == Methods.Data)
-                    btn.Clicked += (s, ev) =>
+                {
+                    //stream method
+                    if (btn.Label == "draw image")
                     {
-                        stream = !stream;
-                        try
+                        btn.Clicked += (s, ev) =>
                         {
-                            if (connection.Connected)
-                                Execute = (data) => connection2.ExecuteMethod(m, b, data);
-                            else
-                                label1.Text.Replace("connected to", "disconnected from");
-                        }
-                        catch (Exception e)
+                            stream = !stream;
+                            try
+                            {
+                                if (connection2.Connected)
+                                    Execute = (data) => connection2.ExecuteMethod(m, b, data);
+                                else
+                                    label1.Text.Replace("connected to", "disconnected from");
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                            }
+
+                        };
+                    }
+                    else if (btn.Label == "reposition")
+                    {
+                        Entry entryX = new Entry();
+                        Entry entryY = new Entry();
+                        entryX.InputPurpose = InputPurpose.Digits;
+                        entryY.InputPurpose = InputPurpose.Digits;
+                        entryY.InsertText("0");
+                        entryX.InsertText("0");
+                        btn.Clicked += (s, ev) =>
                         {
-                            Console.WriteLine(e.Message);
-                        }
-                        
-                    };
+                            try
+                            {
+                            if (connection2.Connected)
+                            {
+                                byte[] data = new byte[8];
+                                Array.Copy(BitConverter.GetBytes(Int32.Parse(entryX.Text)), data, 4);
+                                Array.Copy(BitConverter.GetBytes(Int32.Parse(entryY.Text)),0, data, 4,4);
+                                    connection2.ExecuteMethod(m, b, data);
+                                }
+                                else
+                                    label1.Text.Replace("connected to", "disconnected from");
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                            }
+
+                        };
+
+                        f.Add(entryX);
+                        f.Add(entryY);
+                    }
+                }
                 else
+                {
                     btn.Clicked += (s, ev) =>
                     {
                         if (connection.Connected)
@@ -410,6 +449,7 @@ namespace ModelViewer
                         else
                             label1.Text.Replace("connected to", "disconnected from");
                     };
+                }
                 f.Add(btn);
                 y += 25;
             }
