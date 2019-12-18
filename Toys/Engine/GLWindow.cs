@@ -46,39 +46,42 @@ namespace Toys
 
         void Update(object sender, EventArgs e)
         {
-            var keystate = Keyboard.GetState();
-            if (keystate[Key.Escape])
+            if (Focused)
             {
-                Exit();
-            }
-            if (keystate[Key.F])
-            {
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-            }
-            if (keystate[Key.L])
-            {
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-            }
-            if (keystate[Key.P])
-            {
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
-            }
+                var keystate = Keyboard.GetState();
+                if (keystate[Key.Escape])
+                {
+                    Exit();
+                }
+                if (keystate[Key.F])
+                {
+                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+                }
+                if (keystate[Key.L])
+                {
+                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+                }
+                if (keystate[Key.P])
+                {
+                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
+                }
 
-            if (keystate[Key.O] && !pauseKey)
-            {
-                pause = !pause;
-                pauseKey = true;
-            }
-            else if (!keystate[Key.O] && pauseKey)
-                pauseKey = false;
+                if (keystate[Key.O] && !pauseKey)
+                {
+                    pause = !pause;
+                    pauseKey = true;
+                }
+                else if (!keystate[Key.O] && pauseKey)
+                    pauseKey = false;
 
-            if (keystate[Key.V] && !visibleKey)
-            {
-                Visible = !Visible;
-                visibleKey = true;
+                if (keystate[Key.V] && !visibleKey)
+                {
+                    Visible = !Visible;
+                    visibleKey = true;
+                }
+                else if (!keystate[Key.V] && visibleKey)
+                    visibleKey = false;
             }
-            else if (!keystate[Key.V] && visibleKey)
-                visibleKey = false;
 
             if (!pause)
                 Engine.Update();

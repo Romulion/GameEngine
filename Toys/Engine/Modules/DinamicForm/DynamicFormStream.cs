@@ -65,7 +65,7 @@ namespace Toys
             }
 
             KeyboardState keyState = Keyboard.GetState();
-            if (keyState[Key.B] && !keyPressed)
+            if (GLWindow.gLWindow.Focused && keyState[Key.B] && !keyPressed)
             {
                 if (camera.RenderBuffer != 0)
                 {

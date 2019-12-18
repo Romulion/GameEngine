@@ -93,27 +93,30 @@ namespace Toys
             MouseOrbit();
             var keyState = Keyboard.GetState();
             // camera strafe
-            if (keyState[Key.Up])
+            if (game.Focused)
             {
-                camera.Target += speed * cameraUp;
-                transform.Position += speed * cameraUp;
-            }
+                if (keyState[Key.Up])
+                {
+                    camera.Target += speed * cameraUp;
+                    transform.Position += speed * cameraUp;
+                }
 
-            if (keyState[Key.Down])
-            {
-                camera.Target -= speed * cameraUp;
-                transform.Position -= speed * cameraUp;
-            }
+                if (keyState[Key.Down])
+                {
+                    camera.Target -= speed * cameraUp;
+                    transform.Position -= speed * cameraUp;
+                }
 
-            if (keyState[Key.R])
-            {
-                transform.Position = new Vector3(0f, 1f, 0f);
+                if (keyState[Key.R])
+                {
+                    transform.Position = new Vector3(0f, 1f, 0f);
 
-                phi = 90;
-                theta = 90;
-                r = R;
-                camera.Target = Vector3.UnitY;
-                transform.Position += CalcPos(r, phi, theta);
+                    phi = 90;
+                    theta = 90;
+                    r = R;
+                    camera.Target = Vector3.UnitY;
+                    transform.Position += CalcPos(r, phi, theta);
+                }
             }
         }
 
