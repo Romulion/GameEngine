@@ -419,12 +419,12 @@ namespace ModelViewer
                         {
                             try
                             {
-                            if (connection2.Connected)
+                            if (connection.Connected)
                             {
                                 byte[] data = new byte[8];
                                 Array.Copy(BitConverter.GetBytes(Int32.Parse(entryX.Text)), data, 4);
                                 Array.Copy(BitConverter.GetBytes(Int32.Parse(entryY.Text)),0, data, 4,4);
-                                    connection2.ExecuteMethod(m, b, data);
+                                    connection.ExecuteMethod(m, b, data);
                                 }
                                 else
                                     label1.Text.Replace("connected to", "disconnected from");
