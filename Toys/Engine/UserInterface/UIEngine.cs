@@ -16,7 +16,8 @@ namespace Toys
 
         List<VisualComponent> activeComponents = new List<VisualComponent>();
         List<ButtonComponent> activeButtons = new List<ButtonComponent>();
-        
+        private ButtonComponent clickContext;
+        private bool clicked;
         public UIEngine()
         {
             canvases = new List<Canvas>();
@@ -98,14 +99,31 @@ namespace Toys
             {
                 if (button.Node.GetTransform.GlobalRect.Contains(cursorWindowPosition.X, cursorWindowPosition.Y))
                 {
-                    if (ms.IsButtonDown(MouseButton.Left))
-                        button.CkickedState();
-                    else
+                    if (!clicked && ms.IsButtonDown(MouseButton.Left))
+                    {
+                        button.ClickDownState();
+                        clickContext = button;
+                    }
+                    else if (clicked && ms.IsButtonUp(MouseButton.Left))
+                    {
+                        clickContext?.ClickUpState();
+                    }
+                    else if (clickContext != button)
+                    {
                         button.Hover();
+                    }
                 }
-                else
+                else if (button != clickContext)
+                {
                     button.Normal();
+                }
             }
+
+            //clear context on mouse
+            if (clicked && ms.IsButtonUp(MouseButton.Left))
+                clickContext = null;
+
+            clicked = ms.IsButtonDown(MouseButton.Left);
         }
     }
 }

@@ -31,8 +31,6 @@ namespace ModelViewer
             cameraNode.AddComponent<CameraControllScript>();
             cameraNode.AddComponent<FrameTimeScript>();
             cameraNode.GetTransform.Position = new Vector3(0, 1f, 3);
-            //var script = (DynamicFormStream)sceneNode.AddComponent<DynamicFormStream>();
-            cameraNode.AddComponent<DynamicFormScript>();
 
             scene.AddObject(cameraNode);
             camera.Background = new BackgroundSkybox();
@@ -45,6 +43,11 @@ namespace ModelViewer
             //node.phys.ReinstalizeBodys();
             //window.Visible = false;
             //need sync 
+            //var script = (DynamicFormStream)cameraNode.AddComponent<DynamicFormStream>();
+            cameraNode.AddComponent<DynamicFormScript>();
+            //var ISS = (ImageStreamerScript)cameraNode.AddComponent<ImageStreamerScript>();
+            //ISS.SetDSS(script);
+
             var task = new Task(() =>
             {
                 Application.Init();

@@ -12,6 +12,7 @@ namespace Toys
         Normal,
         Hover,
         Clicked,
+        Unclicked,
     }
     public class ButtonComponent : VisualComponent
     {
@@ -69,23 +70,27 @@ namespace Toys
             base.Draw();
         }
 
-        internal void CkickedState()
+        internal void ClickDownState()
         {
             if (State == ButtonStates.Hover)
             {
-                OnClick();
                 State = ButtonStates.Clicked;
                 color = new Vector3(0.5f,0.5f,0.5f);
             }
         }
 
+        internal void ClickUpState()
+        {
+            OnClick?.Invoke();
+            Normal();
+        }
 
         internal void Hover()
         {
             if (State == ButtonStates.Clicked || State == ButtonStates.Normal)
             {
                 State = ButtonStates.Hover;
-                color = new Vector3(0.8f, 1, 0.8f);
+                color = new Vector3(0.7f, 1, 0.7f);
             }
         }
 
