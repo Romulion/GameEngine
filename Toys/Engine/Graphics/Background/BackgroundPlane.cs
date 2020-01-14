@@ -19,5 +19,10 @@ namespace Toys
         {
             backgroundShader.ApplyShader();
         }
+
+        internal override void Unload()
+        {
+           
+        }
     }
 }
