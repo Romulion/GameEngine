@@ -11,7 +11,8 @@ namespace Toys
 {
     public class BackgroundSkybox : BackgroundBase
     {
-        int skyboxVAO, skyboxVBO, cubemapTexture;
+        int skyboxVAO, skyboxVBO;
+        Cubemap cubemap;
         string[] textureSides = {
             "right.jpg",
             "left.jpg",
@@ -23,7 +24,7 @@ namespace Toys
 
         public BackgroundSkybox()
         {
-            CreateTexture();
+            cubemap = new Cubemap(textureSides[0], textureSides[1], textureSides[2], textureSides[3], textureSides[4], textureSides[5]);
             CreateBox();
         }
         static BackgroundSkybox()
@@ -44,39 +45,12 @@ namespace Toys
             backgroundShader.SetUniform(look, "view");
             backgroundShader.SetUniform(camera.Projection, "projection");
             GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.TextureCubeMap, cubemapTexture);
+            cubemap.BindTexture();
             GL.DepthFunc(DepthFunction.Lequal);
             GL.BindVertexArray(skyboxVAO);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
             GL.BindVertexArray(0);
             GL.DepthFunc(DepthFunction.Less);
-        }
-
-        void CreateTexture()
-        {
-            cubemapTexture = GL.GenTexture();
-            GL.BindTexture(TextureTarget.TextureCubeMap, cubemapTexture);
-            //setting wrapper
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT, (int)All.ClampToEdge);
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS, (int)All.ClampToEdge);
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR, (int)All.ClampToEdge);
-            //setting interpolation
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, (int)All.Linear);
-            GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, (int)All.Linear);
-
-            for (int i = 0; i < textureSides.Length; i++)
-            {
-                using (Bitmap pic = new Bitmap(ResourcesManager.ReadFromInternalResourceStream("textures.Skybox." + textureSides[i])))
-                {
-                    System.Drawing.Imaging.BitmapData data =
-                      pic.LockBits(new Rectangle(0, 0, pic.Width, pic.Height),
-                      System.Drawing.Imaging.ImageLockMode.ReadOnly, pic.PixelFormat);
-
-                    GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i,
-                         0, PixelInternalFormat.Rgb, pic.Width, pic.Height, 0, PixelFormat.Bgr, PixelType.UnsignedByte, data.Scan0);
-                    pic.UnlockBits(data);
-                }
-            }
         }
 
         void CreateBox()
@@ -140,7 +114,6 @@ namespace Toys
         {
             GL.DeleteVertexArray(skyboxVAO);
             GL.DeleteBuffer(skyboxVBO);
-            GL.DeleteTexture(cubemapTexture);
         }
     }
 }
