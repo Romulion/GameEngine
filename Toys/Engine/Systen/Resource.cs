@@ -37,7 +37,12 @@ namespace Toys
 			return res == null;
 		}
 
-		public override bool Equals(object obj)
+        public static bool operator !(Resource res)
+        {
+            return res == null;
+        }
+
+        public override bool Equals(object obj)
 		{
 			return base.Equals(obj);
 		}
