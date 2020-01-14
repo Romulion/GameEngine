@@ -10,9 +10,8 @@ Features
 
 TODO
 1) Support more model fromats (fbx, obj)
-2) Support different graphic engines (DX and Vulcan)
-3) Graphic interface
+2) Graphic interface
+3) Audio engine
 
 Known Issues
-* Gtk window dont open on some machines
 * Nvidia cards hight cpu usage (workout disable cpu optimisation in driver settings)
