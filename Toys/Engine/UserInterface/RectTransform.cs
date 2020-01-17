@@ -59,6 +59,23 @@ namespace Toys
             transformMat.M42 = GlobalRect.Top * 2 - (1 - GlobalRect.Height);
         }
 
+        public void UpdateGlobalPositionPix()
+        {
+            Vector2 screenSize = new Vector2(CoreEngine.gEngine.Width,CoreEngine.gEngine.Height);
+
+            Max = CalcAbsAnchor(anchorMax * screenSize) + offsetMax;
+            Min = CalcAbsAnchor(anchorMin * screenSize) + offsetMin;
+
+
+            GlobalRect = new RectangleF(Min.X, Min.Y, (Max - Min).X, (Max - Min).Y);
+
+            //updating matrix
+            transformMat.M11 = GlobalRect.Width;
+            transformMat.M22 = GlobalRect.Height;
+            transformMat.M41 = GlobalRect.Left;
+            transformMat.M42 = GlobalRect.Top;
+        }
+
         private Vector2 CalcAbsAnchor(Vector2 anchPos)
         {
             if (baseNode.Parent != null)

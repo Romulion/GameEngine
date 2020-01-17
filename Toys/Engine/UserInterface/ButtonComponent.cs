@@ -37,8 +37,8 @@ namespace Toys
             ShaderSettings ss = new ShaderSettings();
             RenderDirectives rd = new RenderDirectives();
             string path = "Toys.Resourses.shaders.";
-            string vs = ShaderManager.ReadFromAssetStream(path + "TextureImage.vsh");
-            string fs = ShaderManager.ReadFromAssetStream(path + "ButtonColor.fsh");
+            string vs = ShaderManager.ReadFromAssetStream(path + "UIElement.vsh");
+            string fs = ShaderManager.ReadFromAssetStream(path + "UIElement.fsh");
             ss.TextureDiffuse = true;
             defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
             defaultMaterial.Name = "Texture";
@@ -64,6 +64,7 @@ namespace Toys
 
             Material.ApplyMaterial();
             colorMask.SetValue(color);
+            //colorMask.SetValue(color);
             shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
             if (Texture)
                 Texture.BindTexture();

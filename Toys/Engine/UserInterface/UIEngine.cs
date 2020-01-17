@@ -47,9 +47,8 @@ namespace Toys
             foreach (var canvas in canvases)
             {
                 if (canvas.Root)
-                    elements.AddRange(SortCanvas(canvas.Root));
+                    elements.AddRange(SortCanvas(canvas.Root));                
             }
-
             activeButtons.Clear();
             activeComponents.Clear();
 
@@ -94,7 +93,6 @@ namespace Toys
             cursorWindowPosition.X /= GLWindow.gLWindow.Width;
             cursorWindowPosition.Y /= GLWindow.gLWindow.Height;
             cursorWindowPosition.Y = 1 - cursorWindowPosition.Y;
-
             foreach (var button in activeButtons)
             {
                 if (button.Node.GetTransform.GlobalRect.Contains(cursorWindowPosition.X, cursorWindowPosition.Y))
