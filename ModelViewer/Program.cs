@@ -22,7 +22,6 @@ namespace ModelViewer
                 SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
                 modelNode.Name = "model";
                 scene.AddObject(modelNode);
-                TestScript ts = (TestScript)modelNode.AddComponent<TestScript>();
             }
             var camera = new Camera();
             SceneNode cameraNode = new SceneNode();
@@ -31,7 +30,7 @@ namespace ModelViewer
             cameraNode.AddComponent<CameraControllScript>();
             cameraNode.AddComponent<FrameTimeScript>();
             cameraNode.GetTransform.Position = new Vector3(0, 1f, 3);
-
+            cameraNode.AddComponent<TestScript>();
             scene.AddObject(cameraNode);
             camera.Background = new BackgroundSkybox();
             //node.Name = "Model1";

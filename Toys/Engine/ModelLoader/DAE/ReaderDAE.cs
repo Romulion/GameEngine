@@ -20,13 +20,12 @@ namespace Toys
 		public ReaderDAE(string filename)
 		{
 			file = filename;
-			int indx = filename.LastIndexOf('/');
+			int indx = filename.LastIndexOf('\\');
             if (indx >= 0)
-                dir = filename.Substring(0, indx) + '/';
+                dir = filename.Substring(0, indx) + '\\';
             else
                 dir = "";
-
-			xDoc = new XmlDocument();
+            xDoc = new XmlDocument();
 			xDoc.Load(filename);
 			LoadLibraries();
 		}
@@ -41,10 +40,10 @@ namespace Toys
 			//bones
 			LoadBones(xRoot);
 			//materials
-			var daemats = new DAEMaterialReader(xRoot);
-			var matsList = daemats.GetMaterials();
-
-			mats = new Material[meshreader.DAEGeometry.Count];
+			var daemats = new DAEMaterialReader(xRoot, dir);
+            var matsList = daemats.GetMaterials();
+            
+            mats = new Material[meshreader.DAEGeometry.Count];
 
 			for (int i = 0; i < meshreader.DAEGeometry.Count; i++)
 			{

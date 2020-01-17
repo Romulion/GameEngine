@@ -33,7 +33,6 @@ namespace Toys
 
 		void Instalize()
 		{
-
 			try
 			{
 				mainScene = new Scene();

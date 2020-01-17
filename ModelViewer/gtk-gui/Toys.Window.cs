@@ -8,9 +8,9 @@ namespace ModelViewer
 	{
 		private Fixed fixed1;
 		private ScrolledWindow scrolledwindow1;
-		private Fixed fixed2;
+		private Fixed fixedScene;
 		private ScrolledWindow scrolledwindow2;
-		private Fixed fixed3;
+		private Fixed fixedComponents;
         private Fixed fixed4;
         private Fixed fixed5;
         private ScrolledWindow scrolledwindow3;
@@ -51,10 +51,10 @@ namespace ModelViewer
             Viewport w1 = new Viewport();
             w1.ShadowType = 0;
             // Container child GtkViewport.Gtk.Container+ContainerChild
-            fixed2 = new Fixed();
-            fixed2.Name = "fixed2";
-            fixed2.HasWindow = false;
-            w1.Add(fixed2);
+            fixedScene = new Fixed();
+            fixedScene.Name = "fixed2";
+            fixedScene.HasWindow = false;
+            w1.Add(fixedScene);
             scrolledwindow1.Add(w1);
             fixed1.Add(scrolledwindow1);
             // Container child fixed1.Gtk.Fixed+FixedChild
@@ -69,10 +69,10 @@ namespace ModelViewer
             Viewport w5 = new Viewport();
             w5.ShadowType = 0;
             // Container child GtkViewport1.Gtk.Container+ContainerChild
-            fixed3 = new Fixed();
-            fixed3.Name = "fixed3";
-            fixed3.HasWindow = false;
-            w5.Add(fixed3);
+            fixedComponents = new Fixed();
+            fixedComponents.Name = "fixed3";
+            fixedComponents.HasWindow = false;
+            w5.Add(fixedComponents);
             scrolledwindow2.Add(w5);
             fixed1.Add(scrolledwindow2);
 

@@ -11,9 +11,10 @@ namespace Toys
         public List<SceneNode> Childs { get; private set; }
         public SceneNode Parent;
         Transform transform;
-		public string Name;
+		public string Name = "Node";
 		public bool Active = true;
 		List<Component> components;
+        public Scene scene { get; internal set; }
 
 		public SceneNode() : base (typeof(SceneNode))
         {
@@ -94,14 +95,15 @@ namespace Toys
 
         public Component GetComponent(Type ctype)
 		{
-			var result = from comp in components
-						 where comp.Type == ctype
-						 select comp;
-
-			if (result.Count() == 0)
-				return null;
-			
-			return result.First();
+            Component result = null;
+            for (int i = 0; i < components.Count; i++) {
+                if (components[i].Type == ctype)
+                {
+                    result = components[i];
+                    break;
+                }
+            }
+            return result;
 		}
 
 		public Component[] GetComponents(Type ctype)

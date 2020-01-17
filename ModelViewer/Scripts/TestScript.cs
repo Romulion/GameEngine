@@ -70,6 +70,19 @@ namespace ModelViewer
             ui1.SetParent(ui);
             ui2.SetParent(ui);
 
+            //debug textures
+            /*
+            var canvas1 = (Canvas)Node.AddComponent<Canvas>();
+            var ui10 = new UIElement();
+            ui10.GetTransform.anchorMax = new Vector2(0f, 1f);
+            ui10.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui10.GetTransform.offsetMax = new Vector2(400, 100);
+            ui10.GetTransform.offsetMin = new Vector2(100, 400);
+            canvas1.Root = ui10;
+
+            var img =  ui10.AddComponent<RawImage>();
+            img.Material.SetTexture(Node.scene.GetLight.shadowMap, TextureType.Diffuse);
+            */
             /*
             var msd = (Animator)Node.GetComponent<Animator>();
             if (msd != null)

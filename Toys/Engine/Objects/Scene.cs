@@ -15,19 +15,21 @@ namespace Toys
 
 		public void AddObject(SceneNode node)
 		{
-            nodes.Add(node);
-		}
+            if (node)
+            {
+                nodes.Add(node);
+                node.scene = this;
+            }
+        }
 
 
 		public void Update(float time)
 		{
-			
 			List<Animator> anims = new List<Animator>();
-
 			foreach (var node in nodes)
 			{
-				var an = (Animator)node.GetComponent(typeof(Animator));
-				if (an)
+                Animator an = node.GetComponent(typeof(Animator)) as Animator;
+                if (an)
 					an.Update(time);
 			}
         }

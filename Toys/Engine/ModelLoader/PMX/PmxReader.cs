@@ -3,6 +3,7 @@ using System.IO;
 using OpenTK;
 using System.Diagnostics;
 using System.Drawing;
+using OpenTK.Graphics.OpenGL;
 
 namespace Toys
 {
@@ -30,22 +31,21 @@ namespace Toys
 
 		public PmxReader(string path)
 		{
-			int indx = path.LastIndexOf('/');
+			int indx = path.LastIndexOf('\\');
             if (indx >= 0)
-                dir = path.Substring(0, indx) + '/';
+                dir = path.Substring(0, indx) + '\\';
             else
                 dir = "";
-
-			empty = Texture2D.LoadEmpty();
+            empty = Texture2D.LoadEmpty();
 			Stream fs = File.OpenRead(path);
 			file = new BinaryReader(fs);
 			reader = new Reader(file);
 
 			ReadHeader();
             ReadMesh();
-			ReadTextures();
-			ReadMaterial();
-			ReadBones();
+            ReadTextures();
+            ReadMaterial();
+            ReadBones();
             ReadMorhps();
 			ReadPanel();
 			ReadRigit();
@@ -73,7 +73,7 @@ namespace Toys
 		{
 			int meshSize = file.ReadInt32();            
 			VertexRigged3D [] verticesR = new VertexRigged3D[meshSize];
-			Vertex3D[] vertices = new Vertex3D[meshSize];
+			//Vertex3D[] vertices = new Vertex3D[meshSize];
 			for (int i = 0; i < meshSize; i++)
 			{
 				Vector3 pos = reader.readVector3() * multipler;
@@ -141,7 +141,7 @@ namespace Toys
 				}
 
 				verticesR[i] = new VertexRigged3D(pos, normal, uv,new IVector4(bonesIndexes),bonesWeigth);
-				vertices[i] = new Vertex3D(pos, normal, uv);
+				//vertices[i] = new Vertex3D(pos, normal, uv);
 				float outline = file.ReadSingle();
 
 			}
@@ -161,7 +161,7 @@ namespace Toys
 					indexes[i] = reader.readVal(header.GetVertexIndexSize);
 			    */
             }
-			mesh = new Mesh(vertices, indexes);
+			//mesh = new Mesh(vertices, indexes);
 			meshRigged = new Mesh(verticesR, indexes);
 		}
 
@@ -172,7 +172,7 @@ namespace Toys
 			for (int i = 0; i < texCount; i++)
 			{
 				string texture = reader.readString();
-                Texture2D tex = ResourcesManager.LoadAsset<Texture2D>(texture);
+                Texture2D tex = ResourcesManager.LoadAsset<Texture2D>(dir+texture);
 
 				if (texture.Contains("toon"))
 					tex.ChangeType(TextureType.Toon);
@@ -224,7 +224,7 @@ namespace Toys
 				rndr.CastShadow = flags.CastShadow;
 				rndr.HasEdges = flags.HasEdge;
 				rndr.NoCull = flags.NoCull;
-
+                
 				var outln = new Outline();
 				outln.EdgeColour = reader.readVector4();
 				outln.EdgeScaler = file.ReadSingle() * 0.3f;

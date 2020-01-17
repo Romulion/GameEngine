@@ -33,26 +33,20 @@ namespace Toys
 			else if (tp == typeof(Texture2D))
 			{
 				asset = new Texture2D(path);
-				resources.Add(path, asset);
 			}
 			else if (tp == typeof(SceneNode))
 			{
-				/*
 				IModelLoader model = ModelLoader.Load(path);
-				asset = model.GetRiggedModel;
-				resources.Add(path, asset);
-				*/
-				IModelLoader model = ModelLoader.Load(path);
-				asset = model.GetRiggedModel;
-				resources.Add(path, asset);
+				asset = model?.GetRiggedModel;
 			}
 
 			if (asset)
 			{
 				asset.Id = path;
 				asset.Type = typeof(T);
-			}
-			return asset as T;
+                resources.Add(path, asset);
+            }
+            return asset as T;
 		}
 
         internal static void AddAsset<T>(T asset, string name) where T : Resource

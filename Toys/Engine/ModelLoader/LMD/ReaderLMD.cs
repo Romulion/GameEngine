@@ -19,8 +19,15 @@ namespace Toys
         BoneController boneControll = null;
         Dictionary<string, Texture2D> texturesDict = new Dictionary<string, Texture2D>();
 
+        string dir;
         public ReaderLMD(string path)
         {
+            int indx = path.LastIndexOf('\\');
+            if (indx >= 0)
+                dir = path.Substring(0, indx) + '\\';
+            else
+                dir = "";
+
             Stream fs = File.OpenRead(path);
             file = new BinaryReader(fs);
             reader = new Reader(file);
@@ -326,7 +333,7 @@ namespace Toys
         delegate bool Check();
         void ReadTexturesFromMaterial(string name, Material mat)
         {
-            string path = "Materials/" + name + ".material";
+            string path = dir + "Materials/" + name + ".material";
             Stream fs = File.OpenRead(path);
             var file = new BinaryReader(fs);
             var reader = new Reader(file);
@@ -368,7 +375,7 @@ namespace Toys
                             mat.SetTexture(texturesDict[textPath], type);
                         else
                         {
-                            var text = new Texture2D(textPath);
+                            var text = new Texture2D(dir+textPath);
                             texturesDict.Add(textPath, text);
                             mat.SetTexture(text, type);
                         }

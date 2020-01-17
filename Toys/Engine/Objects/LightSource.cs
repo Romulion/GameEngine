@@ -18,7 +18,7 @@ namespace Toys
 		int width = 2048;
 		int heigth = 2048;
 
-		Texture2D shadowMap;
+		public Texture2D shadowMap { get; private set; }
 		Shader shdr;
 		Matrix4 direction;
 		Matrix4 projection;

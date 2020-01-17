@@ -6,9 +6,9 @@ namespace Toys
 {
 	public enum ModelFormat
 	{
-		PMX,
-		DAE,
-        LMD,
+		PMX = 1,
+		DAE = 2,
+        LMD = 3,
 	}
 
 	public class ModelLoader
@@ -33,7 +33,8 @@ namespace Toys
                     format = ModelFormat.LMD;
                     break;
                 default :
-					throw new Exception("cant recognize file format");
+                    logger.Error("cant recognize file format", "");
+                    break;
 			}
 
 			return Load(filename, format);
@@ -62,7 +63,6 @@ namespace Toys
             {
                 logger.Error(e.Message, e.Source);
             }
-
 			return modelLoader;
 		}
 	}

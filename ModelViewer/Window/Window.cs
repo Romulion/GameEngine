@@ -1,7 +1,6 @@
 ﻿using System;
 using Gtk;
 using Toys;
-using System.Reflection;
 using UtilityClient;
 
 namespace ModelViewer
@@ -63,85 +62,36 @@ namespace ModelViewer
                     core.addTask = () => morph.MorphDegree = (float)scale.Value;
                 };
 
-
                 fixed7.Put(scale, 100, y);
                 scale.Show();
                 y += 40;
             }
         }
-/*
-        void SetAnimator(Animator anim)
-        {
-            //FileChooserButton btn1 = new FileChooserButton("Load Animation", FileChooserAction.Open);
-            //btn1.Name = "btnLoadAnim";
-            Animation an = null;
-
-            filechooserbutton2.FileSet += (sender, e) =>
-            {
-                try
-                {
-                    an = AnimationLoader.Load(filechooserbutton2.Filename);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("cant load animation\n{0}\n{1}", ex.Message, ex.StackTrace);
-                }
-            };
-
-            //Play
-            bool play = false;
-            bool pause = false;
-
-            button2.Clicked += (sender, e) =>
-            {
-                if (an != null)
-                    anim.Play(an);
-                play = true;
-
-            };
-
-            button3.Clicked += (sender, e) =>
-            {
-                play = false;
-                if (an != null)
-                    anim.Stop();
-            };
-
-            button4.Clicked += (sender, e) =>
-            {
-                if (an != null)
-                {
-                    if (play && !pause)
-                    {
-                        anim.Pause();
-                        button4.Label = "Resume";
-                        pause = !pause;
-                    }
-                    else if (play)
-                    {
-                        anim.Resume();
-                        button4.Label = "Pause";
-                        pause = !pause;
-                    }
-                }
-            };
-
-            /*
-			if (mat.dontDraw)
-				btn.ModifyBg(StateType.Normal, disable);
-			else 
-				btn.ModifyBg(StateType.Normal, enable);
-
-
-			fixed2.Put(btn, 0, y);
-			btn.Show();
-			y += 25;
-*/
-      //  }
 
         void DrawScene(Scene scene)
         {
-            int y = 0;
+
+            var fileChooserAdd = new FileChooserButton("Select model", FileChooserAction.Open);
+            fileChooserAdd.WidthRequest = 124;
+            fileChooserAdd.Name = "filechooserbutton3";
+            fileChooserAdd.FileSet += (sender, e) =>
+            {
+                bool ready = false;
+                core.addTask = () =>
+                {
+                    SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(fileChooserAdd.Filename);
+                    scene.AddObject(modelNode);
+                    ready = true;
+                };
+                //wait for model to load
+                while (!ready)
+                    System.Threading.Thread.Sleep(1);
+                ClearChildrens(fixedScene);
+                DrawScene(scene);
+            };
+            fixedScene.Put(fileChooserAdd, 0, 0);
+            fileChooserAdd.Show();
+            int y = 35;
             foreach (var node in scene.GetNodes())
             {
                 Button btn = new Button();
@@ -153,17 +103,17 @@ namespace ModelViewer
                 {
                     DrawComponents(node);
                 };
-
-                fixed2.Put(btn, 0, y);
+                fixedScene.Put(btn, 0, y);
                 btn.Show();
                 y += 35;
             }
+            var cont = fixedScene.CreatePangoContext();
         }
 
         void DrawComponents(SceneNode node)
         {
             int y = 0;
-            ClearChildrens(fixed3);
+            ClearChildrens(fixedComponents);
             ClearChildrens(fixed4);
             foreach (var component in node.GetComponents())
             {
@@ -173,7 +123,7 @@ namespace ModelViewer
                     btn.Label = "MeshDrawerRigged";
                     btn.Name = "btnComp";
                     btn.Clicked += (sender, e) => { MeshDrawerRig((MeshDrawerRigged)component);};
-                    fixed3.Put(btn, 0, y);
+                    fixedComponents.Put(btn, 0, y);
                     btn.Show();
                     y += 35;
                 }
@@ -182,7 +132,7 @@ namespace ModelViewer
                     Button btn = new Button();
                     btn.Label = "MeshDrawer";
                     btn.Name = "btnComp";
-                    fixed3.Put(btn, 0, y);
+                    fixedComponents.Put(btn, 0, y);
                     btn.Show();
                     y += 35;
                 }
@@ -192,7 +142,7 @@ namespace ModelViewer
                     btn.Label = "Animator";
                     btn.Clicked += (sender, e) => { AnimatorWindow((Animator)component); };
                     btn.Name = "btnComp";
-                    fixed3.Put(btn, 0, y);
+                    fixedComponents.Put(btn, 0, y);
                     btn.Show();
                     y += 35;
                 }

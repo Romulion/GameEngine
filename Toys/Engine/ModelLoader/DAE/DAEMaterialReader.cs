@@ -11,6 +11,7 @@ namespace Toys
 		const string libmat = "library_materials";
 		const string libeff = "library_effects";
 		public List<DAEMaterial> DAEMaterials;
+        internal string dir;
 
         Dictionary<string, TextureWrapMode> wrapModes = new Dictionary<string, TextureWrapMode>
         {
@@ -21,9 +22,10 @@ namespace Toys
             ["NONE"] = TextureWrapMode.ClampToBorder,
         };
 
-		public DAEMaterialReader(XmlElement xRoot)
+		public DAEMaterialReader(XmlElement xRoot, string dir)
 		{
-			XmlNode libmatsNode = null;
+            this.dir = dir;
+            XmlNode libmatsNode = null;
 			XmlNode libeffsNode = null;
 			foreach (XmlNode xnode in xRoot)
 			{
@@ -111,7 +113,7 @@ namespace Toys
 				mat.TextureName = mat.TextureName.Remove(mat.TextureName.IndexOf("_id", 0));
 			}
 			mat.TextureName += "." + surf.FindNodes("format")[0].InnerText.ToLower();
-			mat.DiffuseTexture = new Texture2D(mat.TextureName, TextureType.Diffuse);
+			mat.DiffuseTexture = new Texture2D(dir + mat.TextureName, TextureType.Diffuse);
 
             var wrapS = sampler.FindNodes("wrap_s");
             if (wrapS.Length > 0)
