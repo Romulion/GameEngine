@@ -24,6 +24,7 @@ namespace Toys
 
     public abstract class Texture : Resource
     {
+        protected Logger logger = new Logger("Texture");
         protected TextureTarget textureType;
         protected int textureID;
         TextureWrapMode wrapU;

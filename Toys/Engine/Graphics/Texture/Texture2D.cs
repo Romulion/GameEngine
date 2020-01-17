@@ -18,7 +18,6 @@ namespace Toys
 
 	public class Texture2D : Texture
 	{
-        Logger logger = new Logger("Texture");
         TextureType type;
 		public string Name { private set; get; }
 
