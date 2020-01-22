@@ -94,8 +94,10 @@
     <Compile Include="Engine\Graphics\ShaderConstructorNew.cs" />
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector2.cs" />
     <Compile Include="Engine\UserInterface\ButtonComponent.cs" />
+    <Compile Include="Engine\UserInterface\InteractableComponent.cs" />
     <Compile Include="Engine\UserInterface\RawImage.cs" />
     <Compile Include="Engine\UserInterface\RectTransform.cs" />
+    <Compile Include="Engine\UserInterface\SliderCompoent.cs" />
     <Compile Include="Engine\UserInterface\VisualComponent.cs" />
     <Compile Include="Engine\UserInterface\TextRendering\TextBox.cs" />
     <Compile Include="Engine\UserInterface\TextRendering\TextCanvas.cs" />

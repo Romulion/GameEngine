@@ -170,8 +170,10 @@ namespace Toys
 
             //render ui
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, outputBuffer);
+            GL.Disable(EnableCap.DepthTest);
             UIEngine.DrawUI();
             TextRender.RenderText();
+            GL.Enable(EnableCap.DepthTest);
         }
 
         internal void Resize(int newWidth, int newHeight)

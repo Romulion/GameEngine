@@ -14,7 +14,7 @@ namespace Toys
         Clicked,
         Unclicked,
     }
-    public class ButtonComponent : VisualComponent
+    public class ButtonComponent : InteractableComponent
     {
         public Action OnClick;
         static Material defaultMaterial;
@@ -71,7 +71,7 @@ namespace Toys
             base.Draw();
         }
 
-        internal void ClickDownState()
+        internal override void ClickDownState()
         {
             if (State == ButtonStates.Hover)
             {
@@ -80,13 +80,13 @@ namespace Toys
             }
         }
 
-        internal void ClickUpState()
+        internal override void ClickUpState()
         {
             OnClick?.Invoke();
             Normal();
         }
 
-        internal void Hover()
+        internal override void Hover()
         {
             if (State == ButtonStates.Clicked || State == ButtonStates.Normal)
             {
@@ -96,7 +96,7 @@ namespace Toys
         }
 
 
-        internal void Normal()
+        internal override void Normal()
         {
             if (State == ButtonStates.Clicked || State == ButtonStates.Hover)
             {

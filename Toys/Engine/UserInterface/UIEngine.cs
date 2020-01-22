@@ -12,17 +12,24 @@ namespace Toys
     {
         internal List<Canvas> canvases;
         internal List<VisualComponent> visualComponents;
-        internal List<ButtonComponent> buttons;
+        internal List<InteractableComponent> buttons;
 
         List<VisualComponent> activeComponents = new List<VisualComponent>();
-        List<ButtonComponent> activeButtons = new List<ButtonComponent>();
-        private ButtonComponent clickContext;
+        List<InteractableComponent> activeButtons = new List<InteractableComponent>();
+        private InteractableComponent clickContext;
         private bool clicked;
+        public bool Busy
+        {
+            get
+            {
+                return clickContext != null;
+            }
+        }
         public UIEngine()
         {
             canvases = new List<Canvas>();
             visualComponents = new List<VisualComponent>();
-            buttons = new List<ButtonComponent>();
+            buttons = new List<InteractableComponent>();
         }
 
         private List<UIElement> SortCanvas(UIElement root)
@@ -89,10 +96,14 @@ namespace Toys
             if (cursorWindowPosition.X < 0 || cursorWindowPosition.Y < 0 || cursorWindowPosition.X > GLWindow.gLWindow.Width || cursorWindowPosition.Y > GLWindow.gLWindow.Height)
                 return;
 
-            //normalizing
+            //normalizing coordinates
             cursorWindowPosition.X /= GLWindow.gLWindow.Width;
             cursorWindowPosition.Y /= GLWindow.gLWindow.Height;
             cursorWindowPosition.Y = 1 - cursorWindowPosition.Y;
+
+            //inform active component about mouse position
+            clickContext?.PositionUpdate(cursorWindowPosition.X, cursorWindowPosition.Y);
+
             foreach (var button in activeButtons)
             {
                 if (button.Node.GetTransform.GlobalRect.Contains(cursorWindowPosition.X, cursorWindowPosition.Y))

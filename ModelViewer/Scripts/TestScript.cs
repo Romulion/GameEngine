@@ -47,6 +47,8 @@ namespace ModelViewer
             butLabel1.SetText("wind ON");
             butLabel1.textCanvas.Scale = 0.5f;
 
+            image1.OnClick = () => { active = true; };
+
             var ui2 = new UIElement();
             ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
@@ -62,7 +64,6 @@ namespace ModelViewer
             butLabel2.textCanvas.alignVertical = TextAlignVertical.Center;
             var image2 = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
 
-            image1.OnClick = () => { active = true; };
             image2.OnClick = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };
 
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
@@ -88,6 +89,16 @@ namespace ModelViewer
             if (msd != null)
                 bc = msd.BoneController;
             */
+
+
+            var ui3 = new UIElement();
+            ui3.GetTransform.anchorMax = new Vector2(1f, 1f);
+            ui3.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui3.GetTransform.offsetMax = new Vector2(0, -60);
+            ui3.GetTransform.offsetMin = new Vector2(0, -80);
+            var slider1 = (SliderCompoent)ui3.AddComponent<SliderCompoent>();
+            ui3.SetParent(ui);
+            //slider1.OnValueChanged = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };
         }
 
         void Start()
