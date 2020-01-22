@@ -89,14 +89,13 @@ namespace Toys
             base.Draw();
 
             //draw slider button
-            /*
+            trans = Node.GetTransform.GlobalTransform;
+            trans.M41 += trans.M11 * value - trans.M22 * 0.5f;
+            trans.M11 = trans.M22;
             bgTexture?.BindTexture();
             colorMask.SetValue(color);
-            //colorMask.SetValue(color);
-            shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
-            
+            shaderUniform.SetValue(trans);
             base.Draw();
-            */
         }
 
         internal override void Hover()
