@@ -70,19 +70,19 @@ namespace Toys
             //draw bg
             //shink heigth by 60%
             var trans = Node.GetTransform.GlobalTransform;
-            trans.M42 += trans.M22 * 0.30f;
-            trans.M22 *= 0.4f;
+            trans.M42 += trans.M22 * 0.31f;
+            trans.M22 *= 0.38f;
             bgTexture?.BindTexture();
             colorMask.SetValue(Vector3.Zero);
             shaderUniform.SetValue(trans);
             base.Draw();
 
             //draw fill gauge
-            trans = Node.GetTransform.GlobalTransform;
+            //trans = Node.GetTransform.GlobalTransform;
             trans.M11 *= value;
-            trans.M41 = Node.GetTransform.GlobalRect.Left * 2 - (1 - trans.M11);
-            trans.M42 += trans.M22 * 0.24f;
-            trans.M22 *= 0.43f;
+            //trans.M41 = Node.GetTransform.GlobalRect.Left * 2 - (1 - trans.M11);
+            trans.M42 += trans.M22 * 0.3f;
+            trans.M22 *= 0.4f;
             fillTexture?.BindTexture();
             colorMask.SetValue(Vector3.One);
             shaderUniform.SetValue(trans);

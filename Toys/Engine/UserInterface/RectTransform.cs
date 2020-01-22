@@ -55,8 +55,10 @@ namespace Toys
             transformMat.M11 = GlobalRect.Width;
             transformMat.M22 = GlobalRect.Height;
             //converting 0 - 1 to -1 - 1
-            transformMat.M41 = GlobalRect.Left * 2 - (1 - GlobalRect.Width);
-            transformMat.M42 = GlobalRect.Top * 2 - (1 - GlobalRect.Height);
+            //transformMat.M41 = GlobalRect.Left * 2 - (1 - GlobalRect.Width);
+            //transformMat.M42 = GlobalRect.Top * 2 - (1 - GlobalRect.Height);
+            transformMat.M41 = GlobalRect.Left;
+            transformMat.M42 = GlobalRect.Top;
         }
 
         public void UpdateGlobalPositionPix()
