@@ -21,7 +21,7 @@ namespace Toys
         public static Time frameTimer { get; private set; }
         queue task;
 
-		float elapsed = 0.01f;
+        float elapsed = 0.01f;
 
 		public Scene mainScene;
 
@@ -41,7 +41,6 @@ namespace Toys
                 sEngine = new ScriptingEngine();
                 time = new Time();
                 frameTimer = new Time();
-                frameTimer.Start();
             }
 			catch (Exception e)
 			{

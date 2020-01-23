@@ -36,5 +36,19 @@ namespace Toys
             VAO = vao;
             VBO = vbo;
         }
+
+        public void CloneTo(TextCanvas obj)
+        {
+            obj.alignHorizontal = alignHorizontal;
+            obj.alignVertical = alignVertical;
+            obj.Text = Text;
+            obj.StringLength = StringLength;
+            obj.Position = Position;
+            obj.Scale = Scale;
+            obj.colour = colour;
+            obj.Length = Length;
+            obj.Width = Width;
+            obj.Heigth = Heigth;
+        }
     }
 }

@@ -129,5 +129,20 @@ namespace Toys
             foreach (var comp in components)
                 comp.Unload();
         }
+
+        public UIElement Clone()
+        {
+            var ui = new UIElement();
+            ui.Name = Name;
+            ui.transform.offsetMax = transform.offsetMax;
+            ui.transform.offsetMin = transform.offsetMin;
+            ui.transform.anchorMax = transform.anchorMax;
+            ui.transform.anchorMin = transform.anchorMin;
+            ui.components = new List<VisualComponent>(components.Count);
+            for (int i = 0; i < components.Count; i++)
+                ui.AddComponent(components[i].Clone());
+        
+            return ui;
+        }
     }
 }

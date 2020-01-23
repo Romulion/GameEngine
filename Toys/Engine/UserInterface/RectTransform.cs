@@ -20,8 +20,8 @@ namespace Toys
 
         public RectangleF GlobalRect { get; private set; }
 
-        internal Vector2 Max;
-        internal Vector2 Min;
+        internal Vector2 Max { get; private set; }
+        internal Vector2 Min { get; private set; }
         private Matrix4 transformMat;
         private UIElement baseNode;
         public Matrix4 GlobalTransform
@@ -36,14 +36,19 @@ namespace Toys
         {
             get; private set;
         }
-        internal RectTransform(UIElement ui)
+        internal RectTransform(UIElement ui) : this()
         {
             baseNode = ui;
+        }
+
+        private RectTransform()
+        {
             transformMat = Matrix4.Identity;
             anchorMax = new Vector2(0.5f, 0.5f);
             anchorMin = new Vector2(0.5f, 0.5f);
             GlobalRect = new RectangleF(0, 0, 1, 1);
         }
+
         public void UpdateGlobalPosition()
         {
             Vector2 screenSize = new Vector2 (1/(float)CoreEngine.gEngine.Width,1/ (float)CoreEngine.gEngine.Height);
@@ -84,6 +89,17 @@ namespace Toys
             }
             else
                 return anchPos;
+        }
+
+        public RectTransform Clone()
+        {
+            var trans = new RectTransform();
+            trans.anchorMax = anchorMax;
+            trans.offsetMax = offsetMax;
+            trans.anchorMin = anchorMin;
+            trans.offsetMin = offsetMin;
+            trans.UpdateGlobalPosition();
+            return trans;
         }
     }
 }

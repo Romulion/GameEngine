@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Input;
 using OpenTK;
+using OpenTK.Graphics;
 
 namespace Toys
 {
@@ -78,6 +79,7 @@ namespace Toys
 
         internal void DrawUI()
         {
+            //activeComponents[0].Material.ApplyMaterial();
             foreach (var component in activeComponents)
                 component.Draw();
         }

@@ -7,34 +7,38 @@ using OpenTK;
 
 namespace Toys
 {
-    enum ButtonStates
+    [Flags]
+    public enum ScrollMode
     {
-        Normal,
-        Hover,
-        Clicked,
-        Unclicked,
+        Vertical = 1,
+        Horizontal,
     }
-    public class ButtonComponent : InteractableComponent
+
+    /// <summary>
+    /// test prototype
+    /// </summary>
+    class ScrollBoxComponent : InteractableComponent
     {
-        public Action OnClick;
         static Material defaultMaterial;
         ShaderUniform shaderUniform;
         ShaderUniform colorMask;
-        static Texture2D defaultTexture;
-        public Texture2D Texture;
+        public static Texture2D Texture;
 
         Vector4 color;
-        internal ButtonStates State { get; private set;}
-        public ButtonComponent() : base(typeof(ButtonComponent))
+        Vector2 cursorPrev;
+
+        public ScrollMode ScrollDirection { get; set; }
+        internal ButtonStates State { get; private set; }
+        public ScrollBoxComponent() : base(typeof(ScrollBoxComponent))
         {
             Material = defaultMaterial;
             shaderUniform = Material.UniManager.GetUniform("model");
             colorMask = Material.UniManager.GetUniform("color_mask");
             color = Vector4.One;
-            Texture = defaultTexture;
+            ScrollDirection = ScrollMode.Vertical;
         }
 
-        static ButtonComponent()
+        static ScrollBoxComponent()
         {
             ShaderSettings ss = new ShaderSettings();
             RenderDirectives rd = new RenderDirectives();
@@ -46,7 +50,7 @@ namespace Toys
             defaultMaterial.Name = "Texture";
             var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
             var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.button2.png"));
-            defaultTexture = new Texture2D(pic, TextureType.Toon, "def");
+            Texture = new Texture2D(pic, TextureType.Toon, "def");
         }
 
         internal override void AddComponent(UIElement nod)
@@ -63,56 +67,50 @@ namespace Toys
 
         internal override void Draw()
         {
+
             Material.ApplyMaterial();
             colorMask.SetValue(color);
+            //colorMask.SetValue(color);
             shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
-            Texture?.BindTexture();
+            if (Texture)
+                Texture.BindTexture();
             base.Draw();
         }
 
         internal override void ClickDownState()
         {
-            if (State == ButtonStates.Hover)
-            {
-                State = ButtonStates.Clicked;
-                color = new Vector4(0.5f,0.5f,0.5f, 1);
-            }
+
         }
 
         internal override void ClickUpState()
         {
-            OnClick?.Invoke();
-            Normal();
+
         }
 
         internal override void Hover()
         {
-            if (State == ButtonStates.Clicked || State == ButtonStates.Normal)
-            {
-                State = ButtonStates.Hover;
-                color = new Vector4(0.7f, 1, 0.7f, 1);
-            }
+
         }
 
 
         internal override void Normal()
         {
-            if (State == ButtonStates.Clicked || State == ButtonStates.Hover)
-            {
-                State = ButtonStates.Normal;
-                color = new Vector4(1, 1, 1, 1);
-            }
+
+        }
+
+        internal override void Unload()
+        {
+            base.Unload();
+        }
+
+        internal override void PositionUpdate(float x, float y)
+        {
+            //if (ScrollDirection
         }
 
         public override VisualComponent Clone()
         {
-            var button = new ButtonComponent();
-            button.OnClick = OnClick;
-            button.Material = Material;
-            button.Texture = Texture;
-            button.color = color;
-
-            return button;
+            throw new NotImplementedException();
         }
     }
 }

@@ -59,5 +59,7 @@ namespace Toys
             }
 
         }
+
+        public abstract VisualComponent Clone();
     }
 }

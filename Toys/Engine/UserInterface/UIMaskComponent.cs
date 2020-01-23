@@ -7,15 +7,26 @@ using OpenTK;
 
 namespace Toys
 {
-    public class RawImage : VisualComponent
+    /// <summary>
+    /// test prototype
+    /// </summary>
+    class UIMaskComponent : VisualComponent
     {
         static Material defaultMaterial;
         ShaderUniform shaderUniform;
-        public Texture2D Texture;
+        public static Texture2D texture;
         ShaderUniform colorMask;
         Vector4 color;
 
-        static RawImage()
+        public UIMaskComponent() : base(typeof(UIMaskComponent))
+        {
+            Material = defaultMaterial;
+            shaderUniform = Material.UniManager.GetUniform("model");
+            colorMask = Material.UniManager.GetUniform("color_mask");
+            color = Vector4.One * 0.1f;
+        }
+
+        static UIMaskComponent()
         {
             ShaderSettings ss = new ShaderSettings();
             RenderDirectives rd = new RenderDirectives();
@@ -24,35 +35,22 @@ namespace Toys
             string fs = ShaderManager.ReadFromAssetStream(path + "UIElement.fsh");
             ss.TextureDiffuse = true;
             defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
-            defaultMaterial.Name = "Texture";
-        }
-        public RawImage() : base(typeof(RawImage))
-        {
-            Material = defaultMaterial;
-            shaderUniform = Material.UniManager.GetUniform("model");
-            colorMask = Material.UniManager.GetUniform("color_mask");
-            color = Vector4.One;
-            Material.ApplyMaterial();
-            colorMask.SetValue(color);
+            defaultMaterial.Name = "Mask";
+            texture = Texture2D.LoadEmpty();
         }
 
         internal override void Draw()
         {
-            
             Material.ApplyMaterial();
             shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
-            if (Texture)
-                Texture.BindTexture();
+            texture?.BindTexture();
             base.Draw();
         }
 
+
         public override VisualComponent Clone()
         {
-            var img = new RawImage();
-            img.Material = Material;
-            img.Texture = Texture;
-            img.color = color;
-            return img;
+            throw new NotImplementedException();
         }
     }
 }

@@ -7,34 +7,31 @@ using OpenTK;
 
 namespace Toys
 {
-    enum ButtonStates
+    /// <summary>
+    /// test prototype
+    /// </summary>
+    class CheckboxComponent : InteractableComponent
     {
-        Normal,
-        Hover,
-        Clicked,
-        Unclicked,
-    }
-    public class ButtonComponent : InteractableComponent
-    {
-        public Action OnClick;
         static Material defaultMaterial;
         ShaderUniform shaderUniform;
         ShaderUniform colorMask;
-        static Texture2D defaultTexture;
-        public Texture2D Texture;
+        public static Texture2D Texture;
 
         Vector4 color;
-        internal ButtonStates State { get; private set;}
-        public ButtonComponent() : base(typeof(ButtonComponent))
+        Vector2 cursorPrev;
+
+        public ScrollMode ScrollDirection { get; set; }
+        internal ButtonStates State { get; private set; }
+        public CheckboxComponent() : base(typeof(CheckboxComponent))
         {
             Material = defaultMaterial;
             shaderUniform = Material.UniManager.GetUniform("model");
             colorMask = Material.UniManager.GetUniform("color_mask");
             color = Vector4.One;
-            Texture = defaultTexture;
+            ScrollDirection = ScrollMode.Vertical;
         }
 
-        static ButtonComponent()
+        static CheckboxComponent()
         {
             ShaderSettings ss = new ShaderSettings();
             RenderDirectives rd = new RenderDirectives();
@@ -46,7 +43,7 @@ namespace Toys
             defaultMaterial.Name = "Texture";
             var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
             var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.button2.png"));
-            defaultTexture = new Texture2D(pic, TextureType.Toon, "def");
+            Texture = new Texture2D(pic, TextureType.Toon, "def");
         }
 
         internal override void AddComponent(UIElement nod)
@@ -61,58 +58,41 @@ namespace Toys
             base.RemoveComponent();
         }
 
-        internal override void Draw()
-        {
-            Material.ApplyMaterial();
-            colorMask.SetValue(color);
-            shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
-            Texture?.BindTexture();
-            base.Draw();
-        }
-
         internal override void ClickDownState()
         {
-            if (State == ButtonStates.Hover)
-            {
-                State = ButtonStates.Clicked;
-                color = new Vector4(0.5f,0.5f,0.5f, 1);
-            }
+
         }
 
         internal override void ClickUpState()
         {
-            OnClick?.Invoke();
-            Normal();
+
         }
 
         internal override void Hover()
         {
-            if (State == ButtonStates.Clicked || State == ButtonStates.Normal)
-            {
-                State = ButtonStates.Hover;
-                color = new Vector4(0.7f, 1, 0.7f, 1);
-            }
+
         }
 
 
         internal override void Normal()
         {
-            if (State == ButtonStates.Clicked || State == ButtonStates.Hover)
-            {
-                State = ButtonStates.Normal;
-                color = new Vector4(1, 1, 1, 1);
-            }
+
+        }
+
+        internal override void Unload()
+        {
+            base.Unload();
+        }
+
+        internal override void Draw()
+        {
+
+            base.Draw();
         }
 
         public override VisualComponent Clone()
         {
-            var button = new ButtonComponent();
-            button.OnClick = OnClick;
-            button.Material = Material;
-            button.Texture = Texture;
-            button.color = color;
-
-            return button;
+            throw new NotImplementedException();
         }
     }
 }

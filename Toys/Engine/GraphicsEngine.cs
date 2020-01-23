@@ -104,13 +104,18 @@ namespace Toys
                 //Console.WriteLine(GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer));
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
+                //enable blending
                 GL.Enable(EnableCap.Blend);
                 GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 				//GL.BlendFunc(BlendingFactor.Src1Alpha,BlendingFactor.OneMinusSrcAlpha);
-
+                
+                //enable depth test
                 GL.Enable(EnableCap.DepthTest);
                 GL.DepthFunc(DepthFunction.Less);
 
+                //enable stencil 
+                GL.Enable(EnableCap.StencilTest);
+                GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Replace);
             }
             catch (Exception e)
             {
@@ -150,7 +155,7 @@ namespace Toys
 
             //clear display buffer
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, outputBuffer);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
             //GL.Enable(EnableCap.Multisample);
             if (MainCamera != null)
             {

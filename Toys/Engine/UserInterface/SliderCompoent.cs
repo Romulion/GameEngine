@@ -20,7 +20,7 @@ namespace Toys
         static Texture2D bgTexture;
         static Texture2D fillTexture;
         static Texture2D padTexture;
-        Vector3 color;
+        Vector4 color;
         internal ButtonStates State { get; private set; }
 
         /// <summary>
@@ -28,12 +28,12 @@ namespace Toys
         /// </summary>
         float value = 0.7f;
 
-        public SliderCompoent() : base(typeof(ButtonComponent))
+        public SliderCompoent() : base(typeof(SliderCompoent))
         {
             Material = defaultMaterial;
             shaderUniform = Material.UniManager.GetUniform("model");
             colorMask = Material.UniManager.GetUniform("color_mask");
-            color = Vector3.One;
+            color = Vector4.One;
         }
 
         static SliderCompoent()
@@ -73,7 +73,7 @@ namespace Toys
             trans.M42 += trans.M22 * 0.31f;
             trans.M22 *= 0.38f;
             bgTexture?.BindTexture();
-            colorMask.SetValue(Vector3.Zero);
+            colorMask.SetValue(new Vector4(Vector3.Zero,1));
             shaderUniform.SetValue(trans);
             base.Draw();
 
@@ -84,7 +84,7 @@ namespace Toys
             trans.M42 += trans.M22 * 0.3f;
             trans.M22 *= 0.4f;
             fillTexture?.BindTexture();
-            colorMask.SetValue(Vector3.One);
+            colorMask.SetValue(Vector4.One);
             shaderUniform.SetValue(trans);
             base.Draw();
 
@@ -106,19 +106,29 @@ namespace Toys
         internal override void ClickUpState()
         {
             if (State == ButtonStates.Clicked)
+            {
                 State = ButtonStates.Normal;
+                color = new Vector4(Vector3.One * 0.9f,1);
+            }
         }
 
         internal override void ClickDownState()
         {
             if (State == ButtonStates.Normal)
+            {
                 State = ButtonStates.Clicked;
+                color = new Vector4(Vector3.One * 0.6f,1);
+            }
 
         }
 
         internal override void Normal()
         {
-
+            if (State != ButtonStates.Normal)
+            {
+                State = ButtonStates.Normal;
+                color = new Vector4(Vector3.One * 0.9f,1);
+            }
         }
 
         internal override void Unload()
@@ -139,6 +149,15 @@ namespace Toys
                 value = (x - trans.Left) / trans.Width;
             if (oldValue != value)
                 OnValueChanged?.Invoke();
+        }
+
+        public override VisualComponent Clone()
+        {
+            var slider = new SliderCompoent();
+            slider.Material = Material;
+            slider.color = color;
+
+            return slider;
         }
     }
     

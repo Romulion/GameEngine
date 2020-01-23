@@ -55,5 +55,20 @@ namespace Toys
                 Node = null;
             CoreEngine.gEngine.TextRender.textBoxes.Remove(this);
         }
+
+        internal override void Draw()
+        {
+        }
+
+        public override VisualComponent Clone()
+        {
+            var text = new TextBox();
+            text.Text = Text;
+            text.pos = pos;
+            text.scale = scale;
+            textCanvas.CloneTo(text.textCanvas);
+            textRenderer.UpdateText(text.textCanvas);
+            return text;
+        }
     }
 }

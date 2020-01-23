@@ -71,6 +71,13 @@ namespace ModelViewer
             ui1.SetParent(ui);
             ui2.SetParent(ui);
 
+
+            var ui4 = ui2.Clone();
+            ui4.GetTransform.offsetMax.Y = -85;
+            ui4.GetTransform.offsetMin.Y = -110;
+            ui4.SetParent(ui);
+            ((ButtonComponent)ui4.GetComponent<ButtonComponent>()).OnClick = () => { Console.WriteLine(2222); };
+            ((TextBox)ui4.GetComponent<TextBox>()).SetText("test bnt");
             //debug textures
             /*
             var canvas1 = (Canvas)Node.AddComponent<Canvas>();
