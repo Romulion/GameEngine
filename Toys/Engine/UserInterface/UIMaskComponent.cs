@@ -7,16 +7,14 @@ using OpenTK;
 
 namespace Toys
 {
-    /// <summary>
-    /// test prototype
-    /// </summary>
-    class UIMaskComponent : VisualComponent
+    public class UIMaskComponent : VisualComponent
     {
         static Material defaultMaterial;
         ShaderUniform shaderUniform;
         public static Texture2D texture;
         ShaderUniform colorMask;
         Vector4 color;
+        internal int MaskValue;
 
         public UIMaskComponent() : base(typeof(UIMaskComponent))
         {
@@ -24,6 +22,7 @@ namespace Toys
             shaderUniform = Material.UniManager.GetUniform("model");
             colorMask = Material.UniManager.GetUniform("color_mask");
             color = Vector4.One * 0.1f;
+            AllowMultiple = false;
         }
 
         static UIMaskComponent()
@@ -47,10 +46,24 @@ namespace Toys
             base.Draw();
         }
 
+        internal override void AddComponent(UIElement nod)
+        {
+            nod.IsMask = true;
+            CoreEngine.gEngine.UIEngine.visualComponents.Add(this);
+            base.AddComponent(nod);
+        }
+
+        internal override void RemoveComponent()
+        {
+            CoreEngine.gEngine.UIEngine.visualComponents.Remove(this);
+            base.RemoveComponent();
+        }
 
         public override VisualComponent Clone()
         {
-            throw new NotImplementedException();
+            var uimask = new UIMaskComponent();
+            uimask.color = color;
+            return uimask;
         }
     }
 }

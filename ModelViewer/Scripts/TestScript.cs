@@ -23,14 +23,33 @@ namespace ModelViewer
         {
             physics = CoreEngine.pEngine;
             var canvas = (Canvas)Node.AddComponent<Canvas>();
+            
+            var ui0 = new UIElement();
+            ui0.GetTransform.anchorMax = new Vector2(0f, 1f);
+            ui0.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui0.GetTransform.offsetMax = new Vector2(400, 0);
+            ui0.GetTransform.offsetMin = new Vector2(0, -400);
+            canvas.Root = ui0;
+            canvas.AddObject(ui0);
+
+            var ui7 = new UIElement();
+            ui7.GetTransform.anchorMax = new Vector2(0f, 1f);
+            ui7.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui7.GetTransform.offsetMax = new Vector2(170, -40);
+            ui7.GetTransform.offsetMin = new Vector2(20, -150);
+            ui7.SetParent(ui0);
+            var mask = (UIMaskComponent)ui7.AddComponent<UIMaskComponent>();
+
+            //scrollbox test
             var ui = new UIElement();
             ui.GetTransform.anchorMax = new Vector2(0f, 1f);
             ui.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui.GetTransform.offsetMax = new Vector2(100, -40);
-            ui.GetTransform.offsetMin = new Vector2(20, -200);
-
-            canvas.Root = ui;
-            canvas.AddObject(ui);
+            ui.GetTransform.offsetMax = new Vector2(130, 0);
+            ui.GetTransform.offsetMin = new Vector2(0, -200);
+            ui.SetParent(ui7);
+            var scrollBox = (ScrollBoxComponent)ui.AddComponent<ScrollBoxComponent>();
+            scrollBox.Mask = mask;
+            scrollBox.ScrollDirection = ScrollMode.Vertical;
 
             var ui1 = new UIElement();
             ui1.GetTransform.anchorMax = new Vector2(1f, 1f);
@@ -71,13 +90,18 @@ namespace ModelViewer
             ui1.SetParent(ui);
             ui2.SetParent(ui);
 
+            var ui3 = new UIElement();
+            ui3.GetTransform.anchorMax = new Vector2(1f, 1f);
+            ui3.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui3.GetTransform.offsetMax = new Vector2(0, -60);
+            ui3.GetTransform.offsetMin = new Vector2(0, -80);
+            var slider1 = (SliderCompoent)ui3.AddComponent<SliderCompoent>();
+            ui3.SetParent(ui);
 
             var ui4 = ui2.Clone();
-            ui4.GetTransform.offsetMax.Y = -85;
-            ui4.GetTransform.offsetMin.Y = -110;
+            ui4.GetTransform.offsetMax.Y = -150;
+            ui4.GetTransform.offsetMin.Y = -175;
             ui4.SetParent(ui);
-            ((ButtonComponent)ui4.GetComponent<ButtonComponent>()).OnClick = () => { Console.WriteLine(2222); };
-            ((TextBox)ui4.GetComponent<TextBox>()).SetText("test bnt");
             //debug textures
             /*
             var canvas1 = (Canvas)Node.AddComponent<Canvas>();
@@ -98,13 +122,7 @@ namespace ModelViewer
             */
 
 
-            var ui3 = new UIElement();
-            ui3.GetTransform.anchorMax = new Vector2(1f, 1f);
-            ui3.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui3.GetTransform.offsetMax = new Vector2(0, -60);
-            ui3.GetTransform.offsetMin = new Vector2(0, -80);
-            var slider1 = (SliderCompoent)ui3.AddComponent<SliderCompoent>();
-            ui3.SetParent(ui);
+
             //slider1.OnValueChanged = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };
         }
 

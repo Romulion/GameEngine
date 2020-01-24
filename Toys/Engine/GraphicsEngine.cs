@@ -176,8 +176,10 @@ namespace Toys
             //render ui
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, outputBuffer);
             GL.Disable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.StencilTest);
             UIEngine.DrawUI();
             TextRender.RenderText();
+            GL.Disable(EnableCap.StencilTest);
             GL.Enable(EnableCap.DepthTest);
         }
 

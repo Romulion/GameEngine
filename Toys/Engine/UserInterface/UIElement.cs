@@ -16,6 +16,9 @@ namespace Toys
         public bool Active = true;
         List<VisualComponent> components;
 
+        internal int MaskCheck;
+        internal bool IsMask { get; set; }
+
         public UIElement() : base(typeof(UIElement))
         {
             Childs = new List<UIElement>();
@@ -69,8 +72,12 @@ namespace Toys
         //component framework
         public void AddComponent(VisualComponent comp)
         {
-            comp.AddComponent(this);
-            components.Add(comp);
+            //dissalow multiple components
+            if (!comp.AllowMultiple || !GetComponent(comp.Type))
+            {
+                comp.AddComponent(this);
+                components.Add(comp);
+            }
         }
 
         public VisualComponent AddComponent<T>() where T : VisualComponent

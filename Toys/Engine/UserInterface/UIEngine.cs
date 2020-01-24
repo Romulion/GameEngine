@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Input;
 using OpenTK;
-using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 
 namespace Toys
 {
@@ -17,6 +17,7 @@ namespace Toys
 
         List<VisualComponent> activeComponents = new List<VisualComponent>();
         List<InteractableComponent> activeButtons = new List<InteractableComponent>();
+        List<UIMaskComponent> masks = new List<UIMaskComponent>();
         private InteractableComponent clickContext;
         private bool clicked;
         public bool Busy
@@ -33,17 +34,27 @@ namespace Toys
             buttons = new List<InteractableComponent>();
         }
 
-        private List<UIElement> SortCanvas(UIElement root)
+        private List<UIElement> SortCanvas(UIElement root, int maskID = 0)
         {
             var elements = new List<UIElement>();
 
             if (root.Active)
             {
+                //process mask
+                root.MaskCheck = maskID;
+                if (root.IsMask)
+                {
+                    maskID++;
+                    var mask = (UIMaskComponent)root.GetComponent<UIMaskComponent>();
+                    mask.MaskValue = maskID;
+                    masks.Add(mask);
+                }
+
                 elements.Add(root);
                 root.UpdateTransform();
                 foreach (var child in root.Childs)
                 {
-                    elements.AddRange(SortCanvas(child));
+                    elements.AddRange(SortCanvas(child,maskID));
                 }
             }
             return elements;
@@ -51,6 +62,7 @@ namespace Toys
 
         internal void UpdateUI()
         {
+            masks.Clear();
             var elements = new List<UIElement>();
             foreach (var canvas in canvases)
             {
@@ -79,9 +91,44 @@ namespace Toys
 
         internal void DrawUI()
         {
-            //activeComponents[0].Material.ApplyMaterial();
+            int currMask = 0;
+            GL.StencilFunc(StencilFunction.Always, currMask, 0xFF);
+            GL.StencilMask(0x00);
             foreach (var component in activeComponents)
-                component.Draw();
+            {
+
+                //draw mask to stencil
+                if (component.Node.IsMask)
+                {
+                    foreach (var elem in masks)
+                    {
+                        if (elem.Node == component.Node)
+                        {
+                            
+                            GL.StencilFunc(StencilFunction.Always, elem.MaskValue, 0xFF);
+                            break;
+                        }
+                    }
+                    GL.StencilMask(0xFF);
+                    component.Draw();
+                    GL.StencilMask(0x00);
+                }
+                else
+                {
+                    //change stencil context
+                    if (currMask != component.Node.MaskCheck)
+                    {
+                        currMask = component.Node.MaskCheck;
+                        if (currMask == 0)
+                        {
+                            GL.StencilFunc(StencilFunction.Always, currMask, 0xFF);
+                        }
+                        else
+                            GL.StencilFunc(StencilFunction.Equal, currMask, 0xFF);
+                    }
+                    component.Draw();
+                }
+            }
         }
 
         internal void CheckMouse()
@@ -106,10 +153,13 @@ namespace Toys
             //inform active component about mouse position
             clickContext?.PositionUpdate(cursorWindowPosition.X, cursorWindowPosition.Y);
 
-            foreach (var button in activeButtons)
+            for (int i = activeButtons.Count - 1; i >= 0; i--)
             {
-                if (button.Node.GetTransform.GlobalRect.Contains(cursorWindowPosition.X, cursorWindowPosition.Y))
+                var button = activeButtons[i];
+                if (InMask(button, cursorWindowPosition) 
+                    && button.Node.GetTransform.GlobalRect.Contains(cursorWindowPosition.X, cursorWindowPosition.Y))
                 {
+                    
                     if (!clicked && ms.IsButtonDown(MouseButton.Left))
                     {
                         button.ClickDownState();
@@ -118,11 +168,13 @@ namespace Toys
                     else if (clicked && ms.IsButtonUp(MouseButton.Left))
                     {
                         clickContext?.ClickUpState();
+
                     }
                     else if (clickContext != button)
                     {
                         button.Hover();
                     }
+                    break;
                 }
                 else if (button != clickContext)
                 {
@@ -135,6 +187,14 @@ namespace Toys
                 clickContext = null;
 
             clicked = ms.IsButtonDown(MouseButton.Left);
+        }
+
+        bool InMask(InteractableComponent component,Vector2 cursorPos)
+        {
+            if (component.Node.MaskCheck != 0 
+                && !masks[component.Node.MaskCheck - 1].Node.GetTransform.GlobalRect.Contains(cursorPos.X, cursorPos.Y))
+                return false;
+            return true;
         }
     }
 }

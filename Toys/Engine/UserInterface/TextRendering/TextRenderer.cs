@@ -197,10 +197,17 @@ namespace Toys
 		}
 
 		internal void RenderText()
-		{                   
+		{
+            GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
             shdr.ApplyShader();
             foreach (var text in textBoxes)
             {
+                //stencil masking
+                if (text.Node.MaskCheck == 0)
+                    GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
+                else
+                    GL.StencilFunc(StencilFunction.Equal, text.Node.MaskCheck, 0xFF);
+
                 colorUniform.SetValue(text.textCanvas.colour);
                 position = CalculatePosition(text.textCanvas,text.Node.GetTransform);
                 position.Z = text.textCanvas.Scale;

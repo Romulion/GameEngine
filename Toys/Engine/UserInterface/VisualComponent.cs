@@ -11,6 +11,8 @@ namespace Toys
     {
         internal Mesh Mesh { get; private set; }
         public Material Material { get; set; }
+
+        public bool AllowMultiple { get; protected internal set; }
         protected VisualComponent(Type t) : base(t)
         {
             Vertex3D[] verts = new Vertex3D[]
@@ -23,6 +25,8 @@ namespace Toys
                 new Vertex3D(new Vector2(1,1), new Vector2(1,0)),
            };
             Mesh = new Mesh(verts, new int[] { 0, 1, 2, 3, 4, 5 });
+
+            AllowMultiple = true;
         }
 
         public UIElement Node { get; protected set; }

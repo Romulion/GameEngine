@@ -12,20 +12,21 @@ namespace Toys
     {
         Vertical = 1,
         Horizontal,
+        Both,
     }
 
-    /// <summary>
-    /// test prototype
-    /// </summary>
-    class ScrollBoxComponent : InteractableComponent
+    public class ScrollBoxComponent : InteractableComponent
     {
         static Material defaultMaterial;
         ShaderUniform shaderUniform;
         ShaderUniform colorMask;
-        public static Texture2D Texture;
+        static Texture2D defaultTexture;
+        public UIMaskComponent Mask;
 
+        public Texture2D Texture;
         Vector4 color;
-        Vector2 cursorPrev;
+        Vector2 cursorPrev = Vector2.Zero;
+        bool moveInitialized = false;
 
         public ScrollMode ScrollDirection { get; set; }
         internal ButtonStates State { get; private set; }
@@ -50,7 +51,7 @@ namespace Toys
             defaultMaterial.Name = "Texture";
             var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
             var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.button2.png"));
-            Texture = new Texture2D(pic, TextureType.Toon, "def");
+            defaultTexture = new Texture2D(pic, TextureType.Toon, "def");
         }
 
         internal override void AddComponent(UIElement nod)
@@ -70,7 +71,6 @@ namespace Toys
 
             Material.ApplyMaterial();
             colorMask.SetValue(color);
-            //colorMask.SetValue(color);
             shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
             if (Texture)
                 Texture.BindTexture();
@@ -79,12 +79,19 @@ namespace Toys
 
         internal override void ClickDownState()
         {
-
+            if (State != ButtonStates.Clicked)
+            {
+                State = ButtonStates.Clicked;
+            }
         }
 
         internal override void ClickUpState()
         {
-
+            if (State == ButtonStates.Clicked)
+            {
+                State = ButtonStates.Normal;
+                moveInitialized = false;
+            }
         }
 
         internal override void Hover()
@@ -95,7 +102,11 @@ namespace Toys
 
         internal override void Normal()
         {
-
+            if (State == ButtonStates.Clicked)
+            {
+                State = ButtonStates.Normal;
+                moveInitialized = false;
+            }
         }
 
         internal override void Unload()
@@ -105,12 +116,96 @@ namespace Toys
 
         internal override void PositionUpdate(float x, float y)
         {
-            //if (ScrollDirection
+            float delta = 0;
+            //set start position
+            if (!moveInitialized)
+            {
+                cursorPrev.X = x;
+                cursorPrev.Y = y;
+                moveInitialized = true;
+                return;
+            }
+
+            //set borders
+            Vector2 leftBott,rightTop;
+            if (Mask)
+            {
+                leftBott = Mask.Node.GetTransform.Min;
+                rightTop = Mask.Node.GetTransform.Max;
+            }
+            else
+            {
+                leftBott = Vector2.Zero;
+                rightTop = Vector2.One;
+            }
+            Vector2 move = Vector2.Zero;
+            if (ScrollDirection.HasFlag(ScrollMode.Horizontal))
+            {
+                move.X = x - cursorPrev.X;
+                if (move.X > 0)
+                {
+                    //chekc left bound
+                    delta = leftBott.X - Node.GetTransform.Min.X;
+                    if (delta < 0 || (delta == 0 && move.X < 0))
+                        move.X = 0;
+                    else
+                        move.X = (delta - move.X > 0) ? move.X : delta;
+                }
+                else
+                {
+                    //chekc right bound
+                    delta = rightTop.X - Node.GetTransform.Max.X;
+                    if (delta > 0)
+                        move.X = 0;
+                    else
+                        move.X = (delta - move.X < 0) ? move.X : delta;
+                }
+            }
+            
+            if (ScrollDirection.HasFlag(ScrollMode.Vertical))
+            {
+                move.Y = y - cursorPrev.Y;
+                //chekc Top bound
+                if (move.Y < 0)
+                {
+                    delta = rightTop.Y - Node.GetTransform.Max.Y;
+                    if (delta > 0)
+                        move.Y = 0;
+                    else
+                        move.Y = (delta - move.Y < 0) ? move.Y : delta;
+                }
+                //chekc bottom bound
+                else
+                {
+                    delta = leftBott.Y - Node.GetTransform.Min.Y;
+                    if (delta < 0)
+                        move.Y = 0;
+                    else
+                        move.Y = (delta - move.Y > 0) ? move.Y : delta;
+                }
+            }
+
+            move.X *= CoreEngine.gEngine.Width;
+            move.Y *= CoreEngine.gEngine.Height;
+
+            Node.GetTransform.offsetMax += move;
+            Node.GetTransform.offsetMin += move;
+            //update position
+            cursorPrev.X = x;
+            cursorPrev.Y = y;
         }
 
         public override VisualComponent Clone()
         {
-            throw new NotImplementedException();
+            var scroll = new ScrollBoxComponent();
+            scroll.Material = Material;
+            scroll.shaderUniform = shaderUniform;
+            scroll.colorMask = colorMask;
+            scroll.Mask = Mask;
+            scroll.Texture = Texture;
+            scroll.color = color;
+            scroll.ScrollDirection = ScrollDirection;
+            return scroll;
         }
     }
 }
