@@ -310,6 +310,9 @@ namespace Toys
                 if (mat.DiffuseColor.W < 0.001f)
                     mat.RenderDirrectives.IsRendered = false;
 
+                //skip empty materials
+                if (count == 0)
+                    mat.RenderDirrectives.IsRendered = false;
                 mat.Offset = offset;
 				mat.Count = count;
 				mats[i] = mat;
