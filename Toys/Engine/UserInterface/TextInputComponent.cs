@@ -7,10 +7,7 @@ using OpenTK;
 
 namespace Toys
 {
-    /// <summary>
-    /// test prototype
-    /// </summary>
-    public class CheckboxComponent : InteractableComponent
+    public class TextInputComponent : InteractableComponent
     {
         static Texture2D Texture;
         static Texture2D chekMarkDefault;
@@ -18,19 +15,23 @@ namespace Toys
         ShaderUniform shaderUniform;
         ShaderUniform colorMask;
         Vector4 color;
+        internal readonly TextBox Text = new TextBox();
 
         public Action OnChange;
-        public bool IsOn { get; set; }
+        public bool IsFocused { get; private set; }
         internal ButtonStates State { get; private set; }
-        public CheckboxComponent() : base(typeof(CheckboxComponent))
+        public TextInputComponent() : base(typeof(CheckboxComponent))
         {
             Material = defaultMaterial;
             shaderUniform = Material.UniManager.GetUniform("model");
             colorMask = Material.UniManager.GetUniform("color_mask");
             color = Vector4.One;
+            Text.textCanvas.colour = Vector3.Zero;
+            Text.textCanvas.alignHorizontal = TextAlignHorizontal.Left;
+            Text.textCanvas.alignVertical = TextAlignVertical.Bottom;
         }
 
-        static CheckboxComponent()
+        static TextInputComponent()
         {
             ShaderSettings ss = new ShaderSettings();
             RenderDirectives rd = new RenderDirectives();
@@ -40,23 +41,24 @@ namespace Toys
             ss.TextureDiffuse = true;
             defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
             defaultMaterial.Name = "Texture";
-            var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
             Texture = Texture2D.LoadEmpty();
-
-            using (var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.checkmark-24-512.png")))
-                chekMarkDefault = new Texture2D(pic, TextureType.Toon, "def");
         }
 
         internal override void AddComponent(UIElement nod)
         {
             CoreEngine.gEngine.UIEngine.buttons.Add(this);
             base.AddComponent(nod);
+            Text.AddComponent(nod);
         }
 
         internal override void RemoveComponent()
         {
+            if (CoreEngine.iHandler.SetTextInputContext == this)
+                CoreEngine.iHandler.SetTextInputContext = null;
+
             CoreEngine.gEngine.UIEngine.buttons.Remove(this);
             base.RemoveComponent();
+            Text.RemoveComponent();
         }
 
         internal override void ClickDownState()
@@ -70,8 +72,9 @@ namespace Toys
 
         internal override void ClickUpState()
         {
-            IsOn = !IsOn;
-            OnChange?.Invoke();
+            IsFocused = true;
+            if (CoreEngine.iHandler.SetTextInputContext != this)
+                CoreEngine.iHandler.SetTextInputContext = this;
             Normal();
         }
 
@@ -102,13 +105,8 @@ namespace Toys
         internal override void Draw()
         {
             Material.ApplyMaterial();
-
-            //place button in right corner
             var trans = Node.GetTransform.GlobalTransform;
-            trans.M41 += trans.M11 - trans.M22;
-            trans.M11 = trans.M22;
 
-            //Console.WriteLine(trans);
             shaderUniform.SetValue(trans);
             colorMask.SetValue(color);
 
@@ -116,23 +114,31 @@ namespace Toys
             Texture?.BindTexture();
             base.Draw();
 
-            //draw mark
-            if (IsOn)
+            //draw caret
+            if (IsFocused)
             {
-                colorMask.SetValue(Vector4.One);
+                trans.M41 += Text.textCanvas.Width / CoreEngine.gEngine.Width;
+                trans.M11 = trans.M22 * 0.5f;
+                trans.M22 *= 0.1f;
+                shaderUniform.SetValue(trans);
+                colorMask.SetValue(new Vector4(Vector3.Zero, 0.5f));
                 chekMarkDefault?.BindTexture();
                 base.Draw();
             }
         }
 
+        internal void Deactivate()
+        {
+            IsFocused = false;
+        }
+
         public override VisualComponent Clone()
         {
-            var checkbox = new CheckboxComponent();
-            checkbox.OnChange = OnChange;
-            checkbox.Material = Material;
-            checkbox.color = color;
-            checkbox.IsOn = IsOn;
-            return checkbox;
+            var input = new TextInputComponent();
+            input.OnChange = OnChange;
+            input.Material = Material;
+            input.color = color;
+            return input;
         }
     }
 }

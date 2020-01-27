@@ -5,6 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Toys {
+
+    enum ButtonStates
+    {
+        Normal,
+        Hover,
+        Clicked,
+        Unclicked,
+    }
     public abstract class InteractableComponent : VisualComponent
     {
         protected InteractableComponent(Type type) : base(type) { }

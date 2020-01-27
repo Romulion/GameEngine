@@ -5,6 +5,7 @@ using System.Reflection;
 using System.IO;
 using System.Collections.Generic;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
 namespace Toys
@@ -21,7 +22,6 @@ namespace Toys
 		Shader shdr;
         Vector3 position = Vector3.Zero;
         int x, y, ymax;
-
         List<TextCanvas> texts = new List<TextCanvas>();
         internal List<TextBox> textBoxes = new List<TextBox>();
 
@@ -135,6 +135,9 @@ namespace Toys
             int x = 0;
             int y = 0;
             int i = 0;
+            canvas.Width = 0;
+            canvas.Heigth = 0;
+
             foreach (var c in canvas.Text)
             {
                 if (c == 8381)
@@ -171,7 +174,7 @@ namespace Toys
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, vertices.Length * 4, vertices);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
-            canvas.StringLength = canvas.Text.Length * 6;
+            canvas.StringLength = canvas.Text.Length;
         }
         
 		byte[] ReadFont(Stream strm)

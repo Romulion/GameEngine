@@ -12,7 +12,7 @@ namespace Toys
 	public delegate void queue();
 	public class CoreEngine 
 	{
-
+        internal static InputHandler iHandler { get; private set; }
 		internal static GraphicsEngine gEngine { get; private set; }
         public static PhysicsEngine pEngine { get; private set; }
         internal static ScriptingEngine sEngine { get; private set; }
@@ -39,6 +39,7 @@ namespace Toys
 				gEngine = new GraphicsEngine(mainScene);
 				pEngine = new PhysicsEngine();
                 sEngine = new ScriptingEngine();
+                iHandler = new InputHandler();
                 time = new Time();
                 frameTimer = new Time();
             }
@@ -77,6 +78,7 @@ namespace Toys
             sEngine.Awake();
             sEngine.Start();
             sEngine.Update();
+            iHandler.Update();
             //mesh morpher
             if (task != null)
 			{

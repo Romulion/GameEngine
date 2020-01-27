@@ -7,13 +7,6 @@ using OpenTK;
 
 namespace Toys
 {
-    enum ButtonStates
-    {
-        Normal,
-        Hover,
-        Clicked,
-        Unclicked,
-    }
     public class ButtonComponent : InteractableComponent
     {
         public Action OnClick;

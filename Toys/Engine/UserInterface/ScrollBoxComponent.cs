@@ -24,7 +24,7 @@ namespace Toys
         public UIMaskComponent Mask;
 
         public Texture2D Texture;
-        Vector4 color;
+        public Vector4 color;
         Vector2 cursorPrev = Vector2.Zero;
         bool moveInitialized = false;
 

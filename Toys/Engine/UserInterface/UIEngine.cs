@@ -67,7 +67,7 @@ namespace Toys
             foreach (var canvas in canvases)
             {
                 if (canvas.Root)
-                    elements.AddRange(SortCanvas(canvas.Root));                
+                    elements.AddRange(SortCanvas(canvas.Root)); 
             }
             activeButtons.Clear();
             activeComponents.Clear();
@@ -133,9 +133,9 @@ namespace Toys
 
         internal void CheckMouse()
         {
+            
             if (!GLWindow.gLWindow.Focused)
                 return;
-
             MouseState ms = Mouse.GetCursorState();
             var point = GLWindow.gLWindow.PointToClient(new System.Drawing.Point(ms.X, ms.Y));
             

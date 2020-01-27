@@ -9,7 +9,7 @@ namespace Toys
 {
     public class TextBox : VisualComponent
     {
-        string Text;
+        public string Text { get; private set; }
         Vector2 pos = Vector2.Zero;
         float scale = 1;
 
@@ -27,6 +27,7 @@ namespace Toys
 
         public void SetText(string text)
         {
+            Text = text;
             textCanvas.Text = text;
             textRenderer.UpdateText(textCanvas);
         }

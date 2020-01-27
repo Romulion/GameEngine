@@ -100,6 +100,7 @@
     <Compile Include="Engine\UserInterface\RectTransform.cs" />
     <Compile Include="Engine\UserInterface\ScrollBoxComponent.cs" />
     <Compile Include="Engine\UserInterface\SliderCompoent.cs" />
+    <Compile Include="Engine\UserInterface\TextInputComponent.cs" />
     <Compile Include="Engine\UserInterface\UIMaskComponent.cs" />
     <Compile Include="Engine\UserInterface\VisualComponent.cs" />
     <Compile Include="Engine\UserInterface\TextRendering\TextBox.cs" />
@@ -316,6 +317,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resourses\textures\button2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resourses\textures\checkmark-24-512.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

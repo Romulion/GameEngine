@@ -36,7 +36,7 @@ namespace ModelViewer
             ui7.GetTransform.anchorMax = new Vector2(0f, 1f);
             ui7.GetTransform.anchorMin = new Vector2(0f, 1f);
             ui7.GetTransform.offsetMax = new Vector2(170, -40);
-            ui7.GetTransform.offsetMin = new Vector2(20, -150);
+            ui7.GetTransform.offsetMin = new Vector2(20, -180);
             ui7.SetParent(ui0);
             var mask = (UIMaskComponent)ui7.AddComponent<UIMaskComponent>();
 
@@ -50,6 +50,7 @@ namespace ModelViewer
             var scrollBox = (ScrollBoxComponent)ui.AddComponent<ScrollBoxComponent>();
             scrollBox.Mask = mask;
             scrollBox.ScrollDirection = ScrollMode.Vertical;
+            scrollBox.color.W = 0.3f;
 
             var ui1 = new UIElement();
             ui1.GetTransform.anchorMax = new Vector2(1f, 1f);
@@ -98,10 +99,23 @@ namespace ModelViewer
             var slider1 = (SliderCompoent)ui3.AddComponent<SliderCompoent>();
             ui3.SetParent(ui);
 
-            var ui4 = ui2.Clone();
-            ui4.GetTransform.offsetMax.Y = -150;
-            ui4.GetTransform.offsetMin.Y = -175;
+            var ui4 = new UIElement();
+            ui4.GetTransform.anchorMax = new Vector2(1f, 1f);
+            ui4.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui4.GetTransform.offsetMax = new Vector2(0, -85);
+            ui4.GetTransform.offsetMin = new Vector2(0, -110);
             ui4.SetParent(ui);
+            var checkbox = (CheckboxComponent)ui4.AddComponent<CheckboxComponent>();
+            //checkbox.OnChange = () => Console.WriteLine(444);
+
+            var ui5 = new UIElement();
+            ui5.GetTransform.anchorMax = new Vector2(1f, 1f);
+            ui5.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui5.GetTransform.offsetMax = new Vector2(0, -115);
+            ui5.GetTransform.offsetMin = new Vector2(0, -140);
+            ui5.SetParent(ui);
+            var input = (TextInputComponent)ui5.AddComponent<TextInputComponent>();
+
             //debug textures
             /*
             var canvas1 = (Canvas)Node.AddComponent<Canvas>();
