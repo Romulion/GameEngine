@@ -7,7 +7,7 @@ namespace Toys
 	{
 		const int defaultAligment = 16;
 		const int size = 4 * defaultAligment;
-		public UniformBufferLight() : base (size, "light", 2)
+		public UniformBufferLight(int bindingPoint) : base (size, "light", bindingPoint)
 		{
 		}
 

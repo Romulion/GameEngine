@@ -8,7 +8,7 @@ namespace Toys
 	{
 		const int matSize = 64;
 		const int size = 5 * matSize;
-		public UniformBufferSpace() : base (size, "space",1)
+		public UniformBufferSpace(int bindingPoint) : base (size, "space", bindingPoint)
 		{
 		}
 

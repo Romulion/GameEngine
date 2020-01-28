@@ -19,10 +19,10 @@ namespace Toys
 		UniformBufferManager()
 		{
 			//add default buffers
-			_buffers.Add("skeleton", new UniformBufferSkeleton());
-			_buffers.Add("space", new UniformBufferSpace());
-			_buffers.Add("light", new UniformBufferLight());
-            _buffers.Add("system", new UniformBufferSystem());
+			_buffers.Add("skeleton", new UniformBufferSkeleton(0));
+			_buffers.Add("space", new UniformBufferSpace(1));
+			_buffers.Add("light", new UniformBufferLight(2));
+            _buffers.Add("system", new UniformBufferSystem(3));
 		}
 
 

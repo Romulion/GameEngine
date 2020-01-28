@@ -102,6 +102,13 @@ namespace ModelViewer
             ui4.SetParent(ui);
             var checkbox = (CheckboxComponent)ui4.AddComponent<CheckboxComponent>();
             //checkbox.OnChange = () => Console.WriteLine(444);
+            var butLabel4 = (TextBox)ui4.AddComponent<TextBox>();
+            butLabel4.textCanvas.colour = new Vector3(1, 0, 0);
+            butLabel4.textCanvas.alignHorizontal = TextAlignHorizontal.Left;
+            butLabel4.textCanvas.alignVertical = TextAlignVertical.Center;
+            butLabel4.textCanvas.colour = Vector3.Zero;
+            butLabel4.textCanvas.Scale = 0.7f;
+            butLabel4.SetText("checkbox");
 
             var ui5 = new UIElement();
             ui5.GetTransform.anchorMax = new Vector2(1f, 1f);

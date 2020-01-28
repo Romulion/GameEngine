@@ -11,7 +11,7 @@ namespace Toys
     {
         const int defaultAligment = 16;
         const int size = 2 * defaultAligment;
-        public UniformBufferSystem() : base(size, "system", 1)
+        public UniformBufferSystem(int bindingPoint) : base(size, "system", bindingPoint)
         {
         }
 

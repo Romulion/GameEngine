@@ -10,10 +10,8 @@ namespace Toys
 		const int maxBonesCount = 700;
 		const int boneMatrixSize = 64;
 		const string name = "skeleton";
-		const int bindingPoint = 0;
 
-
-		public UniformBufferSkeleton() : base(maxBonesCount * boneMatrixSize, name, bindingPoint)
+		public UniformBufferSkeleton(int bindingPoint) : base(maxBonesCount * boneMatrixSize, name, bindingPoint)
 		{
 		}
 
