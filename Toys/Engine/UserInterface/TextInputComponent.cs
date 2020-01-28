@@ -22,7 +22,7 @@ namespace Toys
         internal ButtonStates State { get; private set; }
         public TextInputComponent() : base(typeof(CheckboxComponent))
         {
-            Material = defaultMaterial;
+            //Material = defaultMaterial;
             shaderUniform = Material.UniManager.GetUniform("model");
             colorMask = Material.UniManager.GetUniform("color_mask");
             color = Vector4.One;
@@ -33,6 +33,7 @@ namespace Toys
 
         static TextInputComponent()
         {
+            /*
             ShaderSettings ss = new ShaderSettings();
             RenderDirectives rd = new RenderDirectives();
             string path = "Toys.Resourses.shaders.";
@@ -42,6 +43,7 @@ namespace Toys
             defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
             defaultMaterial.Name = "Texture";
             Texture = Texture2D.LoadEmpty();
+            */
         }
 
         internal override void AddComponent(UIElement nod)

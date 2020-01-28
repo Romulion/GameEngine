@@ -10,10 +10,22 @@ namespace Toys
     public abstract class VisualComponent : Resource
     {
         internal Mesh Mesh { get; private set; }
+
+        static Mesh defaultMesh;
+        static Material defaultMaterial;
+        internal static Texture2D defaultTexture { get; private set; }
         public Material Material { get; set; }
 
         public bool AllowMultiple { get; protected internal set; }
         protected VisualComponent(Type t) : base(t)
+        {
+
+            Mesh = defaultMesh;
+            Material = defaultMaterial;
+            AllowMultiple = true;
+        }
+
+        static VisualComponent()
         {
             Vertex3D[] verts = new Vertex3D[]
            {
@@ -24,9 +36,18 @@ namespace Toys
                 new Vertex3D(new Vector2(1,0), new Vector2(1,1)),
                 new Vertex3D(new Vector2(1,1), new Vector2(1,0)),
            };
-            Mesh = new Mesh(verts, new int[] { 0, 1, 2, 3, 4, 5 });
+            defaultMesh = new Mesh(verts, new int[] { 0, 1, 2, 3, 4, 5 });
 
-            AllowMultiple = true;
+            ShaderSettings ss = new ShaderSettings();
+            RenderDirectives rd = new RenderDirectives();
+            string path = "Toys.Resourses.shaders.";
+            string vs = ShaderManager.ReadFromAssetStream(path + "UIElement.vsh");
+            string fs = ShaderManager.ReadFromAssetStream(path + "UIElement.fsh");
+            ss.TextureDiffuse = true;
+            defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
+            defaultMaterial.Name = "Texture";
+
+            defaultTexture = Texture2D.LoadEmpty();
         }
 
         public UIElement Node { get; protected set; }

@@ -26,11 +26,11 @@ namespace Toys
         /// <summary>
         /// from 0 to 1
         /// </summary>
-        float value = 0.7f;
+        public float Value = 0.7f;
 
         public SliderCompoent() : base(typeof(SliderCompoent))
         {
-            Material = defaultMaterial;
+            //Material = defaultMaterial;
             shaderUniform = Material.UniManager.GetUniform("model");
             colorMask = Material.UniManager.GetUniform("color_mask");
             color = Vector4.One;
@@ -38,6 +38,7 @@ namespace Toys
 
         static SliderCompoent()
         {
+            /*
             ShaderSettings ss = new ShaderSettings();
             RenderDirectives rd = new RenderDirectives();
             string path = "Toys.Resourses.shaders.";
@@ -46,6 +47,7 @@ namespace Toys
             ss.TextureDiffuse = true;
             defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
             defaultMaterial.Name = "Texture";
+            */
             //var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
             //var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.button2.png"));
             //bgTexture =  new Texture2D(pic, TextureType.Toon, "def");
@@ -79,7 +81,7 @@ namespace Toys
 
             //draw fill gauge
             //trans = Node.GetTransform.GlobalTransform;
-            trans.M11 *= value;
+            trans.M11 *= Value;
             //trans.M41 = Node.GetTransform.GlobalRect.Left * 2 - (1 - trans.M11);
             trans.M42 += trans.M22 * 0.3f;
             trans.M22 *= 0.4f;
@@ -90,7 +92,7 @@ namespace Toys
 
             //draw slider button
             trans = Node.GetTransform.GlobalTransform;
-            trans.M41 += trans.M11 * value - trans.M22 * 0.5f;
+            trans.M41 += trans.M11 * Value - trans.M22 * 0.5f;
             trans.M11 = trans.M22;
             bgTexture?.BindTexture();
             colorMask.SetValue(color);
@@ -139,15 +141,15 @@ namespace Toys
         internal override void PositionUpdate(float x, float y)
         {
             
-            var oldValue = value;
+            var oldValue = Value;
             var trans = Node.GetTransform.GlobalRect;
             if (x <= trans.Left)
-                value = 0;
+                Value = 0;
             else if (x >= trans.Right)
-                value = 1;
+                Value = 1;
             else
-                value = (x - trans.Left) / trans.Width;
-            if (oldValue != value)
+                Value = (x - trans.Left) / trans.Width;
+            if (oldValue != Value)
                 OnValueChanged?.Invoke();
         }
 

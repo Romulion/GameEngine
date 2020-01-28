@@ -17,6 +17,7 @@ namespace Toys
 
         static RawImage()
         {
+            /*
             ShaderSettings ss = new ShaderSettings();
             RenderDirectives rd = new RenderDirectives();
             string path = "Toys.Resourses.shaders.";
@@ -25,10 +26,11 @@ namespace Toys
             ss.TextureDiffuse = true;
             defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
             defaultMaterial.Name = "Texture";
+            */
         }
         public RawImage() : base(typeof(RawImage))
         {
-            Material = defaultMaterial;
+            //Material = defaultMaterial;
             shaderUniform = Material.UniManager.GetUniform("model");
             colorMask = Material.UniManager.GetUniform("color_mask");
             color = Vector4.One;
@@ -40,6 +42,7 @@ namespace Toys
         {
             
             Material.ApplyMaterial();
+            colorMask.SetValue(color);
             shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
             if (Texture)
                 Texture.BindTexture();

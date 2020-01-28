@@ -20,7 +20,7 @@ namespace Toys
         internal ButtonStates State { get; private set;}
         public ButtonComponent() : base(typeof(ButtonComponent))
         {
-            Material = defaultMaterial;
+            //Material = defaultMaterial;
             shaderUniform = Material.UniManager.GetUniform("model");
             colorMask = Material.UniManager.GetUniform("color_mask");
             color = Vector4.One;
@@ -29,6 +29,7 @@ namespace Toys
 
         static ButtonComponent()
         {
+            /*
             ShaderSettings ss = new ShaderSettings();
             RenderDirectives rd = new RenderDirectives();
             string path = "Toys.Resourses.shaders.";
@@ -37,6 +38,7 @@ namespace Toys
             ss.TextureDiffuse = true;
             defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
             defaultMaterial.Name = "Texture";
+            */
             var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
             var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.button2.png"));
             defaultTexture = new Texture2D(pic, TextureType.Toon, "def");

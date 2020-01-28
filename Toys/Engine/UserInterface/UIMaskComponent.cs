@@ -9,7 +9,6 @@ namespace Toys
 {
     public class UIMaskComponent : VisualComponent
     {
-        static Material defaultMaterial;
         ShaderUniform shaderUniform;
         public static Texture2D texture;
         ShaderUniform colorMask;
@@ -18,15 +17,17 @@ namespace Toys
 
         public UIMaskComponent() : base(typeof(UIMaskComponent))
         {
-            Material = defaultMaterial;
+            //Material = defaultMaterial;
             shaderUniform = Material.UniManager.GetUniform("model");
             colorMask = Material.UniManager.GetUniform("color_mask");
-            color = Vector4.One * 0.1f;
+            //color = Vector4.One * 0.1f;
+            color = Vector4.Zero;
             AllowMultiple = false;
         }
 
         static UIMaskComponent()
         {
+            /*
             ShaderSettings ss = new ShaderSettings();
             RenderDirectives rd = new RenderDirectives();
             string path = "Toys.Resourses.shaders.";
@@ -36,13 +37,15 @@ namespace Toys
             defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
             defaultMaterial.Name = "Mask";
             texture = Texture2D.LoadEmpty();
+            */
         }
 
         internal override void Draw()
         {
             Material.ApplyMaterial();
             shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
-            texture?.BindTexture();
+            colorMask.SetValue(color);
+            //texture?.BindTexture();
             base.Draw();
         }
 
