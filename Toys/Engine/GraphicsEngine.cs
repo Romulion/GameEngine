@@ -28,6 +28,7 @@ namespace Toys
 		Shader sh;
         bool faceCullEnable;
         bool faceCullFront;
+        UniformBufferSystem system;
 
         //internal List<Camera> cameras = new List<Camera>();
         internal Camera MainCamera;
@@ -47,6 +48,9 @@ namespace Toys
 			MainRender = new MainRenderer(renderScene);
 			TextRender = new TextRenderer();
             renderScene.GetLight.BindShadowMap();
+
+            UniformBufferManager ubm = UniformBufferManager.GetInstance;
+            system = (UniformBufferSystem)ubm.GetBuffer("system");
             //TestTriangle();
         }
 
@@ -136,13 +140,12 @@ namespace Toys
 			}
         }
 
-
-
-
         internal void Render()
         {
-			//get render object list
-			MeshDrawer[] meshes = this.meshes.ToArray();
+            //update buffers
+            system.SetScreenSpace(new Vector4(Width, Height, 1 / (float)Width, 1 / (float)Height));
+            //get render object list
+            MeshDrawer[] meshes = this.meshes.ToArray();
 
             //preparing models to rendering
             foreach (var mesh in meshes)

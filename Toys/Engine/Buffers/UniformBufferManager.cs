@@ -22,6 +22,7 @@ namespace Toys
 			_buffers.Add("skeleton", new UniformBufferSkeleton());
 			_buffers.Add("space", new UniformBufferSpace());
 			_buffers.Add("light", new UniformBufferLight());
+            _buffers.Add("system", new UniformBufferSystem());
 		}
 
 

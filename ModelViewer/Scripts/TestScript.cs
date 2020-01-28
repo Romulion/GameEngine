@@ -31,7 +31,6 @@ namespace ModelViewer
             ui0.GetTransform.offsetMin = new Vector2(0, -400);
             canvas.Root = ui0;
             canvas.AddObject(ui0);
-
             var ui7 = new UIElement();
             ui7.GetTransform.anchorMax = new Vector2(0f, 1f);
             ui7.GetTransform.anchorMin = new Vector2(0f, 1f);
@@ -39,7 +38,6 @@ namespace ModelViewer
             ui7.GetTransform.offsetMin = new Vector2(20, -180);
             ui7.SetParent(ui0);
             var mask = (UIMaskComponent)ui7.AddComponent<UIMaskComponent>();
-
             //scrollbox test
             var ui = new UIElement();
             ui.GetTransform.anchorMax = new Vector2(0f, 1f);
@@ -51,7 +49,6 @@ namespace ModelViewer
             scrollBox.Mask = mask;
             scrollBox.ScrollDirection = ScrollMode.Vertical;
             scrollBox.color.W = 0.3f;
-
             var ui1 = new UIElement();
             ui1.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui1.GetTransform.anchorMin = new Vector2(0f, 1f);
@@ -68,7 +65,6 @@ namespace ModelViewer
             butLabel1.textCanvas.Scale = 0.5f;
 
             image1.OnClick = () => { active = true; };
-
             var ui2 = new UIElement();
             ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
@@ -85,7 +81,6 @@ namespace ModelViewer
             var image2 = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
 
             image2.OnClick = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };
-
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
             //ISS.SetDSS(script);
             ui1.SetParent(ui);
@@ -115,7 +110,6 @@ namespace ModelViewer
             ui5.GetTransform.offsetMin = new Vector2(0, -140);
             ui5.SetParent(ui);
             var input = (TextInputComponent)ui5.AddComponent<TextInputComponent>();
-
             //debug textures
             /*
             var canvas1 = (Canvas)Node.AddComponent<Canvas>();

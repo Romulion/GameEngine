@@ -34,21 +34,21 @@ namespace Toys
 			}
 		}
 
-		public void LoadShader(string name)
+		public Shader LoadShader(string name)
 		{
 			
 			if (shaderDictionary.ContainsKey(name))
-				return;
+				return shaderDictionary[name];
 			string file_path = defPath + name;
 			string frag = ReadFromAssetStream(file_path + ".fsh");
 			string vert = ReadFromAssetStream(file_path + ".vsh");
-			LoadShader(name, vert, frag);
+			return LoadShader(name, vert, frag);
         }
 
-		public void LoadShader(string name, string vert, string frag)
+		public Shader LoadShader(string name, string vert, string frag)
 		{
 			if (shaderDictionary.ContainsKey(name))
-				return;
+				return shaderDictionary[name];
 			Shader shdr = new ShaderMain(vert, frag);
 			shdr.ApplyShader();
 			shdr.SetUniform(0, "material.texture_difuse");
@@ -57,6 +57,8 @@ namespace Toys
 			shdr.SetUniform(10, "shadowMap");
 
 			shaderDictionary.Add(name, shdr);
+
+            return shdr;
 		}
 
 		public Shader LoadShader(string name, string compute)

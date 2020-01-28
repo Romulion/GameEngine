@@ -54,8 +54,11 @@ namespace Toys
 			var ubl = ubm.GetBuffer("light");
 			shdr.SetUBO(ubl.BufferIndex, "light");
 
-			//bind textures
-			shdr.ApplyShader();
+            var ubsy = ubm.GetBuffer("system");
+            shdr.SetUBO(ubsy.BufferIndex, "system");
+
+            //bind textures
+            shdr.ApplyShader();
 
             shdr.SetUniform((int)TextureType.ShadowMap, "shadowMap");
             shdr.SetUniform((int)TextureType.Diffuse, "material.texture_diffuse");

@@ -145,10 +145,8 @@ namespace Toys
             if (cursorWindowPosition.X < 0 || cursorWindowPosition.Y < 0 || cursorWindowPosition.X > GLWindow.gLWindow.Width || cursorWindowPosition.Y > GLWindow.gLWindow.Height)
                 return;
 
-            //normalizing coordinates
-            cursorWindowPosition.X /= GLWindow.gLWindow.Width;
-            cursorWindowPosition.Y /= GLWindow.gLWindow.Height;
-            cursorWindowPosition.Y = 1 - cursorWindowPosition.Y;
+            //revercing y coordinate
+            cursorWindowPosition.Y = GLWindow.gLWindow.Height - cursorWindowPosition.Y;
 
             //inform active component about mouse position
             clickContext?.PositionUpdate(cursorWindowPosition.X, cursorWindowPosition.Y);

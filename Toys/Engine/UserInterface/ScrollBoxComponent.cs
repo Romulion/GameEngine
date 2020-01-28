@@ -187,9 +187,6 @@ namespace Toys
                 }
             }
 
-            move.X *= CoreEngine.gEngine.Width;
-            move.Y *= CoreEngine.gEngine.Height;
-
             Node.GetTransform.offsetMax += move;
             Node.GetTransform.offsetMin += move;
             //update position

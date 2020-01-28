@@ -232,30 +232,29 @@ namespace Toys
         private Vector3 CalculatePosition(TextCanvas textCanvas, RectTransform transform)
         {
             Vector3 location = Vector3.UnitZ;
-
             switch (textCanvas.alignVertical)
             {
                 case TextAlignVertical.Bottom:
-                    location.Y = transform.Min.Y * 2;
+                    location.Y = transform.Min.Y;
                     break;
                 case TextAlignVertical.Top:
-                    location.Y = (transform.Max.Y - textCanvas.Heigth * textCanvas.Scale / (float)ScreenHeigth) * 2;
+                    location.Y = (transform.Max.Y - textCanvas.Heigth * textCanvas.Scale);
                     break;
                 case TextAlignVertical.Center:
-                    location.Y = transform.Min.Y + transform.Max.Y - textCanvas.Heigth * textCanvas.Scale / (float)ScreenHeigth;
+                    location.Y = (transform.Min.Y + transform.Max.Y - textCanvas.Heigth * textCanvas.Scale) * 0.5f;
                     break;
             }
 
             switch (textCanvas.alignHorizontal)
             {
                 case TextAlignHorizontal.Left:
-                    location.X = transform.Min.X * 2;
+                    location.X = transform.Min.X;
                     break;
                 case TextAlignHorizontal.Right:
-                    location.X = (transform.Max.X - textCanvas.Width * textCanvas.Scale / (float)ScreenHeigth) * 2;
+                    location.X = (transform.Max.X - textCanvas.Width * textCanvas.Scale);
                     break;
                 case TextAlignHorizontal.Center:
-                    location.X = transform.Min.X + transform.Max.X - textCanvas.Width * textCanvas.Scale / (float)ScreenWidth;
+                    location.X = (transform.Min.X + transform.Max.X - textCanvas.Width * textCanvas.Scale) * 0.5f;
                     break;
             }
             return location;

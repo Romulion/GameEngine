@@ -47,13 +47,13 @@ namespace Toys
 
         public void UpdateTransform()
         {
-            transform.UpdateGlobalPosition();
-            //transform.UpdateGlobalPositionPix();
+            //transform.UpdateGlobalPosition();
+            transform.UpdateGlobalPositionPix();
         }
         public void UpdateTransformRecursive()
         {
-            transform.UpdateGlobalPosition();
-            //transform.UpdateGlobalPositionPix();
+            //transform.UpdateGlobalPosition();
+            transform.UpdateGlobalPositionPix();
             foreach (var child in Childs)
             {
                 child.UpdateTransformRecursive();

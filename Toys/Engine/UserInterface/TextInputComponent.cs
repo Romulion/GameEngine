@@ -119,7 +119,7 @@ namespace Toys
             //draw caret
             if (IsFocused)
             {
-                trans.M41 += Text.textCanvas.Width / CoreEngine.gEngine.Width;
+                trans.M41 += Text.textCanvas.Width;
                 trans.M11 = trans.M22 * 0.5f;
                 trans.M22 *= 0.1f;
                 shaderUniform.SetValue(trans);
