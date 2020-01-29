@@ -27,6 +27,9 @@ namespace Toys
         /// from 0 to 1
         /// </summary>
         public float Value = 0.7f;
+        public float ButtonSize = 20;
+        public float SliderBoxSize = 7;
+        public float SliderFillSize = 5;
 
         public SliderCompoent() : base(typeof(SliderCompoent))
         {
@@ -72,8 +75,11 @@ namespace Toys
             //draw bg
             //shink heigth by 60%
             var trans = Node.GetTransform.GlobalTransform;
-            trans.M42 += trans.M22 * 0.31f;
-            trans.M22 *= 0.38f;
+            //trans.M42 += trans.M22 * 0.31f;
+            //trans.M22 *= 0.38f;
+            trans.M42 += (trans.M22 - SliderBoxSize) * 0.5f;
+            trans.M22 = SliderBoxSize;
+
             bgTexture?.BindTexture();
             colorMask.SetValue(new Vector4(Vector3.Zero,1));
             shaderUniform.SetValue(trans);
@@ -83,8 +89,11 @@ namespace Toys
             //trans = Node.GetTransform.GlobalTransform;
             trans.M11 *= Value;
             //trans.M41 = Node.GetTransform.GlobalRect.Left * 2 - (1 - trans.M11);
-            trans.M42 += trans.M22 * 0.3f;
-            trans.M22 *= 0.4f;
+            //trans.M42 += trans.M22 * 0.3f;
+            //trans.M22 *= 0.4f;
+            trans.M42 += (trans.M22 - SliderFillSize) * 0.5f;
+            trans.M22 = SliderFillSize;
+
             fillTexture?.BindTexture();
             colorMask.SetValue(Vector4.One);
             shaderUniform.SetValue(trans);
@@ -92,8 +101,8 @@ namespace Toys
 
             //draw slider button
             trans = Node.GetTransform.GlobalTransform;
-            trans.M41 += trans.M11 * Value - trans.M22 * 0.5f;
-            trans.M11 = trans.M22;
+            trans.M41 += trans.M11 * Value - ButtonSize * 0.5f;
+            trans.M11 = trans.M22 =  ButtonSize;
             bgTexture?.BindTexture();
             colorMask.SetValue(color);
             shaderUniform.SetValue(trans);

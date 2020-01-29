@@ -19,6 +19,8 @@ namespace Toys
         ShaderUniform colorMask;
         Vector4 color;
 
+        public float BoxSize = 20;
+
         public Action OnChange;
         public bool IsOn { get; set; }
         internal ButtonStates State { get; private set; }
@@ -108,8 +110,8 @@ namespace Toys
 
             //place button in right corner
             var trans = Node.GetTransform.GlobalTransform;
-            trans.M41 += trans.M11 - trans.M22;
-            trans.M11 = trans.M22;
+            trans.M41 += trans.M11 - BoxSize;
+            trans.M11 = trans.M22  = BoxSize;
 
             //Console.WriteLine(trans);
             shaderUniform.SetValue(trans);

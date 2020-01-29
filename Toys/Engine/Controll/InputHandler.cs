@@ -96,6 +96,13 @@ namespace Toys
                     text.Append(asciiTable[(int)a - 119]);
                 }
 
+            //scan space
+            if (keyboardState.IsKeyDown(Key.Space) && !blockedKeys.Contains(Key.Space))
+            {
+                blockedKeys.Add(Key.Space);
+                text.Append(" ");
+            }
+
             if (remove && inputContext.Text.Text.Length > 0)
                 inputContext.Text.SetText(inputContext.Text.Text.Substring(0, inputContext.Text.Text.Length - 1));
             else if (text.Length > 0)

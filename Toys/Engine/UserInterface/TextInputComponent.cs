@@ -15,8 +15,10 @@ namespace Toys
         ShaderUniform shaderUniform;
         ShaderUniform colorMask;
         Vector4 color;
+        int caretPadding = 2;
         internal readonly TextBox Text = new TextBox();
 
+        public Vector2 CaretSize = new Vector2(10,2);
         public Action OnChange;
         public bool IsFocused { get; private set; }
         internal ButtonStates State { get; private set; }
@@ -119,9 +121,9 @@ namespace Toys
             //draw caret
             if (IsFocused)
             {
-                trans.M41 += Text.textCanvas.Width;
-                trans.M11 = trans.M22 * 0.5f;
-                trans.M22 *= 0.1f;
+                trans.M41 += Text.textCanvas.Width + caretPadding;
+                trans.M11 = CaretSize.X;
+                trans.M22 = CaretSize.Y;
                 shaderUniform.SetValue(trans);
                 colorMask.SetValue(new Vector4(Vector3.Zero, 0.5f));
                 chekMarkDefault?.BindTexture();
