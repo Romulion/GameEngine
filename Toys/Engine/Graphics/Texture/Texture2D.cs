@@ -126,6 +126,8 @@ namespace Toys
 			else
 				format = PixelFormat.Bgr;
 
+            //BitmapData has 4 bytes row aligment ?
+            GL.PixelStore(PixelStoreParameter.UnpackAlignment, 4);
             //loading to video memory
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
 						  texture.Width, texture.Height, 0, format, PixelType.UnsignedByte, data.Scan0);
@@ -230,6 +232,7 @@ namespace Toys
 
         internal void AddSubImage(IntPtr bitmap,int x, int y, int w, int h)
         {
+            GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
             GL.TexSubImage2D(TextureTarget.Texture2D, 0, x, y, w, h, PixelFormat.Red, PixelType.UnsignedByte, bitmap);
         }
 
