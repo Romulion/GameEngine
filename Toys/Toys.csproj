@@ -93,6 +93,10 @@
     <Compile Include="Engine\Graphics\Texture\RenderTexture.cs" />
     <Compile Include="Engine\Graphics\ShaderConstructorNew.cs" />
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector2.cs" />
+    <Compile Include="Engine\Pathfinding\AStarSearch.cs" />
+    <Compile Include="Engine\Pathfinding\Heuristic.cs" />
+    <Compile Include="Engine\Pathfinding\NavigationCell.cs" />
+    <Compile Include="Engine\Pathfinding\NavigationMesh.cs" />
     <Compile Include="Engine\UserInterface\ButtonComponent.cs" />
     <Compile Include="Engine\UserInterface\CheckboxComponent.cs" />
     <Compile Include="Engine\UserInterface\InteractableComponent.cs" />
@@ -148,6 +152,7 @@
     <Compile Include="Engine\Objects\Scene.cs" />
     <Compile Include="Engine\Objects\ShaderManager.cs" />
     <Compile Include="Engine\CoreEngine.cs" />
+    <Compile Include="ExternalCode\PriorityQueue.cs" />
     <Compile Include="ExternalCode\TargaImage.cs" />
     <Compile Include="Engine\Graphics\PostProcessing\PostProcessing.cs" />
     <Compile Include="Engine\Physics\RigidContainer.cs" />
