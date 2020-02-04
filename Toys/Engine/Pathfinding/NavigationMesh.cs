@@ -9,7 +9,7 @@ namespace Toys
 {
     public class NavigationMesh
     {
-        NavigationCell[] navigationCells;
+        public NavigationCell[] navigationCells { get; private set; }
 
         public NavigationMesh(Vertex3D[] mesh, int[] indexes)
         {
@@ -23,7 +23,6 @@ namespace Toys
             for (int i = 0; i < navigationCells.Length; i++)
                 if (navigationCells[i].IsInside(position))
                     return navigationCells[i];
-
             return null;
         }
 
@@ -31,7 +30,10 @@ namespace Toys
         {
             //cells
             for (int i = 0; i < navigationCells.Length; i++)
+            {
                 navigationCells[i] = new NavigationCell(mesh[indexes[i * 3]].Position, mesh[indexes[i * 3 + 1]].Position, mesh[indexes[i * 3 + 2]].Position);
+                navigationCells[i].Index = i;
+            }
 
             //near cells
             for (int i = 0; i < navigationCells.Length; i++)
@@ -41,7 +43,7 @@ namespace Toys
                 {
                     if (connection[n] == -1)
                         continue;
-
+                        
                     navigationCells[i].linkedCells[n] = navigationCells[connection[n]];
                 }
             }
@@ -61,23 +63,26 @@ namespace Toys
                 //skip this triangle
                 if (i == offset)
                     continue;
-                //0-1
+
+                //check all combinations
+                
                 for (int n = 0; n < 3; n++)
                 {
-                    if (indexes[i] == edges[n][0] && indexes[i + 1] == edges[n][1])
-                        connection[n] = i / 3;
-                }
-                //1-2
-                for (int n = 0; n < 3; n++)
-                {
-                    if (indexes[i + 1] == edges[n][0] && indexes[i + 2] == edges[n][1])
-                        connection[n] = i / 3;
-                }
-                //2-0
-                for (int n = 0; n < 3; n++)
-                {
-                    if (indexes[i + 2] == edges[n][0] && indexes[i] == edges[n][1])
-                        connection[n] = i / 3;
+                    bool contain = false;
+                    for (int m = 0; m < 3; m++)
+                    {   
+                        if (indexes[i + m] == edges[n][0] || indexes[i + m] == edges[n][1])
+                        {
+                            if (!contain)
+                            {
+                                contain = true;
+                            }
+                            else
+                            {
+                                connection[n] = i / 3;
+                            }
+                        }
+                    }
                 }
             }
 

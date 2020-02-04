@@ -42,11 +42,19 @@ namespace Toys
                 }
 			}
 
-			foreach (XmlNode mesh in xRoot.FindNodes("library_controllers")[0].ChildNodes)
+            foreach (XmlNode mesh in xRoot.FindNodes("library_controllers")[0].ChildNodes)
 			{
-			    ReadWeigth(mesh);
-			}
-		}
+                //skip morphes
+                try
+                {
+                    ReadWeigth(mesh);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
 
 		void ReadMesh(XmlNode geometry)
 		{
@@ -195,13 +203,13 @@ namespace Toys
 			XmlNode srcs = skin.FindId(weigthID.Replace("#",""));
 
 
-			if (srcs == null)
-				Console.WriteLine("not found");
+            if (srcs == null)
+                logger.Warning("weigth not found", "ReadWeigth");
 			
 			float[] weigths = StringParser.readFloat(srcs.FindNodes("float_array")[0].InnerText);
 
-			//assigning
-			int offset = 0;
+            //assigning
+            int offset = 0;
 			for (int i = 0; i < bindindCount.Length; i++)
 			{
 				int count = bindindCount[i];
@@ -227,7 +235,6 @@ namespace Toys
 				//geometry.BoneWeigths[i].Normalize();
 				offset += count * 2;
 			}
-
 
 		}
 

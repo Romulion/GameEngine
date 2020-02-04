@@ -19,8 +19,12 @@ namespace ModelViewer
         PhysicsEngine physics;
         bool active;
         int i = 0;
+        Mesh mesh;
+        MeshDrawer md;
         void Awake()
         {
+            CreateNavMesh();
+
             physics = CoreEngine.pEngine;
             var canvas = (Canvas)Node.AddComponent<Canvas>();
             
@@ -255,6 +259,155 @@ namespace ModelViewer
         float dec2rad(int grad)
         {
            return ((float)grad / 180 * (float)Math.PI);
+        }
+
+        void CreateNavMesh()
+        {
+            var data = new float[]
+            {
+                325.285675f,-0.341648f,-114.897858f,
+325.285675f,-0.341650f,-98.587662f,
+-48.270622f,-0.341696f,-114.897858f,
+-48.270622f,-0.341697f,-98.587669f,
+-48.270622f,-0.341701f,-37.839989f,
+45.360939f,-0.341655f,-37.838974f,
+-48.270622f,-0.341705f,32.774048f,
+45.360939f,-0.341658f,32.774033f,
+325.285675f,-0.341648f,-114.897858f,
+325.285675f,-0.341648f,-119.348709f,
+-48.270622f,-0.341695f,-119.348709f,
+-48.270622f,-0.341701f,-37.839989f,
+-48.270622f,-0.341701f,-42.519363f,
+325.285675f,-0.341655f,-37.838974f,
+325.285675f,-0.341654f,-42.519363f,
+325.285675f,-0.341650f,-93.714401f,
+-48.270622f,-0.341697f,-93.714401f,
+325.285675f,-0.341650f,-97.281364f,
+-48.270622f,-0.341697f,-97.281364f,
+-48.270622f,-0.341701f,-42.519363f,
+-48.270622f,-0.341697f,-93.714401f,
+325.285675f,-0.341654f,-42.519363f,
+325.285675f,-0.341650f,-93.714401f,
+204.673660f,-0.341672f,-154.600311f,
+263.570099f,-0.341668f,-154.600311f,
+321.981628f,-0.341663f,-156.565887f,
+284.045929f,-0.341665f,-154.600327f,
+321.981445f,-0.341665f,-119.348709f,
+148.846588f,-0.341679f,-119.348709f,
+123.410881f,-0.341683f,-98.587669f,
+347.164398f,-0.341665f,-98.587662f,
+123.410881f,-0.341683f,-97.281357f,
+347.164398f,-0.341665f,-97.281357f,
+325.285675f,-0.331640f,-91.268257f,
+-48.270622f,-0.331688f,-91.268265f,
+325.285675f,-0.331641f,-92.118004f,
+-48.270622f,-0.331687f,-92.118011f,
+325.285675f,-0.331643f,-44.278732f,
+-48.270622f,-0.331691f,-44.278725f,
+325.285675f,-0.331643f,-45.128479f,
+-48.270622f,-0.331690f,-45.128479f,
+325.285675f,-0.331640f,-93.714401f,
+-48.270622f,-0.331687f,-93.714401f,
+325.285675f,-0.331640f,-97.281357f,
+-48.270622f,-0.331687f,-97.281364f,
+-48.270622f,-0.331685f,-114.897865f,
+327.608459f,-0.331638f,-119.348709f,
+-48.270622f,-0.331685f,-119.348709f,
+-48.270622f,-0.331692f,-37.839981f,
+-48.270622f,-0.331690f,-42.519356f,
+325.285675f,-0.331644f,-37.838982f,
+325.285675f,-0.331643f,-42.519356f,
+204.673660f,-0.331662f,-154.600327f,
+263.570099f,-0.331657f,-154.600327f,
+148.846588f,-0.331669f,-119.348709f,
+321.981445f,-0.331655f,-119.348709f,
+284.045929f,-0.331656f,-154.600311f
+            };
+
+            int[] indexes = { 3, 2, 1, 2, 3, 4, 7, 6, 5, 6, 7, 8, 14, 13, 12, 13, 14, 15, 18, 17, 16, 17, 18, 19, 22, 21, 20, 21, 22, 23, 26, 27, 28, 25, 28, 27, 24, 28, 25, 28, 24, 29, 32, 31, 30, 31, 32, 33, 36, 35, 34, 35, 36, 37, 40, 39, 38, 39, 40, 41, 44, 43, 42, 43, 44, 45, 46, 47, 48, 51, 50, 49, 50, 51, 52, 56, 53, 55, 53, 56, 54, 54, 56, 57 };
+
+            var vertex = new Vertex3D[data.Length / 3];
+            for (int i = 0; i < vertex.Length; i++)
+            {
+                var point = new Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]) / 60;
+                point.Y -= 1;
+                vertex[i] = new Vertex3D(point);
+            }
+
+            for (int i = 0; i < indexes.Length; i++)
+            {
+                indexes[i] -= 1;
+            }
+
+            mesh = new Mesh(vertex, indexes);
+            var Materials = new Material[indexes.Length / 3];
+            var shdrst = new ShaderSettings();
+            shdrst.Ambient = true;
+            for (int i = 0; i < Materials.Length; i++)
+            {
+                Materials[i] = new MaterialPMX(shdrst, new RenderDirectives());
+                Materials[i].Offset = i * 3;
+                Materials[i].Count = 3;
+            }
+            md = new MeshDrawer(mesh,Materials);
+            Node.AddComponent(md);
+
+
+            var navMesh = new NavigationMesh(vertex, indexes);
+            var navList = navMesh.navigationCells.ToList();
+            var cell1 = navMesh.GetCellFromPosition(new Vector3(0));
+            var cell2 = navMesh.GetCellFromPosition(new Vector3(0.5f,0,-.6f));
+            /*
+            Materials[0].UniManager.Set("specular_color", specularColour);
+            Materials[0].UniManager.Set("ambient_color", ambientColour);
+            Materials[0].UniManager.Set("specular_power", specularPower);
+            Materials[0].UniManager.Set("diffuse_color", difColor);
+            */
+
+            Materials[27].RenderDirrectives.IsRendered = false;
+            Materials[25].RenderDirrectives.IsRendered = false;
+            Materials[26].RenderDirrectives.IsRendered = false;
+
+
+
+            /*
+            //Console.WriteLine(navMesh.navigationCells[13].Center);
+            foreach (var bord in navMesh.navigationCells[13].linkedCells)
+                if (bord != null)
+                    Console.WriteLine(bord.Index);
+            */
+            
+            /*
+            int indx = 0;
+            foreach (var nav in navList)
+            {
+                int num = 0;
+                foreach (var ls in nav.linkedCells)
+                    if (ls != null)
+                        num++;
+                if (num == 2 && nav.Index > 27) {
+                    indx = nav.Index;
+                    break;
+                }
+            }
+            
+            Console.WriteLine(indx);     
+            */
+
+            int start = 11, end = 13;
+            var searcher = new AStarSearch(navMesh);
+            var result = searcher.CalculatePath(navMesh.navigationCells[start].Center, navMesh.navigationCells[end].Center);
+            if (result != null)
+            {
+                Console.WriteLine(result.Length);
+                foreach (var waipoint in result)
+                {
+                    Materials[waipoint.Index].UniManager.Set("ambient_color", Vector3.UnitY);
+                    Console.WriteLine(waipoint.Index);
+                }
+            }
+            Materials[start].UniManager.Set("ambient_color", Vector3.UnitX);
+            Materials[end].UniManager.Set("ambient_color", Vector3.UnitZ);
         }
     }
 }

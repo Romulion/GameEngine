@@ -20,7 +20,7 @@ namespace ModelViewer
             if (args.Length != 0)
             {
                 SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
-                modelNode.Name = "model";
+                //modelNode.Name = "model";
                 scene.AddObject(modelNode);
             }
             var camera = new Camera();

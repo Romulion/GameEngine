@@ -21,7 +21,6 @@ namespace Toys
         {
             NavigationCell startCell = navMesh.GetCellFromPosition(start);
             NavigationCell finishCell = navMesh.GetCellFromPosition(finish);
-
             if (startCell == null || finishCell == null)
                 return null;
 
@@ -30,18 +29,18 @@ namespace Toys
 
             parent[startCell] = startCell;
             costTable[startCell] = 0;
-
             while (frontier.Count > 0)
             {
                 var current = frontier.Dequeue();
-
                 if (current.Equals(finishCell))
                 {
                     break;
                 }
-
                 foreach (var next in current.linkedCells)
                 {
+                    //skip border edges
+                    if (next == null)
+                        continue;
                     //cost as distance between mesh centres
                     float newCost = costTable[current] + Heuristic.EuclideanDistance(next.Center, current.Center);
                     if (!costTable.ContainsKey(next) || newCost < costTable[next])
@@ -52,11 +51,12 @@ namespace Toys
                         parent[next] = current;
                     }
                 }
+                
             }
 
             //path not found
             if (!parent.ContainsKey(finishCell))
-                return null;
+                return new NavigationCell[0];
 
             var cell = finishCell;
             var path = new List<NavigationCell>();
@@ -66,7 +66,6 @@ namespace Toys
                 cell = parent[cell];
                 path.Add(cell);
             }
-
             path.Reverse();
             return path.ToArray();
         }

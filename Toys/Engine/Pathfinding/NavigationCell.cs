@@ -16,6 +16,7 @@ namespace Toys
         public Vector3[] Edges { get; private set; }
         public NavigationCell[] linkedCells { get; private set; }
 
+        public int Index { get; internal set; }
         public Vector3 Center { get; private set; }
         public NavigationCell(Vector3 node1, Vector3 node2, Vector3 node3)
         {
@@ -32,9 +33,9 @@ namespace Toys
             float d1, d2, d3;
             bool has_neg, has_pos;
 
-            d1 = Sign(point, NodeVertex[0], NodeVertex[1]);
-            d2 = Sign(point, NodeVertex[1], NodeVertex[2]);
-            d3 = Sign(point, NodeVertex[2], NodeVertex[0]);
+            d1 = Sign(point.Xz, NodeVertex[0].Xz, NodeVertex[1].Xz);
+            d2 = Sign(point.Xz, NodeVertex[1].Xz, NodeVertex[2].Xz);
+            d3 = Sign(point.Xz, NodeVertex[2].Xz, NodeVertex[0].Xz);
 
             has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
             has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
@@ -52,7 +53,7 @@ namespace Toys
             return navcell;
         }
 
-        float Sign(Vector3 p1, Vector3 p2, Vector3 p3)
+        float Sign(Vector2 p1, Vector2 p2, Vector2 p3)
         {
             return (p1.X - p3.X) * (p2.Y - p3.Y) - (p2.X - p3.X) * (p1.Y - p3.Y);
         }
