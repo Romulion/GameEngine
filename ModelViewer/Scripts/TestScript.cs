@@ -21,6 +21,10 @@ namespace ModelViewer
         int i = 0;
         Mesh mesh;
         MeshDrawer md;
+        NavigationMesh navMesh;
+        Material[] Materials;
+        int node = 0;
+
         void Awake()
         {
             CreateNavMesh();
@@ -65,10 +69,10 @@ namespace ModelViewer
             butLabel1.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
             butLabel1.textCanvas.alignVertical = TextAlignVertical.Center;
             
-            butLabel1.SetText("wind ON");
+            butLabel1.SetText("next node");
             butLabel1.textCanvas.Scale = 0.5f;
 
-            image1.OnClick = () => { active = true; };
+            image1.OnClick = () => { Console.WriteLine(++node);};
             var ui2 = new UIElement();
             ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
@@ -76,7 +80,7 @@ namespace ModelViewer
             ui2.GetTransform.offsetMin = new Vector2(0, -55);
             var butLabel2 = (TextBox)ui2.AddComponent<TextBox>();
             
-            butLabel2.SetText("wind OFF");
+            butLabel2.SetText("prev node");
             butLabel2.textCanvas.Scale = 0.5f;
 
             butLabel2.textCanvas.colour = new Vector3(1, 1, 0);
@@ -84,7 +88,7 @@ namespace ModelViewer
             butLabel2.textCanvas.alignVertical = TextAlignVertical.Center;
             var image2 = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
 
-            image2.OnClick = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };
+            image2.OnClick = () => { Console.WriteLine(--node); };
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
             //ISS.SetDSS(script);
             ui1.SetParent(ui);
@@ -247,6 +251,8 @@ namespace ModelViewer
                 force.Z = (float)(6 + 4 * Math.Sin(i*2) +  5 * Math.Cos(i  * 0.4f + 24) + 3 * Math.Sin(i * 1.5f + 10) + 4 * Math.Cos(i * 0.1f + 76) + 3 * Math.Sin(i * 2.9f + 154));
                 physics.SetGravity(force);
             }
+
+            MadePath(node);
             // update++;
             // bc.GetBone(3).SetTransform(new Quaternion(0, 0, (float)(dec2rad(45) * Math.Cos(update * 3 * Math.PI / 180))), new Vector3(0, 0, 0));
             //update += .UpdateTime * 1000;
@@ -265,7 +271,139 @@ namespace ModelViewer
         {
             var data = new float[]
             {
-                325.285675f,-0.341648f,-114.897858f,
+                -0.510708f,0.000000f,0.560116f,
+0.475209f,0.000000f,0.560116f,
+-0.510708f,0.000000f,0.223784f,
+0.475209f,0.000000f,0.223784f,
+-0.510708f,0.000000f,0.560116f,
+0.475209f,0.000000f,0.560116f,
+-0.498859f,0.000000f,1.604937f,
+0.487058f,0.000000f,1.604937f,
+-0.503560f,0.000000f,2.655539f,
+0.482357f,0.000000f,2.655539f,
+-0.487180f,-0.147305f,3.284405f,
+0.498737f,-0.147305f,3.284405f,
+-1.871698f,0.041424f,2.636110f,
+-1.855318f,-0.105881f,3.264977f,
+-2.698119f,0.000962f,2.633322f,
+-2.681739f,-0.146342f,3.262189f,
+-1.869888f,0.000000f,2.081351f,
+-2.696310f,0.000000f,2.078564f,
+-1.867582f,0.000000f,1.374484f,
+-2.694004f,0.000000f,1.371696f,
+-1.863584f,0.000000f,0.200000f,
+-2.690005f,0.000000f,0.145856f,
+-1.834403f,0.000000f,-0.430380f,
+-2.660824f,0.000000f,-0.430000f,
+0.496814f,-0.085523f,-1.081090f,
+-0.502801f,0.000000f,-0.437349f,
+-0.489103f,-0.085523f,-1.081090f,
+0.483116f,0.000000f,-0.437349f,
+0.511144f,-0.174994f,-1.754542f,
+-0.474773f,-0.174994f,-1.754542f,
+-1.334424f,-0.129101f,-1.093288f,
+-1.320094f,-0.218572f,-1.766740f
+            };
+       
+            int[] indexes = { 2, 3, 1, 1, 6, 2, 6, 7, 8, 7, 10, 8, 10, 11, 12, 9, 14, 11, 13, 16, 14, 15, 17, 18, 18, 19, 20, 20, 21, 22, 21, 24, 22, 23, 3, 26, 4, 26, 3, 28, 27, 26, 25, 30, 27, 30, 31, 27, 2, 4, 3, 1, 5, 6, 6, 5, 7, 7, 9, 10, 10, 9, 11, 9, 13, 14, 13, 15, 16, 15, 13, 17, 18, 17, 19, 20, 19, 21, 21, 23, 24, 23, 21, 3, 4, 28, 26, 28, 25, 27, 25, 29, 30, 30, 32, 31 };
+
+            var vertex = new Vertex3D[data.Length / 3];
+            for (int i = 0; i < vertex.Length; i++)
+            {
+                var point = new Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]);
+                point.Y -= 2;
+                vertex[i] = new Vertex3D(point);
+            }
+
+            for (int i = 0; i < indexes.Length; i++)
+            {
+                indexes[i] -= 1;
+            }
+
+            mesh = new Mesh(vertex, indexes);
+            Materials = new Material[indexes.Length / 3];
+            var shdrst = new ShaderSettings();
+            shdrst.Ambient = true;
+            for (int i = 0; i < Materials.Length; i++)
+            {
+                Materials[i] = new MaterialPMX(shdrst, new RenderDirectives());
+                Materials[i].Offset = i * 3;
+                Materials[i].Count = 3;
+            }
+            md = new MeshDrawer(mesh,Materials);
+            Node.AddComponent(md);
+
+
+            navMesh = new NavigationMesh(vertex, indexes);
+            var navList = navMesh.navigationCells.ToList();
+            var cell1 = navMesh.GetCellFromPosition(new Vector3(0));
+            var cell2 = navMesh.GetCellFromPosition(new Vector3(-1.0431f, 0, 1.53819f));
+            //Console.WriteLine(cell2.Index);
+            /*
+            Materials[0].UniManager.Set("specular_color", specularColour);
+            Materials[0].UniManager.Set("ambient_color", ambientColour);
+            Materials[0].UniManager.Set("specular_power", specularPower);
+            Materials[0].UniManager.Set("diffuse_color", difColor);
+            */
+
+           // Materials[27].RenderDirrectives.IsRendered = false;
+           // Materials[25].RenderDirrectives.IsRendered = false;
+           // Materials[26].RenderDirrectives.IsRendered = false;
+
+
+
+            /*
+            //Console.WriteLine(navMesh.navigationCells[13].Center);
+            foreach (var bord in navMesh.navigationCells[13].linkedCells)
+                if (bord != null)
+                    Console.WriteLine(bord.Index);
+            */
+            
+            /*
+            int indx = 0;
+            foreach (var nav in navList)
+            {
+                int num = 0;
+                foreach (var ls in nav.linkedCells)
+                    if (ls != null)
+                        num++;
+                if (num == 2 && nav.Index > 27) {
+                    indx = nav.Index;
+                    break;
+                }
+            }
+            
+            Console.WriteLine(indx);     
+            */
+        }
+
+        void MadePath(int start)
+        {
+            foreach (var mat in Materials)
+                mat.UniManager.Set("ambient_color", Vector3.Zero);
+
+            int end = 25;
+            var searcher = new AStarSearch(navMesh);
+            var result = searcher.CalculatePath(navMesh.navigationCells[start].Center, navMesh.navigationCells[end].Center);
+            if (result != null)
+            {
+               // Console.WriteLine(result.Length);
+                foreach (var waipoint in result)
+                {
+                    Materials[waipoint.Index].UniManager.Set("ambient_color", Vector3.UnitY);
+               //     Console.WriteLine(waipoint.Index);
+                }
+            }
+            Materials[start].UniManager.Set("ambient_color", Vector3.UnitX);
+            Materials[end].UniManager.Set("ambient_color", Vector3.UnitZ);
+        }
+    }
+}
+
+
+// 3, 2, 1, 2, 3, 4, 7, 6, 5, 6, 7, 8, 14, 13, 12, 13, 14, 15, 18, 17, 16, 17, 18, 19, 22, 21, 20, 21, 22, 23, 26, 27, 28, 25, 28, 27, 24, 28, 25, 28, 24, 29, 32, 31, 30, 31, 32, 33, 36, 35, 34, 35, 36, 37, 40, 39, 38, 39, 40, 41, 44, 43, 42, 43, 44, 45, 46, 47, 48, 51, 50, 49, 50, 51, 52, 56, 53, 55, 53, 56, 54, 54, 56, 57
+/*
+325.285675f,-0.341648f,-114.897858f,
 325.285675f,-0.341650f,-98.587662f,
 -48.270622f,-0.341696f,-114.897858f,
 -48.270622f,-0.341697f,-98.587669f,
@@ -322,92 +460,4 @@ namespace ModelViewer
 148.846588f,-0.331669f,-119.348709f,
 321.981445f,-0.331655f,-119.348709f,
 284.045929f,-0.331656f,-154.600311f
-            };
-
-            int[] indexes = { 3, 2, 1, 2, 3, 4, 7, 6, 5, 6, 7, 8, 14, 13, 12, 13, 14, 15, 18, 17, 16, 17, 18, 19, 22, 21, 20, 21, 22, 23, 26, 27, 28, 25, 28, 27, 24, 28, 25, 28, 24, 29, 32, 31, 30, 31, 32, 33, 36, 35, 34, 35, 36, 37, 40, 39, 38, 39, 40, 41, 44, 43, 42, 43, 44, 45, 46, 47, 48, 51, 50, 49, 50, 51, 52, 56, 53, 55, 53, 56, 54, 54, 56, 57 };
-
-            var vertex = new Vertex3D[data.Length / 3];
-            for (int i = 0; i < vertex.Length; i++)
-            {
-                var point = new Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]) / 60;
-                point.Y -= 1;
-                vertex[i] = new Vertex3D(point);
-            }
-
-            for (int i = 0; i < indexes.Length; i++)
-            {
-                indexes[i] -= 1;
-            }
-
-            mesh = new Mesh(vertex, indexes);
-            var Materials = new Material[indexes.Length / 3];
-            var shdrst = new ShaderSettings();
-            shdrst.Ambient = true;
-            for (int i = 0; i < Materials.Length; i++)
-            {
-                Materials[i] = new MaterialPMX(shdrst, new RenderDirectives());
-                Materials[i].Offset = i * 3;
-                Materials[i].Count = 3;
-            }
-            md = new MeshDrawer(mesh,Materials);
-            Node.AddComponent(md);
-
-
-            var navMesh = new NavigationMesh(vertex, indexes);
-            var navList = navMesh.navigationCells.ToList();
-            var cell1 = navMesh.GetCellFromPosition(new Vector3(0));
-            var cell2 = navMesh.GetCellFromPosition(new Vector3(0.5f,0,-.6f));
-            /*
-            Materials[0].UniManager.Set("specular_color", specularColour);
-            Materials[0].UniManager.Set("ambient_color", ambientColour);
-            Materials[0].UniManager.Set("specular_power", specularPower);
-            Materials[0].UniManager.Set("diffuse_color", difColor);
-            */
-
-            Materials[27].RenderDirrectives.IsRendered = false;
-            Materials[25].RenderDirrectives.IsRendered = false;
-            Materials[26].RenderDirrectives.IsRendered = false;
-
-
-
-            /*
-            //Console.WriteLine(navMesh.navigationCells[13].Center);
-            foreach (var bord in navMesh.navigationCells[13].linkedCells)
-                if (bord != null)
-                    Console.WriteLine(bord.Index);
-            */
-            
-            /*
-            int indx = 0;
-            foreach (var nav in navList)
-            {
-                int num = 0;
-                foreach (var ls in nav.linkedCells)
-                    if (ls != null)
-                        num++;
-                if (num == 2 && nav.Index > 27) {
-                    indx = nav.Index;
-                    break;
-                }
-            }
-            
-            Console.WriteLine(indx);     
-            */
-
-            int start = 11, end = 13;
-            var searcher = new AStarSearch(navMesh);
-            var result = searcher.CalculatePath(navMesh.navigationCells[start].Center, navMesh.navigationCells[end].Center);
-            if (result != null)
-            {
-                Console.WriteLine(result.Length);
-                foreach (var waipoint in result)
-                {
-                    Materials[waipoint.Index].UniManager.Set("ambient_color", Vector3.UnitY);
-                    Console.WriteLine(waipoint.Index);
-                }
-            }
-            Materials[start].UniManager.Set("ambient_color", Vector3.UnitX);
-            Materials[end].UniManager.Set("ambient_color", Vector3.UnitZ);
-        }
-    }
-}
+*/
