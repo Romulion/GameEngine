@@ -71,6 +71,8 @@ namespace Toys
                     rightNode = startNode.NodeVertex[pair[1]];
 
 
+            //for storaging prev vector
+            Vector3 prevValue;
             Console.WriteLine(start);
             bool leftBlock = false, rightBlock = false;
             Vector3 leftVec = leftNode - start,
@@ -90,6 +92,8 @@ namespace Toys
                 int[] pairSet = vertexPairs[notBindedEdges[i]];
                 var node = path[i];
                 var freeEdge = node.Edges[notBindedEdges[i]];
+
+                Console.WriteLine(i);
                 //left side
                 if (!leftBlock && (node.NodeVertex[pairSet[0]] == leftNode || node.NodeVertex[pairSet[1]] == leftNode))
                 {
@@ -98,6 +102,7 @@ namespace Toys
                         leftEdgeBacklog[0] = leftEdgeBacklog[1];
                     leftEdgeBacklog[1] = freeEdge;
 
+                    prevValue = leftNode;
 
                     //move to next point
                     if (node.NodeVertex[pairSet[0]] == leftNode)
@@ -110,7 +115,8 @@ namespace Toys
                     var result = Vector3.Dot(referenceVector, Vector3.Cross(leftVec, freeEdge));
                     if (result < 0)
                     {
-                        Console.WriteLine(leftNode);
+                        leftNode = prevValue;
+                        leftVec = leftNode - start;
                         Console.WriteLine("left block {0}", i);
                         leftBlock = true;
                     }
@@ -124,6 +130,7 @@ namespace Toys
                     if (rightEdgeBacklog[1] != null)
                         rightEdgeBacklog[0] = rightEdgeBacklog[1];
 
+                    prevValue = rightNode;
                     //move to next point
                     if (node.NodeVertex[pairSet[0]] == rightNode)
                         rightNode = node.NodeVertex[pairSet[1]];
@@ -135,6 +142,8 @@ namespace Toys
                     var result = Vector3.Dot(referenceVector, Vector3.Cross(rightVec,freeEdge));
                     if (result < 0)
                     {
+                        rightNode = prevValue;
+                        rightVec = rightNode - start;
                         Console.WriteLine("right block {0}", i);
                         rightBlock = true;
                     }
