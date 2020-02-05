@@ -9,6 +9,7 @@ namespace Toys
 {
     /// <summary>
     /// Triangle cell on navigation map
+    /// edges order 1-2 2-3 3-1
     /// </summary>
     public class NavigationCell
     {

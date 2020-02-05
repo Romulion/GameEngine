@@ -46,7 +46,7 @@ namespace Toys
                     if (!costTable.ContainsKey(next) || newCost < costTable[next])
                     {
                         costTable[next] = newCost;
-                        double priority = newCost + Heuristic.EuclideanDistance(next.Center,finish);
+                        float priority = newCost + Heuristic.EuclideanDistance(next.Center,finish);
                         frontier.Enqueue(next, priority);
                         parent[next] = current;
                     }

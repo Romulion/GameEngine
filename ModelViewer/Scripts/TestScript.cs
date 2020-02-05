@@ -72,7 +72,7 @@ namespace ModelViewer
             butLabel1.SetText("next node");
             butLabel1.textCanvas.Scale = 0.5f;
 
-            image1.OnClick = () => { Console.WriteLine(++node);};
+            image1.OnClick = () => {};
             var ui2 = new UIElement();
             ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
@@ -88,7 +88,7 @@ namespace ModelViewer
             butLabel2.textCanvas.alignVertical = TextAlignVertical.Center;
             var image2 = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
 
-            image2.OnClick = () => { Console.WriteLine(--node); };
+            image2.OnClick = () => {};
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
             //ISS.SetDSS(script);
             ui1.SetParent(ui);
@@ -144,7 +144,7 @@ namespace ModelViewer
                 bc = msd.BoneController;
             */
 
-
+            MadePath(31);
 
             //slider1.OnValueChanged = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };
         }
@@ -251,8 +251,6 @@ namespace ModelViewer
                 force.Z = (float)(6 + 4 * Math.Sin(i*2) +  5 * Math.Cos(i  * 0.4f + 24) + 3 * Math.Sin(i * 1.5f + 10) + 4 * Math.Cos(i * 0.1f + 76) + 3 * Math.Sin(i * 2.9f + 154));
                 physics.SetGravity(force);
             }
-
-            MadePath(node);
             // update++;
             // bc.GetBone(3).SetTransform(new Quaternion(0, 0, (float)(dec2rad(45) * Math.Cos(update * 3 * Math.PI / 180))), new Vector3(0, 0, 0));
             //update += .UpdateTime * 1000;
@@ -383,12 +381,14 @@ namespace ModelViewer
                 mat.UniManager.Set("ambient_color", Vector3.Zero);
 
             int end = 25;
-            var searcher = new AStarSearch(navMesh);
-            var result = searcher.CalculatePath(navMesh.navigationCells[start].Center, navMesh.navigationCells[end].Center);
+            //var searcher = new AStarSearch(navMesh);
+            //var result = searcher.CalculatePath(navMesh.navigationCells[start].Center, navMesh.navigationCells[end].Center);
+            var navAgent = new NavigationAgent(navMesh);
+            var result = navAgent.SearchPath(navMesh.navigationCells[start].Center, navMesh.navigationCells[end].Center);
             if (result != null)
             {
-               // Console.WriteLine(result.Length);
-                foreach (var waipoint in result)
+                Console.WriteLine(result.Length);
+                foreach (var waipoint in navAgent.pathMesh)
                 {
                     Materials[waipoint.Index].UniManager.Set("ambient_color", Vector3.UnitY);
                //     Console.WriteLine(waipoint.Index);
