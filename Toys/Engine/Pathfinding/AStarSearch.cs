@@ -19,11 +19,12 @@ namespace Toys
 
         public NavigationCell[] CalculatePath(Vector3 start, Vector3 finish)
         {
+            costTable.Clear();
+            parent.Clear();
             NavigationCell startCell = navMesh.GetCellFromPosition(start);
             NavigationCell finishCell = navMesh.GetCellFromPosition(finish);
             if (startCell == null || finishCell == null)
                 return null;
-
             var frontier = new PriorityQueue<NavigationCell>();
             frontier.Enqueue(startCell, 0);
 

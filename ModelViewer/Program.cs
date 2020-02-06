@@ -15,14 +15,8 @@ namespace ModelViewer
             GLWindow window = new GLWindow();
             
             var scene = window.Engine.mainScene;
-
+            //Console.WindowHeight = 700;
             //string str = "";
-            if (args.Length != 0)
-            {
-                SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
-                //modelNode.Name = "model";
-                scene.AddObject(modelNode);
-            }
             var camera = new Camera();
             SceneNode cameraNode = new SceneNode();
             cameraNode.Name = "Camera";
@@ -30,9 +24,12 @@ namespace ModelViewer
             cameraNode.AddComponent<CameraControllScript>();
             cameraNode.AddComponent<FrameTimeScript>();
             cameraNode.GetTransform.Position = new Vector3(0, 1f, 3);
-            cameraNode.AddComponent<TestScript>();
-            scene.AddObject(cameraNode);
             camera.Background = new BackgroundSkybox();
+
+            SceneNode navmeshNode = new SceneNode();
+            var test = (TestScript)navmeshNode.AddComponent<TestScript>();
+            scene.AddObject(navmeshNode);
+            test.camera = camera;
             //node.Name = "Model1";
             //var loader = new ReaderLMD(args[0]);
             //SceneNode node = loader.GetModel;
@@ -46,6 +43,14 @@ namespace ModelViewer
             cameraNode.AddComponent<DynamicFormScript>();
             //var ISS = (ImageStreamerScript)cameraNode.AddComponent<ImageStreamerScript>();
             //ISS.SetDSS(script);
+
+            if (args.Length != 0)
+            {
+                SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
+                //modelNode.Name = "model";
+                scene.AddObject(modelNode);
+                test.cc = (CharControll)modelNode.AddComponent<CharControll>();
+            }
 
             var task = new Task(() =>
             {

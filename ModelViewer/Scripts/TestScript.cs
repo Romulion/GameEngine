@@ -21,14 +21,20 @@ namespace ModelViewer
         int i = 0;
         Mesh mesh;
         MeshDrawer md;
-        NavigationMesh navMesh;
+        public NavigationMesh navMesh;
+        public Camera camera;
         Material[] Materials;
         int node = 0;
+        public CharControll cc;
 
         void Awake()
         {
-            CreateNavMesh();
-
+            if (cc != null)
+            {
+                CreateNavMesh();
+                cc.navMesh = navMesh;
+                cc.Materials = Materials;
+            }
             physics = CoreEngine.pEngine;
             var canvas = (Canvas)Node.AddComponent<Canvas>();
             
@@ -69,10 +75,10 @@ namespace ModelViewer
             butLabel1.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
             butLabel1.textCanvas.alignVertical = TextAlignVertical.Center;
             
-            butLabel1.SetText("next node");
+            butLabel1.SetText("path");
             butLabel1.textCanvas.Scale = 0.5f;
 
-            image1.OnClick = () => {};
+            image1.OnClick = () => { cc?.SetDestination(camera.Node.GetTransform.GlobalTransform.ExtractTranslation()); };
             var ui2 = new UIElement();
             ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
@@ -80,7 +86,7 @@ namespace ModelViewer
             ui2.GetTransform.offsetMin = new Vector2(0, -55);
             var butLabel2 = (TextBox)ui2.AddComponent<TextBox>();
             
-            butLabel2.SetText("prev node");
+            butLabel2.SetText("Go/Stop");
             butLabel2.textCanvas.Scale = 0.5f;
 
             butLabel2.textCanvas.colour = new Vector3(1, 1, 0);
@@ -88,7 +94,7 @@ namespace ModelViewer
             butLabel2.textCanvas.alignVertical = TextAlignVertical.Center;
             var image2 = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
 
-            image2.OnClick = () => {};
+            image2.OnClick = () => { cc?.Go(); };
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
             //ISS.SetDSS(script);
             ui1.SetParent(ui);
@@ -144,7 +150,7 @@ namespace ModelViewer
                 bc = msd.BoneController;
             */
 
-            MadePath(31);
+            //MadePath(31);
 
             //slider1.OnValueChanged = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };
         }
@@ -308,8 +314,8 @@ namespace ModelViewer
             var vertex = new Vertex3D[data.Length / 3];
             for (int i = 0; i < vertex.Length; i++)
             {
-                var point = new Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]);
-                point.Y -= 2;
+                var point = new Vector3(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]) * 4;
+                point.Y = 0;
                 vertex[i] = new Vertex3D(point);
             }
 
@@ -344,9 +350,9 @@ namespace ModelViewer
             Materials[0].UniManager.Set("diffuse_color", difColor);
             */
 
-           // Materials[27].RenderDirrectives.IsRendered = false;
-           // Materials[25].RenderDirrectives.IsRendered = false;
-           // Materials[26].RenderDirrectives.IsRendered = false;
+            // Materials[27].RenderDirrectives.IsRendered = false;
+            // Materials[25].RenderDirrectives.IsRendered = false;
+            // Materials[26].RenderDirrectives.IsRendered = false;
 
 
 
@@ -356,7 +362,7 @@ namespace ModelViewer
                 if (bord != null)
                     Console.WriteLine(bord.Index);
             */
-            
+
             /*
             int indx = 0;
             foreach (var nav in navList)
