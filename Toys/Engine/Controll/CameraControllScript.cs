@@ -107,6 +107,33 @@ namespace Toys
                     transform.Position -= speed * cameraUp;
                 }
 
+                Vector3 front = camera.Target - transform.Position;
+                Vector3 left = Vector3.Cross(front,cameraUp);
+                //movment
+                if (keyState[Key.W])
+                {
+                    camera.Target += speed * front;
+                    transform.Position += speed * front;
+                }
+
+                if (keyState[Key.A])
+                {
+                    camera.Target -= speed * left;
+                    transform.Position -= speed * left;
+                }
+
+                if (keyState[Key.S])
+                {
+                    camera.Target -= speed * front;
+                    transform.Position -= speed * front;
+                }
+
+                if (keyState[Key.D])
+                {
+                    camera.Target += speed * left;
+                    transform.Position += speed * left;
+                }
+
                 if (keyState[Key.R])
                 {
                     transform.Position = new Vector3(0f, 1f, 0f);
