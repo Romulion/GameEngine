@@ -15,22 +15,36 @@ namespace ModelViewer
         Task<Vector3[]> pathTask;
         Vector3[] path;
         NavigationAgent navAgent;
-        bool walk;
+        bool isWalking;
         int waipoint = 0;
-        float speed = 0.1f;
+        float speed = 0.05f;
         Vector3 direction;
         float prevDist;
+        Animation walk;
+        Animation idle;
+        Animator animator;
+
+
         void Start()
         {
             //CreateNavMesh();
             navAgent = new NavigationAgent(navMesh);
             navAgent.AgentSize = 1f;
+            
+            try
+            {
+                walk = AnimationLoader.Load("walk.vmd");
+                idle = AnimationLoader.Load("idle.vmd");
+                animator = Node.GetComponent<Animator>() as Animator;
+                animator.Play(idle);
+            }
+            catch (Exception) { }
         }
 
 
         public void SetDestination(Vector3 dest)
         {
-            walk = false;
+            WalkingState(false);
             path = null;
             pathTask = navAgent.SearchPathAsync(Node.GetTransform.GlobalTransform.ExtractTranslation(),dest);
             Console.WriteLine("path calc started");
@@ -38,10 +52,10 @@ namespace ModelViewer
 
         public void Go()
         {
-            if (path != null && path.Length > 0 && walk == false)
-                walk = true;
+            if (path != null && path.Length > 0 && !isWalking)
+                WalkingState(true);
             else
-                walk = false;
+                WalkingState(false);
         }
 
         void Update()
@@ -70,7 +84,7 @@ namespace ModelViewer
                 pathTask = null;
             }
 
-            if (path != null && walk)
+            if (path != null && isWalking)
             {
                 var coord = Node.GetTransform.GlobalTransform.ExtractTranslation();
                 var distance = (coord - path[waipoint]).Length;
@@ -87,7 +101,7 @@ namespace ModelViewer
                     }
                     else
                     {
-                        walk = false;
+                        WalkingState(false);
                         path = null;
                     }
                     
@@ -136,6 +150,21 @@ namespace ModelViewer
             {
                 Materials[waipoint.Index].UniManager.Set("ambient_color", Vector3.UnitY);
             }
+        }
+
+        void WalkingState(bool state)
+        {
+            if (isWalking && !state)
+            {
+                isWalking = false;
+                animator?.Play(idle);
+            }
+            else if (!isWalking && state)
+            {
+                isWalking = true;
+                animator?.Play(walk);
+            }
+
         }
 
         void CreateNavMesh()

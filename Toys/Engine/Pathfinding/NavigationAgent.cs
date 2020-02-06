@@ -29,9 +29,9 @@ namespace Toys
             aStar = new AStarSearch(navMesh);
         }
 
-        public async Task<Vector3[]> SearchPathAsync(Vector3 start, Vector3 goal)
+        public Task<Vector3[]> SearchPathAsync(Vector3 start, Vector3 goal)
         {
-            return SearchPath(start, goal);
+            return Task.Run(() => SearchPath(start, goal));
         }
 
         public Vector3[] SearchPath(Vector3 start, Vector3 goal)
