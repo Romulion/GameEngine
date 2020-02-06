@@ -28,6 +28,7 @@ namespace Toys
 			List<Animator> anims = new List<Animator>();
 			foreach (var node in nodes)
 			{
+                node.UpdateTransform();
                 Animator an = node.GetComponent(typeof(Animator)) as Animator;
                 if (an)
 					an.Update(time);

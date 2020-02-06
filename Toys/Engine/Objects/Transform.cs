@@ -8,11 +8,12 @@ namespace Toys
     {
         private Matrix4 localT;
         private SceneNode baseNode;
+        Quaternion rotationQuaternion;
 		Vector3 rotation = new Vector3();
 		Vector3 position = new Vector3();
 
         // public Vector3 scale;
-        public Matrix4 globalTransform
+        public Matrix4 GlobalTransform
         {
             get; private set;
         } 
@@ -20,7 +21,8 @@ namespace Toys
         public Transform(SceneNode node)
         {
             localT = Matrix4.Identity;
-            globalTransform = Matrix4.Identity;
+            GlobalTransform = Matrix4.Identity;
+            rotationQuaternion = Quaternion.Identity;
             baseNode = node;
         }
 
@@ -29,17 +31,17 @@ namespace Toys
         /// </summary>
         /// <param name="local">Local transformation</param>
         /// <param name="parent">Parent transformation</param>
-        public void Transformation(Matrix4 local, Matrix4 parent)
+        public void Transformation(Matrix4 local)
         {
             localT = localT * local;
-            baseNode.UpdateTransform();
+            //baseNode.UpdateTransform();
         }
 
     
-        public void SetTransform(Matrix4 local, Matrix4 parent)
+        public void SetTransform(Matrix4 local)
         {
             localT = local;
-            baseNode.UpdateTransform();
+            //baseNode.UpdateTransform();
         }
 
 
@@ -47,12 +49,13 @@ namespace Toys
         {
             get
             {
-                return localT.ExtractTranslation();
+                return position;
             }
 
             set
             {
                 var rot = localT.ClearTranslation();
+                position = value;
                 localT = rot * Matrix4.CreateTranslation(value);
                 baseNode.UpdateTransform();
             }
@@ -67,18 +70,32 @@ namespace Toys
 
             set
             {
-                var rot = localT.ClearRotation();
-                localT = Matrix4.CreateFromQuaternion(Quaternion.FromEulerAngles(value)) * rot;
-                baseNode.UpdateTransform();
+                var trans = localT.ClearRotation();
+                localT = Matrix4.CreateFromQuaternion(Quaternion.FromEulerAngles(value)) * trans;
+            }
+        }
+
+        public Quaternion RotationQuaternion
+        {
+            get
+            {
+                return rotationQuaternion;
+            }
+
+            set
+            {
+                var trans = localT.ClearRotation();
+                rotationQuaternion = value;
+                localT = Matrix4.CreateFromQuaternion(value) * trans;
             }
         }
 
         public void UpdateGlobalTransform()
         {
             if (baseNode.Parent != null)
-                globalTransform = baseNode.Parent.GetTransform.globalTransform * localT;
+                GlobalTransform = baseNode.Parent.GetTransform.GlobalTransform * localT;
             else
-                globalTransform = localT;
+                GlobalTransform = localT;
         }
     }
 }

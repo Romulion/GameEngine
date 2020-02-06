@@ -82,12 +82,12 @@ namespace Toys
 
         void Update()
         {
-            prePhysics(worldTrans.globalTransform);
+            prePhysics(worldTrans.GlobalTransform);
         }
 
         void PreRender()
         {
-            var worldInverted = worldTrans.globalTransform;
+            var worldInverted = worldTrans.GlobalTransform;
             worldInverted.Invert();
             postPhysics(worldInverted);
         }
@@ -96,7 +96,7 @@ namespace Toys
 		public void ReinstalizeBodys()
 		{
 			foreach (var body in rigitBodies)
-				body.Reinstalize(worldTrans.globalTransform);	
+				body.Reinstalize(worldTrans.GlobalTransform);	
 		}
     }
 }

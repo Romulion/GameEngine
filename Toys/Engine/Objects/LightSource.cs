@@ -69,7 +69,7 @@ namespace Toys
 				if (md == null)
 					continue;
 				
-				Matrix4 pvm = node.GetTransform.globalTransform * direction * projection;
+				Matrix4 pvm = node.GetTransform.GlobalTransform * direction * projection;
 				shdr.SetUniform(pvm, "pvm");
 				md.DrawSimple();
 			}
@@ -87,7 +87,7 @@ namespace Toys
 
 			foreach (var mesh in meshes)
 			{
-				Matrix4 pvm = mesh.Node.GetTransform.globalTransform * direction * projection;
+				Matrix4 pvm = mesh.Node.GetTransform.GlobalTransform * direction * projection;
 				shdr.SetUniform(pvm, "pvm");
 				mesh.DrawSimple();
 			}

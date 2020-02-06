@@ -23,15 +23,14 @@ namespace Toys
 		{
 			//var mesh = (MeshDrawer) node.GetComponent(typeof(MeshDrawer));
 			SceneNode node = msrd.Node;
-
-			Matrix4 pvm = node.GetTransform.globalTransform * Viev * Projection;
-			Matrix4 norm = node.GetTransform.globalTransform.Inverted();
+            
+			Matrix4 pvm = node.GetTransform.GlobalTransform * Viev * Projection;
+			Matrix4 norm = node.GetTransform.GlobalTransform.Inverted();
 			norm.Transpose();
 			ubs.SetNormalSpace(norm);
 			ubs.SetPVMSpace(pvm);
-			ubs.SetModelSpace(node.GetTransform.globalTransform);
-
-			msrd.Draw();
+			ubs.SetModelSpace(node.GetTransform.GlobalTransform);
+            msrd.Draw();
 
 			if (msrd.OutlineDrawing)
 			{
