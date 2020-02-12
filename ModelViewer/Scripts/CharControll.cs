@@ -17,7 +17,7 @@ namespace ModelViewer
         NavigationAgent navAgent;
         bool isWalking;
         int waipoint = 0;
-        float speed = 0.05f;
+        float speed = 0.04f;
         Vector3 direction;
         float prevDist;
         Animation walk;
