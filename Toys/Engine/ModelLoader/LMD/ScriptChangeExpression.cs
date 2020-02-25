@@ -52,66 +52,6 @@ namespace Toys
 
             Vector4 trans = Vector4.Zero;
             ks = Keyboard.GetState();
-            if (ks[Key.Number0])
-            {
-                trans.X = 0f;
-                trans.Y = 0f;
-                face.UniManager.Set("uv_translation", trans);
-            }
-            else if (ks[Key.Number1])
-            {
-                trans.X = 0.25f;
-                trans.Y = 0f;
-                face.UniManager.Set("uv_translation", trans);
-            }
-            else if (ks[Key.Number2])
-            {
-                trans.X = 0.5f;
-                trans.Y = 0f;
-                face.UniManager.Set("uv_translation", trans);
-            }
-            else if (ks[Key.Number3])
-            {
-                trans.X = 0.75f;
-                trans.Y = 0f;
-                face.UniManager.Set("uv_translation", trans);
-            }
-            else if (ks[Key.Number4])
-            {
-                trans.X = 0f;
-                trans.Y = 0.25f;
-                face.UniManager.Set("uv_translation", trans);
-            }
-            else if (ks[Key.Number5])
-            {
-                trans.X = 0.25f;
-                trans.Y = 0.25f;
-                face.UniManager.Set("uv_translation", trans);
-            }
-            else if (ks[Key.Number6])
-            {
-                trans.X = 0.75f;
-                trans.Y = 0.25f;
-                face.UniManager.Set("uv_translation", trans);
-            }
-            else if (ks[Key.Number7])
-            {
-                trans.X = 0.0f;
-                trans.Y = 0.5f;
-                face.UniManager.Set("uv_translation", trans);
-            }
-            else if (ks[Key.Number8])
-            {
-                trans.X = 0.25f;
-                trans.Y = 0.5f;
-                face.UniManager.Set("uv_translation", trans);
-            }
-            else if (ks[Key.A])
-            {
-                trans.X = 0.5f;
-                trans.Y = 0.5f;
-                face.UniManager.Set("uv_translation", trans);
-            }
 
             if (ks.IsKeyUp(Key.E))
             {
