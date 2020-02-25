@@ -17,7 +17,7 @@ namespace ModelViewer
         NavigationAgent navAgent;
         bool isWalking;
         int waipoint = 0;
-        float speed = 0.04f;
+        public float speed = 0.03f;
         Vector3 direction;
         float prevDist;
         Animation walk;
@@ -33,8 +33,8 @@ namespace ModelViewer
             
             try
             {
-                walk = AnimationLoader.Load("walk.vmd");
-                idle = AnimationLoader.Load("idle.vmd");
+                walk = AnimationLoader.Load("walk.lmd");
+                idle = AnimationLoader.Load("idle.lmd");
                 animator = Node.GetComponent<Animator>() as Animator;
                 animator.Play(idle);
             }
@@ -125,7 +125,7 @@ namespace ModelViewer
         {
             dir.Y = 0;
             //according to Rodrigues rotation formula
-            Vector4 look = -Vector4.UnitZ * Node.GetTransform.GlobalTransform.ClearTranslation();
+            Vector4 look = Vector4.UnitZ * Node.GetTransform.GlobalTransform.ClearTranslation();
             look.Normalize();
             
             Vector3 axis = Vector3.Cross(look.Xyz, dir);

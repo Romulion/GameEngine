@@ -58,6 +58,7 @@ namespace Toys
             FOV = 30;
             projType = ProjectionType.Perspective;
             Main = true;
+            RenderMask = 1;
         }
 
         internal void CalcProjection()

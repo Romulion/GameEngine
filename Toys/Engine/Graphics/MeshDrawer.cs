@@ -23,7 +23,9 @@ namespace Toys
                 Materials = new Material[] { new MaterialPMX(new ShaderSettings(), new RenderDirectives()) };
             }
             Morphes = morphes;
-		}
+            //set default mask
+            RenderMask = 1;
+        }
 
 		//for single material mesh
 		public MeshDrawer(Mesh mesh, Material materials) : this(mesh, new Material[] { materials })

@@ -9,9 +9,9 @@ namespace Toys
 {
     public static class Heuristic
     {
-        public static float ManhattanDistance()
+        public static float ManhattanDistance(Vector2 point1, Vector2 point2)
         {
-            return 0;
+            return (point2- point1).LengthFast;
         }
 
         public static float DiagonalDistance()
