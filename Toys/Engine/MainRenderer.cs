@@ -54,7 +54,8 @@ namespace Toys
 
             foreach (var mesh in meshes)
 			{
-				renderer.Render(mesh);
+                if ((mesh.RenderMask & camera.RenderMask) > 0)
+				    renderer.Render(mesh);
 			}
 		}
 	}

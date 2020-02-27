@@ -17,6 +17,7 @@ namespace Toys
         public static PhysicsEngine pEngine { get; private set; }
         internal static ScriptingEngine sEngine { get; private set; }
         internal static CoreEngine ActiveCore { get; private set; }
+        internal static SoundEngine aEngine { get; private set; }
         public static Time time { get; private set; }
         public static Time frameTimer { get; private set; }
         queue task;
@@ -40,6 +41,7 @@ namespace Toys
 				pEngine = new PhysicsEngine();
                 sEngine = new ScriptingEngine();
                 iHandler = new InputHandler();
+                aEngine = new SoundEngine();
                 time = new Time();
                 frameTimer = new Time();
             }
@@ -92,6 +94,7 @@ namespace Toys
 #if PHYS
             pEngine.Update(elapsed);
 #endif
+            aEngine.Update();
             sEngine.PreRender();
             time.UpdateTime = time.Stop();
         }

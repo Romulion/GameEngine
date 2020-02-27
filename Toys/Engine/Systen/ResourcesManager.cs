@@ -39,7 +39,11 @@ namespace Toys
 				IModelLoader model = ModelLoader.Load(path);
 				asset = model?.GetRiggedModel;
 			}
-
+            else if (tp == typeof(AudioSource))
+            {
+                var audio = new NAudio.Wave.AudioFileReader(path);
+                asset = new AudioSource(audio);
+            }
 			if (asset)
 			{
 				asset.Id = path;

@@ -26,6 +26,9 @@ namespace ModelViewer
         Material[] Materials;
         int node = 0;
         public CharControll cc;
+        AudioListener audioListener;
+        AudioSource src;
+        SliderCompoent slider;
 
         void Awake()
         {
@@ -69,7 +72,7 @@ namespace ModelViewer
             ui1.GetTransform.offsetMax = new Vector2(0, 0);
             ui1.GetTransform.offsetMin = new Vector2(0, -25);
             var image1 = (ButtonComponent)ui1.AddComponent<ButtonComponent>();
-            
+
             var butLabel1 = (TextBox)ui1.AddComponent<TextBox>();
             butLabel1.textCanvas.colour = new Vector3(1, 0, 0);
             butLabel1.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
@@ -105,7 +108,7 @@ namespace ModelViewer
             ui3.GetTransform.anchorMin = new Vector2(0f, 1f);
             ui3.GetTransform.offsetMax = new Vector2(0, -60);
             ui3.GetTransform.offsetMin = new Vector2(0, -80);
-            var slider1 = (SliderCompoent)ui3.AddComponent<SliderCompoent>();
+            slider = (SliderCompoent)ui3.AddComponent<SliderCompoent>();
             ui3.SetParent(ui);
 
             var ui4 = new UIElement();
@@ -153,6 +156,19 @@ namespace ModelViewer
             //MadePath(31);
 
             //slider1.OnValueChanged = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };
+            try
+            {
+                src = ResourcesManager.LoadAsset<AudioSource>("ccccc.mp3");
+                Node.AddComponent(src);
+                audioListener = AudioListener.GetListener();
+                camera.Node.AddComponent(audioListener);
+                src.Play();
+
+            }
+            catch (Exception e)
+            {
+
+            }
         }
 
         void Start()
@@ -257,6 +273,8 @@ namespace ModelViewer
                 force.Z = (float)(6 + 4 * Math.Sin(i*2) +  5 * Math.Cos(i  * 0.4f + 24) + 3 * Math.Sin(i * 1.5f + 10) + 4 * Math.Cos(i * 0.1f + 76) + 3 * Math.Sin(i * 2.9f + 154));
                 physics.SetGravity(force);
             }
+            slider.Value = src.GetCurrentVolume();
+            audioListener.direction = (camera.GetLook * Vector4.UnitZ).Xyz;
             // update++;
             // bc.GetBone(3).SetTransform(new Quaternion(0, 0, (float)(dec2rad(45) * Math.Cos(update * 3 * Math.PI / 180))), new Vector3(0, 0, 0));
             //update += .UpdateTime * 1000;
