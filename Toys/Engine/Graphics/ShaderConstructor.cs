@@ -83,7 +83,7 @@ namespace Toys
 
 			//setting uniform buffers
 			rawVertex += "layout (std140) uniform skeleton\n{\n    mat4 gBones[500];\n};\n";
-			rawVertex += "layout (std140) uniform space {\n\tmat4 model;\n\tmat4 pvm;\n\tmat4 NormalMat;\n\tmat4 lightSpacePos;\n\tmat4 vm;\n};\n";
+			rawVertex += "layout (std140) uniform space {\n\tmat4 model;\n\tmat4 pvm;\n\tmat4 NormalMat;\n\tmat4 lightSpacePos;\n\tmat4 pv;\n\tmat4 vm;\n};\n";
 
 			//setting out structure
 			rawVertex += "out VS_OUT {\n\tvec2 Texcord;\n\tvec3 FragPos;\n\tvec3 Normal;\n\tvec4 lightSpace;\n\tvec3 NormalLocal;\n} vs_out;\n";

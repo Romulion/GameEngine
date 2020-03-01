@@ -27,6 +27,7 @@ namespace ModelViewer
             camera.Background = new BackgroundSkybox();
 
             SceneNode navmeshNode = new SceneNode();
+            navmeshNode.Name = "NavMesh";
             var test = (TestScript)navmeshNode.AddComponent<TestScript>();
             scene.AddObject(navmeshNode);
             test.camera = camera;
@@ -47,7 +48,7 @@ namespace ModelViewer
             if (args.Length != 0)
             {
                 SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
-                //modelNode.Name = "model";
+                modelNode.Name = "model";
                 scene.AddObject(modelNode);
                 test.cc = (CharControll)modelNode.AddComponent<CharControll>();
             }

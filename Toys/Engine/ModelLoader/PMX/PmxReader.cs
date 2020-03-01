@@ -569,7 +569,7 @@ namespace Toys
                 rigit.NameEng = reader.readString();
 				rigit.BoneIndex = reader.readVal(header.GetBoneIndexSize);
 				rigit.GroupId = file.ReadByte();
-                rigit.NonCollisionGroup =  file.ReadInt16();
+                rigit.NonCollisionGroup =  file.ReadUInt16();
 				rigit.PrimitiveType = (PhysPrimitiveType)file.ReadByte();
 				rigit.Size = reader.readVector3() * multipler;
 				rigit.Position = reader.readVector3() * multipler;

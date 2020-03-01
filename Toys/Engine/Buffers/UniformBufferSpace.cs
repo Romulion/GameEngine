@@ -31,15 +31,15 @@ namespace Toys
 		{
 			SetMatrix(mat, 3 * matSize);
 		}
-        /*
+        
 		public void SetPvSpace(Matrix4 mat)
 		{
 			SetMatrix(mat, 4 * matSize);
 		}
-        */
+        
         public void SetVievModelSpace(Matrix4 mat)
         {
-            SetMatrix(mat, 4 * matSize);
+            SetMatrix(mat, 5 * matSize);
         }
     }
 }
