@@ -83,7 +83,7 @@ namespace Toys
 
 			//setting uniform buffers
 			rawVertex += "layout (std140) uniform skeleton\n{\n    mat4 gBones[500];\n};\n";
-			rawVertex += "layout (std140) uniform space {\n\tmat4 model;\n\tmat4 pvm;\n\tmat4 NormalMat;\n\tmat4 lightSpacePos;\n};\n";
+			rawVertex += "layout (std140) uniform space {\n\tmat4 model;\n\tmat4 pvm;\n\tmat4 NormalMat;\n\tmat4 lightSpacePos;\n\tmat4 vm;\n};\n";
 
 			//setting out structure
 			rawVertex += "out VS_OUT {\n\tvec2 Texcord;\n\tvec3 FragPos;\n\tvec3 Normal;\n\tvec4 lightSpace;\n\tvec3 NormalLocal;\n} vs_out;\n";
@@ -110,7 +110,7 @@ namespace Toys
 			rawVertex += "vs_out.lightSpace = lightSpacePos * vec4(vs_out.FragPos,1.0);\n";
 
 			if (setting.EnvType > 0)
-				rawVertex += "vs_out.NormalLocal = mat3(pvm"+ applySkeleton +") * aNormal;\n";
+				rawVertex += "vs_out.NormalLocal = mat3(vm"+ applySkeleton +") * aNormal;\n";
 
 			rawVertex += "}\n";
             //MessageBox.Show(rawVertex);
@@ -236,7 +236,7 @@ namespace Toys
 
 			if (setting.EnvType > 0)
 			{
-				rawFragment += "vec4 envLight = texture(material.texture_spere,-normalize(fs_in.NormalLocal).xy * 0.5+ vec2(0.5));\n";
+				rawFragment += "vec4 envLight = texture(material.texture_spere,vec2(0.5) -normalize(fs_in.NormalLocal).xy * 0.5);\n";
 				if (setting.EnvType == EnvironmentMode.Additive || setting.EnvType == EnvironmentMode.Subtract)
 					rawFragment += "envLight.w = 0f;\n";
 			}
@@ -266,9 +266,8 @@ namespace Toys
                 mul += " * envLight";
             output += ") * shadowcolor";
 
-            rawFragment += "FragColor = (" + output + ") " + mul  + ";\n";
+            rawFragment += "FragColor = (" + output + ") " + mul  + ";\n";         
             rawFragment += "}\n";
-
 			//MessageBox.Show(rawFragment);
             //Console.ReadKey();
             //Console.WriteLine(rawFragment);

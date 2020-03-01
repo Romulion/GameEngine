@@ -24,12 +24,16 @@ namespace Toys
 			renderer = new ModelRenderer();
 		}
 
+        /// <summary>
+        /// obsolette
+        /// </summary>
+        /// <param name="camera">camera to render from</param>
 		public void Render(Camera camera) 
 		{
             renderer.Viev = camera.GetLook;
             renderer.Projection = camera.Projection;
             ubl.SetViewPos(camera.GetPos);
-			ubs.SetPvSpace(camera.GetLook * camera.Projection);
+			//ubs.SetPvSpace(camera.GetLook * camera.Projection);
 
 			foreach (var node in MainScene.GetNodes())
 			{
@@ -50,8 +54,7 @@ namespace Toys
             renderer.Viev = camera.GetLook;
             renderer.Projection = camera.Projection;
             ubl.SetViewPos(camera.GetPos);
-			ubs.SetPvSpace(camera.GetLook * camera.Projection);
-
+            //ubs.SetPvSpace(camera.GetLook * camera.Projection);
             foreach (var mesh in meshes)
 			{
                 if ((mesh.RenderMask & camera.RenderMask) > 0)
