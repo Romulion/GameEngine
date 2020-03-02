@@ -21,7 +21,7 @@ namespace Toys
         Bitmap imageBitmap;
         RenderTexture renderTex;
         RenderBuffer renderBuffer;
-        bool isLeftButtonMouseDown = false;
+        
         bool keyPressed = false;
         BackgroundBase backgroundBackup;
 
@@ -29,6 +29,7 @@ namespace Toys
         PostProcessing ppSh;
         Shader shaderPP;
 
+        public bool IsToggle = false;
         public MemoryStream ImageStream { get; private set; }
         void Awake()
         {
@@ -64,28 +65,11 @@ namespace Toys
                 imageBitmap = new Bitmap(width, height);
             }
 
-            KeyboardState keyState = Keyboard.GetState();
-            if (GLWindow.gLWindow.Focused && keyState[Key.B] && !keyPressed)
+            if (IsToggle)
             {
-                if (camera.RenderBuffer != 0)
-                {
-                    ppSh.ClearColorBuffer = false;
-                    camera.Background = backgroundBackup;
-                    camera.RenderBuffer = 0;
-                }
-                else
-                {
-                    ppSh.ClearColorBuffer = true;
-                    backgroundBackup = camera.Background;
-                    camera.Background = null;
-                    camera.RenderBuffer = renderBufferId;
-                }
-
-                keyPressed = true;
+                IsToggle = false;
+                Toggle();
             }
-
-            if (!keyState[Key.B] && keyPressed)
-                keyPressed = false;
         }
 
         void PostRender()
@@ -102,6 +86,23 @@ namespace Toys
                 imageBitmap.Save(ImageStream,ImageFormat.Png);
             }
 
+        }
+
+        void Toggle()
+        {
+            if (camera.RenderBuffer != 0)
+            {
+                ppSh.ClearColorBuffer = false;
+                camera.Background = backgroundBackup;
+                camera.RenderBuffer = 0;
+            }
+            else
+            {
+                ppSh.ClearColorBuffer = true;
+                backgroundBackup = camera.Background;
+                camera.Background = null;
+                camera.RenderBuffer = renderBufferId;
+            }
         }
 
         void OnDestroy()

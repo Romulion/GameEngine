@@ -8,6 +8,7 @@ namespace ModelViewer
     {
         public DynamicFormStream script { get; private set; }
         public Window wndw;
+        bool steamState;
 
         public void SetDSS(DynamicFormStream dynamicForm)
         {
@@ -18,6 +19,14 @@ namespace ModelViewer
         {
             if (wndw == null || script == null)
                 return;
+
+            if (steamState != wndw.stream)
+            {
+                script.IsToggle = true;
+                steamState = wndw.stream;
+                //skip frame to render initial data;
+                return;
+            }
             
             try
             {
