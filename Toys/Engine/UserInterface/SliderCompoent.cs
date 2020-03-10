@@ -8,27 +8,48 @@ using OpenTK;
 namespace Toys
 {
     /// <summary>
+    /// Slider Component
     /// filling from left to right
-    /// 
     /// </summary>
     public class SliderCompoent : InteractableComponent
     {
         public Action OnValueChanged;
-        static Material defaultMaterial;
         ShaderUniform shaderUniform;
         ShaderUniform colorMask;
         static Texture2D bgTexture;
         static Texture2D fillTexture;
-        static Texture2D padTexture;
         Vector4 color;
         internal ButtonStates State { get; private set; }
-
+        private float value;
         /// <summary>
+        /// Slider value
         /// from 0 to 1
         /// </summary>
-        public float Value = 0.7f;
+        public float Value {
+            get {
+                return value;
+            }
+            set
+            {
+                if (value > 1)
+                    this.value = 1;
+                else if (value < 0)
+                    this.value = 0;
+                else
+                    this.value = value;
+            }
+        }
+        /// <summary>
+        /// Knob size in pixels
+        /// </summary>
         public float ButtonSize = 20;
+        /// <summary>
+        /// Slider Box Heigth
+        /// </summary>
         public float SliderBoxSize = 7;
+        /// <summary>
+        /// Slider Box Fill Area Heigth
+        /// </summary>
         public float SliderFillSize = 5;
 
         public SliderCompoent() : base(typeof(SliderCompoent))
@@ -37,23 +58,13 @@ namespace Toys
             shaderUniform = Material.UniManager.GetUniform("model");
             colorMask = Material.UniManager.GetUniform("color_mask");
             color = Vector4.One;
+            bgTexture = null;
+            fillTexture = null;
         }
 
+        //Load Default Data
         static SliderCompoent()
         {
-            /*
-            ShaderSettings ss = new ShaderSettings();
-            RenderDirectives rd = new RenderDirectives();
-            string path = "Toys.Resourses.shaders.";
-            string vs = ShaderManager.ReadFromAssetStream(path + "UIElement.vsh");
-            string fs = ShaderManager.ReadFromAssetStream(path + "UIElement.fsh");
-            ss.TextureDiffuse = true;
-            defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
-            defaultMaterial.Name = "Texture";
-            */
-            //var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
-            //var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.button2.png"));
-            //bgTexture =  new Texture2D(pic, TextureType.Toon, "def");
         }
 
         internal override void AddComponent(UIElement nod)
@@ -73,10 +84,7 @@ namespace Toys
            
             Material.ApplyMaterial();
             //draw bg
-            //shink heigth by 60%
             var trans = Node.GetTransform.GlobalTransform;
-            //trans.M42 += trans.M22 * 0.31f;
-            //trans.M22 *= 0.38f;
             trans.M42 += (trans.M22 - SliderBoxSize) * 0.5f;
             trans.M22 = SliderBoxSize;
 
@@ -86,11 +94,7 @@ namespace Toys
             base.Draw();
 
             //draw fill gauge
-            //trans = Node.GetTransform.GlobalTransform;
             trans.M11 *= Value;
-            //trans.M41 = Node.GetTransform.GlobalRect.Left * 2 - (1 - trans.M11);
-            //trans.M42 += trans.M22 * 0.3f;
-            //trans.M22 *= 0.4f;
             trans.M42 += (trans.M22 - SliderFillSize) * 0.5f;
             trans.M22 = SliderFillSize;
 
@@ -158,6 +162,7 @@ namespace Toys
                 Value = 1;
             else
                 Value = (x - trans.Left) / trans.Width;
+
             if (oldValue != Value)
                 OnValueChanged?.Invoke();
         }

@@ -17,10 +17,8 @@ namespace Toys
 
     public class ScrollBoxComponent : InteractableComponent
     {
-        static Material defaultMaterial;
         ShaderUniform shaderUniform;
         ShaderUniform colorMask;
-        static Texture2D defaultTexture;
         public UIMaskComponent Mask;
 
         public Texture2D Texture;
@@ -28,6 +26,9 @@ namespace Toys
         Vector2 cursorPrev = Vector2.Zero;
         bool moveInitialized = false;
 
+        /// <summary>
+        /// Direction where area can be scroled
+        /// </summary>
         public ScrollMode ScrollDirection { get; set; }
         internal ButtonStates State { get; private set; }
         public ScrollBoxComponent() : base(typeof(ScrollBoxComponent))
@@ -41,19 +42,6 @@ namespace Toys
 
         static ScrollBoxComponent()
         {
-            /*
-            ShaderSettings ss = new ShaderSettings();
-            RenderDirectives rd = new RenderDirectives();
-            string path = "Toys.Resourses.shaders.";
-            string vs = ShaderManager.ReadFromAssetStream(path + "UIElement.vsh");
-            string fs = ShaderManager.ReadFromAssetStream(path + "UIElement.fsh");
-            ss.TextureDiffuse = true;
-            defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
-            defaultMaterial.Name = "Texture";
-            var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
-            var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.button2.png"));
-            defaultTexture = new Texture2D(pic, TextureType.Toon, "def");
-            */
         }
 
         internal override void AddComponent(UIElement nod)
@@ -146,7 +134,7 @@ namespace Toys
                 move.X = x - cursorPrev.X;
                 if (move.X > 0)
                 {
-                    //chekc left bound
+                    //check left bound
                     delta = leftBott.X - Node.GetTransform.Min.X;
                     if (delta < 0 || (delta == 0 && move.X < 0))
                         move.X = 0;
@@ -155,7 +143,7 @@ namespace Toys
                 }
                 else
                 {
-                    //chekc right bound
+                    //check right bound
                     delta = rightTop.X - Node.GetTransform.Max.X;
                     if (delta > 0)
                         move.X = 0;
@@ -167,7 +155,7 @@ namespace Toys
             if (ScrollDirection.HasFlag(ScrollMode.Vertical))
             {
                 move.Y = y - cursorPrev.Y;
-                //chekc Top bound
+                //check Top bound
                 if (move.Y < 0)
                 {
                     delta = rightTop.Y - Node.GetTransform.Max.Y;
@@ -176,7 +164,7 @@ namespace Toys
                     else
                         move.Y = (delta - move.Y < 0) ? move.Y : delta;
                 }
-                //chekc bottom bound
+                //check bottom bound
                 else
                 {
                     delta = leftBott.Y - Node.GetTransform.Min.Y;
@@ -187,9 +175,9 @@ namespace Toys
                 }
             }
 
+            //update position
             Node.GetTransform.offsetMax += move;
             Node.GetTransform.offsetMin += move;
-            //update position
             cursorPrev.X = x;
             cursorPrev.Y = y;
         }

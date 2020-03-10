@@ -15,7 +15,6 @@ namespace Toys
 		Material[] mats;
 		List<Bone> bones = new List<Bone>();
 		const float multiplier = 0.01f;
-        int bonesCounter = 0;
 
 		public ReaderDAE(string filename)
 		{

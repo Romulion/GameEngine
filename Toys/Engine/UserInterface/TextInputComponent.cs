@@ -10,42 +10,41 @@ namespace Toys
     public class TextInputComponent : InteractableComponent
     {
         static Texture2D Texture;
-        static Texture2D chekMarkDefault;
-        static Material defaultMaterial;
         ShaderUniform shaderUniform;
         ShaderUniform colorMask;
         Vector4 color;
         int caretPadding = 2;
+        internal Vector2 textPadding = new Vector2(2,5);
         internal readonly TextBox Text = new TextBox();
 
+        /// <summary>
+        /// Size of input caret
+        /// </summary>
         public Vector2 CaretSize = new Vector2(10,2);
+
+        /// <summary>
+        /// Event triggered if Input unfocused
+        /// </summary>
         public Action OnChange;
+
+        /// <summary>
+        /// Active for keyboard input
+        /// </summary>
         public bool IsFocused { get; private set; }
         internal ButtonStates State { get; private set; }
         public TextInputComponent() : base(typeof(CheckboxComponent))
         {
-            //Material = defaultMaterial;
             shaderUniform = Material.UniManager.GetUniform("model");
             colorMask = Material.UniManager.GetUniform("color_mask");
             color = Vector4.One;
             Text.textCanvas.colour = Vector3.Zero;
             Text.textCanvas.alignHorizontal = TextAlignHorizontal.Left;
             Text.textCanvas.alignVertical = TextAlignVertical.Bottom;
+            Texture = null;
         }
 
         static TextInputComponent()
         {
-            /*
-            ShaderSettings ss = new ShaderSettings();
-            RenderDirectives rd = new RenderDirectives();
-            string path = "Toys.Resourses.shaders.";
-            string vs = ShaderManager.ReadFromAssetStream(path + "UIElement.vsh");
-            string fs = ShaderManager.ReadFromAssetStream(path + "UIElement.fsh");
-            ss.TextureDiffuse = true;
-            defaultMaterial = new MaterialCustom(ss, rd, vs, fs);
-            defaultMaterial.Name = "Texture";
-            Texture = Texture2D.LoadEmpty();
-            */
         }
 
         internal override void AddComponent(UIElement nod)
@@ -110,7 +109,6 @@ namespace Toys
         {
             Material.ApplyMaterial();
             var trans = Node.GetTransform.GlobalTransform;
-
             shaderUniform.SetValue(trans);
             colorMask.SetValue(color);
 
@@ -126,7 +124,6 @@ namespace Toys
                 trans.M22 = CaretSize.Y;
                 shaderUniform.SetValue(trans);
                 colorMask.SetValue(new Vector4(Vector3.Zero, 0.5f));
-                chekMarkDefault?.BindTexture();
                 base.Draw();
             }
         }
@@ -134,6 +131,7 @@ namespace Toys
         internal void Deactivate()
         {
             IsFocused = false;
+            OnChange?.Invoke();
         }
 
         public override VisualComponent Clone()

@@ -7,21 +7,28 @@ using OpenTK;
 
 namespace Toys
 {
-    /// <summary>
-    /// test prototype
-    /// </summary>
     public class CheckboxComponent : InteractableComponent
     {
+        //Graphics data
         static Texture2D Texture;
         static Texture2D chekMarkDefault;
-        static Material defaultMaterial;
         ShaderUniform shaderUniform;
         ShaderUniform colorMask;
         Vector4 color;
 
+        /// <summary>
+        /// Checkbox size in pixels
+        /// </summary>
         public float BoxSize = 20;
 
+        /// <summary>
+        /// Event triggered when checkbox clicked
+        /// </summary>
         public Action OnChange;
+
+        /// <summary>
+        /// Current state of checkbox
+        /// </summary>
         public bool IsOn { get; set; }
         internal ButtonStates State { get; private set; }
         public CheckboxComponent() : base(typeof(CheckboxComponent))
@@ -32,6 +39,7 @@ namespace Toys
             color = Vector4.One;
         }
 
+        //Load Default Data
         static CheckboxComponent()
         {
             /*
@@ -113,7 +121,6 @@ namespace Toys
             trans.M41 += trans.M11 - BoxSize;
             trans.M11 = trans.M22  = BoxSize;
 
-            //Console.WriteLine(trans);
             shaderUniform.SetValue(trans);
             colorMask.SetValue(color);
 

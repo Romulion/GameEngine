@@ -9,7 +9,7 @@ namespace Toys
         private Matrix4 localT;
         private SceneNode baseNode;
         Quaternion rotationQuaternion;
-		Vector3 rotation = new Vector3();
+		//Vector3 rotation = new Vector3();
 		Vector3 position = new Vector3();
 
         // public Vector3 scale;

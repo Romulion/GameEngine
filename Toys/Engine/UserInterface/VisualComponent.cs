@@ -7,15 +7,25 @@ using OpenTK;
 
 namespace Toys
 {
+    /// <summary>
+    /// Base class for user interface graphics componetns
+    /// </summary>
     public abstract class VisualComponent : Resource
     {
         internal Mesh Mesh { get; private set; }
-
+        Logger logger = new Logger("VisualComponent");
         static Mesh defaultMesh;
         static Material defaultMaterial;
         internal static Texture2D defaultTexture { get; private set; }
+
+        /// <summary>
+        /// Drawing Material for Visual Component
+        /// </summary>
         public Material Material { get; set; }
 
+        /// <summary>
+        /// Allow assigning multiple components of same type to one object
+        /// </summary>
         public bool AllowMultiple { get; protected internal set; }
         protected VisualComponent(Type t) : base(t)
         {
@@ -27,6 +37,7 @@ namespace Toys
 
         static VisualComponent()
         {
+            //create Quad mesh
             Vertex3D[] verts = new Vertex3D[]
            {
                 new Vertex3D(new Vector2(0,1), new Vector2(0,0)),
@@ -38,6 +49,7 @@ namespace Toys
            };
             defaultMesh = new Mesh(verts, new int[] { 0, 1, 2, 3, 4, 5 });
 
+            //load default material
             ShaderSettings ss = new ShaderSettings();
             RenderDirectives rd = new RenderDirectives();
             string path = "Toys.Resourses.shaders.";
@@ -50,6 +62,9 @@ namespace Toys
             defaultTexture = Texture2D.LoadEmpty();
         }
 
+        /// <summary>
+        /// Base Node of Component
+        /// </summary>
         public UIElement Node { get; protected set; }
 
         internal virtual void Draw()
@@ -67,7 +82,9 @@ namespace Toys
         internal virtual void AddComponent(UIElement nod)
         {
             if (Node != null)
-                throw new Exception("");
+            {
+                logger.Error($"Component {Type} already assigned to node {Node.Name}", "");
+            }
             else
             {
                 CoreEngine.gEngine.UIEngine.visualComponents.Add(this);

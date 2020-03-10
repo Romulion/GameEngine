@@ -9,13 +9,22 @@ namespace Toys
 {
     public class ButtonComponent : InteractableComponent
     {
+        /// <summary>
+        /// Event proceeded when button clicked
+        /// </summary>
         public Action OnClick;
-        static Material defaultMaterial;
+
+        //Graphics data
         ShaderUniform shaderUniform;
         ShaderUniform colorMask;
-        static Texture2D defaultTexture;
+        new static Texture2D defaultTexture;
+
+        /// <summary>
+        /// Button texture
+        /// </summary>
         public Texture2D Texture;
 
+        //color mask of element
         Vector4 color;
         internal ButtonStates State { get; private set;}
         public ButtonComponent() : base(typeof(ButtonComponent))
@@ -27,6 +36,7 @@ namespace Toys
             Texture = defaultTexture;
         }
 
+        //load default data
         static ButtonComponent()
         {
             /*
@@ -80,6 +90,7 @@ namespace Toys
             Normal();
         }
 
+
         internal override void Hover()
         {
             if (State == ButtonStates.Clicked || State == ButtonStates.Normal)
@@ -88,7 +99,6 @@ namespace Toys
                 color = new Vector4(0.7f, 1, 0.7f, 1);
             }
         }
-
 
         internal override void Normal()
         {

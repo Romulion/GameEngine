@@ -10,9 +10,9 @@ namespace Toys
 		CollisionDispatcher dispatcher;
 		DbvtBroadphase broadphase;
 		CollisionConfiguration collisionConf;
-        ConstraintSolverPoolMultiThreaded Solver;
+        //ConstraintSolverPoolMultiThreaded Solver;
 
-        private int MaxThreadCount = 4;
+        //private int MaxThreadCount = 4;
         private int currentScheduler;
         private List<TaskScheduler> schedulers = new List<TaskScheduler>();
 

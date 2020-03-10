@@ -39,7 +39,7 @@ namespace UtilityClient
 			}
 			catch (Exception ex)
 			{
-				//Console.WriteLine("Возникло исключение: " + ex.Message);
+				//Console.WriteLine(" " + ex.Message);
 			}
 			finally
 			{

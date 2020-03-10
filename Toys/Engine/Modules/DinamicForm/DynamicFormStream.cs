@@ -22,7 +22,6 @@ namespace Toys
         RenderTexture renderTex;
         RenderBuffer renderBuffer;
         
-        bool keyPressed = false;
         BackgroundBase backgroundBackup;
 
         //post processing

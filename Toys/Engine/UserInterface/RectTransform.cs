@@ -8,18 +8,35 @@ using System.Drawing;
 
 namespace Toys
 {
+    /// <summary>
+    /// Represents Size and Location of User Interface Element
+    /// </summary>
     public class RectTransform
     {
         //top right
+        /// <summary>
+        /// Anchor to top right postion
+        /// </summary>
         public Vector2 anchorMax;
+        /// <summary>
+        /// Top right position (in pixels)
+        /// relative to anchor
+        /// </summary>
         public Vector2 offsetMax;
-        
+
         //bottom left
+        /// <summary>
+        /// Anchor to bottom left postion
+        /// </summary>
         public Vector2 anchorMin;
+        /// <summary>
+        /// Bottom left position (in pixels)
+        /// relative to anchor
+        /// </summary>
         public Vector2 offsetMin;
 
+        //calculated values
         public RectangleF GlobalRect { get; private set; }
-
         internal Vector2 Max { get; private set; }
         internal Vector2 Min { get; private set; }
         private Matrix4 transformMat;
@@ -32,10 +49,6 @@ namespace Toys
             }
         }
 
-        public Matrix4 globalTransform
-        {
-            get; private set;
-        }
         internal RectTransform(UIElement ui) : this()
         {
             baseNode = ui;
@@ -65,7 +78,7 @@ namespace Toys
         }
         */
 
-        public void UpdateGlobalPositionPix()
+        internal void UpdateGlobalPosition()
         {
             Vector2 screenSize = new Vector2(CoreEngine.gEngine.Width,CoreEngine.gEngine.Height);
 
@@ -105,7 +118,7 @@ namespace Toys
             trans.offsetMax = offsetMax;
             trans.anchorMin = anchorMin;
             trans.offsetMin = offsetMin;
-            trans.UpdateGlobalPositionPix();
+            trans.UpdateGlobalPosition();
             return trans;
         }
     }
