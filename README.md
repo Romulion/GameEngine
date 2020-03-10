@@ -1,7 +1,10 @@
 # GameEngine
 
 Simple engine for viewing 3d models
-requirement OpenGL 4.3
+requirements:  
+OpenGL 4.3  
+OpenAL driver  
+.Net Framework 4.8  
 
 Features
 * Open 3d model with one click
@@ -10,8 +13,6 @@ Features
 
 TODO
 1) Support more model fromats (fbx, obj)
-2) Graphic interface
-3) Audio engine
-
-Known Issues
-* Nvidia cards hight cpu usage (workout disable cpu optimisation in driver settings)
+2) Scene state saver
+3) Support for HDR
+4) Postprocessing pipeline
