@@ -81,7 +81,7 @@ namespace ModelViewer
             butLabel1.SetText("path");
             butLabel1.textCanvas.Scale = 0.5f;
 
-            image1.OnClick = () => { cc?.SetDestination(camera.Node.GetTransform.GlobalTransform.ExtractTranslation()); };
+            image1.OnClick = () => { cc?.SetDestination(camera.Node.GetTransform.Position); };
             var ui2 = new UIElement();
             ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
@@ -273,8 +273,11 @@ namespace ModelViewer
                 force.Z = (float)(6 + 4 * Math.Sin(i*2) +  5 * Math.Cos(i  * 0.4f + 24) + 3 * Math.Sin(i * 1.5f + 10) + 4 * Math.Cos(i * 0.1f + 76) + 3 * Math.Sin(i * 2.9f + 154));
                 physics.SetGravity(force);
             }
-            //slider.Value = src.GetCurrentVolume();
-            //audioListener.direction = (camera.GetLook * Vector4.UnitZ).Xyz;
+            if (src)
+            {
+                //slider.Value = src.GetCurrentVolume() * 2.5f;
+                //audioListener.direction = (camera.GetLook * Vector4.UnitZ).Xyz;
+            }
             //Console.WriteLine(audioListener.direction);
             // update++;
             // bc.GetBone(3).SetTransform(new Quaternion(0, 0, (float)(dec2rad(45) * Math.Cos(update * 3 * Math.PI / 180))), new Vector3(0, 0, 0));

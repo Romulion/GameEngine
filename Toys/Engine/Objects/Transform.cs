@@ -9,42 +9,40 @@ namespace Toys
         private Matrix4 localT;
         private SceneNode baseNode;
         Quaternion rotationQuaternion;
-		//Vector3 rotation = new Vector3();
-		Vector3 position = new Vector3();
+		Vector3 rotation;
+		Vector3 position;
+        Vector3 scale;
 
-        // public Vector3 scale;
+        /// <summary>
+        /// Get Matrix in World Coordinates
+        /// </summary>
         public Matrix4 GlobalTransform
         {
             get; private set;
         } 
 
-        public Transform(SceneNode node)
+        internal Transform(SceneNode node)
         {
             localT = Matrix4.Identity;
             GlobalTransform = Matrix4.Identity;
             rotationQuaternion = Quaternion.Identity;
+            rotation = Vector3.Zero;
+            position = Vector3.Zero;
             baseNode = node;
+            scale = Vector3.One;
+        }
+    
+        /// <summary>
+        /// Local Transformation Matrix (Model space)
+        /// </summary>
+        public Matrix4 GetTransform
+        {
+            get { return localT; }
         }
 
         /// <summary>
-        /// Make transform to object
+        /// Position of Node Relative to Parent
         /// </summary>
-        /// <param name="local">Local transformation</param>
-        /// <param name="parent">Parent transformation</param>
-        public void Transformation(Matrix4 local)
-        {
-            localT = localT * local;
-            //baseNode.UpdateTransform();
-        }
-
-    
-        public void SetTransform(Matrix4 local)
-        {
-            localT = local;
-            //baseNode.UpdateTransform();
-        }
-
-
         public Vector3 Position
         {
             get
@@ -54,27 +52,50 @@ namespace Toys
 
             set
             {
-                var rot = localT.ClearTranslation();
                 position = value;
-                localT = rot * Matrix4.CreateTranslation(value);
-                baseNode.UpdateTransform();
+                RecalculateLocal();
             }
         }
 
-        public Vector3 Rotation
+        /// <summary>
+        /// Scale of Node Object
+        /// </summary>
+        public Vector3 Scale
         {
             get
             {
-                return localT.ExtractRotation().Xyz;
+                return scale;
             }
 
             set
             {
-                var trans = localT.ClearRotation();
-                localT = Matrix4.CreateFromQuaternion(Quaternion.FromEulerAngles(value)) * trans;
+                scale = value;
+                RecalculateLocal();
             }
         }
 
+
+        /// <summary>
+        /// Euler Angle Rotation; Order XYZ
+        /// </summary>
+        public Vector3 Rotation
+        {
+            get
+            {
+                return rotation;
+            }
+
+            set
+            {
+                rotation = value;
+                rotationQuaternion = Quaternion.FromEulerAngles(rotation);
+                RecalculateLocal();
+            }
+        }
+
+        /// <summary>
+        /// Rotation Quaternion
+        /// </summary>
         public Quaternion RotationQuaternion
         {
             get
@@ -84,18 +105,23 @@ namespace Toys
 
             set
             {
-                var trans = localT.ClearRotation();
                 rotationQuaternion = value;
-                localT = Matrix4.CreateFromQuaternion(value) * trans;
+                rotation = rotationQuaternion.ToEulerXYZ();
+                RecalculateLocal();
             }
         }
 
-        public void UpdateGlobalTransform()
+        internal void UpdateGlobalTransform()
         {
             if (baseNode.Parent != null)
                 GlobalTransform = baseNode.Parent.GetTransform.GlobalTransform * localT;
             else
                 GlobalTransform = localT;
+        }
+
+        private void RecalculateLocal()
+        {
+            localT = Matrix4.CreateScale(scale) * Matrix4.CreateFromQuaternion(rotationQuaternion) * Matrix4.CreateTranslation(position);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace ModelViewerWF
             {
                 SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
                 modelNode.Name = "model";
-                scene.AddObject(modelNode);
+                scene.AddNode2Root(modelNode);
             }
             var camera = new Camera();
             SceneNode cameraNode = new SceneNode();
@@ -29,7 +29,7 @@ namespace ModelViewerWF
             //cameraNode.AddComponent<FrameTimeScript>();
             cameraNode.GetTransform.Position = new Vector3(0, 1f, 3);
 
-            scene.AddObject(cameraNode);
+            scene.AddNode2Root(cameraNode);
             cameraNode.AddComponent<DynamicFormScript>();
 
             var task = new Task(() =>

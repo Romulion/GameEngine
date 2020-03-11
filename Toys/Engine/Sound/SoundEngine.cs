@@ -34,7 +34,7 @@ namespace Toys
                 context = Alc.CreateContext(device, (int*)null);
                 Alc.MakeContextCurrent(context);
             }
-            Console.WriteLine(Alc.GetString(IntPtr.Zero, AlcGetString.AllDevicesSpecifier));
+            //Console.WriteLine(Alc.GetString(IntPtr.Zero, AlcGetString.AllDevicesSpecifier));
             version = AL.Get(ALGetString.Version);
             vendor = AL.Get(ALGetString.Vendor);
             renderer = AL.Get(ALGetString.Extensions);

@@ -8,6 +8,9 @@ namespace Toys
 {
     public class ScriptingComponent : Component
     {
+        /// <summary>
+        /// Check if script is already initialized
+        /// </summary>
         public bool IsInstalized { get; internal set; }
 
         public ScriptingComponent() : base(typeof(ScriptingComponent))

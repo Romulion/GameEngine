@@ -15,7 +15,7 @@ namespace Toys
     {
         int buffer, source, bps;
         byte[] byteBuffer;
-
+        Vector3 dir = Vector3.UnitZ;
         public bool IsPlaing { get; private set; }
         public AudioSource() : base(typeof(AudioSource))
         {
@@ -40,7 +40,6 @@ namespace Toys
                 byteBuffer = new byte[audioData.Length];
                 audioData.Read(byteBuffer, 0, byteBuffer.Length);
             }
-
             //read data to pointer
             var format = GetFormat(audioData.WaveFormat.Channels,bps);
             IntPtr unmanagedPointer = Marshal.AllocHGlobal(byteBuffer.Length);
@@ -49,6 +48,7 @@ namespace Toys
             Marshal.FreeHGlobal(unmanagedPointer);
             AL.Source(source, ALSourcei.Buffer, buffer);
             AL.Source(source, ALSourceb.Looping, true);
+            AL.Source(source, ALSource3f.Direction, ref dir);
         }
 
         ALFormat GetFormat(int channels, int bps)
@@ -82,15 +82,27 @@ namespace Toys
                 result = byteBuffer[position] / (float)byte.MaxValue;
             else if (bps == 16)
             {
+                int n = 0;
                 //median from 121 samples
-                for (int i = -60; i < 61; i++)
-                    result += BitConverter.ToUInt16(byteBuffer, position + i * 16);
 
-                result /= (float)ushort.MaxValue * 121;
+                for (int i = -500; i < 501; i++)
+                {
+                    var pos = position + i * 2;
+                    if (pos < 0)
+                        continue;
+                    if (pos > byteBuffer.Length)
+                        break;
+                    result += BitConverter.ToUInt16(byteBuffer, pos);
+                    n++;
+                }
+                
+                if (n > 0)
+                    result /= (float)ushort.MaxValue * n;
+                
             }
             else if (bps == 32)
                 result = BitConverter.ToUInt32(byteBuffer, position) / (float)uint.MaxValue;
-            return result;
+            return -(float)Math.Log10(result);
         }
 
         public void Play()
@@ -116,6 +128,7 @@ namespace Toys
         {
             var pos = Node.GetTransform.Position;
             AL.Source(source, ALSource3f.Position, ref pos);
+            //AL.Source(source, ALSource3f.Direction,Node.GetTransform.GetDirection());
             //AL.Source(source, ALSource3f.Velocity, ref pos);
         }
         internal override void AddComponent(SceneNode nod)

@@ -80,7 +80,7 @@ namespace ModelViewer
                 core.addTask = () =>
                 {
                     SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(fileChooserAdd.Filename);
-                    scene.AddObject(modelNode);
+                    scene.AddNode2Root(modelNode);
                     ready = true;
                 };
                 //wait for model to load

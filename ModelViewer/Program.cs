@@ -29,7 +29,7 @@ namespace ModelViewer
             SceneNode navmeshNode = new SceneNode();
             navmeshNode.Name = "NavMesh";
             var test = (TestScript)navmeshNode.AddComponent<TestScript>();
-            scene.AddObject(navmeshNode);
+            scene.AddNode2Root(navmeshNode);
             test.camera = camera;
             //node.Name = "Model1";
             //var loader = new ReaderLMD(args[0]);
@@ -49,7 +49,7 @@ namespace ModelViewer
             {
                 SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
                 modelNode.Name = "model";
-                scene.AddObject(modelNode);
+                scene.AddNode2Root(modelNode);
                 test.cc = (CharControll)modelNode.AddComponent<CharControll>();
             }
 

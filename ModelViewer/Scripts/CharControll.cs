@@ -46,7 +46,7 @@ namespace ModelViewer
         {
             WalkingState(false);
             path = null;
-            pathTask = navAgent.SearchPathAsync(Node.GetTransform.GlobalTransform.ExtractTranslation(),dest);
+            pathTask = navAgent.SearchPathAsync(Node.GetTransform.Position,dest);
             Console.WriteLine("path calc started");
         }
 
@@ -69,9 +69,8 @@ namespace ModelViewer
                 if (path.Length > 0)
                 {
                     UpdatePathColor();
-                    
                     waipoint = 0;
-                    direction = path[0] - Node.GetTransform.GlobalTransform.ExtractTranslation();
+                    direction = path[0] - Node.GetTransform.Position;
                     prevDist = direction.Length;
                     direction.Normalize();
                     RotateToDirection(direction);
@@ -86,7 +85,7 @@ namespace ModelViewer
 
             if (path != null && isWalking)
             {
-                var coord = Node.GetTransform.GlobalTransform.ExtractTranslation();
+                var coord = Node.GetTransform.Position;
                 var distance = (coord - path[waipoint]).Length;
                 if (distance < 0.06f || prevDist < distance)
                 {
@@ -125,18 +124,18 @@ namespace ModelViewer
         {
             dir.Y = 0;
             //according to Rodrigues rotation formula
-            Vector4 look = Vector4.UnitZ * Node.GetTransform.GlobalTransform.ClearTranslation();
+            Vector3 look = Vector3.UnitZ * new Matrix3(Node.GetTransform.GlobalTransform);
             look.Normalize();
             
-            Vector3 axis = Vector3.Cross(look.Xyz, dir);
+            Vector3 axis = Vector3.Cross(look, dir);
             //Matrix4 crossMAt = new Matrix4(new Matrix3(0, -axis.Z, axis.Y, axis.Z, 0, -axis.X, -axis.Y, axis.X, 0));
             // var rotation = Matrix4.Identity + crossMAt + crossMAt * crossMAt * (1 / (1 + Vector3.Dot(look.Xyz, dir)));
             // Node.GetTransform.RotationQuaternion *= rotation.ExtractRotation();
-            var rotation = Quaternion.FromAxisAngle(axis, (float)Math.Acos(Vector3.Dot(dir, look.Xyz)));
+            var rotation = Quaternion.FromAxisAngle(axis, (float)Math.Acos(Vector3.Dot(dir, look)));
             Node.GetTransform.RotationQuaternion *= rotation;
             Console.WriteLine(look);
             Console.WriteLine(dir);
-            Console.WriteLine(Vector4.UnitZ * Matrix4.CreateFromQuaternion(Node.GetTransform.RotationQuaternion));
+            Console.WriteLine(Node.GetTransform.RotationQuaternion);
         }
 
 

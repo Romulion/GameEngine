@@ -8,19 +8,37 @@ namespace Toys
 	public class SceneNode : Resource
     {
         Logger logger = new Logger("SceneNode");
+        readonly Transform transform;
+        List<Component> components;
+
+        /// <summary>
+        /// Node first generation childs
+        /// </summary>
         public List<SceneNode> Childs { get; private set; }
-        public SceneNode Parent;
-        Transform transform;
+
+        /// <summary>
+        /// Parent of node
+        /// </summary>
+        public SceneNode Parent { get; private set; }
+        
+        /// <summary>
+        /// Node name
+        /// </summary>
 		public string Name = "Node";
+
+        /// <summary>
+        /// Node activity in hierarchy
+        /// </summary>
 		public bool Active = true;
-		List<Component> components;
-        public Scene scene { get; internal set; }
+
+        public Scene ParentScene { get; internal set; }
 
 		public SceneNode() : base (typeof(SceneNode))
         {
             Childs = new List<SceneNode>();
 			components = new List<Component>();
             Parent = null;
+            ParentScene = null;
             transform = new Transform(this);
         }
 
@@ -32,11 +50,17 @@ namespace Toys
             }
         }
 
+        /// <summary>
+        /// Set parent to node
+        /// node can have only one parent
+        /// </summary>
+        /// <param name="node">parent node</param>
         public void SetParent(SceneNode node)
         {
             if (Parent != null)
                 Parent.RemoveChild(this);
 
+            ParentScene = node.ParentScene;
             Parent = node;
             Parent.AddChilld(this);
             UpdateTransform();
@@ -47,7 +71,8 @@ namespace Toys
             transform.UpdateGlobalTransform();
             foreach (var child in Childs)
             {
-                child.UpdateTransform();
+                if (child.Active)
+                    child.UpdateTransform();
             }
         }
 
@@ -56,18 +81,25 @@ namespace Toys
             Childs.Remove(node);
         }
 
-        internal void AddChilld(SceneNode node)
+        private void AddChilld(SceneNode node)
         {
             Childs.Add(node);
         }
 
-        //component framework
+        /// <summary>
+        /// Add initialized component
+        /// </summary>
+        /// <param name="comp"></param>
         public void AddComponent(Component comp)
 		{
             comp.AddComponent(this);
             components.Add(comp);
 		}
 
+        /// <summary>
+        /// Initialize and add component of selected type
+        /// </summary>
+        /// <returns>new component</returns>
         public Component AddComponent<T>() where T : Component
         {
             Type t = typeof(T);
@@ -87,12 +119,20 @@ namespace Toys
             return null;
         }
 
+        /// <summary>
+        /// Search component of selected type.
+        /// Returns first found.
+        /// </summary>
         public Component GetComponent<T>() where T : Component
         {
             Type t = typeof(T); 
             return GetComponent(t);
         }
 
+        /// <summary>
+        /// Search component of selected type.
+        /// Returns first found.
+        /// </summary>
         public Component GetComponent(Type ctype)
 		{
             Component result = null;
@@ -106,7 +146,19 @@ namespace Toys
             return result;
 		}
 
-		public Component[] GetComponents(Type ctype)
+        /// <summary>
+        /// Search components of selected type.
+        /// </summary>
+        public Component[] GetComponents<T>() where T : Component
+        {
+            Type t = typeof(T);
+            return GetComponents(t);
+        }
+
+        /// <summary>
+        /// Search components of selected type.
+        /// </summary>
+        public Component[] GetComponents(Type ctype)
 		{
 			var result = from comp in components
 						 where comp.Type == ctype
@@ -115,6 +167,10 @@ namespace Toys
 			return result.ToArray();
 		}
 
+        /// <summary>
+        /// Get all components
+        /// </summary>
+        /// <returns></returns>
         public Component[] GetComponents()
         {
             return components.ToArray();
