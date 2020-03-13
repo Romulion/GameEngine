@@ -13,8 +13,7 @@ namespace ModelViewer
         {
             
             GLWindow window = new GLWindow();
-            
-            var scene = window.Engine.mainScene;
+            var scene = CoreEngine.MainScene;
             //Console.WindowHeight = 700;
             //string str = "";
             var camera = new Camera();
@@ -25,6 +24,7 @@ namespace ModelViewer
             cameraNode.AddComponent<FrameTimeScript>();
             cameraNode.GetTransform.Position = new Vector3(0, 1f, 3);
             camera.Background = new BackgroundSkybox();
+            scene.AddNode2Root(cameraNode);
 
             SceneNode navmeshNode = new SceneNode();
             navmeshNode.Name = "NavMesh";

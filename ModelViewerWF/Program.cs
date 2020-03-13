@@ -14,7 +14,7 @@ namespace ModelViewerWF
         {
 
             GLWindow window = new GLWindow();
-            var scene = window.Engine.mainScene;
+            var scene = window.Engine.MainScene;
             if (args.Length != 0)
             {
                 SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);

@@ -24,7 +24,7 @@ namespace Toys
 
         float elapsed = 0.01f;
 
-		public Scene mainScene;
+		public static Scene MainScene;
 
 		public CoreEngine()
 		{
@@ -36,8 +36,8 @@ namespace Toys
 		{
 			try
 			{
-				mainScene = new Scene();
-				gEngine = new GraphicsEngine(mainScene);
+				MainScene = new Scene();
+				gEngine = new GraphicsEngine(MainScene);
 				pEngine = new PhysicsEngine();
                 sEngine = new ScriptingEngine();
                 iHandler = new InputHandler();
@@ -87,7 +87,7 @@ namespace Toys
 				task();
 				task = null;
 			}
-			mainScene.Update(elapsed);
+			MainScene.Update(elapsed);
             gEngine.UIEngine.UpdateUI();
             gEngine.UIEngine.CheckMouse();
             //physics
