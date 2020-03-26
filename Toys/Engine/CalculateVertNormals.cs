@@ -31,6 +31,7 @@ namespace Toys
                 vers[i].Normal = normal.Normalized();
             }
         }
+
         public static void CalculateNormals(VertexRigged3D[] vers, int[] idexes)
         {
             int faces = (idexes.Length) / 3;
@@ -47,9 +48,8 @@ namespace Toys
                 vertFaceNormalWeigth[offset] = CalcualteFaceNormalWeigth(ver3, ver1, ver2);
                 vertFaceNormalWeigth[offset+1] = CalcualteFaceNormalWeigth(ver1, ver2, ver3);
                 vertFaceNormalWeigth[offset+2] = CalcualteFaceNormalWeigth(ver2, ver3, ver1);
-                
             }
-            
+
             for (int i = 0; i < vers.Length; i++)
             {
                 Vector3 normal = Vector3.Zero;
@@ -60,17 +60,17 @@ namespace Toys
                     if (idexes[n] == i)
                     {
                         normalWeigth.Add(vertFaceNormalWeigth[n]);
-                        normals.Add(faceNormals[i / 3]);
+                        normals.Add(faceNormals[n / 3]);
                         //normal += faceNormals[i / 3];
                     }
                 }
-
                 float totalWeigth = normalWeigth.Sum();
 
                 //weghtning normals
-                for (int n = 0; n < normalWeigth.Count; n++)
+                for (int n = 0; n < normals.Count; n++)
                 {
                     normal += normals[n] * (normalWeigth[n] / totalWeigth);
+                    //normal += normals[n];
                 }
 
                 vers[i].Normal = normal.Normalized();
