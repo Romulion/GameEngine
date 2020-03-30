@@ -106,12 +106,18 @@ namespace Toys
                     framesCount = frame;
                 //??? interpolation data ???
                 _file.ReadBytes(64);
-
-                _frames = new AnimationFrame[framesCount];
+                
+                
                 framebones.Add(new BoneMotionData(frame, new BonePosition(pos, rot, boneIndex)));
             }
-            NormalizeFrames(bonePositions);
 
+            //for poses
+            if (framesCount == 0)
+                framesCount = 1;
+
+            _frames = new AnimationFrame[framesCount];
+
+            NormalizeFrames(bonePositions);
         }
 
         //interpolating data on frames
