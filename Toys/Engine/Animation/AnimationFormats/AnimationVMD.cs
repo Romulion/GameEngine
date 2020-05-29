@@ -73,7 +73,9 @@ namespace Toys
 
                 string bone = jis2utf(_file.ReadBytes(15));
                 //remove trash bytes
-                bone = bone.Remove(bone.IndexOf('\0'));
+                int removeStart = bone.IndexOf('\0');
+                if (removeStart >= 0)
+                    bone = bone.Remove(removeStart);
                 
                 int boneIndex = 0;
 
