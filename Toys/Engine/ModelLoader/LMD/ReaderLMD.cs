@@ -375,7 +375,7 @@ namespace Toys
                             mat.SetTexture(texturesDict[textPath], type);
                         else
                         {
-                            var text = new Texture2D(dir+textPath);
+                            var text = ResourcesManager.LoadAsset<Texture2D>(dir+textPath);
                             texturesDict.Add(textPath, text);
                             mat.SetTexture(text, type);
                         }

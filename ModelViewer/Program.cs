@@ -51,6 +51,7 @@ namespace ModelViewer
                 modelNode.Name = "model";
                 scene.AddNode2Root(modelNode);
                 test.cc = (CharControll)modelNode.AddComponent<CharControll>();
+                test.forDelete = modelNode;
             }
 
             var task = new Task(() =>

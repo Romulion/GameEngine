@@ -29,7 +29,7 @@ namespace Toys
             this.type = type;
         }
 
-		public Texture2D(string path)
+		internal Texture2D(string path)
 		{
             textureType = TextureTarget.Texture2D;
             GenerateTextureID();

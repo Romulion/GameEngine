@@ -55,6 +55,7 @@ namespace Toys
 			GL.DeleteVertexArray(VAO);
 			GL.DeleteBuffer(EBO);
 			GL.DeleteBuffer(VBO);
+            GL.DeleteBuffer(SSB0);
 		}
 
 		/// <summary>
@@ -219,7 +220,10 @@ namespace Toys
 			GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
 		}
 
-
+        ~Mesh()
+        {
+            Console.WriteLine("deleted");
+        }
 
 	}
 }

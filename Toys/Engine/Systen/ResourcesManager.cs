@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Linq;
 
 namespace Toys
 {
@@ -105,6 +106,31 @@ namespace Toys
             var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
             var stream = assembly.GetManifestResourceStream(defPath + path);
             return stream;
+        }
+
+        public static bool DeleteResource(Resource resource)
+        {
+            string name = resources.FirstOrDefault(x => x.Value == resource).Key;
+            if (name != default(string))
+                return DeleteResource(name);
+            else
+            {
+                CoreEngine.ActiveCore.addTask = () => resource.Unload();
+                return true;
+            }
+        }
+
+        public static bool DeleteResource(string res)
+        {
+            Resource resource;
+            if (resources.TryGetValue(res, out resource))
+            {
+                CoreEngine.ActiveCore.addTask = () => resource.Unload();
+                resources.Remove(res);
+                return true;
+            }
+
+            return false;
         }
     }
 }
