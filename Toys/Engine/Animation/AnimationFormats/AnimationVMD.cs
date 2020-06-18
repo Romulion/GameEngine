@@ -73,7 +73,9 @@ namespace Toys
 
                 string bone = jis2utf(_file.ReadBytes(15));
                 //remove trash bytes
-                bone = bone.Remove(bone.IndexOf('\0'));
+                int removeStart = bone.IndexOf('\0');
+                if (removeStart >= 0)
+                    bone = bone.Remove(removeStart);
                 
                 int boneIndex = 0;
 
@@ -106,12 +108,18 @@ namespace Toys
                     framesCount = frame;
                 //??? interpolation data ???
                 _file.ReadBytes(64);
-
-                _frames = new AnimationFrame[framesCount];
+                
+                
                 framebones.Add(new BoneMotionData(frame, new BonePosition(pos, rot, boneIndex)));
             }
-            NormalizeFrames(bonePositions);
 
+            //for poses
+            if (framesCount == 0)
+                framesCount = 1;
+
+            _frames = new AnimationFrame[framesCount];
+
+            NormalizeFrames(bonePositions);
         }
 
         //interpolating data on frames

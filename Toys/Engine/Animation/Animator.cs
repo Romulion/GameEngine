@@ -70,7 +70,6 @@ namespace Toys
 
         public void Play(Animation anim)
         {
-            
             _animation = anim;
             UpdateBoneReference();
             try
@@ -78,7 +77,9 @@ namespace Toys
                 _length = (anim.frames.Length - 1) / (float)anim.Framerate;
                 _frameLength = 1 / (float)anim.Framerate;
                 Instalize(anim.frames[0]);
-                _isPlaing = true;
+
+                if (anim.frames.Length > 1)
+                    _isPlaing = true;
             }
             catch (Exception e)
             {
