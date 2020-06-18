@@ -90,6 +90,7 @@ namespace Toys
             this.type = type;
             Name = name;
 			LoadTexture(tex);
+            ResourcesManager.AddAsset(this, name);
 		}
 
         protected Texture2D()

@@ -54,7 +54,7 @@ namespace Toys
             return asset as T;
 		}
 
-        internal static void AddAsset<T>(T asset, string name) where T : Resource
+        internal static void AddAsset(Resource asset, string name)
         {
                 resources.Add(name, asset);
         }
