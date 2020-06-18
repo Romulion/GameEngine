@@ -106,7 +106,7 @@ namespace Toys
 		internal override void Unload()
 		{
 			Mesh.Delete();
-		}
+        }
 
         internal override void AddComponent(SceneNode nod)
         {

@@ -259,5 +259,12 @@ namespace Toys
             }
             return location;
         }
+
+        internal void UnloadText(TextCanvas canvas)
+        {
+            texts.Remove(canvas);
+            GL.DeleteVertexArray(canvas.VAO);
+            GL.DeleteBuffer(canvas.VBO);
+        }
 	}
 }

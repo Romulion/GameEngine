@@ -134,7 +134,10 @@ namespace Toys
         internal override void Unload()
         {
             foreach (var comp in components)
+            {
+                comp.RemoveComponent();
                 comp.Unload();
+            }
         }
 
         public UIElement Clone()

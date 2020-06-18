@@ -76,7 +76,7 @@ namespace Toys
 
         internal override void Unload()
         {
-            Mesh.Delete();
+            //Mesh.Delete();
         }
 
         internal virtual void AddComponent(UIElement nod)

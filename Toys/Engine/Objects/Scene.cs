@@ -8,6 +8,7 @@ namespace Toys
 	{
         List<SceneNode> nodes = new List<SceneNode>();
 		LightSource light;
+        public Canvas canvas;
 		internal void OnLoad()
 		{
             light = new LightSource();
@@ -66,5 +67,10 @@ namespace Toys
 		{
 			return nodes.Find( (node) => name == node.Name);
 		}
+
+        public void RemoveNode(SceneNode node)
+        {
+            nodes.Remove(node);
+        }
 	}
 }

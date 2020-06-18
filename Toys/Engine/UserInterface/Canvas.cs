@@ -46,7 +46,17 @@ namespace Toys
 
         internal override void Unload()
         {
-
+            UnloadTree(Root);
         }
+
+        private void UnloadTree(UIElement uie)
+        {
+            foreach(var child in uie.Childs)
+            {
+                UnloadTree(child);
+            }
+            uie.Unload();
+        }
+        
     }
 }

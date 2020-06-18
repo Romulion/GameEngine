@@ -98,5 +98,21 @@ namespace Toys
 			foreach (var body in rigitBodies)
 				body.Reinstalize(worldTrans.GlobalTransform);	
 		}
+
+        internal override void Unload()
+        {
+
+            foreach (var joint in joints)
+            {
+                World.RemoveConstraint(joint.Constraint);
+                joint.Constraint.Dispose();
+            }
+            foreach (var rigid in rigitBodies)
+            {
+                World.RemoveCollisionObject(rigid.Body);
+                rigid.Body.Dispose();
+            }
+            base.Unload();
+        }
     }
 }

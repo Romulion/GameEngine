@@ -29,7 +29,6 @@ namespace ModelViewer
         AudioListener audioListener;
         AudioSource src;
         SliderCompoent slider;
-        public Resource forDelete;
 
         void Awake()
         {
@@ -90,15 +89,14 @@ namespace ModelViewer
             ui2.GetTransform.offsetMin = new Vector2(0, -55);
             var butLabel2 = (TextBox)ui2.AddComponent<TextBox>();
             
-            butLabel2.SetText("Delete");
+            butLabel2.SetText("Go/Stop");
             butLabel2.textCanvas.Scale = 0.5f;
 
             butLabel2.textCanvas.colour = new Vector3(1, 1, 0);
             butLabel2.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
             butLabel2.textCanvas.alignVertical = TextAlignVertical.Center;
             var button = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
-            button.OnClick = () => { ResourcesManager.DeleteResource(forDelete); button.OnClick = null;};
-            //button.OnClick = () => { cc?.Go(); };
+            button.OnClick = () => { cc?.Go(); };
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
             //ISS.SetDSS(script);
             ui1.SetParent(ui);

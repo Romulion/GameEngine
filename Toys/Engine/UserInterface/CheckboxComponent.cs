@@ -57,7 +57,7 @@ namespace Toys
             Texture = Texture2D.LoadEmpty();
             var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
             using (var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.checkmark-24-512.png")))
-                chekMarkDefault = new Texture2D(pic, TextureType.Toon, "def");
+                chekMarkDefault = new Texture2D(pic, TextureType.Toon, "Toys.Resourses.textures.checkmark-24-512.png");
         }
 
         internal override void AddComponent(UIElement nod)

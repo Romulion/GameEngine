@@ -278,7 +278,8 @@ namespace Toys
                     {
                         var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
                         Bitmap pic = new Bitmap(assembly.GetManifestResourceStream(texturePath));
-                        toonTex = new Texture2D(pic, TextureType.Toon, String.Format("toon{0}.bmp", toontex.ToString().PadLeft(2, '0')));
+                        //toonTex = new Texture2D(pic, TextureType.Toon, String.Format("toon{0}.bmp", toontex.ToString().PadLeft(2, '0')));
+                        toonTex = new Texture2D(pic, TextureType.Toon, texturePath); 
                     }
                     
                     toon = toonTex;

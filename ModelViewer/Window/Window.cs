@@ -14,6 +14,7 @@ namespace ModelViewer
         ClientMaster connection2;
         public ExecuteMethod Execute;
         public volatile bool stream;
+        Scene scene;
         public Window(Scene scene, CoreEngine core) :
                 base(WindowType.Toplevel)
         {
@@ -70,7 +71,7 @@ namespace ModelViewer
 
         void DrawScene(Scene scene)
         {
-
+            this.scene = scene;
             var fileChooserAdd = new FileChooserButton("Select model", FileChooserAction.Open);
             fileChooserAdd.WidthRequest = 124;
             fileChooserAdd.Name = "filechooserbutton3";
@@ -122,7 +123,7 @@ namespace ModelViewer
                     Button btn = new Button();
                     btn.Label = "MeshDrawerRigged";
                     btn.Name = "btnComp";
-                    btn.Clicked += (sender, e) => { MeshDrawerRig((MeshDrawerRigged)component);};
+                    btn.Clicked += (sender, e) => { MeshDrawerRig((MeshDrawerRigged)component); };
                     fixedComponents.Put(btn, 0, y);
                     btn.Show();
                     y += 35;
@@ -147,6 +148,22 @@ namespace ModelViewer
                     y += 35;
                 }
             }
+            //delete button
+            
+            Button btn1 = new Button();
+            btn1.Label = "Delete";
+            btn1.Clicked += (sender, e) => {
+                scene.RemoveNode(node);
+                ResourcesManager.DeleteResource(node);
+                ClearChildrens(fixedComponents);
+                ClearChildrens(fixed4);
+                ClearChildrens(fixedScene);
+                DrawScene(scene);
+            };
+            btn1.Name = "btnComp";
+            fixedComponents.Put(btn1, 0, y);
+            btn1.Show();
+            
         }
 
         void MeshDrawerRig(MeshDrawerRigged meshDrawer)

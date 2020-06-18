@@ -51,7 +51,7 @@ namespace Toys
             */
             var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
             var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.button2.png"));
-            defaultTexture = new Texture2D(pic, TextureType.Toon, "def");
+            defaultTexture = new Texture2D(pic, TextureType.Toon, "Toys.Resourses.textures.button2.png");
         }
 
         internal override void AddComponent(UIElement nod)
