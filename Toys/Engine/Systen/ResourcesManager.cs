@@ -56,7 +56,7 @@ namespace Toys
 
         internal static void AddAsset(Resource asset, string name)
         {
-                resources.Add(name, asset);
+            resources.Add(name, asset);
         }
 
         public static T[] GetResourses<T>() where T : Resource

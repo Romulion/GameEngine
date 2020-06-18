@@ -25,6 +25,7 @@ namespace Toys
         float elapsed = 0.01f;
 
 		public static Scene MainScene;
+        public static ShareData Shared;
 
 		public CoreEngine()
 		{
@@ -37,7 +38,8 @@ namespace Toys
 			try
 			{
 				MainScene = new Scene();
-				gEngine = new GraphicsEngine(MainScene);
+                Shared = new ShareData();
+                gEngine = new GraphicsEngine(MainScene);
 				pEngine = new PhysicsEngine();
                 sEngine = new ScriptingEngine();
                 iHandler = new InputHandler();
