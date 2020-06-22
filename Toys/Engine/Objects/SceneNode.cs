@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Toys
 {
-	public class SceneNode : Resource
+	public class SceneNode : Resource, ISave
     {
         Logger logger = new Logger("SceneNode");
         readonly Transform transform;
@@ -49,6 +49,8 @@ namespace Toys
                 return transform;
             }
         }
+
+        public bool IsInSave { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         /// <summary>
         /// Set parent to node
@@ -186,5 +188,49 @@ namespace Toys
                 comp.Unload();
             }
 		}
+
+        public Dictionary<string,string> SaveSequence(bool extended = false)
+        {
+            var savedata = new Dictionary<string, string>();
+            savedata.Add("Name", Name);
+            savedata.Add("Position", transform.Position.X + "," + transform.Position.Y + "," + transform.Position.Z);
+            savedata.Add("Rotation", transform.Rotation.X + "," + transform.Rotation.Y + "," + transform.Rotation.Z);
+            savedata.Add("Scale", transform.Scale.X + "," + transform.Scale.Y + "," + transform.Scale.Z);
+            foreach (var component in components)
+            {
+                //check if class is saveble
+                if (typeof(ISave).IsAssignableFrom(component.Type))
+                {
+                    //var forSave = (ISave)component;
+                    //if (forSave.IsInSave)
+                    //    savedata.AddRange(forSave.SaveSequence(extended));
+                }
+            }
+                
+            return savedata;
+        }
+
+        public void LoadSequence(Dictionary<string, string> saveData, bool extended = false)
+        {
+            Name = saveData["Name"];
+            transform.Position = ParceString(saveData["Position"]);
+            transform.Rotation = ParceString(saveData["Rotation"]);
+            transform.Scale = ParceString(saveData["Scale"]);
+        }
+
+        private OpenTK.Vector3 ParceString(string vector)
+        {
+            var vec3 = OpenTK.Vector3.Zero;
+            try
+            {
+                var values = vector.Split(',');
+                vec3.X = float.Parse(values[0]);
+                vec3.Y = float.Parse(values[1]);
+                vec3.Z = float.Parse(values[2]);
+            }
+            catch (Exception e) { }
+
+            return vec3;
+        }
     }
 }

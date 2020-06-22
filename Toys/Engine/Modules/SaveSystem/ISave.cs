@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Toys
 {
-    interface ISave
+    public interface ISave
     {
-        void SaveSequence();
-        void LoadSequence();
-
+        Dictionary<string, string> SaveSequence(bool extended = false);
+        void LoadSequence(Dictionary<string, string> saveData, bool extended = false);
+        bool IsInSave { get; set;}
     }
 }
