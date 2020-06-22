@@ -57,9 +57,10 @@ namespace Toys
         /// <param name="node">parent node</param>
         public void SetParent(SceneNode node)
         {
-            if (Parent != null)
+            if (!node)
+                return;
+            if (Parent)
                 Parent.RemoveChild(this);
-
             ParentScene = node.ParentScene;
             Parent = node;
             Parent.AddChilld(this);
@@ -76,7 +77,7 @@ namespace Toys
             }
         }
 
-        private void RemoveChild(SceneNode node)
+        internal void RemoveChild(SceneNode node)
         {
             Childs.Remove(node);
         }
