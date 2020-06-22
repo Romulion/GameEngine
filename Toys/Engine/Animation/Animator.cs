@@ -8,7 +8,7 @@ namespace Toys
     {
         Logger logger = new Logger("Animator");
         public BoneController BoneController { get; private set; }
-        Animation _animation;
+        Animation _animation ;
         bool _isPlaing = false;
         float _time = 0f;
         float _length = 0;
@@ -68,39 +68,58 @@ namespace Toys
             }
         }
 
-        public void Play(Animation anim)
+        public Animation AnimationData
         {
-            _animation = anim;
-            UpdateBoneReference();
-            try
+            get { return _animation; }
+            set
             {
-                _length = (anim.frames.Length - 1) / (float)anim.Framerate;
-                _frameLength = 1 / (float)anim.Framerate;
-                Instalize(anim.frames[0]);
+                _animation = value;
+                UpdateBoneReference();
+                try
+                {
+                    _length = (_animation.frames.Length - 1) / (float)_animation.Framerate;
+                    _frameLength = 1 / (float)_animation.Framerate;
+                    Instalize(_animation.frames[0]);
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e.Message, e.StackTrace);
+                    _animation = null;
+                }
+            }
+        }
 
-                if (anim.frames.Length > 1)
-                    _isPlaing = true;
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message, e.StackTrace);
-            }
+        public void Play()
+        {
+            if (_animation == null)
+                return;
+            if (_animation.frames.Length > 1)
+                _isPlaing = true;
         }
 
 		public void Stop()
 		{
-			_isPlaing = false;
+            if (_animation == null)
+                return;
+
+            _isPlaing = false;
 			_time = 0;
             Instalize(_animation.frames[0]);
         }
 
         public void Pause()
         {
+            if (_animation == null)
+                return;
+
             _isPlaing = false;
         }
 
         public void Resume()
         {
+            if (_animation == null)
+                return;
+
             _isPlaing = true;
         }
 

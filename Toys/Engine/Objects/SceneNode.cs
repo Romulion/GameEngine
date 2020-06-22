@@ -59,12 +59,13 @@ namespace Toys
         {
             if (!node)
                 return;
+
             if (Parent)
                 Parent.RemoveChild(this);
             ParentScene = node.ParentScene;
             Parent = node;
             Parent.AddChilld(this);
-            UpdateTransform();
+            //UpdateTransform();
         }
 
         public void UpdateTransform()

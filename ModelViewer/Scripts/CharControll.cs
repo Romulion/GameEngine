@@ -36,7 +36,8 @@ namespace ModelViewer
                 walk = AnimationLoader.Load("walk.lmd");
                 idle = AnimationLoader.Load("idle.lmd");
                 animator = Node.GetComponent<Animator>() as Animator;
-                animator.Play(idle);
+                animator.AnimationData = idle;
+                animator.Play();
             }
             catch (Exception) { }
         }
@@ -157,12 +158,20 @@ namespace ModelViewer
             if (isWalking && !state)
             {
                 isWalking = false;
-                animator?.Play(idle);
+                if (animator)
+                {
+                    animator.AnimationData = idle;
+                    animator.Play();
+                }
             }
             else if (!isWalking && state)
             {
                 isWalking = true;
-                animator?.Play(walk);
+                if (animator)
+                {
+                    animator.AnimationData = walk;
+                    animator.Play();
+                }
             }
 
         }

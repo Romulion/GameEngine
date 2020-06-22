@@ -83,8 +83,7 @@ namespace ModelViewerWF
         private void Button2_Click(object sender, EventArgs e)
         {
             play = true;
-            if (an != null)
-                animator.Play(an);
+            animator.Play();
         }
 
         private void Button3_Click(object sender, EventArgs e)

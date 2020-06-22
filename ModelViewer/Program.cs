@@ -25,7 +25,6 @@ namespace ModelViewer
             cameraNode.GetTransform.Position = new Vector3(0, 1f, 3);
             camera.Background = new BackgroundSkybox();
             scene.AddNode2Root(cameraNode);
-
             SceneNode navmeshNode = new SceneNode();
             navmeshNode.Name = "NavMesh";
             var test = (TestScript)navmeshNode.AddComponent<TestScript>();

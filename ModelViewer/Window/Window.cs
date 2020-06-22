@@ -246,28 +246,29 @@ namespace ModelViewer
             btnPR.Label = "Pause";
             fixed4.Put(btnPR, 0 , 153);
             btnPR.Show();
-            Animation an = null;
 
             fileChooser.FileSet += (sender, e) =>
             {
                 try
                 {
-                    an = AnimationLoader.Load(fileChooser.Filename);
+                    var an = AnimationLoader.Load(fileChooser.Filename);
+                    if (an != null)
+                        animator.AnimationData = an;
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("cant load animation\n{0}\n{1}", ex.Message, ex.StackTrace);
                 }
+
+                
             };
 
             //Play
             bool play = false;
             bool pause = false;
-
             btnStart.Clicked += (sender, e) =>
             {
-                if (an != null)
-                    animator.Play(an);
+                animator.Play();
                 play = true;
 
             };
@@ -275,27 +276,25 @@ namespace ModelViewer
             btn.Clicked += (sender, e) =>
             {
                 play = false;
-                if (an != null)
-                    animator.Stop();
+                animator.Stop();
             };
 
             btnPR.Clicked += (sender, e) =>
             {
-                if (an != null)
+
+                if (play && !pause)
                 {
-                    if (play && !pause)
-                    {
-                        animator.Pause();
-                        btnPR.Label = "Resume";
-                        pause = !pause;
-                    }
-                    else if (play)
-                    {
-                        animator.Resume();
-                        btnPR.Label = "Pause";
-                        pause = !pause;
-                    }
+                    animator.Pause();
+                    btnPR.Label = "Resume";
+                    pause = !pause;
                 }
+                else if (play)
+                {
+                    animator.Resume();
+                    btnPR.Label = "Pause";
+                    pause = !pause;
+                }
+
             };
         }
 
