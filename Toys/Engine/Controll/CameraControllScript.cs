@@ -95,13 +95,13 @@ namespace Toys
             // camera strafe
             if (game.Focused)
             {
-                if (keyState[Key.Up])
+                if (keyState[Key.PageUp])
                 {
                     camera.Target += speed * cameraUp;
                     transform.Position += speed * cameraUp;
                 }
 
-                if (keyState[Key.Down])
+                if (keyState[Key.PageDown])
                 {
                     camera.Target -= speed * cameraUp;
                     transform.Position -= speed * cameraUp;
@@ -110,6 +110,7 @@ namespace Toys
                 Vector3 front = camera.Target - transform.Position;
                 Vector3 left = Vector3.Cross(front,cameraUp);
                 //movment
+                /*
                 if (keyState[Key.W])
                 {
                     camera.Target += speed * front;
@@ -133,7 +134,7 @@ namespace Toys
                     camera.Target += speed * left;
                     transform.Position += speed * left;
                 }
-
+                */
                 if (keyState[Key.R])
                 {
                     transform.Position = new Vector3(0f, 1f, 0f);

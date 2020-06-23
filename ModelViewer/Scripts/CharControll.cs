@@ -125,7 +125,7 @@ namespace ModelViewer
         {
             dir.Y = 0;
             //according to Rodrigues rotation formula
-            Vector3 look = Vector3.UnitZ * new Matrix3(Node.GetTransform.GlobalTransform);
+            Vector3 look = new Vector3(Node.GetTransform.GlobalTransform.M31, Node.GetTransform.GlobalTransform.M32, Node.GetTransform.GlobalTransform.M33);
             look.Normalize();
             
             Vector3 axis = Vector3.Cross(look, dir);

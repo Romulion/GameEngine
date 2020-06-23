@@ -22,7 +22,8 @@ namespace ModelViewer
             cameraNode.AddComponent(camera);
             cameraNode.AddComponent<CameraControllScript>();
             cameraNode.AddComponent<FrameTimeScript>();
-            cameraNode.GetTransform.Position = new Vector3(0, 1f, 3);
+            cameraNode.AddComponent<CharacterControllPlayer>();
+            cameraNode.GetTransform.Position = new Vector3(0, 3f, 3);
             camera.Background = new BackgroundSkybox();
             scene.AddNode2Root(cameraNode);
             SceneNode navmeshNode = new SceneNode();

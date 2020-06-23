@@ -96,6 +96,9 @@
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector2.cs" />
     <Compile Include="Engine\Modules\SaveSystem\ISave.cs" />
     <Compile Include="Engine\Modules\SaveSystem\SaveSystem.cs" />
+    <Compile Include="Engine\Objects\CharacterControllAI.cs" />
+    <Compile Include="Engine\Objects\CharacterControllBase.cs" />
+    <Compile Include="Engine\Objects\CharacterControllPlayer.cs" />
     <Compile Include="Engine\Objects\ShareData.cs" />
     <Compile Include="Engine\Pathfinding\AStarSearch.cs" />
     <Compile Include="Engine\Pathfinding\Heuristic.cs" />

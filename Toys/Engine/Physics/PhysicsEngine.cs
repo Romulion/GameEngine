@@ -61,7 +61,7 @@ namespace Toys
 		{
 			const float staticMass = 0;
 			RigidBody body;
-			CollisionShape shape = new BoxShape(2, 0.5f, 2);
+			CollisionShape shape = new BoxShape(5, 0.5f, 5);
 			Matrix groundTransform = Matrix.Translation(0, -0.5f, 0);
 			using (var rbInfo = new RigidBodyConstructionInfo(staticMass, null, shape)
 			{

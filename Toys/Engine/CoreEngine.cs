@@ -22,7 +22,7 @@ namespace Toys
         public static Time frameTimer { get; private set; }
         queue task;
 
-        float elapsed = 0.01f;
+        public float elapsed { get; private set; }
 
 		public static Scene MainScene;
         public static ShareData Shared;
@@ -46,6 +46,7 @@ namespace Toys
                 aEngine = new SoundEngine();
                 time = new Time();
                 frameTimer = new Time();
+                elapsed = 0.01f;
             }
 			catch (Exception e)
 			{
