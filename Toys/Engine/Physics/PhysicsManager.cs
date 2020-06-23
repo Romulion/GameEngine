@@ -20,11 +20,10 @@ namespace Toys
         RigidContainer[] Rigits;
         JointContainer[] Jcons;
 
-        public PhysicsManager(RigidContainer[] rigits, JointContainer[] jcons, BoneController bons, Transform trans)
+        public PhysicsManager(RigidContainer[] rigits, JointContainer[] jcons, BoneController bons)
         {
             //setup world physics
             bones = bons;
-            worldTrans = trans;
             //instalize delegates
             prePhysics = (m) => { };
             postPhysics = (m) => { };
@@ -36,9 +35,11 @@ namespace Toys
 
         void Awake()
         {
+            worldTrans = Node.GetTransform;
             World = CoreEngine.pEngine.World;
             InstalizeRigitBody(Rigits);
             InstalizeJoints(Jcons);
+            ReinstalizeBodys();
         }
 
         void InstalizeRigitBody(RigidContainer[] rigits)
@@ -95,8 +96,8 @@ namespace Toys
 		//test
 		public void ReinstalizeBodys()
 		{
-			foreach (var body in rigitBodies)
-				body.Reinstalize(worldTrans.GlobalTransform);	
+            foreach (var body in rigitBodies)
+                body.Reinstalize(worldTrans.GlobalTransform);
 		}
 
         internal override void Unload()

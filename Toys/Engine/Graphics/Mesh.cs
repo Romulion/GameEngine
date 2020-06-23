@@ -222,7 +222,7 @@ namespace Toys
 
         ~Mesh()
         {
-            Console.WriteLine("deleted");
+            
         }
 
 	}

@@ -51,6 +51,12 @@ namespace ModelViewer
                 scene.AddNode2Root(modelNode);
                 test.cc = (CharControll)modelNode.AddComponent<CharControll>();
             }
+            else
+            {
+                var testScene = (TestSceneLoader)CoreEngine.Shared.ScriptHolder.AddComponent<TestSceneLoader>();
+                testScene.Scene = scene;
+                testScene.Button = test;
+            }
 
             var task = new Task(() =>
             {

@@ -114,6 +114,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\CharControll.cs" />
     <Compile Include="Scripts\ImageStreamerScript.cs" />
+    <Compile Include="Scripts\TestSceneLoader.cs" />
     <Compile Include="Scripts\TestScript.cs" />
     <Compile Include="UtilityClient\ClientMaster.cs" />
     <Compile Include="UtilityClient\Containers.cs" />

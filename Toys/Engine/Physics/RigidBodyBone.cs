@@ -50,7 +50,6 @@ namespace Toys
 			startTransform = Matrix.RotationYawPitchRoll(rcon.Rotation.Y, rcon.Rotation.X, rcon.Rotation.Z) * Matrix.Translation(GetVec3(rcon.Position));
             rbInfo = new RigidBodyConstructionInfo(rcon.Mass, new DefaultMotionState(startTransform), shape, inertia);
 			Body = new RigidBody(rbInfo);
-
             Body.ActivationState = ActivationState.DisableDeactivation;
             Body.Friction = rcon.Friction;
             Body.SetDamping(rcon.MassAttenuation, rcon.RotationDamping);
@@ -90,7 +89,7 @@ namespace Toys
 		}
 
         
-		private Matrix GetMat(OpenTK.Matrix4 mat)
+		public static Matrix GetMat(OpenTK.Matrix4 mat)
 		{
 			return new Matrix(mat.M11, mat.M12, mat.M13, mat.M14, 
 			                  mat.M21, mat.M22, mat.M23, mat.M24,
@@ -118,10 +117,14 @@ namespace Toys
         */
 		public void Reinstalize(OpenTK.Matrix4 world)
 		{
-			Body.WorldTransform = startTransform * GetMat(world);
-			Body.LinearVelocity = Vector3.Zero;
-			Body.AngularVelocity = Vector3.Zero;
-			Body.ClearForces();
-		}
+            Body.WorldTransform = startTransform * GetMat(world);
+            //Body.MotionState.WorldTransform = Body.WorldTransform;
+            //Body.LinearVelocity = Vector3.Zero;
+			//Body.AngularVelocity = Vector3.Zero;
+            //Body.InterpolationLinearVelocity = Vector3.Zero;
+            //Body.InterpolationAngularVelocity = Vector3.Zero;
+            Body.InterpolationWorldTransform = Body.WorldTransform;
+            Body.ClearForces();
+        }
     }
 }

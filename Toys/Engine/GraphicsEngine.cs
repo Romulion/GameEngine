@@ -164,16 +164,18 @@ namespace Toys
             {
                 MainCamera.CalcLook();
                 GL.Viewport(0, 0, MainCamera.Width, MainCamera.Height);
+
                 //render scene to primary buffer
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, MainCamera.RenderBuffer);
                 SetCullMode(FaceCullMode.Disable);
                 GL.ClearColor(MainCamera.ClearColor);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-                MainRender.Render(meshes.ToArray(), MainCamera);
-
+                //render background first due to model transperancy
                 if (MainCamera.Background != null)
                     MainCamera.Background.DrawBackground(MainCamera);
+
+                MainRender.Render(meshes.ToArray(), MainCamera);
             }
 
             //render ui

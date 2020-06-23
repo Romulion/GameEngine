@@ -29,6 +29,7 @@ namespace ModelViewer
         AudioListener audioListener;
         AudioSource src;
         SliderCompoent slider;
+        public ButtonComponent image1;
 
         void Awake()
         {
@@ -71,7 +72,7 @@ namespace ModelViewer
             ui1.GetTransform.anchorMin = new Vector2(0f, 1f);
             ui1.GetTransform.offsetMax = new Vector2(0, 0);
             ui1.GetTransform.offsetMin = new Vector2(0, -25);
-            var image1 = (ButtonComponent)ui1.AddComponent<ButtonComponent>();
+            image1 = (ButtonComponent)ui1.AddComponent<ButtonComponent>();
 
             var butLabel1 = (TextBox)ui1.AddComponent<TextBox>();
             butLabel1.textCanvas.colour = new Vector3(1, 0, 0);
@@ -81,7 +82,7 @@ namespace ModelViewer
             butLabel1.SetText("path");
             butLabel1.textCanvas.Scale = 0.5f;
 
-            image1.OnClick = () => { cc?.SetDestination(camera.Node.GetTransform.Position); };
+            //image1.OnClick = () => { cc?.SetDestination(camera.Node.GetTransform.Position); };
             var ui2 = new UIElement();
             ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
@@ -96,7 +97,7 @@ namespace ModelViewer
             butLabel2.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
             butLabel2.textCanvas.alignVertical = TextAlignVertical.Center;
             var button = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
-            button.OnClick = () => { cc?.Go(); };
+            //button.OnClick = () => { cc?.Go(); };
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
             //ISS.SetDSS(script);
             ui1.SetParent(ui);

@@ -577,8 +577,8 @@ namespace Toys
 				rigit.Position = reader.readVector3() * multipler;
 				rigit.Rotation = reader.readVector3();
 				rigit.Mass = file.ReadSingle();
-				rigit.MassAttenuation = file.ReadSingle() ;
-				rigit.RotationDamping = file.ReadSingle() * multipler;
+				rigit.MassAttenuation = file.ReadSingle();
+				rigit.RotationDamping = file.ReadSingle();
 				rigit.Restitution = file.ReadSingle();
 				rigit.Friction = file.ReadSingle();
 				rigit.Phys = (PhysType)file.ReadByte();
@@ -658,7 +658,7 @@ namespace Toys
 				var node = new SceneNode();
 				node.AddComponent(md);
 				node.AddComponent(new Animator(md.skeleton));
-                node.AddComponent(new PhysicsManager(rigitBodies, joints, md.skeleton, node.GetTransform));
+                node.AddComponent(new PhysicsManager(rigitBodies, joints, md.skeleton));
 				return node;
 			}
 		}
