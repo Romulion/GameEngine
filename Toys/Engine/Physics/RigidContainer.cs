@@ -16,7 +16,7 @@ namespace Toys
         public string NameEng;
         public int BoneIndex;
 		public byte GroupId;
-		public ushort NonCollisionGroup;
+		public int NonCollisionGroup;
 		public PhysPrimitiveType PrimitiveType;
 		public Vector3 Size;
 		public Vector3 Position;
