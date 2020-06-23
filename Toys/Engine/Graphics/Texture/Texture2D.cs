@@ -64,6 +64,7 @@ namespace Toys
 				else
 					tex1 = new Bitmap(path);
 				LoadTexture(tex1);
+                tex1.Dispose();
             }
 			catch (Exception)
 			{
@@ -187,8 +188,10 @@ namespace Toys
 			if (defaultTexture == null)
 			{
 				var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
-				Bitmap pic = new Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.empty.png"));
-				defaultTexture = new Texture2D(pic, TextureType.Toon, "def");
+                using (Bitmap pic = new Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.empty.png")))
+                {
+                    defaultTexture = new Texture2D(pic, TextureType.Toon, "def");
+                }
 			}
 
 			return defaultTexture;
