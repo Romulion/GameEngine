@@ -25,7 +25,7 @@ namespace ModelViewerWF
             SceneNode cameraNode = new SceneNode();
             cameraNode.Name = "Camera";
             cameraNode.AddComponent(camera);
-            cameraNode.AddComponent<CameraControllScript>();
+            cameraNode.AddComponent<CameraControllOrbitScript>();
             //cameraNode.AddComponent<FrameTimeScript>();
             cameraNode.GetTransform.Position = new Vector3(0, 1f, 3);
 

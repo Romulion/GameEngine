@@ -47,6 +47,9 @@ namespace Toys
             CreateFloor();
             //World.LatencyMotionStateInterpolation = false;
 
+            //for character controllers
+            broadphase.OverlappingPairCache.SetInternalGhostPairCallback(new GhostPairCallback());
+
             World.DebugDrawer = new PhysicsDebugDraw(World);
         }
 
@@ -61,17 +64,17 @@ namespace Toys
 		{
 			const float staticMass = 0;
 			RigidBody body;
-			CollisionShape shape = new BoxShape(5, 0.5f, 5);
+			CollisionShape shape = new BoxShape(50, 0.5f, 50);
 			Matrix groundTransform = Matrix.Translation(0, -0.5f, 0);
 			using (var rbInfo = new RigidBodyConstructionInfo(staticMass, null, shape)
 			{
-				StartWorldTransform = groundTransform
+				StartWorldTransform = groundTransform,
 			})
 			{
 				body = new RigidBody(rbInfo);
 			}
-
-			World.AddRigidBody(body,1, short.MaxValue);
+            
+			World.AddRigidBody(body, CollisionFilterGroups.StaticFilter, CollisionFilterGroups.AllFilter);
 		}
 
         public void NextTaskScheduler()

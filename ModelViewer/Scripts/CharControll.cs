@@ -124,19 +124,12 @@ namespace ModelViewer
         void RotateToDirection(Vector3 dir)
         {
             dir.Y = 0;
-            //according to Rodrigues rotation formula
             Vector3 look = new Vector3(Node.GetTransform.GlobalTransform.M31, Node.GetTransform.GlobalTransform.M32, Node.GetTransform.GlobalTransform.M33);
             look.Normalize();
             
             Vector3 axis = Vector3.Cross(look, dir);
-            //Matrix4 crossMAt = new Matrix4(new Matrix3(0, -axis.Z, axis.Y, axis.Z, 0, -axis.X, -axis.Y, axis.X, 0));
-            // var rotation = Matrix4.Identity + crossMAt + crossMAt * crossMAt * (1 / (1 + Vector3.Dot(look.Xyz, dir)));
-            // Node.GetTransform.RotationQuaternion *= rotation.ExtractRotation();
             var rotation = Quaternion.FromAxisAngle(axis, (float)Math.Acos(Vector3.Dot(dir, look)));
             Node.GetTransform.RotationQuaternion *= rotation;
-            Console.WriteLine(look);
-            Console.WriteLine(dir);
-            Console.WriteLine(Node.GetTransform.RotationQuaternion);
         }
 
 

@@ -82,7 +82,8 @@
     <Compile Include="Engine\Animation\BoneTransform.cs" />
     <Compile Include="Engine\Buffers\UniformBufferSystem.cs" />
     <Compile Include="Engine\CalculateVertNormals.cs" />
-    <Compile Include="Engine\Controll\CameraControllScript.cs" />
+    <Compile Include="Engine\Controll\CameraControllOrbitScript.cs" />
+    <Compile Include="Engine\Controll\CameraPOVScript.cs" />
     <Compile Include="Engine\Controll\InputHandler.cs" />
     <Compile Include="Engine\GLWindow.cs" />
     <Compile Include="Engine\GraphicsEngine.cs" />
@@ -96,9 +97,9 @@
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector2.cs" />
     <Compile Include="Engine\Modules\SaveSystem\ISave.cs" />
     <Compile Include="Engine\Modules\SaveSystem\SaveSystem.cs" />
-    <Compile Include="Engine\Objects\CharacterControllAI.cs" />
-    <Compile Include="Engine\Objects\CharacterControllBase.cs" />
-    <Compile Include="Engine\Objects\CharacterControllPlayer.cs" />
+    <Compile Include="Engine\Controll\CharacterControllAI.cs" />
+    <Compile Include="Engine\Controll\CharacterControllBase.cs" />
+    <Compile Include="Engine\Controll\CharacterControllPlayer.cs" />
     <Compile Include="Engine\Objects\ShareData.cs" />
     <Compile Include="Engine\Pathfinding\AStarSearch.cs" />
     <Compile Include="Engine\Pathfinding\Heuristic.cs" />

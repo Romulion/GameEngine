@@ -18,7 +18,7 @@ namespace Toys
         public float RunSpeed { get; set; }
         protected void Awake()
         {
-            WalkSpeed = 1.1f * 4.0f * 10;
+            WalkSpeed = 1.1f * 4.0f;
             RunSpeed = WalkSpeed * 2;
             world = CoreEngine.pEngine.World;
             CreatePlayerBox();
@@ -31,9 +31,10 @@ namespace Toys
             _ghostObject = new PairCachingGhostObject()
             {
                 CollisionShape = shape,
-                WorldTransform = Matrix.Translation(RigidBodyBone.GetVec3(Node.GetTransform.Position))
+                CollisionFlags = CollisionFlags.CharacterObject,
+                WorldTransform = Matrix.Translation(RigidBodyBone.GetVec3(Node.GetTransform.Position) + Vector3.UnitY)
             };
-            world.AddCollisionObject(_ghostObject, 1, Int32.MaxValue);
+            world.AddCollisionObject(_ghostObject, CollisionFilterGroups.CharacterFilter, CollisionFilterGroups.StaticFilter | CollisionFilterGroups.DefaultFilter);
             _charController = new KinematicCharacterController(_ghostObject, shape, stepHeight);
             world.AddAction(_charController);
         }
@@ -43,7 +44,7 @@ namespace Toys
             if (_charController.OnGround)
             {
                 var mat = Node.GetTransform.GlobalTransform;
-                var direction = new Vector3(mat.M31, mat.M32, mat.M33);
+                var direction = new Vector3(mat.M31, 0, mat.M33);
                 direction.Normalize();
                 _charController.SetWalkDirection(direction * frameDelta * WalkSpeed);
             }
@@ -52,6 +53,12 @@ namespace Toys
         protected void Jump()
         {
             _charController.Jump();
+        }
+
+        protected void Stop()
+        {
+            if (_charController.OnGround)
+                _charController.SetWalkDirection(Vector3.Zero);
         }
 
         protected void Update()

@@ -4,7 +4,7 @@ using OpenTK.Input;
 
 namespace Toys
 {
-    public class CameraControllScript : ScriptingComponent
+    public class CameraControllOrbitScript : ScriptingComponent
     {
         GameWindow game;
         Transform transform;
@@ -110,7 +110,7 @@ namespace Toys
                 Vector3 front = camera.Target - transform.Position;
                 Vector3 left = Vector3.Cross(front,cameraUp);
                 //movment
-                /*
+                
                 if (keyState[Key.W])
                 {
                     camera.Target += speed * front;
@@ -134,7 +134,7 @@ namespace Toys
                     camera.Target += speed * left;
                     transform.Position += speed * left;
                 }
-                */
+                
                 if (keyState[Key.R])
                 {
                     transform.Position = new Vector3(0f, 1f, 0f);

@@ -54,8 +54,8 @@ namespace Toys
         public Camera() : base(typeof(Camera))
 		{
             NearPlane = 0.1f;
-            FarPlane = 100.0f;
-            FOV = 30;
+            FarPlane = 30.0f;
+            FOV = 60;
             projType = ProjectionType.Perspective;
             Main = true;
             RenderMask = 1;
