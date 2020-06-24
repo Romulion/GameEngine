@@ -32,8 +32,9 @@ namespace Toys
         {
             var pos = Node.GetTransform.Position;
             var up = Vector3.UnitY;
+            direction = new Vector3(Node.GetTransform.GlobalTransform.M31, Node.GetTransform.GlobalTransform.M32, Node.GetTransform.GlobalTransform.M33);
             AL.Listener(ALListener3f.Position, ref pos);
-           // AL.Listener(ALListenerfv.Orientation, ref direction, ref up);
+            AL.Listener(ALListenerfv.Orientation, ref direction, ref up);
         }
 
         internal override void AddComponent(SceneNode nod)

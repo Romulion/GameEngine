@@ -156,12 +156,14 @@ namespace ModelViewer
             //MadePath(31);
 
             //slider1.OnValueChanged = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };
+            audioListener = AudioListener.GetListener();
+            camera.Node.AddComponent(audioListener);
+            /*
             try
             {
-                src = ResourcesManager.LoadAsset<AudioSource>("ccccc.mp3");
+                src = ResourcesManager.LoadAsset<AudioSource>(@"Assets\Sound\ccccc.mp3");
                 Node.AddComponent(src);
-                audioListener = AudioListener.GetListener();
-                camera.Node.AddComponent(audioListener);
+
                 src.Play();
 
             }
@@ -169,6 +171,7 @@ namespace ModelViewer
             {
 
             }
+            */
         }
 
         void Start()
