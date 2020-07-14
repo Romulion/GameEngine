@@ -134,10 +134,10 @@ namespace Toys
             LocalMatrix.M42 += trans.Y;
             LocalMatrix.M43 += trans.Z;
             BoneMatrix = LocalMatrix;
-            LocalMatrix *= InitialLocalTransform;
-
             if (Parent != null)
             {
+
+                LocalMatrix *= InitialLocalTransform;
                 LocalScale = Vector3.Multiply(Parent.LocalScale, Scale);
                 LocalMatrix *= Parent.LocalMatrix;
             }

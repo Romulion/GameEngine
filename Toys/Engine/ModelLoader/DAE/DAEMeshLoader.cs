@@ -11,8 +11,11 @@ namespace Toys
 		public List<DAEGeometryContainer> DAEGeometry;
 		XmlNode xGeometry = null;
 		const string nodeName = "library_geometries";
+        const string sceneNodeName = "library_visual_scenes";
+        const string visualscene = "visual_scene";
         Logger logger;
 		float max = 0f;
+        Dictionary<string, string> controllerMaterialRef = new Dictionary<string, string>();
 
 		public DAEMeshLoader(XmlElement xRoot)
 		{
@@ -28,8 +31,17 @@ namespace Toys
 
 			if (xGeometry == null)
 				throw new Exception();
+            var scenesRoot = xRoot.FindNodes(sceneNodeName);
+            var scenes = scenesRoot[0].FindNodes(visualscene);
+            var visualNodes = new List<XmlNode>();
+            foreach (var scene in scenes)
+            {
+                FindVisualNodes(scene, visualNodes);
+            }
 
-			DAEGeometry = new List<DAEGeometryContainer>(xGeometry.ChildNodes.Count);
+            MakeControllerMatDict(visualNodes);
+
+            DAEGeometry = new List<DAEGeometryContainer>(xGeometry.ChildNodes.Count);
 			foreach (XmlNode mesh in xGeometry.ChildNodes)
 			{
                 try
@@ -38,9 +50,10 @@ namespace Toys
                 }
                 catch (Exception e)
                 {
-                    logger.Warning("Error Parsing Mesh", e.Source);
+                    logger.Warning("Error Parsing Mesh" + e.StackTrace, e.StackTrace);
                 }
 			}
+
 
             foreach (XmlNode mesh in xRoot.FindNodes("library_controllers")[0].ChildNodes)
 			{
@@ -49,9 +62,15 @@ namespace Toys
                 {
                     ReadWeigth(mesh);
                 }
-                catch (Exception)
-                {
+                catch (Exception ) {  }
+            }
 
+            foreach (var meshInst in DAEGeometry)
+            {
+                for (int i = 0; i < meshInst.MaterialIndexTable.Count; i++)
+                {
+                    //Console.WriteLine("{0} {1}",meshInst.Indeces.Length, meshInst.ControllerId + ";" + meshInst.MaterialIndexTable[i].Item1);
+                    meshInst.MaterialIndexTable[i] = new Tuple<string, int>(controllerMaterialRef[meshInst.ControllerId + ";" + meshInst.MaterialIndexTable[i].Item1], meshInst.MaterialIndexTable[i].Item2);
                 }
             }
         }
@@ -61,53 +80,72 @@ namespace Toys
 			string vertID = "";
 			string normID = "";
 			string textID = "";
-			string mat = "";
+			
 			XmlNode mesh = geometry.FirstChild;
-			DAEGeometryContainer gc = null;
-
-			//initializing mesh data
-			foreach (XmlNode source in mesh.FindNodes("triangles"))
+			DAEGeometryContainer gc = new DAEGeometryContainer();
+            List<int> indexes = new List<int>();
+            //initializing mesh data
+            foreach (XmlNode source in mesh.FindNodes("triangles"))
 			{
-				var cnt = source.Attributes.GetNamedItem("count").Value;
-				int[] indexes = null;
-				mat = source.Attributes.GetNamedItem("material").Value;
-
-				foreach (XmlNode input in source.ChildNodes)
+                var cnt = source.Attributes.GetNamedItem("count").Value;
+                string mat = source.Attributes.GetNamedItem("material").Value;
+                int offsets = 0;
+                int[] indexesNew = null;
+                foreach (XmlNode input in source.ChildNodes)
 				{
-					if (input.Name == "input")
-					{
-						string src = input.Attributes.GetNamedItem("source").Value;
-						src = src.Replace("#","");
-						switch (input.Attributes.GetNamedItem("semantic").Value)
-						{
-							case "VERTEX":
-								vertID = src;
-								break;
-							case "NORMAL":
-								normID = src;
-								break;
-							case "TEXCOORD":
-								textID = src;
-								break;
-						}
-					}
-					else if (input.Name == "p")
-						indexes = StringParser.readInt(input.InnerText);
+                    if (input.Name == "input")
+                    {
+                        string src = input.Attributes.GetNamedItem("source").Value;
+                        src = src.Replace("#", "");
+
+                        switch (input.Attributes.GetNamedItem("semantic").Value)
+                        {
+                            case "VERTEX":
+
+                                vertID = src;
+                                break;
+                            case "NORMAL":
+                                var off = int.Parse(input.Attributes.GetNamedItem("offset").Value);
+                                if (offsets < off)
+                                    offsets++;
+                                normID = src;
+                                break;
+                            case "TEXCOORD":
+                                var ofs = int.Parse(input.Attributes.GetNamedItem("offset").Value);
+                                if (offsets < ofs)
+                                    offsets++;
+                                textID = src;
+                                break;
+                        }
+                    }
+                    else if (input.Name == "p")
+                    {
+                        indexesNew = ReduceIndexes(StringParser.readIntArray(input.InnerText),offsets);
+                        indexes.AddRange(indexesNew);
+                    }
 				}
 
-				gc = new DAEGeometryContainer((uint)indexes.Max() + 1);
-				DAEGeometry.Add(gc);
-				gc.Indeces = indexes;
+                gc.MaterialIndexTable.Add(new Tuple<string, int>(mat, indexesNew.Length));
+            }
 
-			}
+            int maxIndex = indexes.Max() + 1;
+            gc.Positions = new Vector3[maxIndex];
+            gc.Normals = new Vector3[maxIndex];
+            gc.UVs = new Vector2[maxIndex];
+            gc.Colors = new Vector3[maxIndex];
+            gc.BoneWeigths = new Vector4[maxIndex];
+            gc.BoneIndeces = new IVector4[maxIndex];
 
-			//
-			gc.ID = geometry.Attributes.GetNamedItem("id").Value;
-			gc.Name = geometry.Attributes.GetNamedItem("name").Value;
-			gc.MaterialName = mat;
+            gc.Indeces = indexes.ToArray();
+            gc.ID = geometry.Attributes.GetNamedItem("id").Value;
+            gc.Name = geometry.Attributes.GetNamedItem("name").Value;
+            //if (gc.Name != "tr0029_00_hairSkin")
+            //    return;
+            DAEGeometry.Add(gc);
+            
             //vertices
             
-			XmlNode vertS = mesh.FindId(vertID);
+            XmlNode vertS = mesh.FindId(vertID);
 			var inpts = vertS.FindNodes("input");
 			if (inpts[0].Attributes != null && inpts[0].Attributes.GetNamedItem("semantic") != null)
 			{
@@ -120,7 +158,7 @@ namespace Toys
 
 					var flp = vert.FindNodes("float_array");
 
-					float[] flsp = StringParser.readFloat(flp[0].InnerText, 0.01f);
+					float[] flsp = StringParser.readFloatArray(flp[0].InnerText, 0.01f);
 					max = (flsp.Max() > max) ? flsp.Max() : max;
 					int io = 0;
 					for (int n = 0; n < flsp.Length && io < gc.Positions.Length; n += 3)
@@ -131,7 +169,7 @@ namespace Toys
 
 				}
 				else
-					Console.WriteLine("wrong position semantic type: {0}", inpts[0].Attributes.GetNamedItem("semantic").Value);
+                    logger.Warning("wrong position semantic type: " + inpts[0].Attributes.GetNamedItem("semantic").Value, "DAEMeshLoader.ReadMesh");
 
 			}
 
@@ -142,7 +180,7 @@ namespace Toys
 				XmlNode norm = mesh.FindId(normID);
 				var fl = norm.FindNodes("float_array");
 
-				float[] fls = StringParser.readFloat(fl[0].InnerText);
+				float[] fls = StringParser.readFloatArray(fl[0].InnerText);
 
 				for (int n = 0; n < fls.Length && i < gc.Normals.Length; n += 3)
 				{
@@ -164,34 +202,38 @@ namespace Toys
             if (textID != "")
             {
                 XmlNode uvtex = mesh.FindId(textID);
-                var fluv = uvtex.FindNodes("float_array");
-                float[] fls1 = StringParser.readFloat(fluv[0].InnerText);
-                i = 0;
-                //Console.WriteLine(fls1.Length);
 
-                for (int n = 0; n < fls1.Length && i < gc.UVs.Length; n += 2)
+                var accessor = uvtex.FindNodes("technique_common")[0].FirstChild;
+                int stride = int.Parse(accessor.Attributes.GetNamedItem("stride").Value);
+
+                var fluv = uvtex.FindNodes("float_array");
+                float[] fls1 = StringParser.readFloatArray(fluv[0].InnerText);
+                i = 0;
+
+
+
+                for (int n = 0; n < fls1.Length && i < gc.UVs.Length; n += stride)
                 {
-                    gc.UVs[i] = new Vector2(2 * fls1[n], 1 - fls1[n + 1]);
+                    gc.UVs[i] = new Vector2( fls1[n], 1 - fls1[n + 1]);
                     i++;
                 }
             }
         }
 
-
 		void ReadWeigth(XmlNode controller)
 		{
-			XmlNode skin = controller.FirstChild;
+            
+            XmlNode skin = controller.FirstChild;
 
 			string geometryID = skin.Attributes.GetNamedItem("source").Value;
 			var geometry = DAEGeometry.Find(inst => inst.ID == geometryID.Replace("#","") );
-
-			var weighth = skin.FindNodes("vertex_weights");
+            geometry.ControllerId = controller.Attributes.GetNamedItem("id").Value;
+            var weighth = skin.FindNodes("vertex_weights");
 			var inputs = weighth[0].FindNodes("input");
 
+            int[] bindindCount = StringParser.readIntArray(weighth[0].FindNodes("vcount")[0].InnerText);
 
-			int[] bindindCount = StringParser.readInt(weighth[0].FindNodes("vcount")[0].InnerText);
-
-			int[] bindedBones = StringParser.readInt(weighth[0].FindNodes("v")[0].InnerText);
+			int[] bindedBones = StringParser.readIntArray(weighth[0].FindNodes("v")[0].InnerText);
 
 			string weigthID = "";
 			foreach (XmlNode inpt in inputs)
@@ -206,7 +248,7 @@ namespace Toys
             if (srcs == null)
                 logger.Warning("weigth not found", "ReadWeigth");
 			
-			float[] weigths = StringParser.readFloat(srcs.FindNodes("float_array")[0].InnerText);
+			float[] weigths = StringParser.readFloatArray(srcs.FindNodes("float_array")[0].InnerText);
 
             //assigning
             int offset = 0;
@@ -232,13 +274,64 @@ namespace Toys
 						geometry.BoneWeigths[i] = new Vector4(weigths[bindedBones[offset + 1]], weigths[bindedBones[offset + 3]],weigths[bindedBones[offset + 5]], weigths[bindedBones[offset + 7]]);
 						break;
 				}
-				//geometry.BoneWeigths[i].Normalize();
 				offset += count * 2;
 			}
 
 		}
 
+        private List<XmlNode> FindVisualNodes(XmlNode root, List<XmlNode> elemets)
+        {
+            var nodes = root.FindNodes("node");
+            foreach (var node in nodes)
+            {
+                if (node.Attributes.GetNamedItem("type") == null || node.Attributes.GetNamedItem("type").Value == "NODE")
+                {
+                    elemets.Add(node);
+                    FindVisualNodes(node,elemets);
+                }
+            }
+            return elemets;
+        }
+        private void MakeControllerMatDict(List<XmlNode> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                try
+                {
+                    var instance = node.FindNodes("instance_controller")[0];
+                    var controller = instance.Attributes.GetNamedItem("url").Value;
+                    var bm = instance.FindNodes("bind_material")[0];
+                    var tc = bm.FindNodes("technique_common")[0];
+                    var im = tc.FindNodes("instance_material");
+                    foreach (var inMat in im)
+                    {
+                        var materialID = inMat.Attributes.GetNamedItem("target").Value;
+                        var symbol = inMat.Attributes.GetNamedItem("symbol").Value;
+                        controllerMaterialRef.Add(controller.Remove(0, 1) + ";" + symbol, materialID.Remove(0, 1));
+                        //Console.WriteLine("{0} {1}", controller.Remove(0, 1) + ";" + symbol, materialID.Remove(0, 1));
+                    }
 
+                }
+                catch (Exception e) { //Console.WriteLine(e.StackTrace);
+                }
+            }
+        }
+
+        private int[] ReduceIndexes(int[] raw, int offset)
+        {
+            int[] array = null;
+            if (offset > 0)
+            {
+                array = new int[raw.Length / (offset + 1)];
+                for (int i = 0; i < raw.Length; i += (offset + 1))
+                    array[i / (offset + 1)] = raw[i];
+            }
+            else
+            {
+                return raw;
+            }
+            return array;
+        }
 		public Mesh LoadMesh()
 		{
 			List<VertexRigged3D> verts = new List<VertexRigged3D>();
@@ -256,15 +349,16 @@ namespace Toys
 				{
 					indeces.Add(index + vertsOffset);
 				}
-
 				gc.Offset = offset;
 				vertsOffset += gc.Positions.Length;
 				offset += gc.Indeces.Length;
-			}
+                //Console.WriteLine("{0} {1}", offset,  gc.Indeces.Length);
+            }
 
 			Mesh mesh = new Mesh(verts.ToArray(), indeces.ToArray());
+            
 			return mesh;
 		}
-
+        
 	}
 }

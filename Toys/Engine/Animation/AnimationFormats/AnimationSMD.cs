@@ -61,7 +61,7 @@ namespace Toys
                     string[] elements = line.Split(new char[] { ' ' }, 2);
                     int id = Int32.Parse(elements[0]);
 
-                    float[] coord = StringParser.readFloat(elements[1]);
+                    float[] coord = StringParser.readFloatArray(elements[1]);
                     Vector3 p = new Vector3(coord[0], coord[1], coord[2]);
                     Vector4 r = new Vector4(coord[3], coord[4], coord[5],0);
                     var bone = new BonePosition(p * 0.01f, r, id);

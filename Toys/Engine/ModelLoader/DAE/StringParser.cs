@@ -3,7 +3,7 @@ namespace Toys
 {
 	public static class StringParser
 	{
-		public static int[] readInt(string array)
+		public static int[] readIntArray(string array)
 		{
 			string[] arr = array.Split(' ');
 			int[] res = new int[arr.Length];
@@ -16,7 +16,7 @@ namespace Toys
 			return res;
 		}
 
-		public static float[] readFloat(string array, float multiplier = 1f)
+		public static float[] readFloatArray(string array, float multiplier = 1f)
 		{
 			string[] arr = array.Split(' ');
 			float[] res = new float[arr.Length];

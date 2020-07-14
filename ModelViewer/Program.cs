@@ -40,10 +40,13 @@ namespace ModelViewer
             if (args.Length != 0)
             {
                 SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
-                modelNode.Name = "model";
-                scene.AddNode2Root(modelNode);
-                test.cc = (CharControll)modelNode.AddComponent<CharControll>();
-                cameraNode.AddComponent<CameraControllOrbitScript>();
+                if (modelNode)
+                {
+                    modelNode.Name = "model";
+                    scene.AddNode2Root(modelNode);
+                    test.cc = (CharControll)modelNode.AddComponent<CharControll>();
+                    cameraNode.AddComponent<CameraControllOrbitScript>();
+                }
             }
             else
             {
