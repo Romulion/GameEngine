@@ -31,7 +31,7 @@ namespace ModelViewer
             var test = (TestScript)navmeshNode.AddComponent<TestScript>();
             scene.AddNode2Root(navmeshNode);
             test.camera = camera;
-
+            
             //Remote Image Streaming
             //var script = (DynamicFormStream)cameraNode.AddComponent<DynamicFormStream>();
             //var ISS = (ImageStreamerScript)cameraNode.AddComponent<ImageStreamerScript>();

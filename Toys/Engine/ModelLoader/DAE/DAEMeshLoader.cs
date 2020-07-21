@@ -210,8 +210,6 @@ namespace Toys
                 float[] fls1 = StringParser.readFloatArray(fluv[0].InnerText);
                 i = 0;
 
-
-
                 for (int n = 0; n < fls1.Length && i < gc.UVs.Length; n += stride)
                 {
                     gc.UVs[i] = new Vector2( fls1[n], 1 - fls1[n + 1]);

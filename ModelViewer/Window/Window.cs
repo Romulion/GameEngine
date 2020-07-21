@@ -60,7 +60,7 @@ namespace ModelViewer
                 scale.Value = morph.MorphDegree;
                 scale.ValueChanged += (sender, e) =>
                 {
-                    core.addTask = () => morph.MorphDegree = (float)scale.Value;
+                    core.AddTask = () => morph.MorphDegree = (float)scale.Value;
                 };
 
                 fixed7.Put(scale, 100, y);
@@ -77,16 +77,12 @@ namespace ModelViewer
             fileChooserAdd.Name = "filechooserbutton3";
             fileChooserAdd.FileSet += (sender, e) =>
             {
-                bool ready = false;
-                core.addTask = () =>
+                var wait = core.AddNotyfyTask(() =>
                 {
                     SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(fileChooserAdd.Filename);
                     scene.AddNode2Root(modelNode);
-                    ready = true;
-                };
-                //wait for model to load
-                while (!ready)
-                    System.Threading.Thread.Sleep(1);
+                });
+                wait.WaitOne();
                 ClearChildrens(fixedScene);
                 DrawScene(scene);
             };

@@ -6,10 +6,10 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using OpenTK.Graphics;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Toys
 {
-	public delegate void queue();
 	public class CoreEngine 
 	{
         internal static InputHandler iHandler { get; private set; }
@@ -20,7 +20,7 @@ namespace Toys
         internal static SoundEngine aEngine { get; private set; }
         public static Time time { get; private set; }
         public static Time frameTimer { get; private set; }
-        queue task;
+        Action task;
 
         public float elapsed { get; private set; }
 
@@ -116,7 +116,7 @@ namespace Toys
         }
 
 
-		public queue addTask
+		public Action AddTask
 		{
 			set
 			{
@@ -126,5 +126,16 @@ namespace Toys
 					task += value;
 			}
 		}
+
+        public ManualResetEvent AddNotyfyTask(Action task)
+        {
+            ManualResetEvent mre = new ManualResetEvent(false);
+            AddTask = () =>
+            {
+                task();
+                mre.Set();
+            };
+            return mre;
+        }
     }
 }

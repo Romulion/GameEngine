@@ -15,12 +15,19 @@ namespace Toys
         public CoreEngine Engine { get; private set; }
         internal static GLWindow gLWindow;
         bool pause = false;
-        bool pauseKey= false;
+        bool pauseKey = false;
         bool visibleKey = false;
         public GLWindow() : base(640, 480, new GraphicsMode(32, 8, 8, 4))
         {
             gLWindow = this;
             Initialize();
+        }
+
+        public bool CheckContext{
+            get
+            {
+                return Context.IsCurrent;
+            }
         }
 
         void Initialize()

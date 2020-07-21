@@ -41,6 +41,10 @@ namespace Toys
 		*/
 		public virtual void Draw()
 		{
+            //skip not loaded models
+            if (!Mesh.IsReady)
+                return;
+
 			Mesh.BindVAO();
 			foreach (var material in Materials)
 			{

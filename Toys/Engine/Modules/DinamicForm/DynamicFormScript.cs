@@ -127,13 +127,13 @@ namespace Toys
                 form.Left = Cursor.Position.X + offsetX;
                 form.Top = Cursor.Position.Y + offsetY;
             }
-            
+            /*
             KeyboardState keyState = Keyboard.GetState();
             if (keyState[Key.S])
             {
                 imageBitmap.Save("test.png");
             }
-            
+            */
         }
 
         void OnDestroy()

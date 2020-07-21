@@ -115,7 +115,7 @@ namespace Toys
                 return DeleteResource(name);
             else
             {
-                CoreEngine.ActiveCore.addTask = () => resource.Unload();
+                CoreEngine.ActiveCore.AddTask = () => resource.Unload();
                 return true;
             }
         }
@@ -125,7 +125,7 @@ namespace Toys
             Resource resource;
             if (resources.TryGetValue(res, out resource))
             {
-                CoreEngine.ActiveCore.addTask = () => resource.Unload();
+                CoreEngine.ActiveCore.AddTask = () => resource.Unload();
                 resources.Remove(res);
                 return true;
             }
