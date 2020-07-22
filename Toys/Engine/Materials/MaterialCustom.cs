@@ -27,7 +27,7 @@ namespace Toys
             CreateShader(shaderProgram);
         }
 
-        public override void ApplyMaterial()
+        internal override void ApplyMaterial()
         {
             base.ApplyMaterial();
             foreach (var uni in UniManager.uniforms)

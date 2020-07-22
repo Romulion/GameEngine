@@ -70,12 +70,12 @@ namespace Toys
 			}
 		}
 
-		public virtual void UpdateMaterial()
+		internal virtual void UpdateMaterial()
 		{
 			shaderProgram.DeleteShader();
 		}
 
-		public virtual void ApplyMaterial()
+		internal virtual void ApplyMaterial()
 		{
 			shaderProgram.ApplyShader();
 			TextureUnit unit = TextureUnit.Texture0;
