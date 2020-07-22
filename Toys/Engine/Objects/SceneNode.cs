@@ -127,10 +127,10 @@ namespace Toys
         /// Search component of selected type.
         /// Returns first found.
         /// </summary>
-        public Component GetComponent<T>() where T : Component
+        public T GetComponent<T>() where T : Component
         {
             Type t = typeof(T); 
-            return GetComponent(t);
+            return (T)GetComponent(t);
         }
 
         /// <summary>

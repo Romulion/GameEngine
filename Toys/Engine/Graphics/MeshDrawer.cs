@@ -32,14 +32,14 @@ namespace Toys
 		{
 		}
 
-        public virtual void Prepare()
+        internal virtual void Prepare()
         {
 
         }
 		/*
 		 * main drawing
 		*/
-		public virtual void Draw()
+		internal virtual void Draw()
 		{
             //skip not loaded models
             if (!Mesh.IsReady)
@@ -65,7 +65,7 @@ namespace Toys
 		}
 
 		//drawing model outline
-		public virtual void DrawOutline()
+		internal virtual void DrawOutline()
 		{
 			
 			Mesh.BindVAO();
@@ -87,7 +87,7 @@ namespace Toys
 		}
 
 		//for shadow mapping
-		public virtual void DrawSimple()
+		internal virtual void DrawSimple()
 		{
 			Mesh.BindVAO();
 			foreach (var mat in Materials)

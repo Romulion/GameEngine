@@ -115,7 +115,9 @@ namespace Toys
             sEngine.PostRender();
         }
 
-
+        /// <summary>
+        /// Add task to process by graphics thread
+        /// </summary>
 		public Action AddTask
 		{
 			set
@@ -127,6 +129,12 @@ namespace Toys
 			}
 		}
 
+        /// <summary>
+        /// Add task to process by graphics thread
+        /// with completion notifier
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
         public ManualResetEvent AddNotyfyTask(Action task)
         {
             ManualResetEvent mre = new ManualResetEvent(false);

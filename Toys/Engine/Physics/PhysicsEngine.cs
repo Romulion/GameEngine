@@ -5,6 +5,23 @@ using System.Collections.Generic;
 
 namespace Toys
 {
+    //Flags for filltering collisions
+    // 16 - 31 bits reserved for cloth collision
+    [Flags]
+    public enum CollisionFilleters
+    {
+        All = -1,
+        None = 0,
+        Default = 1,
+        Static = 2,
+        Kinematic = 4,
+        Debris = 8,
+        Sensor = 16,
+        Character = 32,
+        Player = 64,
+        Look = 128,
+        Projectile  = 256,
+    }
 	public class PhysicsEngine : IDisposable
 	{
 		CollisionDispatcher dispatcher;

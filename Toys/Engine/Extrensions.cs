@@ -30,7 +30,7 @@ namespace Toys
 					if (res != null)
 						result = res;
 				}
-					
+				
 			}
 			return result;
 		}
@@ -117,6 +117,34 @@ namespace Toys
             angles.Z = (float)Math.Atan2(siny_cosp, cosy_cosp);
 
             return angles;
+        }
+
+        //BulletSharp math convertions
+        public static BulletSharp.Math.Vector3 Convert(this Vector3 vector)
+        {
+            return new BulletSharp.Math.Vector3(vector.X, vector.Y, vector.Z);
+        }
+
+        public static Vector3 Convert(this BulletSharp.Math.Vector3 vector)
+        {
+            return new Vector3(vector.X, vector.Y, vector.Z);
+        }
+
+        public static BulletSharp.Math.Matrix Convert(this Matrix4 mat)
+        {
+            return new BulletSharp.Math.Matrix(mat.M11, mat.M12, mat.M13, mat.M14,
+                              mat.M21, mat.M22, mat.M23, mat.M24,
+                              mat.M31, mat.M32, mat.M33, mat.M34,
+                              mat.M41, mat.M42, mat.M43, mat.M44);
+        }
+
+
+        public static Matrix4 Convert(this BulletSharp.Math.Matrix mat)
+        {
+            return new Matrix4(mat.M11, mat.M12, mat.M13, mat.M14,
+                                          mat.M21, mat.M22, mat.M23, mat.M24,
+                                          mat.M31, mat.M32, mat.M33, mat.M34,
+                                        mat.M41, mat.M42, mat.M43, mat.M44);
         }
     }
 }

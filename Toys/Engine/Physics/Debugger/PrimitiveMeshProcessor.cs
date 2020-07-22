@@ -178,7 +178,7 @@ namespace Toys
 
 				InitShapeData(shape).Instances.Add(new InstanceData()
 				{
-					WorldTransform = RigidBodyBone.GetMat(transform),
+					WorldTransform = transform.Convert(),
 					//WorldTransform = MathHelper.Convert(ref transform),
 					//Color = "Ground".Equals(colObj.UserObject) ? groundColor :
 					//	colObj.ActivationState == ActivationState.ActiveTag ? activeColor : passiveColor

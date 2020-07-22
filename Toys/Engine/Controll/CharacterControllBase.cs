@@ -13,7 +13,7 @@ namespace Toys
     {
         DiscreteDynamicsWorld world;
         KinematicCharacterController _charController;
-        PairCachingGhostObject _ghostObject;
+        protected PairCachingGhostObject _ghostObject;
         public float WalkSpeed { get; set; }
         public float RunSpeed { get; set; }
         protected void Awake()
@@ -32,7 +32,7 @@ namespace Toys
             {
                 CollisionShape = shape,
                 CollisionFlags = CollisionFlags.CharacterObject,
-                WorldTransform = Matrix.Translation(RigidBodyBone.GetVec3(Node.GetTransform.Position) + Vector3.UnitY)
+                WorldTransform = Matrix.Translation(Node.GetTransform.Position.Convert() + Vector3.UnitY)
             };
             world.AddCollisionObject(_ghostObject, CollisionFilterGroups.CharacterFilter, CollisionFilterGroups.StaticFilter | CollisionFilterGroups.DefaultFilter);
             _charController = new KinematicCharacterController(_ghostObject, shape, stepHeight);
@@ -70,7 +70,7 @@ namespace Toys
 
         protected void Teleport(OpenTK.Vector3 position)
         {
-            var pos = RigidBodyBone.GetVec3(position);
+            var pos = position.Convert();
             _charController.Warp(ref pos);
         }
     }

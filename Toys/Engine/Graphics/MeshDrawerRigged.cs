@@ -22,7 +22,7 @@ namespace Toys
             uniformBufferSkeleton = (UniformBufferSkeleton)ubm.GetBuffer("skeleton");
         }
 
-        public override void Draw()
+        internal override void Draw()
 		{
 #if VertexSkin
             ubs.SetBones(skeleton.GetSkeleton);
@@ -30,7 +30,7 @@ namespace Toys
             base.Draw();
 		}
 
-        public override void Prepare()
+        internal override void Prepare()
         {
             skeleton.UpdateSkeleton();
 #if !VertexSkin
@@ -39,7 +39,7 @@ namespace Toys
 #endif
         }
 
-        public override void DrawSimple()
+        internal override void DrawSimple()
 		{
 #if VertexSkin
             ubs.SetBones(skeleton.GetSkeleton);

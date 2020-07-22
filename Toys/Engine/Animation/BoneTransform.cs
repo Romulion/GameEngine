@@ -30,8 +30,8 @@ namespace Toys
         public Matrix4 InitialLocalTransform { get; internal set; }
         //public Vector3 InitialOffset;
 
-        Vector3 Translation;
-        Quaternion Rotation;
+        public Vector3 Translation { get; private set; }
+        public Quaternion Rotation { get; private set; }
         Vector3 Scale;
         Quaternion AddRotation;
         Vector3 AddTranslation;
@@ -213,6 +213,16 @@ namespace Toys
         public void SetTransform(Quaternion rotation, Vector3 translation)
         {
             Rotation = rotation;
+            Translation = translation;
+        }
+
+        public void SetTransform(Quaternion rotation)
+        {
+            Rotation = rotation;
+        }
+
+        public void SetTransform(Vector3 translation)
+        {
             Translation = translation;
         }
 

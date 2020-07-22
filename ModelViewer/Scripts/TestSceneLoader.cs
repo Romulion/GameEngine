@@ -25,25 +25,27 @@ namespace ModelViewer
                 model1.Name = "Michelle.Seifuku";
                 model1.GetTransform.Position = OpenTK.Vector3.UnitZ * 2;
                 Scene.AddNode2Root(model1);
-                var manager = (PhysicsManager)model1.GetComponent<PhysicsManager>();
+                var manager = model1.GetComponent<PhysicsManager>();
+                model1.AddComponent<NpcAI>();
                 //Button.image1.OnClick += () => manager?.ReinstalizeBodys();
 
                 //var src = ResourcesManager.LoadAsset<AudioSource>(@"Assets\Sound\mumi.mp3");
                 //model1.AddComponent(src);
                 //src.Play();
             }
-
+            /*
             var model2 = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Hinata\Seifuku.pmx");
             if (model2)
             {
                 model2.Name = "Hinata.Seifuku";
                 model2.GetTransform.Position = -OpenTK.Vector3.UnitZ * 2;
                 Scene.AddNode2Root(model2);
-
+                model2.AddComponent<NpcAI>();
                 //var src = ResourcesManager.LoadAsset<AudioSource>(@"Assets\Sound\hina.mp3");
                 //model2.AddComponent(src);
                 //src.Play();
             }
+            */
         }
 
 
