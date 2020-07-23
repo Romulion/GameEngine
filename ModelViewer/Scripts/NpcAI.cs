@@ -16,8 +16,16 @@ namespace ModelViewer
         RigidBody headBody;
         bool looked;
         Vector3 lookTo;
-        Vector3 axis;
-        float angle;
+        Vector2 angle;
+        Vector2 targetAngle;
+        Vector2 angSpeed;
+        float thetaDef = 0;
+        float phiDef = 0;
+        float thetaMin = (float)(-60 * Math.PI / 180);
+        float thetaMax = (float)(60 * Math.PI / 180);
+        float phiMin = (float)(-70 * Math.PI / 180);
+        float phiMax = (float)(70 * Math.PI / 180);
+
         void Start()
         {
             var rigged = Node.GetComponent<Animator>();
@@ -33,27 +41,44 @@ namespace ModelViewer
             //ManifoldPoint.ContactAdded = 
             headBody.UserObject = new Action<Vector3>(triggerSwitch);
             headBody.UserIndex = 1;
+
+             
+            targetAngle = new Vector2(thetaDef,phiDef);
+            angle = targetAngle;
+            angSpeed = Vector2.Zero;
         }
 
         void Update()
         {
             var transform = head.World2BoneInitial * head.TransformMatrix * Node.GetTransform.GlobalTransform;
-            headBody.WorldTransform = (transform).Convert();
+            headBody.WorldTransform = transform.Convert();
             //head.SetTransform(Quaternion.FromEulerAngles(0,0.5f * (float)Math.Sin(i*Math.PI/180),0));
             //head.SetTransform(Quaternion.FromEulerAngles(0.5f * (float)Math.Sin(i*Math.PI/180),0,0));
             //head.SetTransform(Quaternion.FromEulerAngles(0,0,0.5f * (float)Math.Sin(i*Math.PI/180)));
 
             i++;
             
-            if (looked)
+            if (targetAngle != Vector2.Zero)
             {
-                var turn = (angle - headSpeed > 0) ? headSpeed : angle;
-                angle -= turn;
-                //Console.WriteLine(angle);
-                var rotation = Quaternion.FromAxisAngle(axis, turn);
-                head.SetTransform(head.Rotation * rotation);
+                
+                var angleStep = angSpeed;
+                if (Math.Abs(targetAngle.X) < 0.000001f)
+                    targetAngle.X = 0;
+                if (Math.Abs(targetAngle.Y) < 0.000001f)
+                    targetAngle.Y = 0;
+
+                
+                if (Math.Abs(targetAngle.X) - Math.Abs(angSpeed.X) < 0 || (Math.Abs(targetAngle.Y) - Math.Abs(angSpeed.Y) < 0))
+                    angleStep = targetAngle;
+                targetAngle -= angleStep;
+                angle += angleStep;
+
+                head.SetTransform(Quaternion.FromAxisAngle(Vector3.UnitY, angle.Y) * Quaternion.FromAxisAngle(Vector3.UnitX, angle.X));
+                
+               // head.SetTransform(Quaternion.FromEulerAngles(targetAngle.X, targetAngle.Y, 0));
+
             }
-            
+
         }
 
         void triggerSwitch(Vector3 looker)
@@ -62,17 +87,9 @@ namespace ModelViewer
             {
                 looked = false;
                 Console.WriteLine("dont look");
-                /*
-                //looker = Vector3.UnitZ;
-                var transform = head.TransformMatrix * head.World2BoneInitial * Node.GetTransform.GlobalTransform;
-                Vector3 look = new Vector3(transform.M31, transform.M32, transform.M33);
-                look.Normalize();
-                var lookDest = (head.World2BoneInitial * Node.GetTransform.GlobalTransform * Vector4.UnitZ).Xyz;
-                lookDest.Normalize();
-                axis = Vector3.Cross(look, lookDest);
-                angle = (float)Math.Acos(Vector3.Dot(lookDest, look));
-                Console.WriteLine(angle);
-                */
+                targetAngle.X = thetaDef;
+                targetAngle.Y = phiDef;
+                CalcRotation();
             }
             else
             {
@@ -82,14 +99,48 @@ namespace ModelViewer
                 {
                     lookTo = looker;
                     var transform = head.TransformMatrix * head.World2BoneInitial * Node.GetTransform.GlobalTransform;
-                    Vector3 look = -new Vector3(transform.M31, transform.M32, transform.M33);
-                    look.Normalize();
+
                     var lookDest = lookTo - transform.ExtractTranslation();
                     lookDest.Normalize();
-                    axis = Vector3.Cross(look, lookDest);
-                    //axis.X = 0;
-                    angle = (float)Math.Acos(Vector3.Dot(lookDest, look));
+                    //phi
+                    targetAngle.Y = -(float)Math.Asin(lookDest.X);
+                    if (lookDest.Z > 0)
+                        targetAngle.Y = (float)Math.PI - targetAngle.Y;
+
+                    //theta
+                    targetAngle.X = (float)Math.Asin(lookDest.Y);
+
+                    //limit rotation
+                    if (targetAngle.X < thetaMin)
+                        targetAngle.X = thetaMin;
+                    else if (targetAngle.X > thetaMax)
+                        targetAngle.X = thetaMax;
+
+                    if (targetAngle.Y < phiMin)
+                        targetAngle.Y = phiMin;
+                    else if (targetAngle.Y > phiMax)
+                        targetAngle.Y = phiMax;
+                    CalcRotation();
                 }
+            }
+        }
+
+        void CalcRotation()
+        {
+            targetAngle -= angle;
+            //diagonal speed calculation
+            if (targetAngle.X == 0)
+            {
+                angSpeed.X = 0;
+                angSpeed.Y = Math.Sign(targetAngle.Y) * headSpeed;
+            }
+            else
+            {
+                angSpeed.X = (float)Math.Sqrt(Math.Pow(headSpeed, 2) * Math.Pow(targetAngle.X, 2) / (Math.Pow(targetAngle.X, 2) + Math.Pow(targetAngle.Y, 2)));
+                angSpeed.Y = angSpeed.X * Math.Abs(targetAngle.Y / targetAngle.X);
+
+                angSpeed.X = Math.Sign(targetAngle.X) * angSpeed.X;
+                angSpeed.Y = Math.Sign(targetAngle.Y) * angSpeed.Y;
             }
         }
     }
