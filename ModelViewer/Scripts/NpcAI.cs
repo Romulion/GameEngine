@@ -9,10 +9,10 @@ namespace ModelViewer
     class NpcAI : ScriptingComponent
     {
         public bool Busy { get; private set; }
-        float headSpeed = (float)(1 * Math.PI / 180);
+        float headSpeed = (float)(1.7f * Math.PI / 180);
         BoneTransform head;
         int i = 0;
-        BoxShape headBox;
+        SphereShape headBox;
         RigidBody headBody;
         bool looked;
         Vector3 lookTo;
@@ -33,7 +33,7 @@ namespace ModelViewer
                 head = rigged.BoneController.GetBone("頭");
 
             //create head ray collision object
-            headBox = new BoxShape(0.3f);
+            headBox = new SphereShape(0.35f);
             var rbInfo = new RigidBodyConstructionInfo(0, new DefaultMotionState(Matrix4.Identity.Convert()), headBox, BulletSharp.Math.Vector3.Zero);
             headBody = new RigidBody(rbInfo);
             CoreEngine.pEngine.World.AddRigidBody(headBody, (int)CollisionFilleters.Look, (int)CollisionFilleters.Look);
@@ -60,13 +60,12 @@ namespace ModelViewer
             
             if (targetAngle != Vector2.Zero)
             {
-                
+
                 var angleStep = angSpeed;
                 if (Math.Abs(targetAngle.X) < 0.000001f)
                     targetAngle.X = 0;
                 if (Math.Abs(targetAngle.Y) < 0.000001f)
                     targetAngle.Y = 0;
-
                 
                 if (Math.Abs(targetAngle.X) - Math.Abs(angSpeed.X) < 0 || (Math.Abs(targetAngle.Y) - Math.Abs(angSpeed.Y) < 0))
                     angleStep = targetAngle;
@@ -86,10 +85,10 @@ namespace ModelViewer
             if (looker == Vector3.Zero)
             {
                 looked = false;
-                Console.WriteLine("dont look");
                 targetAngle.X = thetaDef;
                 targetAngle.Y = phiDef;
                 CalcRotation();
+                lookTo = looker;
             }
             else
             {
@@ -104,8 +103,12 @@ namespace ModelViewer
                     lookDest.Normalize();
                     //phi
                     targetAngle.Y = -(float)Math.Asin(lookDest.X);
+
                     if (lookDest.Z > 0)
                         targetAngle.Y = (float)Math.PI - targetAngle.Y;
+
+                    if (targetAngle.Y > (float)Math.PI)
+                        targetAngle.Y -= 2 * (float)Math.PI;
 
                     //theta
                     targetAngle.X = (float)Math.Asin(lookDest.Y);
@@ -120,6 +123,7 @@ namespace ModelViewer
                         targetAngle.Y = phiMin;
                     else if (targetAngle.Y > phiMax)
                         targetAngle.Y = phiMax;
+
                     CalcRotation();
                 }
             }

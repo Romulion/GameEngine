@@ -33,7 +33,7 @@ namespace ModelViewer
                 //model1.AddComponent(src);
                 //src.Play();
             }
-            /*
+            
             var model2 = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Hinata\Seifuku.pmx");
             if (model2)
             {
@@ -45,7 +45,7 @@ namespace ModelViewer
                 //model2.AddComponent(src);
                 //src.Play();
             }
-            */
+            
         }
 
 
