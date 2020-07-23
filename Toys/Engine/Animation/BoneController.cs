@@ -71,9 +71,7 @@ namespace Toys
 
 		public BoneTransform GetBone(string name)
 		{
-            Console.WriteLine(name);
 			var bone = Array.Find(_bones, (obj) => obj.Bone.Name == name);
-            Console.WriteLine(bone);
 			if (bone == null)
 				Console.WriteLine("bone named '{0}' not found", name);
 

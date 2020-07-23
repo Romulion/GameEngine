@@ -3,7 +3,6 @@ using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.IO;
 using KtxSharp;
-using System.Runtime.ExceptionServices;
 
 namespace Toys
 {
@@ -56,10 +55,16 @@ namespace Toys
                 if (path.EndsWith("tga", StringComparison.OrdinalIgnoreCase))
 					tex1 = Paloma.TargaImage.LoadTargaImage(path);
                 /// .spa| .sph textures is png bmp or jpg textures
-                else if (path.EndsWith("spa", StringComparison.OrdinalIgnoreCase) || path.EndsWith("sph", StringComparison.OrdinalIgnoreCase))
+                else if (path.EndsWith("spa", StringComparison.OrdinalIgnoreCase) 
+                    || path.EndsWith("sph", StringComparison.OrdinalIgnoreCase))
                 {
                     Stream strm = File.OpenRead(path);
                     tex1 = new Bitmap(strm);
+                }
+                //process alpha channel on bmp
+                else if (path.EndsWith("bmp", StringComparison.OrdinalIgnoreCase))
+                {
+                    tex1 = CustomBMPLoader.Load(path);
                 }
 				else
 					tex1 = new Bitmap(path);
@@ -106,8 +111,8 @@ namespace Toys
             //for 8bpp formats 
             if (texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format4bppIndexed || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppRgb)
 			{
-				Bitmap clone = new Bitmap(texture.Width, texture.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-
+                Bitmap clone = new Bitmap(texture.Width, texture.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                
 				using (Graphics gr = Graphics.FromImage(clone))
 				{
 					gr.DrawImage(texture, new Rectangle(0, 0, clone.Width, clone.Height));
