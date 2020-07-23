@@ -54,7 +54,7 @@ namespace Toys
 			for (int i = 0; i < Vertices.Length; i++)
 				Vertices[i] = (Vertex3D)vertices[i];
 
-            VertexSize = Marshal.SizeOf(typeof(Vertex3D));
+            VertexSize = Marshal.SizeOf(typeof(VertexRigged3D));
 #if !VertexSkin
             if (GLWindow.gLWindow.CheckContext)
             {
@@ -94,8 +94,9 @@ namespace Toys
 		/// <param name="vertices">Vertices.</param>
 		void SetupMesh(Vertex3D[] vertices)
 		{
-			//generate buffers
-			VAO = GL.GenVertexArray();
+            var vertexSize = Marshal.SizeOf(typeof(Vertex3D));
+            //generate buffers
+            VAO = GL.GenVertexArray();
 			VBO = GL.GenBuffer();
 			EBO = GL.GenBuffer();
 
@@ -104,7 +105,7 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 
 			//load vertex array to memmory
-			GL.BufferData(BufferTarget.ArrayBuffer, VertexSize * VertexCount, vertices, BufferUsageHint.StaticDraw);
+			GL.BufferData(BufferTarget.ArrayBuffer, vertexSize * VertexCount, vertices, BufferUsageHint.StaticDraw);
 
 
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
@@ -112,13 +113,13 @@ namespace Toys
 
 			//assign binding points
 			//position
-			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, VertexSize, Marshal.OffsetOf(typeof(Vertex3D), "Position"));
+			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertexSize, Marshal.OffsetOf(typeof(Vertex3D), "Position"));
 			GL.EnableVertexAttribArray(0);
 			//normal
-			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, VertexSize, Marshal.OffsetOf(typeof(Vertex3D), "Normal"));
+			GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertexSize, Marshal.OffsetOf(typeof(Vertex3D), "Normal"));
 			GL.EnableVertexAttribArray(1);
 			//uv coord
-			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, VertexSize, Marshal.OffsetOf(typeof(Vertex3D), "UV"));
+			GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertexSize, Marshal.OffsetOf(typeof(Vertex3D), "UV"));
 			GL.EnableVertexAttribArray(2);
 
 			//unbind
