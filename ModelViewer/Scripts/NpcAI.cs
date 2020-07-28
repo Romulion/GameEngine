@@ -49,7 +49,7 @@ namespace ModelViewer
         }
 
         void Update()
-        {
+        {              
             var transform = head.World2BoneInitial * head.TransformMatrix * Node.GetTransform.GlobalTransform;
             headBody.WorldTransform = transform.Convert();
             //head.SetTransform(Quaternion.FromEulerAngles(0,0.5f * (float)Math.Sin(i*Math.PI/180),0));
@@ -82,6 +82,10 @@ namespace ModelViewer
 
         void triggerSwitch(Vector3 looker)
         {
+            //skip message if script detached
+            if (!Node)
+                return;
+
             if (looker == Vector3.Zero)
             {
                 looked = false;
@@ -146,6 +150,12 @@ namespace ModelViewer
                 angSpeed.X = Math.Sign(targetAngle.X) * angSpeed.X;
                 angSpeed.Y = Math.Sign(targetAngle.Y) * angSpeed.Y;
             }
+        }
+
+        protected override void Destroy()
+        {
+            CoreEngine.pEngine.World.RemoveCollisionObject(headBody);
+            headBody.Dispose();
         }
     }
 }

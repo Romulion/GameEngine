@@ -183,10 +183,12 @@ namespace Toys
 
         internal override void AddComponent(SceneNode node)
         {
+            CoreEngine.animEngine.animators.Add(this);
         }
 
         internal override void RemoveComponent()
         {
+            CoreEngine.animEngine.animators.Remove(this);
         }
     }
 }

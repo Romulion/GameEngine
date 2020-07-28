@@ -17,7 +17,7 @@ namespace Toys
         //RayResultCallback rayCalback;
         Action<Vector3> lookCallback;
         CollisionObject activeObject;
-        void Awake()
+        new void Awake()
         {
             base.Awake();
             game = GLWindow.gLWindow;
@@ -30,7 +30,7 @@ namespace Toys
             */
         }
 
-        void Update()
+        new void Update()
         {
             var rayCalback = new KinematicClosestNotMeRayResultCallback(_ghostObject);
             rayCalback.CollisionFilterMask = (int)CollisionFilleters.Look;

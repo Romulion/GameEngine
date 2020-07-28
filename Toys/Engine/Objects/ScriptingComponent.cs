@@ -33,6 +33,15 @@ namespace Toys
         {
             Node = null;
             CoreEngine.sEngine.RemoveScript(this);
+            Destroy();
+        }
+
+        /// <summary>
+        /// method for calling on script destroing
+        /// </summary>
+        protected virtual void Destroy()
+        {
+
         }
     }
 }

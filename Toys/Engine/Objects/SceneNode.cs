@@ -14,7 +14,7 @@ namespace Toys
         /// <summary>
         /// Node first generation childs
         /// </summary>
-        public List<SceneNode> Childs { get; private set; }
+        List<SceneNode> childs;
 
         /// <summary>
         /// Parent of node
@@ -35,7 +35,7 @@ namespace Toys
 
 		public SceneNode() : base (typeof(SceneNode))
         {
-            Childs = new List<SceneNode>();
+            childs = new List<SceneNode>();
 			components = new List<Component>();
             Parent = null;
             ParentScene = null;
@@ -70,10 +70,13 @@ namespace Toys
             //UpdateTransform();
         }
 
+        /// <summary>
+        /// update self and trigger update for childs
+        /// </summary>
         public void UpdateTransform()
         {
             transform.UpdateGlobalTransform();
-            foreach (var child in Childs)
+            foreach (var child in childs)
             {
                 if (child.Active)
                     child.UpdateTransform();
@@ -82,12 +85,12 @@ namespace Toys
 
         internal void RemoveChild(SceneNode node)
         {
-            Childs.Remove(node);
+            childs.Remove(node);
         }
 
         private void AddChilld(SceneNode node)
         {
-            Childs.Add(node);
+            childs.Add(node);
         }
 
         /// <summary>
@@ -99,6 +102,18 @@ namespace Toys
             comp.AddComponent(this);
             components.Add(comp);
 		}
+
+        /// <summary>
+        /// get copy list of node childs
+        /// </summary>
+        /// <returns></returns>
+        public SceneNode[] GetChilds()
+        {
+            var list = new SceneNode[childs.Count];
+            for (int i = 0; i < childs.Count; i++)
+                list[i] = childs[i];
+            return list;
+        }
 
         /// <summary>
         /// Initialize and add component of selected type
@@ -187,8 +202,9 @@ namespace Toys
                 comp.RemoveComponent();
                 comp.Unload();
             }
-		}
+        }
 
+        #region Save System preps
         public Dictionary<string,string> SaveSequence(bool extended = false)
         {
             var savedata = new Dictionary<string, string>();
@@ -232,5 +248,6 @@ namespace Toys
 
             return vec3;
         }
+        #endregion
     }
 }

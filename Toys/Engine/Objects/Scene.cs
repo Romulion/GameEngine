@@ -6,9 +6,11 @@ namespace Toys
 {
 	public class Scene
 	{
+        //dummy root node - origin of scene
         SceneNode root;
-        //List<SceneNode> rootNodes = new List<SceneNode>();
+        //TODO: move to light system
 		LightSource light;
+        //root ui canvas
         public Canvas canvas;
 
         public Scene()
@@ -36,16 +38,12 @@ namespace Toys
         }
 
 
-		internal void Update(float time)
+		internal void Update()
 		{
-			foreach (var node in root.Childs)
+			foreach (var node in root.GetChilds())
 			{
                 if (node.Active)
                     node.UpdateTransform();
-                //todo: move this to animation system
-                Animator an = node.GetComponent(typeof(Animator)) as Animator;
-                if (an)
-					an.Update(time);
 			}
         }
 
@@ -78,17 +76,24 @@ namespace Toys
             return TraverseNodeTree((node) => name == node.Name, root).ToArray();
         }
 
+
         public void RemoveNode(SceneNode node)
         {
             if (node.Parent)
                 node.Parent.RemoveChild(node);
         }
 
+        /// <summary>
+        /// Search all nodes that matches condition
+        /// </summary>
+        /// <param name="condition">search condition</param>
+        /// <param name="root">node to start from</param>
+        /// <returns></returns>
         private List<SceneNode> TraverseNodeTree(Predicate<SceneNode> condition, SceneNode root)
         {
             List<SceneNode> nodes = new List<SceneNode>();
 
-            foreach (var node in root.Childs)
+            foreach (var node in root.GetChilds())
             {
                 if (condition(node))
                     nodes.Add(node);

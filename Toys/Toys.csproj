@@ -75,6 +75,7 @@
     <Compile Include="Engine\Animation\AnimationFrame.cs" />
     <Compile Include="Engine\Animation\AnimationLoader.cs" />
     <Compile Include="Engine\Animation\Animator.cs" />
+    <Compile Include="Engine\Animation\AnimationEngine.cs" />
     <Compile Include="Engine\Animation\BonePosition.cs" />
     <Compile Include="Engine\Animation\IK\BoneIK.cs" />
     <Compile Include="Engine\Animation\IK\IKLink.cs" />

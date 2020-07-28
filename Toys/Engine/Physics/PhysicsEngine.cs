@@ -73,6 +73,7 @@ namespace Toys
 
 		public void Update(float elapsedTime)
 		{
+            Console.WriteLine(World.CollisionObjectArray.Count);
             World.StepSimulation(elapsedTime,10);
         }
 
@@ -90,7 +91,6 @@ namespace Toys
 			{
 				body = new RigidBody(rbInfo);
 			}
-            
 			World.AddRigidBody(body, CollisionFilterGroups.StaticFilter, CollisionFilterGroups.AllFilter);
 		}
 

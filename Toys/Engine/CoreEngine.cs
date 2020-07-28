@@ -18,6 +18,7 @@ namespace Toys
         internal static ScriptingEngine sEngine { get; private set; }
         internal static CoreEngine ActiveCore { get; private set; }
         internal static SoundEngine aEngine { get; private set; }
+        internal static AnimationEngine animEngine { get; private set; }
         public static Time time { get; private set; }
         public static Time frameTimer { get; private set; }
         Action task;
@@ -44,6 +45,7 @@ namespace Toys
                 sEngine = new ScriptingEngine();
                 iHandler = new InputHandler();
                 aEngine = new SoundEngine();
+                animEngine = new AnimationEngine();
                 time = new Time();
                 frameTimer = new Time();
                 elapsed = 0.01f;
@@ -90,7 +92,8 @@ namespace Toys
 				task();
 				task = null;
 			}
-			MainScene.Update(elapsed);
+			MainScene.Update();
+            animEngine.Upadate(elapsed);
             gEngine.UIEngine.UpdateUI();
             gEngine.UIEngine.CheckMouse();
             //physics
