@@ -73,7 +73,6 @@ namespace Toys
 
 		public void Update(float elapsedTime)
 		{
-            Console.WriteLine(World.CollisionObjectArray.Count);
             World.StepSimulation(elapsedTime,10);
         }
 

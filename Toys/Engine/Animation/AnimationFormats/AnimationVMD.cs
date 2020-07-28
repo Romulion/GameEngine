@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using OpenTK;
-
+using System.Runtime.InteropServices;
 namespace Toys
 {
     internal struct BoneMotionData
@@ -53,6 +53,7 @@ namespace Toys
                 string modelName = jis2utf(name);
 
                 ReadFrames();
+                _file.Dispose();
             }
             var animation = new Animation(_frames.ToArray(), _bones);
             animation.Type = Animation.RotationType.Quaternion;
