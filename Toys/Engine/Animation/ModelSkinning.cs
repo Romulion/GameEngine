@@ -33,6 +33,11 @@ namespace Toys
             GL.DispatchCompute(_mesh.VertexCount, 1, 1);
         }
 
+        public void CPUSkin()
+        {
+
+        }
+
         internal void CheckData()
         {
             Matrix4[] skeletonDummy = new Matrix4[400];

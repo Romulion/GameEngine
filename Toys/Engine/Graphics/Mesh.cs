@@ -1,6 +1,7 @@
 ﻿using System;
 using OpenTK.Graphics.OpenGL;
 using System.Runtime.InteropServices;
+using OpenTK;
 
 namespace Toys
 {
@@ -21,13 +22,14 @@ namespace Toys
 		//elements array
 		public Vertex3D[] Vertices { get; private set; }
         public VertexRigged3D[] vertRig { get; private set; }
-
+        public BoundingBox BoundingBox { get; private set; }
         public Mesh(Vertex3D[] vertices, int[] indices)
 		{
             Indices = indices;
 			VertexSize = Marshal.SizeOf(typeof(Vertex3D));
             VertexCount = vertices.Length;
             Vertices = vertices;
+            BoundingBox = BoundingBox.FromVertexes3d(Vertices);
             //check if loading in current context
             if (GLWindow.gLWindow.CheckContext)
             {
@@ -53,7 +55,7 @@ namespace Toys
             Vertices = new Vertex3D[vertices.Length];
 			for (int i = 0; i < Vertices.Length; i++)
 				Vertices[i] = (Vertex3D)vertices[i];
-
+            BoundingBox = BoundingBox.FromVertexes3d(Vertices);
             VertexSize = Marshal.SizeOf(typeof(VertexRigged3D));
 #if !VertexSkin
             if (GLWindow.gLWindow.CheckContext)
@@ -76,7 +78,6 @@ namespace Toys
             SetupMeshRigged(vertices);
 #endif
         }
-
 
 		//clearing resources
 		internal void Delete()

@@ -11,7 +11,6 @@ namespace Toys
 
         public bool OutlineDrawing;
 		public bool CastShadow;
-        
 
 		public MeshDrawer(Mesh mesh, Material[] materials = null,Morph[] morphes = null) : base (typeof(MeshDrawer))
 		{
@@ -31,6 +30,14 @@ namespace Toys
 		public MeshDrawer(Mesh mesh, Material materials) : this(mesh, new Material[] { materials })
 		{
 		}
+
+        internal BoundingBox GetBoundingBox
+        {
+            get
+            {
+                return Mesh.BoundingBox;
+            }
+        }
 
         internal virtual void Prepare()
         {
