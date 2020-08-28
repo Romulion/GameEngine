@@ -14,6 +14,7 @@ namespace Toys
 
         Vector3 Max;
         Vector3 Min;
+        Vector4[] plates = new Vector4[6];
 
         public BoundingBox()
         {
@@ -48,7 +49,7 @@ namespace Toys
 
         Vector4[] ExtractFrustrumPlates(Matrix4 mat)
         {
-            var plates = new Vector4[6];
+            
             int sign = 1;
             int k = 0;
             for (int n = 0; n < 6; n++)

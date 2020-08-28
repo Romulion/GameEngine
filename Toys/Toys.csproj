@@ -68,6 +68,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Engine\Animation\Animation.cs" />
+    <Compile Include="Engine\Animation\AnimationControlers\AnimationController.cs" />
+    <Compile Include="Engine\Animation\AnimationControlers\AnimationNode.cs" />
+    <Compile Include="Engine\Animation\AnimationControlers\AnimationTransition.cs" />
     <Compile Include="Engine\Animation\AnimationFormats\AnimationLMD.cs" />
     <Compile Include="Engine\Animation\AnimationFormats\AnimationSMD.cs" />
     <Compile Include="Engine\Animation\AnimationFormats\AnimationVMD.cs" />

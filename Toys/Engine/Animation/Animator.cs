@@ -7,12 +7,33 @@ namespace Toys
     public class Animator : Component
     {
         Logger logger = new Logger("Animator");
+
+        /// <summary>
+        /// Animation skeleton
+        /// </summary>
         public BoneController BoneController { get; private set; }
-        Animation _animation ;
+        Animation _animation;
         bool _isPlaing = false;
         float _time = 0f;
         float _length = 0;
         float _frameLength = 0;
+        bool _isEnded = false;
+        /// <summary>
+        /// Relative animation speed
+        /// </summary>
+        public float Speed = 1f;
+        /// <summary>
+        /// repeat animation
+        /// </summary>
+        public bool IsRepeat = true;
+
+        public bool IsEnded
+        {
+            get
+            {
+                return _isEnded;
+            }
+        }
 
         //model bone => anim bone reference
         Dictionary<int, int> boneReference = new Dictionary<int, int>();
@@ -27,6 +48,7 @@ namespace Toys
             
             if (!_isPlaing)
 				return;
+            _isEnded = false;
 
             _time += delta;
 
@@ -65,6 +87,15 @@ namespace Toys
                     BoneController.GetBone(pair.Key).SetTransform(rotation, pos);
                 else if (_animation.TransType == Animation.TransformType.LocalAbsolute)
                     BoneController.GetBone(pair.Key).InitialLocalTransform = Matrix4.CreateFromQuaternion(rotation) * Matrix4.CreateTranslation(pos);
+            }
+
+            if (curFrame == _animation.frames.Length - 1)
+            {
+                if (!IsRepeat)
+                {
+                    _isPlaing = false;
+                    _isEnded = true;
+                }
             }
         }
 
