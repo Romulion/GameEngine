@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Toys
 {
     
-    public class Animation
+    public class Animation : Resource
     {
         public enum RotationType
         {
@@ -29,10 +29,14 @@ namespace Toys
         public RotationType Type { get; internal set; }
         public TransformType TransType { get; internal set; }
 
-        public Animation (AnimationFrame[] frams, Dictionary<string, int> boneReference)
+        public Animation (AnimationFrame[] frams, Dictionary<string, int> boneReference): base(typeof(Animation))
         {
             frames = frams;
 			bones = boneReference;
+        }
+
+        internal override void Unload()
+        {
         }
     }
 }

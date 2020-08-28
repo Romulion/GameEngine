@@ -48,6 +48,23 @@ namespace ModelViewer
             
         }
 
+        AnimationController CreateAnimationController()
+        {
+            var controller = new AnimationController();
+
+            var idle = new AnimationNode();
+            idle.MainAnimation = ResourcesManager.LoadAsset<Animation>("");
+            var walk = new AnimationNode();
+            walk.MainAnimation = ResourcesManager.LoadAsset<Animation>("");
+
+            var idleWalkTransit = new AnimationTransition((anim) => anim.GetFloat("speed") > 0, walk);
+            var walkIdleTransit = new AnimationTransition((anim) => anim.GetFloat("speed") == 0, idle);
+
+            idle.Transitions.Add(idleWalkTransit);
+            walk.Transitions.Add(walkIdleTransit);
+
+            return controller;
+        }
 
         void LoadEnviropment()
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Toys
 {
-    class AnimationController : Component
+    public class AnimationController : Component
     {
         AnimationNode context;
         List<AnimationNode> animationList;
@@ -50,6 +50,30 @@ namespace Toys
             changed = true;
         }
 
+        public bool GetBool(string key)
+        {
+            if (boolDict.ContainsKey(key))
+                return boolDict[key];
+            else
+                return false;
+        }
+
+        public float GetFloat(string key)
+        {
+            if (floatDict.ContainsKey(key))
+                return floatDict[key];
+            else
+                return 0f;
+        }
+
+        public int GetInt(string key)
+        {
+            if (intDict.ContainsKey(key))
+                return intDict[key];
+            else
+                return 0;
+        }
+
         internal void Update()
         {
             //check transition
@@ -74,7 +98,35 @@ namespace Toys
             }
         }
 
+        /// <summary>
+        /// Set current animation and its transition
+        /// </summary>
+        public void SetEntry(AnimationNode node)
+        {
+            context = node;
+            AddAnimation(node);
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        public void AddAnimation(AnimationNode node)
+        {
+            if (!animationList.Contains(node))
+            animationList.Add(node);
+        }
+
+        public void RemoveAnimation(AnimationNode node)
+        {
+            if (animationList.Contains(node))
+                animationList.Remove(node);
+        }
+
+        /// <summary>
+        /// update current animation ant transitions
+        /// </summary>
+        /// <param name="newContext"></param>
         void UpdateContext(AnimationNode newContext) 
         {
             context = newContext;

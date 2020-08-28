@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Toys
 {
-    class AnimationNode
+    public class AnimationNode
     {
         public Animation MainAnimation;
 

@@ -45,7 +45,11 @@ namespace Toys
                 var audio = new NAudio.Wave.AudioFileReader(path);
                 asset = new AudioSource(audio);
             }
-			if (asset)
+            else if (tp == typeof(Animation))
+            {
+                asset = AnimationLoader.Load(path);
+            }
+            if (asset)
 			{
 				asset.Id = path;
 				asset.Type = typeof(T);

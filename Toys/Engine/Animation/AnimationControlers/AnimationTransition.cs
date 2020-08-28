@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Toys
 {
-    class AnimationTransition
+    public class AnimationTransition
     {
         public Predicate<AnimationController> Condition { get; private set; }
         public AnimationNode TargetAnimation { get; private set; }
