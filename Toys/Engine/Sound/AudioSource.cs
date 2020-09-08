@@ -14,6 +14,7 @@ namespace Toys
     public class AudioSource : Component
     {
         int buffer, source, bps;
+        int sampleRate = 0;
         byte[] byteBuffer;
         Vector3 dir = Vector3.UnitZ;
         public bool IsPlaing { get; private set; }
@@ -49,6 +50,8 @@ namespace Toys
             AL.Source(source, ALSourcei.Buffer, buffer);
             AL.Source(source, ALSourceb.Looping, true);
             AL.Source(source, ALSource3f.Direction, ref dir);
+
+            sampleRate = audioData.WaveFormat.SampleRate;
         }
 
         ALFormat GetFormat(int channels, int bps)
@@ -74,6 +77,7 @@ namespace Toys
 
         public float GetCurrentVolume()
         {
+            int sampleCount = (int)(sampleRate * 0.016f);
             int position;
             AL.GetSource(source, ALGetSourcei.ByteOffset, out position);
             float result = 0;
@@ -83,10 +87,9 @@ namespace Toys
             else if (bps == 16)
             {
                 int n = 0;
-                //median from 121 samples
-
-                for (int i = -500; i < 501; i++)
+                for (int i = -sampleCount; i < sampleCount; i++)
                 {
+                    
                     var pos = position + i * 2;
                     if (pos < 0)
                         continue;
@@ -95,10 +98,11 @@ namespace Toys
                     result += BitConverter.ToUInt16(byteBuffer, pos);
                     n++;
                 }
-                
+
                 if (n > 0)
-                    result /= (float)ushort.MaxValue * n;
-                
+                    result /= ((float)ushort.MaxValue * n);
+
+                Console.WriteLine((float)ushort.MaxValue * n);
             }
             else if (bps == 32)
                 result = BitConverter.ToUInt32(byteBuffer, position) / (float)uint.MaxValue;

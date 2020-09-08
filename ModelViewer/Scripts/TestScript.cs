@@ -158,20 +158,19 @@ namespace ModelViewer
             //slider1.OnValueChanged = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };
             audioListener = AudioListener.GetListener();
             camera.Node.AddComponent(audioListener);
-            /*
+            
             try
             {
                 src = ResourcesManager.LoadAsset<AudioSource>(@"Assets\Sound\ccccc.mp3");
                 Node.AddComponent(src);
 
                 src.Play();
-
             }
             catch (Exception e)
             {
 
             }
-            */
+            
         }
 
         void Start()
@@ -278,7 +277,8 @@ namespace ModelViewer
             }
             if (src)
             {
-                //slider.Value = src.GetCurrentVolume() * 2.5f;
+                slider.Value = src.GetCurrentVolume();
+                //Console.WriteLine(src.GetCurrentVolume());
                 //audioListener.direction = (camera.GetLook * Vector4.UnitZ).Xyz;
             }
             //Console.WriteLine(audioListener.direction);

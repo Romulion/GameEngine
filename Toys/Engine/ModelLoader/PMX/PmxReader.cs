@@ -20,12 +20,9 @@ namespace Toys
 		JointContainer[] joints;
         int[] boneOrder;
 
-		BinaryReader file;
-
 		Mesh mesh;
 		Mesh meshRigged;
 
-		Reader reader;
 		string dir;
 
 
@@ -38,40 +35,39 @@ namespace Toys
                 dir = "";
             empty = Texture2D.LoadEmpty();
 			Stream fs = File.OpenRead(path);
-			file = new BinaryReader(fs);
-			reader = new Reader(file);
+			var reader = new Reader(fs);
 
-			ReadHeader();
-            ReadMesh();
-            ReadTextures();
-            ReadMaterial();
-            ReadBones();
-            ReadMorhps();
-			ReadPanel();
-			ReadRigit();
-			ReadJoints();
-			file.Close();
+			ReadHeader(reader);
+            ReadMesh(reader);
+            ReadTextures(reader);
+            ReadMaterial(reader);
+            ReadBones(reader);
+            ReadMorhps(reader);
+			ReadPanel(reader);
+			ReadRigit(reader);
+			ReadJoints(reader);
+            reader.Close();
 		}
 
-		void ReadHeader()
+		void ReadHeader(Reader reader)
 		{
 			header = new Header();
-			string signature = new String(file.ReadChars(4));
-			float version = file.ReadSingle();
-			int length = file.ReadByte();
-			header.Attributes = file.ReadBytes(length);
+			string signature = new String(reader.ReadChars(4));
+			float version = reader.ReadSingle();
+			int length = reader.ReadByte();
+			header.Attributes = reader.ReadBytes(length);
 			header.Name = reader.readString();
 			header.NameEng = reader.readString();
 			header.Comment = reader.readString();
 			header.CommentEng = reader.readString();
 
-			reader.Encoding = header.GetEncoding;
+			reader.EncodingType = header.GetEncoding;
 		}
 
 
-		void ReadMesh()
+		void ReadMesh(Reader reader)
 		{
-			int meshSize = file.ReadInt32();            
+			int meshSize = reader.ReadInt32();            
 			VertexRigged3D [] verticesR = new VertexRigged3D[meshSize];
 			//Vertex3D[] vertices = new Vertex3D[meshSize];
 			for (int i = 0; i < meshSize; i++)
@@ -93,7 +89,7 @@ namespace Toys
 				}
 
 				//bones
-				byte Weigth = file.ReadByte();
+				byte Weigth = reader.ReadByte();
 				switch (Weigth)
 				{
 					case 0: //BDEF
@@ -104,7 +100,7 @@ namespace Toys
 						
 						bonesIndexes[0] = reader.readVal(header.GetBoneIndexSize);
 						bonesIndexes[1] = reader.readVal(header.GetBoneIndexSize);
-						bonesWeigth[0] = file.ReadSingle();
+						bonesWeigth[0] = reader.ReadSingle();
 						bonesWeigth[1] = 1f - bonesWeigth[0];
 						break;
 					case 2: //BDEF4
@@ -112,15 +108,15 @@ namespace Toys
 						bonesIndexes[1] = reader.readVal(header.GetBoneIndexSize);
 						bonesIndexes[2] = reader.readVal(header.GetBoneIndexSize);
 						bonesIndexes[3] = reader.readVal(header.GetBoneIndexSize);
-						bonesWeigth[0] = file.ReadSingle();
-						bonesWeigth[1] = file.ReadSingle();
-						bonesWeigth[2] = file.ReadSingle();
-						bonesWeigth[3] = file.ReadSingle();
+						bonesWeigth[0] = reader.ReadSingle();
+						bonesWeigth[1] = reader.ReadSingle();
+						bonesWeigth[2] = reader.ReadSingle();
+						bonesWeigth[3] = reader.ReadSingle();
 						break;
 					case 3: //SDEF
 						bonesIndexes[0] = reader.readVal(header.GetBoneIndexSize);
 						bonesIndexes[1] = reader.readVal(header.GetBoneIndexSize);
-						bonesWeigth[0] = file.ReadSingle();
+						bonesWeigth[0] = reader.ReadSingle();
 						bonesWeigth[1] = 1f - bonesWeigth[0];
 						reader.readVector3();
 						reader.readVector3();
@@ -131,10 +127,10 @@ namespace Toys
 						bonesIndexes[1] = reader.readVal(header.GetBoneIndexSize);
 						bonesIndexes[2] = reader.readVal(header.GetBoneIndexSize);
 						bonesIndexes[3] = reader.readVal(header.GetBoneIndexSize);
-						bonesWeigth[0] = file.ReadSingle();
-						bonesWeigth[1] = file.ReadSingle();
-						bonesWeigth[2] = file.ReadSingle();
-						bonesWeigth[3] = file.ReadSingle();
+						bonesWeigth[0] = reader.ReadSingle();
+						bonesWeigth[1] = reader.ReadSingle();
+						bonesWeigth[2] = reader.ReadSingle();
+						bonesWeigth[3] = reader.ReadSingle();
 						break;
 					default:
 						throw new Exception("Not suppornet weigth code " + Weigth);
@@ -142,10 +138,10 @@ namespace Toys
 
 				verticesR[i] = new VertexRigged3D(pos, normal, uv,new IVector4(bonesIndexes),bonesWeigth);
 				//vertices[i] = new Vertex3D(pos, normal, uv);
-				float outline = file.ReadSingle();
+				float outline = reader.ReadSingle();
 
 			}
-			int indexSize = file.ReadInt32();
+			int indexSize = reader.ReadInt32();
 			int[] indexes = new int[indexSize];
 			for (int i = 0; i < indexSize; i++)
 			{
@@ -165,9 +161,9 @@ namespace Toys
 			meshRigged = new Mesh(verticesR, indexes);
 		}
 
-		void ReadTextures()
+		void ReadTextures(Reader reader)
 		{
-			int texCount = file.ReadInt32();
+			int texCount = reader.ReadInt32();
 			textures = new Texture2D[texCount];
 			for (int i = 0; i < texCount; i++)
 			{
@@ -186,9 +182,9 @@ namespace Toys
             }
 		}
 
-		void ReadMaterial()
+		void ReadMaterial(Reader reader)
 		{
-			int materiaCount = file.ReadInt32();
+			int materiaCount = reader.ReadInt32();
 			int offset = 0;
 			mats = new Material[materiaCount];
 			for (int i = 0; i < materiaCount; i++)
@@ -212,13 +208,13 @@ namespace Toys
 				//	rndr.render = false;
 
 				Vector3 specularColour = reader.readVector3(); //specular color
-				float specularPower =  file.ReadSingle(); //specular
+				float specularPower = reader.ReadSingle(); //specular
                 //fix zero power bug
                 if (specularPower == 0)
                     specularPower = 0.000001f;
                 Vector3 ambientColour = reader.readVector3(); //ambient color
 				//setting values from flags
-				var flags = new MaterialFlags(file.ReadByte());
+				var flags = new MaterialFlags(reader.ReadByte());
 				shdrs.RecieveShadow = flags.ReceiveShadow;
 				shdrs.AffectedByLight = flags.ReceiveShadow;
 				rndr.CastShadow = flags.CastShadow;
@@ -227,13 +223,13 @@ namespace Toys
                 
 				var outln = new Outline();
 				outln.EdgeColour = reader.readVector4();
-				outln.EdgeScaler = file.ReadSingle() * 0.3f;
+				outln.EdgeScaler = reader.ReadSingle() * 0.3f;
 
 				int difTexIndex = reader.readVal(header.GetTextureIndexSize);
 
 				//sphericar texture for false light sources effect
 				int envTexIndex = reader.readVal(header.GetTextureIndexSize);
-				int envBlend = file.ReadByte();
+				int envBlend = reader.ReadByte();
 				shdrs.EnvType = (EnvironmentMode)envBlend;
 				Texture2D envTex = empty;
                 if (envTexIndex != 255 && envBlend > 0)
@@ -248,7 +244,7 @@ namespace Toys
 
 
 
-                byte toonType = file.ReadByte();
+                byte toonType = reader.ReadByte();
 				
 				Texture2D toon = empty;
 				if (toonType == 0)
@@ -270,7 +266,7 @@ namespace Toys
 				}
 				else
 				{
-					byte toontex = file.ReadByte();
+					byte toontex = reader.ReadByte();
                     toontex++;
                     string texturePath = String.Format("Toys.Resourses.textures.PMX.toon{0}.bmp", toontex.ToString().PadLeft(2,'0'));
                     Texture2D toonTex = ResourcesManager.GetResourse<Texture2D>(texturePath);
@@ -287,7 +283,7 @@ namespace Toys
                     shdrs.ToonShadow = true;
 				}
                 reader.readString();
-				int count = file.ReadInt32();
+				int count = reader.ReadInt32();
 				Texture2D tex = empty;
 				if (difTexIndex != 255)
 				{
@@ -322,9 +318,9 @@ namespace Toys
 
 		}
 
-		void ReadBones()
+		void ReadBones(Reader reader)
 		{
-			int bonesCount = file.ReadInt32();
+			int bonesCount = reader.ReadInt32();
 			bones = new Bone[bonesCount];
             int maxLevel = 0;
 			for (int i = 0; i < bonesCount; i++)
@@ -342,8 +338,8 @@ namespace Toys
                 else
                     parentIndex = reader.readVal(header.GetBoneIndexSize);
 
-                int Level = file.ReadInt32();
-				byte[] flags = file.ReadBytes(2);
+                int Level = reader.ReadInt32();
+				byte[] flags = reader.ReadBytes(2);
 
 				Bone bone = new Bone(name, nameEng, Position, parentIndex, flags);
 				bone.Level = Level;
@@ -355,7 +351,7 @@ namespace Toys
 				if (bone.InheritRotation || bone.InheritTranslation)
 				{
 					bone.ParentInheritIndex = reader.readVal(header.GetBoneIndexSize);
-					bone.ParentInfluence = file.ReadSingle();
+					bone.ParentInfluence = reader.ReadSingle();
 				}
 
                 bone.Parent2Local = Matrix4.Identity;
@@ -381,22 +377,22 @@ namespace Toys
 
 				if (bone.ExternalPdeform)
 				{
-                    file.ReadInt32();
+                    reader.ReadInt32();
 				}
 
 				if (bone.IK)
 				{
                     BoneIK ikBone = new BoneIK();
 					ikBone.Target = reader.readVal(header.GetBoneIndexSize);
-					ikBone.LoopCount = file.ReadInt32();
-					ikBone.AngleLimit = file.ReadSingle();
-					int count = file.ReadInt32();
+					ikBone.LoopCount = reader.ReadInt32();
+					ikBone.AngleLimit = reader.ReadSingle();
+					int count = reader.ReadInt32();
                     IKLink[] links = new IKLink[count];
 					for (int n = 0; n < count; n++)
 					{
                         IKLink link = new IKLink();
 						link.Bone = reader.readVal(header.GetBoneIndexSize);
-						if (file.ReadByte() == 1)
+						if (reader.ReadByte() == 1)
 						{
                             link.IsLimit = true;
 							link.LimitMin = reader.readVector3();
@@ -439,18 +435,18 @@ namespace Toys
             }
         }
 
-		void ReadMorhps()
+		void ReadMorhps(Reader reader)
 		{
-			int morphCount = file.ReadInt32();
+			int morphCount = reader.ReadInt32();
 			morphs = new Morph[morphCount];
 
 			for (int i = 0; i < morphCount; i++)
 			{
 				string name = reader.readString();
 				string nameEng = reader.readString();
-				int panel = file.ReadByte();
-				int type = file.ReadByte();
-				int size = file.ReadInt32();
+				int panel = reader.ReadByte();
+				int type = reader.ReadByte();
+				int size = reader.ReadInt32();
 
 				if (type == (int)MorphType.Vertex)
 				{
@@ -471,7 +467,7 @@ namespace Toys
 					{
 						case 0: //group
 							reader.readVal(header.GetMorphIndexSize);
-							file.ReadSingle();
+                            reader.ReadSingle();
 							break;
 						case 1: //vertex
 							int index = reader.readVal(header.GetVertexIndexSize);
@@ -496,13 +492,13 @@ namespace Toys
                                 mat = mats[idx];
 
                             var MMorpher = new MaterialMorpher(mat);
-                            MMorpher.mode = file.ReadByte();
+                            MMorpher.mode = reader.ReadByte();
 							MMorpher.DiffuseColor = reader.readVector4();
                             MMorpher.SpecularColor = reader.readVector3();
-							file.ReadSingle();
+                            reader.ReadSingle();
                             MMorpher.AmbientColor = reader.readVector3();
 							reader.readVector4();
-							file.ReadSingle();
+                            reader.ReadSingle();
 							reader.readVector4();
 							reader.readVector4();
 							reader.readVector4();
@@ -511,11 +507,11 @@ namespace Toys
                             break;
 						case 9: //flip
 							reader.readVal(header.GetMaterialIndexSize);
-							file.ReadSingle();
+                            reader.ReadSingle();
 							break;
 						case 10: //impulse
 							reader.readVal(header.GetRigidBodyIndexSize);
-							file.ReadByte();
+                            reader.ReadByte();
 							reader.readVector3();
 							reader.readVector3();
 							break;
@@ -534,18 +530,18 @@ namespace Toys
         /*
          * not used
          */
-		void ReadPanel()
+		void ReadPanel(Reader reader)
 		{
-			int panelCount = file.ReadInt32();
+			int panelCount = reader.ReadInt32();
 			for (int i = 0; i < panelCount; i++)
 			{
 				reader.readString();
 				reader.readString();
-				file.ReadByte();
-				int count = file.ReadInt32();
+                reader.ReadByte();
+				int count = reader.ReadInt32();
 				for (int n = 0; n < count; n++)
 				{ 
-					int type = file.ReadByte();
+					int type = reader.ReadByte();
 					if (type == 0)
 						reader.readVal(header.GetBoneIndexSize);
 					else if (type == 1)
@@ -558,9 +554,9 @@ namespace Toys
 		/// <summary>
 		/// reading rigidbodies data
 		/// </summary>
-		void ReadRigit()
+		void ReadRigit(Reader reader)
 		{
-            int readCount = file.ReadInt32();
+            int readCount = reader.ReadInt32();
 			rigitBodies = new RigidContainer[readCount];
 			RigidContainer rigit;
 			for (int i = 0; i<readCount; i++)
@@ -570,26 +566,26 @@ namespace Toys
                 rigit.NameEng = reader.readString();
 				rigit.BoneIndex = reader.readVal(header.GetBoneIndexSize);
                 //shift for 16 bytes to prevent interfer with other physical instances
-				rigit.GroupId = (byte)(16 + file.ReadByte());
-                rigit.NonCollisionGroup =  (int)file.ReadUInt16() << 16;
-				rigit.PrimitiveType = (PhysPrimitiveType)file.ReadByte();
+				rigit.GroupId = (byte)(16 + reader.ReadByte());
+                rigit.NonCollisionGroup =  (int)reader.ReadUInt16() << 16;
+				rigit.PrimitiveType = (PhysPrimitiveType)reader.ReadByte();
 				rigit.Size = reader.readVector3() * multipler;
 				rigit.Position = reader.readVector3() * multipler;
 				rigit.Rotation = reader.readVector3();
-				rigit.Mass = file.ReadSingle();
-				rigit.MassAttenuation = file.ReadSingle();
-				rigit.RotationDamping = file.ReadSingle();
-				rigit.Restitution = file.ReadSingle();
-				rigit.Friction = file.ReadSingle();
-				rigit.Phys = (PhysType)file.ReadByte();
+				rigit.Mass = reader.ReadSingle();
+				rigit.MassAttenuation = reader.ReadSingle();
+				rigit.RotationDamping = reader.ReadSingle();
+				rigit.Restitution = reader.ReadSingle();
+				rigit.Friction = reader.ReadSingle();
+				rigit.Phys = (PhysType)reader.ReadByte();
 
                 rigitBodies[i] = rigit;
 			}
 		}
 
-		void ReadJoints()
+		void ReadJoints(Reader reader)
 		{
-            int jointCount = file.ReadInt32();
+            int jointCount = reader.ReadInt32();
 			joints = new JointContainer[jointCount];
 
 			for (int i = 0; i<jointCount; i++)
@@ -597,7 +593,7 @@ namespace Toys
 				JointContainer joint = new JointContainer();
 				joint.Name = reader.readString();
 				joint.NameEng = reader.readString();
-				joint.Type =  (JointType)file.ReadByte();
+				joint.Type =  (JointType)reader.ReadByte();
 				joint.RigitBody1 =  reader.readVal(header.GetRigidBodyIndexSize);
 				joint.RigitBody2 =  reader.readVal(header.GetRigidBodyIndexSize);
 				joint.Position = reader.readVector3() * multipler;

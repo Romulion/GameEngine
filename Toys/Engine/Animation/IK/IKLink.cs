@@ -17,6 +17,13 @@ namespace Toys
         public EulerType Euler;
         public FixAxisType FixAxis;
 
+        public IKLink()
+        {
+            FixAxis = FixAxisType.None;
+            IsLimit = false;
+            //Euler 
+        }
+
         public enum EulerType
         {
             ZXY,

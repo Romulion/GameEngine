@@ -9,6 +9,7 @@ namespace Toys
 		public string NameEng;
 		public string Comment;
 		public string CommentEng;
+        public float Version;
 
 
 		public byte GetEncoding

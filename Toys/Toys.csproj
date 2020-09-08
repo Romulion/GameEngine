@@ -100,6 +100,7 @@
     <Compile Include="Engine\Graphics\Texture\RenderTexture.cs" />
     <None Include="Engine\Graphics\ShaderConstructorNew.cs" />
     <Compile Include="Engine\Graphics\ShaderUniforms\ShaderUniformVector2.cs" />
+    <Compile Include="Engine\ModelLoader\PMX\PmdReader.cs" />
     <Compile Include="Engine\Modules\CustomBMPLoader.cs" />
     <Compile Include="Engine\Modules\SaveSystem\ISave.cs" />
     <Compile Include="Engine\Modules\SaveSystem\SaveSystem.cs" />
@@ -196,7 +197,7 @@
     <Compile Include="Engine\ModelLoader\PMX\Header.cs" />
     <Compile Include="Engine\ModelLoader\PMX\MaterialFlags.cs" />
     <Compile Include="Engine\ModelLoader\PMX\PmxReader.cs" />
-    <Compile Include="Engine\ModelLoader\PMX\Reader.cs" />
+    <Compile Include="Engine\ModelLoader\Reader.cs" />
     <Compile Include="Engine\ModelLoader\SMD\ReaderSMD.cs" />
     <Compile Include="Engine\ModelLoader\ModelLoader.cs" />
     <Compile Include="Engine\ModelLoader\IModelLoader.cs" />

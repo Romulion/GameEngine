@@ -19,7 +19,6 @@ namespace Toys
         }
 
         string _path;
-        BinaryReader _file;
         Reader _reader;
         float _speed = 1;
 
@@ -31,13 +30,12 @@ namespace Toys
             _path = path;
             using (Stream fs = File.OpenRead(_path))
             {
-                _file = new BinaryReader(fs);
-                _reader = new Reader(_file);
-                _reader.Encoding = 1;
+                _reader = new Reader(fs);
+                _reader.EncodingType = 1;
                 ReadBones();
 
-                _file.BaseStream.Position = 100;
-                _speed = _file.ReadSingle();
+                _reader.BaseStream.Position = 100;
+                _speed = _reader.ReadSingle();
             }
         }
 
@@ -52,18 +50,18 @@ namespace Toys
 
         bool CheckHeader()
         {
-            _file.BaseStream.Position = 28;
+            _reader.BaseStream.Position = 28;
             //going to info block
-            _file.BaseStream.Position = ReadPointer();
-            int type = _file.ReadInt32();
+            _reader.BaseStream.Position = ReadPointer();
+            int type = _reader.ReadInt32();
             return (type == 4);
         }
 
         void ReadBones()
         {
 
-            _file.BaseStream.Position = 116;
-            int boneCount = _file.ReadInt32();
+            _reader.BaseStream.Position = 116;
+            int boneCount = _reader.ReadInt32();
             int[] bonePosArray = new int[boneCount];
             for (int i = 0; i < boneCount; i++)
                 bonePosArray[i] = ReadPointer();
@@ -72,49 +70,49 @@ namespace Toys
             int n = 0;
             foreach (int offset in bonePosArray)
             {
-                int Magic = _file.ReadInt32();
-                _file.BaseStream.Position = offset + 4;
-                _file.BaseStream.Position = ReadPointer();
+                int Magic = _reader.ReadInt32();
+                _reader.BaseStream.Position = offset + 4;
+                _reader.BaseStream.Position = ReadPointer();
                 string boneName = _reader.readString();
-                _file.BaseStream.Position = offset + 20;
-                _file.BaseStream.Position = ReadPointer();
+                _reader.BaseStream.Position = offset + 20;
+                _reader.BaseStream.Position = ReadPointer();
                 //4 bytes id; 4 *2 bytes unknown anim strucs pointers
-                _file.BaseStream.Position += 12;
+                _reader.BaseStream.Position += 12;
 
                 var bu = new BoneUnsorted();     
                 int rotTransfOffset = ReadPointer();
                 int tranTransfOffset = ReadPointer();
                 //reading rotations | skipping id
-                _file.BaseStream.Position = rotTransfOffset + 4;
+                _reader.BaseStream.Position = rotTransfOffset + 4;
                 int rotTransfTimeOffset = ReadPointer();
-                _file.BaseStream.Position = ReadPointer();
-                int transformElCount = _file.ReadInt32();
+                _reader.BaseStream.Position = ReadPointer();
+                int transformElCount = _reader.ReadInt32();
                 transformElCount /= 4;
                 bu.rotations = new Quaternion[transformElCount];
                 for (int i = 0; i < transformElCount; i++)
-                    bu.rotations[i] = new Quaternion(_reader.readVector3(), _file.ReadSingle());
+                    bu.rotations[i] = new Quaternion(_reader.readVector3(), _reader.ReadSingle());
                 //rotation transform time table
-                _file.BaseStream.Position = rotTransfTimeOffset;
-                int timeElCount = _file.ReadInt32();
+                _reader.BaseStream.Position = rotTransfTimeOffset;
+                int timeElCount = _reader.ReadInt32();
                 bu.rotationsTimestamps = new float[timeElCount];
                 for (int i = 0; i < timeElCount; i++)
-                    bu.rotationsTimestamps[i] = _file.ReadSingle();
+                    bu.rotationsTimestamps[i] = _reader.ReadSingle();
 
                 //read transforms
-                _file.BaseStream.Position = tranTransfOffset + 4;
+                _reader.BaseStream.Position = tranTransfOffset + 4;
                 int transTransfTimeOffset = ReadPointer();
-                _file.BaseStream.Position = ReadPointer();
-                transformElCount = _file.ReadInt32();
+                _reader.BaseStream.Position = ReadPointer();
+                transformElCount = _reader.ReadInt32();
                 transformElCount /= 3;
                 bu.positions = new Vector3[transformElCount];
                 for (int i = 0; i < transformElCount; i++)
                     bu.positions[i] = _reader.readVector3();
                 //rotation transform time table
-                _file.BaseStream.Position = transTransfTimeOffset;
-                timeElCount = _file.ReadInt32();
+                _reader.BaseStream.Position = transTransfTimeOffset;
+                timeElCount = _reader.ReadInt32();
                 bu.positionsTimestamps = new float[timeElCount];
                 for (int i = 0; i < timeElCount; i++)
-                    bu.positionsTimestamps[i] = _file.ReadSingle();
+                    bu.positionsTimestamps[i] = _reader.ReadSingle();
 
                 bones.Add(boneName, n);
                 bua[n] = bu;
@@ -175,7 +173,7 @@ namespace Toys
 
         int ReadPointer()
         {
-            return (int)_file.BaseStream.Position + _file.ReadInt32();
+            return (int)_reader.BaseStream.Position + _reader.ReadInt32();
         }
     }
 }

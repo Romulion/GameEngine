@@ -26,7 +26,6 @@ namespace Toys
         float _multipler = 0.1f;
 
         string _path;
-        BinaryReader _file;
         Reader _reader;
 
         Dictionary<string, int> _bones = new Dictionary<string, int>();
@@ -42,18 +41,17 @@ namespace Toys
             using (Stream fileStream = File.OpenRead(_path))
             {
 
-                _file = new BinaryReader(fileStream);
-                _reader = new Reader(_file);
+                _reader = new Reader(fileStream);
 
-                string header = new string(_file.ReadChars(30));
+                string header = new string(_reader.ReadChars(30));
 
-                byte[] name = _file.ReadBytes(20);
+                byte[] name = _reader.ReadBytes(20);
 
                 //converting SHIFT-JIS to utf16
-                string modelName = jis2utf(name);
+                string modelName = Reader.jis2utf(name);
 
                 ReadFrames();
-                _file.Dispose();
+                _reader.Dispose();
             }
             var animation = new Animation(_frames.ToArray(), _bones);
             animation.Type = Animation.RotationType.Quaternion;
@@ -64,7 +62,7 @@ namespace Toys
 
         void ReadFrames()
         {
-            int length = _file.ReadInt32();
+            int length = _reader.ReadInt32();
             int framesCount = 0;
             int lastBoneIndex = 0;
 
@@ -72,7 +70,7 @@ namespace Toys
 
             for (int i = 0; i < length; i++) {
 
-                string bone = jis2utf(_file.ReadBytes(15));
+                string bone = Reader.jis2utf(_reader.ReadBytes(15));
                 //remove trash bytes
                 int removeStart = bone.IndexOf('\0');
                 if (removeStart >= 0)
@@ -89,7 +87,7 @@ namespace Toys
                 else
                     boneIndex = _bones[bone];
 
-                int frame = _file.ReadInt32();
+                int frame = _reader.ReadInt32();
 
                 List<BoneMotionData> framebones = null;
 
@@ -108,7 +106,7 @@ namespace Toys
                 if (frame > framesCount)
                     framesCount = frame;
                 //??? interpolation data ???
-                _file.ReadBytes(64);
+                _reader.ReadBytes(64);
                 
                 
                 framebones.Add(new BoneMotionData(frame, new BonePosition(pos, rot, boneIndex)));
@@ -201,11 +199,6 @@ namespace Toys
             {
                 _frames[i] = new AnimationFrame(bonePosesIntepr[i].ToArray());
             }
-        }
-
-        string jis2utf(byte[] bytes)
-        {
-            return Encoding.Unicode.GetString(Encoding.Convert(Encoding.GetEncoding(932), Encoding.Unicode, bytes));
         }
     }
 }
