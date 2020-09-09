@@ -64,7 +64,7 @@ namespace Toys
 
 		public virtual void SetTexture(Texture2D txtr, TextureType type)
 		{
-			if (textures.ContainsKey(type))
+			if (textures.ContainsKey(type) && txtr != null)
 			{
 				textures[type] = txtr;
 			}
