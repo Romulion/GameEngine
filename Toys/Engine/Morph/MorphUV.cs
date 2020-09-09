@@ -9,12 +9,13 @@ namespace Toys
 
 		Vector3[] morph;
 		int offset = 0;
-		public MeshMorper MeshMorpher { set; private get; }
+		public MeshMorper MeshMorpher { private set; get; }
 		float degree = 0f;
 
-		public MorphUV(string name, string nameEng, int count)
+		public MorphUV(string name, string nameEng, int count, MeshMorper meshMorper)
 		{
-			morph = new Vector3[count];
+            MeshMorpher = meshMorper;
+            morph = new Vector3[count];
 			Name = name;
 			NameEng = nameEng;
 			Type = MorphType.Uv;

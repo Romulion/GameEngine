@@ -5,14 +5,15 @@ namespace Toys
 {
 	public class MorphVertex : Morph
 	{
-		Vector4[] morph;
+		internal Vector4[] morph;
 		int offset = 0;
-        public MeshMorper MeshMorpher { set; private get; }
+        public MeshMorper MeshMorpher { private set; get; }
         float degree = 0f;
 
-		public MorphVertex(string name, string nameEng, int count)
+		public MorphVertex(string name, string nameEng, int count, MeshMorper meshMorper)
 		{
-			morph = new Vector4[count];
+            MeshMorpher = meshMorper;
+            morph = new Vector4[count];
 			Name = name;
 			NameEng = nameEng;
 			Type = MorphType.Vertex;

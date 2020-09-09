@@ -46,11 +46,12 @@ namespace ModelViewer
             bc = anim.BoneController;
             physics = CoreEngine.pEngine;
 
-           // bc.GetBone(4).SetTransform(Vector3.UnitX);
+            // bc.GetBone(4).SetTransform(Vector3.UnitX);
             //update++;
-             //bc.GetBone(64).SetTransform(new Quaternion(0, 0, dec2rad(90)), new Vector3(0, 0, 0));
+            //bc.GetBone(64).SetTransform(new Quaternion(0, 0, dec2rad(90)), new Vector3(0, 0, 0));
             // bc.UpdateSkeleton();
             // Console.WriteLine(bc.GetBone(65).TransformMatrix);
+            //bc.GetBone(3).SetTransform(new Vector3(0, -0.5f, 0));
         }
 
         void Start()
@@ -148,6 +149,8 @@ namespace ModelViewer
 
         void Update()
         {
+            //update++;
+            //bc.GetBone(3).SetTransform(new Vector3(0, -0.25f + 0.4f * (float)Math.Cos(update * 3 * Math.PI / 180), 0));
             /*
             if (active)
             {

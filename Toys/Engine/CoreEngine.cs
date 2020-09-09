@@ -105,7 +105,6 @@ namespace Toys
             time.UpdateTime = time.Stop();
         }
 
-
         internal void Render ()
         {
             time.Start();

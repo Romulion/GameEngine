@@ -30,7 +30,7 @@ namespace Toys
         Texture2D empty;
         Material[] mats;
         Bone[] bones;
-        public Morph[] morphs;
+        public MorphVertex[] morphs;
         float multipler = 0.1f;
         RigidContainer[] rigitBodies;
         JointContainer[] joints;
@@ -90,10 +90,11 @@ namespace Toys
                 vertex.UV = reader.readVector2();
                 vertex.BoneIndices.bone1 = reader.ReadInt16();
                 vertex.BoneIndices.bone2 = reader.ReadInt16();
-                vertex.BoneWeigths[0] = (float)reader.ReadByte() / byte.MaxValue;
-                if (vertex.BoneIndices.bone2 == 0)
-                    vertex.BoneWeigths[0] = 1;
 
+                var weight = reader.ReadByte();
+                if (weight > 100)
+                    weight = 100;
+                vertex.BoneWeigths[0] = (float)weight / 100;
                 vertex.BoneWeigths[1] = 1 - vertex.BoneWeigths[0];
                 //non edge flag
                 reader.ReadByte();
@@ -153,7 +154,7 @@ namespace Toys
                 }
 
                 var outln = new Outline();
-                outln.EdgeScaler = 0.2f;
+                outln.EdgeScaler = 0.1f;
 
                 shdrs.HasSkeleton = true;
                 shdrs.DiscardInvisible = true;
@@ -236,6 +237,15 @@ namespace Toys
                 {
                     boneIK.Links[n] = new IKLink();
                     boneIK.Links[n].Bone = reader.ReadUInt16();
+                    
+                    //was hardcoded in original
+                    if (bones[boneIK.Links[n].Bone].Name == "左ひざ" || bones[boneIK.Links[n].Bone].Name == "右ひざ")
+                    {
+                        boneIK.Links[n].IsLimit = true;
+                        boneIK.Links[n].LimitMin = new Vector3(-(float)Math.PI,0,0);
+                        boneIK.Links[n].LimitMax = new Vector3(-(float)Math.PI / 180 * 5, 0, 0);
+                    }
+                    
                 }
 
                 bones[bone].IKData = boneIK;
@@ -314,13 +324,14 @@ namespace Toys
         void ReadMorhps(Reader reader)
         {
             int morphCount = reader.ReadUInt16();
-            morphs = new Morph[morphCount];
+            morphs = new MorphVertex[morphCount];
+
             for (int i = 0; i < morphCount; i++)
             {
                 var name = reader.readStringLength(20);
                 var vertCount = reader.ReadInt32();
                 var category = reader.ReadByte();
-                var morph = new MorphVertex(name,"", vertCount);
+                var morph = new MorphVertex(name, "", vertCount,meshRigged.GetMorpher);
                 for (int n = 0; n < vertCount; n++)
                 {
                     var index = reader.ReadInt32();
@@ -328,6 +339,14 @@ namespace Toys
                     morph.AddVertex(pos, index);
                 }
                 morphs[i] = morph;
+            }
+
+            MorphVertex baseMorph = morphs[0];
+            //local to global index
+            for (int i = 1; i < morphs.Length; i++)
+            {
+                for (int n = 0; n < morphs[i].morph.Length; n++)
+                    morphs[i].morph[n].W = baseMorph.morph[(int)morphs[i].morph[n].W].W;
             }
         }
 

@@ -450,15 +450,13 @@ namespace Toys
 
 				if (type == (int)MorphType.Vertex)
 				{
-					morphs[i] = new MorphVertex(name, nameEng, size);
-					((MorphVertex)morphs[i]).MeshMorpher = meshRigged.GetMorpher;
+					morphs[i] = new MorphVertex(name, nameEng, size, meshRigged.GetMorpher);
 				}
 				else if (type == (int)MorphType.Material)
 					morphs[i] = new MorphMaterial(name, nameEng, size);
 				else if (type == (int)MorphType.Uv)
 				{
-					morphs[i] = new MorphUV(name, nameEng, size);
-					((MorphUV)morphs[i]).MeshMorpher = meshRigged.GetMorpher;
+					morphs[i] = new MorphUV(name, nameEng, size, meshRigged.GetMorpher);
 				}
 
                 for (int n = 0; n < size; n++)
