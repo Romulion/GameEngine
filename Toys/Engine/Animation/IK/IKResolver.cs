@@ -142,7 +142,6 @@ namespace Toys
         {
             if (!IsEnable || Target == null || IKLinksBones.Length == 0)
                 return;
-
             InitializeAngle();
             CalcBonePosition(IKLinksBones.Length - 1);
             _ikPosition = IK.GetTransformedBonePosition();

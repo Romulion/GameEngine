@@ -7,8 +7,8 @@ namespace Toys
 {
 	public class Bone
 	{
-		public readonly string Name;
-		public readonly string NameEng;
+		public string Name;
+		public string NameEng;
 
 		//common transform data
 		public Vector3 Position;
@@ -18,6 +18,35 @@ namespace Toys
         public Vector3 Axis = Vector3.Zero;
 
         Matrix4 local;
+
+        public Matrix4 Local2World { get; private set; }
+        public BoneIK IKData;
+
+        //unused values
+        public int Level;
+
+        //flags
+        public bool tail;
+        public bool Rotatable;
+        public bool Translatable;
+        public bool IsVisible;
+        public bool Enabled;
+        public bool IK;
+        public bool IsAddLocal;
+        public bool InheritRotation;
+        public bool InheritTranslation;
+        public bool FixedAxis;
+        public bool LocalCoordinate;
+        public bool PhysicsAdeform;
+        public bool ExternalPdeform;
+
+        //
+        public int ParentInheritIndex;
+        public float ParentInfluence;
+
+        Matrix4 world;
+        public Matrix4 Local2Parent { get; private set; }
+
         public Matrix4 Parent2Local {
             get
             {
@@ -29,9 +58,9 @@ namespace Toys
                 Local2Parent = local.Inverted();
             }
         }
-        public Matrix4 Local2Parent { get; private set; }
+        
 
-        Matrix4 world;
+
         public Matrix4 World2Local {
             get
             {
@@ -43,32 +72,6 @@ namespace Toys
                 Local2Parent = world.Inverted();
             }
         }
-        public Matrix4 Local2World { get; private set; }
-        public BoneIK IKData;
-
-		//unused values
-		public int Level;
-
-		//flags
-		public bool tail;
-		public bool Rotatable;
-		public bool Translatable;
-		public bool IsVisible;
-		public bool Enabled;
-		public bool IK;
-        public bool IsAddLocal;
-		public bool InheritRotation;
-		public bool InheritTranslation;
-		public bool FixedAxis;
-		public bool LocalCoordinate;
-		public bool PhysicsAdeform;
-		public bool ExternalPdeform;
-
-		//
-		public int ParentInheritIndex;
-		public float ParentInfluence;
-
-        //public BoneIK IKData = null;
 
 		public Bone(string name, string nameEng, Vector3 position, int parent, byte[] flags)
 		{
@@ -141,7 +144,7 @@ namespace Toys
 		}
 
 		//creating local space
-		static Matrix4 CreateLocalSpace(Vector3 pos, Vector3 parent)
+		public static Matrix4 CreateLocalSpace(Vector3 pos, Vector3 parent)
 		{
 			Vector3 X = (parent - pos).Normalized();
 			Vector3 Z = Vector3.Cross(X, new Vector3(0f,1f,0f));

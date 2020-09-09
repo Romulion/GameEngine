@@ -26,7 +26,7 @@ namespace Toys
         public int Framerate = 24;
         internal readonly AnimationFrame[] frames;
         internal readonly Dictionary<string, int> bones = new Dictionary<string, int>();
-        public RotationType Type { get; internal set; }
+        public RotationType GetRotationType { get; internal set; }
         public TransformType TransType { get; internal set; }
 
         public Animation (AnimationFrame[] frams, Dictionary<string, int> boneReference): base(typeof(Animation))

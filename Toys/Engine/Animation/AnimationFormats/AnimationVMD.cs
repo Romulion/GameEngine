@@ -54,7 +54,7 @@ namespace Toys
                 _reader.Dispose();
             }
             var animation = new Animation(_frames.ToArray(), _bones);
-            animation.Type = Animation.RotationType.Quaternion;
+            animation.GetRotationType = Animation.RotationType.Quaternion;
             animation.TransType = Animation.TransformType.LocalRelative;
             animation.Framerate = 30;
             return animation;

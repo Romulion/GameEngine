@@ -38,7 +38,7 @@ namespace Toys
             }
 
             var animation = new Animation(_frames.ToArray(), _bones);
-            animation.Type = Animation.RotationType.EulerXYZ;
+            animation.GetRotationType = Animation.RotationType.EulerXYZ;
             animation.TransType = Animation.TransformType.LocalAbsolute;
             return animation;
         }

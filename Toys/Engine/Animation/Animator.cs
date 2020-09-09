@@ -67,7 +67,7 @@ namespace Toys
                 Quaternion rotation = Quaternion.Identity;
 
                 Vector3 pos = frame1.BonePoritions[pair.Value].Position + (frame2.BonePoritions[pair.Value].Position - frame1.BonePoritions[pair.Value].Position) * frameDelta;
-                if (_animation.Type == Animation.RotationType.Quaternion)
+                if (_animation.GetRotationType == Animation.RotationType.Quaternion)
                 {
                     Quaternion prevQuat = new Quaternion(frame1.BonePoritions[pair.Value].Rotation.Xyz, frame1.BonePoritions[pair.Value].Rotation.W);
                     Quaternion nextQuat = new Quaternion(frame2.BonePoritions[pair.Value].Rotation.Xyz, frame2.BonePoritions[pair.Value].Rotation.W);
@@ -180,7 +180,7 @@ namespace Toys
                 Matrix4 localInv = Matrix4.Identity;
 
                 Quaternion rotation = Quaternion.Identity;
-                if (_animation.Type == Animation.RotationType.Quaternion)
+                if (_animation.GetRotationType == Animation.RotationType.Quaternion)
                     rotation = new Quaternion(rot.Xyz,rot.W);
                 else
                     rotation = Quaternion.FromAxisAngle(Vector3.UnitZ, rot.Z) * Quaternion.FromAxisAngle(Vector3.UnitY, rot.Y) * Quaternion.FromAxisAngle(Vector3.UnitX, rot.X);

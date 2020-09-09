@@ -42,7 +42,7 @@ namespace Toys
         public Animation Load()
         {
             var animation = new Animation(frames.ToArray(), bones);
-            animation.Type = Animation.RotationType.Quaternion;
+            animation.GetRotationType = Animation.RotationType.Quaternion;
             animation.TransType = Animation.TransformType.LocalAbsolute;
             animation.Framerate = (int)(frames.Length / _speed);
             return animation;

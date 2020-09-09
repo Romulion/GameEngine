@@ -58,9 +58,12 @@ namespace Toys
             ReadMaterial(reader);
             ReadBones(reader);
             ReadMorhps(reader);
-            //ReadPanel();
-            //ReadRigit();
-            //ReadJoints();
+            ReadPanel(reader);
+            if (reader.BaseStream.Position != reader.BaseStream.Length)
+            {
+                ReadRigit(reader);
+                ReadJoints(reader);
+            }
 
             reader.Close();
         }
@@ -79,7 +82,6 @@ namespace Toys
         {
             int vertexCount = reader.ReadInt32();
             var vertices = new VertexRigged3D[vertexCount];
-            
             for (int i = 0; i < vertexCount; i++)
             {
                 var vertex = new VertexRigged3D();
@@ -89,6 +91,9 @@ namespace Toys
                 vertex.BoneIndices.bone1 = reader.ReadInt16();
                 vertex.BoneIndices.bone2 = reader.ReadInt16();
                 vertex.BoneWeigths[0] = (float)reader.ReadByte() / byte.MaxValue;
+                if (vertex.BoneIndices.bone2 == 0)
+                    vertex.BoneWeigths[0] = 1;
+
                 vertex.BoneWeigths[1] = 1 - vertex.BoneWeigths[0];
                 //non edge flag
                 reader.ReadByte();
@@ -148,7 +153,7 @@ namespace Toys
                 }
 
                 var outln = new Outline();
-                outln.EdgeScaler = 0.4f;
+                outln.EdgeScaler = 0.2f;
 
                 shdrs.HasSkeleton = true;
                 shdrs.DiscardInvisible = true;
@@ -163,11 +168,13 @@ namespace Toys
                 var rndr = new RenderDirectives();
                 rndr.HasEdges = hasEdge;
                 var mat = new MaterialPMX(shdrs, rndr);
-                mat.Name = "";
+                mat.Name = string.Format("Material {0}",i);
                 mat.Outline = outln;
-                mat.SetTexture(diffuseTexture, TextureType.Diffuse);
+                if (diffuseTexture)
+                    mat.SetTexture(diffuseTexture, TextureType.Diffuse);
                 //mat.SetTexture(toon, TextureType.Toon);
-                mat.SetTexture(sphereTexture, TextureType.Sphere);
+                if (sphereTexture)
+                    mat.SetTexture(sphereTexture, TextureType.Sphere);
                 mat.SpecularColour = specularColour;
                 mat.Specular = specularPower;
                 mat.DiffuseColor = difColor;
@@ -273,6 +280,9 @@ namespace Toys
                         bones[0].ParentInfluence = (float)temp[i, 1] * 0.01f;
                         break;
                 }
+
+                if (maxLevel < bones[i].Level)
+                    maxLevel = bones[i].Level;
             }
 
 
@@ -283,6 +293,7 @@ namespace Toys
                 if (bone.ParentIndex >= 0 && bone.ParentIndex < bones.Length)
                 {
                     bone.Parent2Local = Matrix4.CreateTranslation(bone.Position - bones[bone.ParentIndex].Position);
+                    //Console.WriteLine("{0} {1}", i, bone.Position - bones[bone.ParentIndex].Position);
                 }
             }
             boneOrder = new int[bones.Length];
@@ -316,9 +327,128 @@ namespace Toys
                     var pos = reader.readVector3() * multipler;
                     morph.AddVertex(pos, index);
                 }
+                morphs[i] = morph;
             }
         }
 
+        void ReadPanel(Reader reader)
+        {
+            var expressionCount = reader.ReadByte();
+            for (int i = 0; i < expressionCount; i++)
+            {
+                reader.ReadUInt16();
+            }
+
+            var  nodeCount = reader.ReadByte();
+            for (int i = 0; i < nodeCount; i++)
+            {
+                //node names
+                reader.readStringLength(50);
+            }
+
+            var boneNodesCount = reader.ReadUInt16();
+            reader.ReadUInt16();
+            for (int i = 0; i < boneNodesCount; i++)
+            {
+                //bone id
+                reader.ReadUInt16();
+                //node id
+                reader.ReadByte();
+            }
+
+            //english names
+            bool eng = reader.ReadByte() != 0;
+            if (eng)
+            {
+                header.NameEng = reader.readStringLength(20);
+                header.CommentEng = reader.readStringLength(256);
+                //fill english bones names
+                for (int i = 0; i < bones.Length; i++)
+                {
+                    bones[i].NameEng = reader.readStringLength(20);
+                }
+                //fill english morphs names
+                for (int i = 0; i < morphs.Length - 1; i++)
+                {
+                    morphs[i].NameEng = reader.readStringLength(20);
+                }
+                //fill english nodes names
+                for (int i = 0; i < nodeCount; i++)
+                {
+                    reader.readStringLength(50);
+                }
+            }
+
+            //load toon textures
+            var toonData = new Texture2D[10];
+            for (int i = 0; i < 10; i++)
+            {
+                var toonName = reader.readStringLength(100);
+                toonData[i] = ResourcesManager.LoadAsset<Texture2D>(toonName);
+            }
+
+            //assign toon textures to materials
+            for (int i = 0; i < mats.Length; i++)
+            {
+                mats[i].SetTexture(toonData[materialToonTable[i]], TextureType.Toon);
+            }
+        }
+
+        void ReadRigit(Reader reader)
+        {
+            var bodyCount = reader.ReadInt32();
+            rigitBodies = new RigidContainer[bodyCount];
+            for (int i = 0; i < bodyCount; i++)
+            {
+                var rigit = new RigidContainer();
+                rigit.Name = reader.readStringLength(20);
+                rigit.BoneIndex = reader.ReadInt16();
+                rigit.GroupId = (byte)(16 + reader.ReadByte());
+                rigit.NonCollisionGroup = (int)reader.ReadUInt16() << 16;
+                rigit.PrimitiveType = (PhysPrimitiveType)reader.ReadByte();
+                rigit.Size = reader.readVector3() * multipler;
+                rigit.Position = reader.readVector3() * multipler;
+                rigit.Rotation = reader.readVector3();
+                rigit.Mass = reader.ReadSingle();
+                rigit.MassAttenuation = reader.ReadSingle();
+                rigit.RotationDamping = reader.ReadSingle();
+                rigit.Restitution = reader.ReadSingle();
+                rigit.Friction = reader.ReadSingle();
+                rigit.Phys = (PhysType)reader.ReadByte();
+
+                //convert coordinates from rigit2bone to rigit2world
+                if (rigit.BoneIndex > -1)
+                    rigit.Position += bones[rigit.BoneIndex].Position;
+
+                rigitBodies[i] = rigit;
+            }
+        }
+
+        void ReadJoints(Reader reader)
+        {
+            int jointCount = reader.ReadInt32();
+            joints = new JointContainer[jointCount];
+
+            for (int i = 0; i < jointCount; i++)
+            {
+                JointContainer joint = new JointContainer();
+                joint.Name = reader.readStringLength(20);
+                joint.Type = JointType.SpringSixDOF;
+                joint.RigitBody1 = reader.ReadInt32();
+                joint.RigitBody2 = reader.ReadInt32();
+                joint.Position = reader.readVector3() * multipler;
+                joint.Rotation = reader.readVector3();
+                joint.PosMin = reader.readVector3() * multipler;
+                joint.PosMax = reader.readVector3() * multipler;
+                joint.RotMin = reader.readVector3();
+                joint.RotMax = reader.readVector3();
+                joint.PosSpring = reader.readVector3() * multipler;
+                joint.RotSpring = reader.readVector3();
+
+                joints[i] = joint;
+            }
+
+        }
 
         EnvironmentMode GetEnvType(string path)
         {
@@ -376,11 +506,10 @@ namespace Toys
             {
                 MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs);
                 md.OutlineDrawing = true;
-
                 var node = new SceneNode();
                 node.AddComponent(md);
                 node.AddComponent(new Animator(md.skeleton));
-                //node.AddComponent(new PhysicsManager(rigitBodies, joints, md.skeleton));
+                node.AddComponent(new PhysicsManager(rigitBodies, joints, md.skeleton));
                 return node;
             }
         }
