@@ -12,9 +12,35 @@ namespace ModelViewer
     {
         public Scene Scene;
         public TestScript Button;
+        Camera camera;
+
         private void Start()
         {
+            LoadDefault();
             LoadModels();
+        }
+
+        void LoadDefault()
+        {
+            SceneNode cameraNode = new SceneNode();
+            cameraNode.Name = "Camera";
+            var camera = (Camera)cameraNode.AddComponent<Camera>();
+            cameraNode.GetTransform.Position = new OpenTK.Vector3(0, 2f, 0);
+            camera.Background = new BackgroundSkybox();
+            Scene.AddNode2Root(cameraNode);
+
+            //SceneNode navmeshNode = new SceneNode();
+            //navmeshNode.Name = "NavMesh";
+            //var test = (TestScript)navmeshNode.AddComponent<TestScript>();
+            //Scene.AddNode2Root(navmeshNode);
+            //test.camera = camera;
+            //Button = test;
+
+            cameraNode.AddComponent<CharacterControllPlayer>();
+            cameraNode.AddComponent<CameraPOVScript>();
+
+            var audioListener = AudioListener.GetListener();
+            camera.Node.AddComponent(audioListener);
         }
 
         void LoadModels()
@@ -67,6 +93,11 @@ namespace ModelViewer
         }
 
         void LoadEnviropment()
+        {
+
+        }
+
+        void LoadNavMap()
         {
 
         }

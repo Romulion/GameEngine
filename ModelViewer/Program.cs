@@ -14,47 +14,39 @@ namespace ModelViewer
             
             GLWindow window = new GLWindow();
             var scene = CoreEngine.MainScene;
-            //Console.WindowHeight = 700;
-            //string str = "";
-            SceneNode cameraNode = new SceneNode();
-            cameraNode.Name = "Camera";
-            var camera = (Camera)cameraNode.AddComponent<Camera>();
-            cameraNode.AddComponent<DynamicFormScript>();
-            cameraNode.GetTransform.Position = new Vector3(0, 2f, 0);
-            camera.Background = new BackgroundSkybox();
-            scene.AddNode2Root(cameraNode);
 
             CoreEngine.Shared.ScriptHolder.AddComponent<FrameTimeScript>();
-            
-            SceneNode navmeshNode = new SceneNode();
-            navmeshNode.Name = "NavMesh";
-            var test = (TestScript)navmeshNode.AddComponent<TestScript>();
-            scene.AddNode2Root(navmeshNode);
-            test.camera = camera;
-            
-            //Remote Image Streaming
-            //var script = (DynamicFormStream)cameraNode.AddComponent<DynamicFormStream>();
-            //var ISS = (ImageStreamerScript)cameraNode.AddComponent<ImageStreamerScript>();
-            //ISS.SetDSS(script);
 
+            //character view mode
             if (args.Length != 0)
             {
+                SceneNode cameraNode = new SceneNode();
+                cameraNode.Name = "Camera";
+                var camera = (Camera)cameraNode.AddComponent<Camera>();
+                cameraNode.GetTransform.Position = new Vector3(0, 2f, 0);
+                camera.Background = new BackgroundSkybox();
+                scene.AddNode2Root(cameraNode);
+                cameraNode.AddComponent<DynamicFormScript>();
+
+                //Remote Image Streaming
+                //var script = (DynamicFormStream)cameraNode.AddComponent<DynamicFormStream>();
+                //var ISS = (ImageStreamerScript)cameraNode.AddComponent<ImageStreamerScript>();
+                //ISS.SetDSS(script);
+                
                 SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
                 if (modelNode)
                 {
+                    modelNode.AddComponent<TestScript>();
                     modelNode.Name = "model";
                     scene.AddNode2Root(modelNode);
-                    test.cc = (CharControll)modelNode.AddComponent<CharControll>();
                     cameraNode.AddComponent<CameraControllOrbitScript>();
                 }
             }
+            //scene mode
             else
             {
                 var testScene = (TestSceneLoader)CoreEngine.Shared.ScriptHolder.AddComponent<TestSceneLoader>();
                 testScene.Scene = scene;
-                testScene.Button = test;
-                cameraNode.AddComponent<CharacterControllPlayer>();
-                cameraNode.AddComponent<CameraPOVScript>();
             }
 
             var task = new Task(() =>

@@ -13,7 +13,7 @@ namespace ModelViewer
 {
     class TestScript : ScriptingComponent
     {
-        BoneController bc;
+        public BoneController bc;
         Material mat;
         public static Texture2D texture;
         PhysicsEngine physics;
@@ -30,147 +30,27 @@ namespace ModelViewer
         AudioSource src;
         SliderCompoent slider;
         public ButtonComponent image1;
+        int update = 0;
 
         void Awake()
         {
+            /*
             if (cc != null)
             {
                 CreateNavMesh();
                 cc.navMesh = navMesh;
                 cc.Materials = Materials;
             }
+            */
+            var anim = Node.GetComponent<Animator>() as Animator;
+            bc = anim.BoneController;
             physics = CoreEngine.pEngine;
-            var canvas = (Canvas)Node.AddComponent<Canvas>();
-            
-            var ui0 = new UIElement();
-            ui0.GetTransform.anchorMax = new Vector2(0f, 1f);
-            ui0.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui0.GetTransform.offsetMax = new Vector2(400, 0);
-            ui0.GetTransform.offsetMin = new Vector2(0, -400);
-            canvas.Root = ui0;
-            canvas.AddObject(ui0);
-            var ui7 = new UIElement();
-            ui7.GetTransform.anchorMax = new Vector2(0f, 1f);
-            ui7.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui7.GetTransform.offsetMax = new Vector2(170, -40);
-            ui7.GetTransform.offsetMin = new Vector2(20, -180);
-            ui7.SetParent(ui0);
-            var mask = (UIMaskComponent)ui7.AddComponent<UIMaskComponent>();
-            //scrollbox test
-            var ui = new UIElement();
-            ui.GetTransform.anchorMax = new Vector2(0f, 1f);
-            ui.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui.GetTransform.offsetMax = new Vector2(130, 0);
-            ui.GetTransform.offsetMin = new Vector2(0, -200);
-            ui.SetParent(ui7);
-            var scrollBox = (ScrollBoxComponent)ui.AddComponent<ScrollBoxComponent>();
-            scrollBox.Mask = mask;
-            scrollBox.ScrollDirection = ScrollMode.Vertical;
-            scrollBox.color.W = 0.3f;
-            var ui1 = new UIElement();
-            ui1.GetTransform.anchorMax = new Vector2(1f, 1f);
-            ui1.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui1.GetTransform.offsetMax = new Vector2(0, 0);
-            ui1.GetTransform.offsetMin = new Vector2(0, -25);
-            image1 = (ButtonComponent)ui1.AddComponent<ButtonComponent>();
 
-            var butLabel1 = (TextBox)ui1.AddComponent<TextBox>();
-            butLabel1.textCanvas.colour = new Vector3(1, 0, 0);
-            butLabel1.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
-            butLabel1.textCanvas.alignVertical = TextAlignVertical.Center;
-            
-            butLabel1.SetText("path");
-            butLabel1.textCanvas.Scale = 0.5f;
-
-            //image1.OnClick = () => { cc?.SetDestination(camera.Node.GetTransform.Position); };
-            var ui2 = new UIElement();
-            ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
-            ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui2.GetTransform.offsetMax = new Vector2(0, -30);
-            ui2.GetTransform.offsetMin = new Vector2(0, -55);
-            var butLabel2 = (TextBox)ui2.AddComponent<TextBox>();
-            
-            butLabel2.SetText("Go/Stop");
-            butLabel2.textCanvas.Scale = 0.5f;
-
-            butLabel2.textCanvas.colour = new Vector3(1, 1, 0);
-            butLabel2.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
-            butLabel2.textCanvas.alignVertical = TextAlignVertical.Center;
-            var button = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
-            //button.OnClick = () => { cc?.Go(); };
-            //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
-            //ISS.SetDSS(script);
-            ui1.SetParent(ui);
-            ui2.SetParent(ui);
-
-            var ui3 = new UIElement();
-            ui3.GetTransform.anchorMax = new Vector2(1f, 1f);
-            ui3.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui3.GetTransform.offsetMax = new Vector2(0, -60);
-            ui3.GetTransform.offsetMin = new Vector2(0, -80);
-            slider = (SliderCompoent)ui3.AddComponent<SliderCompoent>();
-            ui3.SetParent(ui);
-
-            var ui4 = new UIElement();
-            ui4.GetTransform.anchorMax = new Vector2(1f, 1f);
-            ui4.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui4.GetTransform.offsetMax = new Vector2(0, -85);
-            ui4.GetTransform.offsetMin = new Vector2(0, -110);
-            ui4.SetParent(ui);
-            var checkbox = (CheckboxComponent)ui4.AddComponent<CheckboxComponent>();
-            //checkbox.OnChange = () => Console.WriteLine(444);
-            var butLabel4 = (TextBox)ui4.AddComponent<TextBox>();
-            butLabel4.textCanvas.colour = new Vector3(1, 0, 0);
-            butLabel4.textCanvas.alignHorizontal = TextAlignHorizontal.Left;
-            butLabel4.textCanvas.alignVertical = TextAlignVertical.Center;
-            butLabel4.textCanvas.colour = Vector3.Zero;
-            butLabel4.textCanvas.Scale = 0.7f;
-            butLabel4.SetText("checkbox");
-
-            var ui5 = new UIElement();
-            ui5.GetTransform.anchorMax = new Vector2(1f, 1f);
-            ui5.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui5.GetTransform.offsetMax = new Vector2(0, -115);
-            ui5.GetTransform.offsetMin = new Vector2(0, -140);
-            ui5.SetParent(ui);
-            var input = (TextInputComponent)ui5.AddComponent<TextInputComponent>();
-            //debug textures
-            /*
-            var canvas1 = (Canvas)Node.AddComponent<Canvas>();
-            var ui10 = new UIElement();
-            ui10.GetTransform.anchorMax = new Vector2(0f, 1f);
-            ui10.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui10.GetTransform.offsetMax = new Vector2(400, 100);
-            ui10.GetTransform.offsetMin = new Vector2(100, 400);
-            canvas1.Root = ui10;
-
-            var img =  ui10.AddComponent<RawImage>();
-            img.Material.SetTexture(Node.scene.GetLight.shadowMap, TextureType.Diffuse);
-            */
-            /*
-            var msd = (Animator)Node.GetComponent<Animator>();
-            if (msd != null)
-                bc = msd.BoneController;
-            */
-
-            //MadePath(31);
-
-            //slider1.OnValueChanged = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };
-            audioListener = AudioListener.GetListener();
-            camera.Node.AddComponent(audioListener);
-            
-            try
-            {
-                src = ResourcesManager.LoadAsset<AudioSource>(@"Assets\Sound\ccccc.mp3");
-                Node.AddComponent(src);
-
-                src.Play();
-            }
-            catch (Exception e)
-            {
-
-            }
-            
+           // bc.GetBone(4).SetTransform(Vector3.UnitX);
+            //update++;
+             //bc.GetBone(64).SetTransform(new Quaternion(0, 0, dec2rad(90)), new Vector3(0, 0, 0));
+            // bc.UpdateSkeleton();
+            // Console.WriteLine(bc.GetBone(65).TransformMatrix);
         }
 
         void Start()
@@ -268,6 +148,7 @@ namespace ModelViewer
 
         void Update()
         {
+            /*
             if (active)
             {
                 i++;
@@ -281,6 +162,7 @@ namespace ModelViewer
                 //Console.WriteLine(src.GetCurrentVolume());
                 //audioListener.direction = (camera.GetLook * Vector4.UnitZ).Xyz;
             }
+            */
             //Console.WriteLine(audioListener.direction);
             // update++;
             // bc.GetBone(3).SetTransform(new Quaternion(0, 0, (float)(dec2rad(45) * Math.Cos(update * 3 * Math.PI / 180))), new Vector3(0, 0, 0));
@@ -333,7 +215,7 @@ namespace ModelViewer
 -1.334424f,-0.129101f,-1.093288f,
 -1.320094f,-0.218572f,-1.766740f
             };
-       
+
             int[] indexes = { 2, 3, 1, 1, 6, 2, 6, 7, 8, 7, 10, 8, 10, 11, 12, 9, 14, 11, 13, 16, 14, 15, 17, 18, 18, 19, 20, 20, 21, 22, 21, 24, 22, 23, 3, 26, 4, 26, 3, 28, 27, 26, 25, 30, 27, 30, 31, 27, 2, 4, 3, 1, 5, 6, 6, 5, 7, 7, 9, 10, 10, 9, 11, 9, 13, 14, 13, 15, 16, 15, 13, 17, 18, 17, 19, 20, 19, 21, 21, 23, 24, 23, 21, 3, 4, 28, 26, 28, 25, 27, 25, 29, 30, 30, 32, 31 };
 
             var vertex = new Vertex3D[data.Length / 3];
@@ -359,7 +241,7 @@ namespace ModelViewer
                 Materials[i].Offset = i * 3;
                 Materials[i].Count = 3;
             }
-            md = new MeshDrawer(mesh,Materials);
+            md = new MeshDrawer(mesh, Materials);
             Node.AddComponent(md);
 
 
@@ -367,43 +249,6 @@ namespace ModelViewer
             var navList = navMesh.navigationCells.ToList();
             var cell1 = navMesh.GetCellFromPosition(new Vector3(0));
             var cell2 = navMesh.GetCellFromPosition(new Vector3(-1.0431f, 0, 1.53819f));
-            //Console.WriteLine(cell2.Index);
-            /*
-            Materials[0].UniManager.Set("specular_color", specularColour);
-            Materials[0].UniManager.Set("ambient_color", ambientColour);
-            Materials[0].UniManager.Set("specular_power", specularPower);
-            Materials[0].UniManager.Set("diffuse_color", difColor);
-            */
-
-            // Materials[27].RenderDirrectives.IsRendered = false;
-            // Materials[25].RenderDirrectives.IsRendered = false;
-            // Materials[26].RenderDirrectives.IsRendered = false;
-
-
-
-            /*
-            //Console.WriteLine(navMesh.navigationCells[13].Center);
-            foreach (var bord in navMesh.navigationCells[13].linkedCells)
-                if (bord != null)
-                    Console.WriteLine(bord.Index);
-            */
-
-            /*
-            int indx = 0;
-            foreach (var nav in navList)
-            {
-                int num = 0;
-                foreach (var ls in nav.linkedCells)
-                    if (ls != null)
-                        num++;
-                if (num == 2 && nav.Index > 27) {
-                    indx = nav.Index;
-                    break;
-                }
-            }
-            
-            Console.WriteLine(indx);     
-            */
         }
 
         void MadePath(int start)
@@ -422,7 +267,7 @@ namespace ModelViewer
                 foreach (var waipoint in navAgent.pathMesh)
                 {
                     Materials[waipoint.Index].UniManager.Set("ambient_color", Vector3.UnitY);
-               //     Console.WriteLine(waipoint.Index);
+                    //     Console.WriteLine(waipoint.Index);
                 }
             }
             Materials[start].UniManager.Set("ambient_color", Vector3.UnitX);
