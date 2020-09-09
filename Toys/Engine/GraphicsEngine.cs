@@ -34,20 +34,17 @@ namespace Toys
         internal Camera MainCamera;
         internal List<MeshDrawer> meshes = new List<MeshDrawer>();
 
-        public Scene renderScene { get; private set; }
-
-		public GraphicsEngine(Scene scene)
+		public GraphicsEngine()
         {
-			renderScene = scene;
             Instalize();
         }
 
 		public void OnLoad()
 		{
-			renderScene.OnLoad();
-			MainRender = new MainRenderer(renderScene);
+			CoreEngine.MainScene.OnLoad();
+			MainRender = new MainRenderer();
 			TextRender = new TextRenderer();
-            renderScene.GetLight.BindShadowMap();
+            CoreEngine.MainScene.GetLight.BindShadowMap();
 
             UniformBufferManager ubm = UniformBufferManager.GetInstance;
             system = (UniformBufferSystem)ubm.GetBuffer("system");
@@ -154,7 +151,7 @@ namespace Toys
             //shadow pass
             SetCullMode(FaceCullMode.Back);
             //GL.Disable(EnableCap.Multisample);
-			renderScene.GetLight.RenderShadow(meshes);
+            CoreEngine.MainScene.GetLight.RenderShadow(meshes);
 
             //clear display buffer
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, outputBuffer);
@@ -239,7 +236,7 @@ namespace Toys
 		MeshDrawer[] GetRenderObjects()
 		{
 			List<MeshDrawer> meshes = new List<MeshDrawer>();
-			foreach (var node in renderScene.GetNodes())
+			foreach (var node in CoreEngine.MainScene.GetNodes())
 			{
 				if (!node.Active)
 					continue;

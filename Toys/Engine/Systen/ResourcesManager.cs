@@ -8,7 +8,7 @@ namespace Toys
 {
 	public class ResourcesManager
 	{
-		static Dictionary<string,Resource> resources = new Dictionary<string,Resource>();
+		static Dictionary<string, WeakReference> resources = new Dictionary<string, WeakReference>();
 
 		CoreEngine ce;
 
@@ -17,11 +17,16 @@ namespace Toys
 			ce = core;
 		}
 
-		public static T LoadAsset<T>(string path) where T : Resource
-		{
+        public static T LoadAsset<T>(string path) where T : Resource
+        {
 
-			if (resources.ContainsKey(path))
-				return resources[path] as T;
+            if (resources.ContainsKey(path))
+            {
+                if (resources[path].IsAlive)
+                    return resources[path].Target as T;
+                else
+                    resources.Remove(path);
+            }
 
 			Type tp = typeof(T);
 			Resource asset = null;
@@ -53,14 +58,15 @@ namespace Toys
 			{
 				asset.Id = path;
 				asset.Type = typeof(T);
-                resources.Add(path, asset);
+                resources.Add(path, new WeakReference(asset));
             }
             return asset as T;
 		}
 
         internal static void AddAsset(Resource asset, string name)
         {
-            resources.Add(name, asset);
+            if (!resources.ContainsKey(name))
+                resources.Add(name, new WeakReference(asset));
         }
 
         public static T[] GetResourses<T>() where T : Resource
@@ -68,7 +74,7 @@ namespace Toys
 			List<T> result = new List<T>();
 			foreach (var val in resources.Values)
 				if (val is T)
-					result.Add((T)val);
+					result.Add(val.Target as T);
 
 			return result.ToArray();
 		}
@@ -85,8 +91,8 @@ namespace Toys
 			List<T> result = new List<T>();
 			foreach (var val in resources.Values)
 			{
-				if (val is T && ((Component)val).Node.Active)
-					result.Add((T)val);
+				if (val.Target is T && ((Component)val.Target).Node.Active)
+					result.Add((T)val.Target);
 			}
 
 			return result.ToArray();
@@ -114,7 +120,7 @@ namespace Toys
 
         public static bool DeleteResource(Resource resource)
         {
-            string name = resources.FirstOrDefault(x => x.Value == resource).Key;
+            string name = resources.FirstOrDefault(x => (Resource)x.Value.Target == resource).Key;
             if (name != default(string))
                 return DeleteResource(name);
             else
@@ -126,10 +132,10 @@ namespace Toys
 
         public static bool DeleteResource(string res)
         {
-            Resource resource;
+            WeakReference resource;
             if (resources.TryGetValue(res, out resource))
             {
-                CoreEngine.ActiveCore.AddTask = () => resource.Unload();
+                CoreEngine.ActiveCore.AddTask = () => ((Resource)resource.Target).Unload();
                 resources.Remove(res);
                 return true;
             }

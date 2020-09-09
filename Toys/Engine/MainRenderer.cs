@@ -5,15 +5,13 @@ namespace Toys
 {
 	public class MainRenderer
 	{
-		internal Scene MainScene;
 		UniformBufferSkeleton skeleton;
 		UniformBufferLight ubl;
 		UniformBufferSpace ubs;
 		ModelRenderer renderer;
 
-		internal MainRenderer(Scene scene)
+		internal MainRenderer()
 		{
-			MainScene = scene;
 			UniformBufferManager ubm = UniformBufferManager.GetInstance;
 			skeleton = (UniformBufferSkeleton)ubm.GetBuffer("skeleton");
 
@@ -35,7 +33,7 @@ namespace Toys
             ubl.SetViewPos(camera.GetPos);
 			ubs.SetPvSpace(camera.GetLook * camera.Projection);
 
-			foreach (var node in MainScene.GetNodes())
+			foreach (var node in CoreEngine.MainScene.GetNodes())
 			{
 				if (!node.Active)
 					continue;

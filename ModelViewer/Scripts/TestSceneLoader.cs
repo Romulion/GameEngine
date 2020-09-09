@@ -10,9 +10,7 @@ namespace ModelViewer
 {
     class TestSceneLoader : ScriptingComponent
     {
-        public Scene Scene;
         public TestScript Button;
-        Camera camera;
 
         private void Start()
         {
@@ -22,12 +20,6 @@ namespace ModelViewer
 
         void LoadDefault()
         {
-            SceneNode cameraNode = new SceneNode();
-            cameraNode.Name = "Camera";
-            var camera = (Camera)cameraNode.AddComponent<Camera>();
-            cameraNode.GetTransform.Position = new OpenTK.Vector3(0, 2f, 0);
-            camera.Background = new BackgroundSkybox();
-            Scene.AddNode2Root(cameraNode);
 
             //SceneNode navmeshNode = new SceneNode();
             //navmeshNode.Name = "NavMesh";
@@ -35,12 +27,12 @@ namespace ModelViewer
             //Scene.AddNode2Root(navmeshNode);
             //test.camera = camera;
             //Button = test;
-
+            var cameraNode = CoreEngine.GetCamera.Node;
             cameraNode.AddComponent<CharacterControllPlayer>();
             cameraNode.AddComponent<CameraPOVScript>();
 
             var audioListener = AudioListener.GetListener();
-            camera.Node.AddComponent(audioListener);
+            cameraNode.AddComponent(audioListener);
         }
 
         void LoadModels()
@@ -50,8 +42,8 @@ namespace ModelViewer
             {
                 model1.Name = "Michelle.Seifuku";
                 model1.GetTransform.Position = OpenTK.Vector3.UnitZ * 2;
-                Scene.AddNode2Root(model1);
-                var manager = model1.GetComponent<PhysicsManager>();
+                CoreEngine.MainScene.AddNode2Root(model1);
+                //var manager = model1.GetComponent<PhysicsManager>();
                 model1.AddComponent<NpcAI>();
                 //Button.image1.OnClick += () => manager?.ReinstalizeBodys();
 
@@ -65,13 +57,14 @@ namespace ModelViewer
             {
                 model2.Name = "Hinata.Seifuku";
                 model2.GetTransform.Position = -OpenTK.Vector3.UnitZ * 2;
-                Scene.AddNode2Root(model2);
+                CoreEngine.MainScene.AddNode2Root(model2);
                 model2.AddComponent<NpcAI>();
                 //var src = ResourcesManager.LoadAsset<AudioSource>(@"Assets\Sound\hina.mp3");
                 //model2.AddComponent(src);
                 //src.Play();
             }
             
+
         }
 
         AnimationController CreateAnimationController()

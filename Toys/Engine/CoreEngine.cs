@@ -23,6 +23,14 @@ namespace Toys
         public static Time frameTimer { get; private set; }
         Action task;
 
+        public static Camera GetCamera
+        {
+            get
+            {
+                return gEngine.MainCamera;
+            }
+        }
+
         public float elapsed { get; private set; }
 
 		public static Scene MainScene;
@@ -40,7 +48,7 @@ namespace Toys
 			{
 				MainScene = new Scene();
                 Shared = new ShareData();
-                gEngine = new GraphicsEngine(MainScene);
+                gEngine = new GraphicsEngine();
 				pEngine = new PhysicsEngine();
                 sEngine = new ScriptingEngine();
                 iHandler = new InputHandler();
