@@ -121,6 +121,7 @@
     <Compile Include="Engine\UserInterface\InteractableComponent.cs" />
     <Compile Include="Engine\UserInterface\RawImage.cs" />
     <Compile Include="Engine\UserInterface\RectTransform.cs" />
+    <Compile Include="Engine\UserInterface\ScrollBarComponent.cs" />
     <Compile Include="Engine\UserInterface\ScrollBoxComponent.cs" />
     <Compile Include="Engine\UserInterface\SliderCompoent.cs" />
     <Compile Include="Engine\UserInterface\TextInputComponent.cs" />

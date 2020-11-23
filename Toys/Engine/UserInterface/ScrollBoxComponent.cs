@@ -25,6 +25,7 @@ namespace Toys
         public Vector4 color;
         Vector2 cursorPrev = Vector2.Zero;
         bool moveInitialized = false;
+        ScrollBarComponent scrollBar;
 
         /// <summary>
         /// Direction where area can be scroled
@@ -43,6 +44,11 @@ namespace Toys
 
         static ScrollBoxComponent()
         {
+        }
+
+        internal void AddScrollBar(ScrollBarComponent component)
+        {
+            scrollBar = component;
         }
 
         internal override void AddComponent(UIElement nod)
@@ -181,6 +187,35 @@ namespace Toys
             Node.GetTransform.offsetMin += move;
             cursorPrev.X = x;
             cursorPrev.Y = y;
+
+            if (scrollBar)
+                UpdateScrollBar();
+        }
+
+        void UpdateScrollBar()
+        {
+            Vector2 delta = new Vector2();
+            delta.X = Node.GetTransform.GlobalRect.Width - Mask.Node.GetTransform.GlobalRect.Width;
+            delta.Y = Node.GetTransform.GlobalRect.Height - Mask.Node.GetTransform.GlobalRect.Height;
+            scrollBar.Value = 1 - Node.GetTransform.offsetMax.Y / delta.Y;
+        }
+
+        internal void UpdatePositionScrollbox(Vector2 move)
+        {
+            if (!Mask)
+                return;
+
+            var size = new Vector2();
+            size.X = Node.GetTransform.GlobalRect.Width;
+            size.Y = Node.GetTransform.GlobalRect.Height;
+            Vector2 delta = new Vector2();
+            delta.X = Node.GetTransform.GlobalRect.Width - Mask.Node.GetTransform.GlobalRect.Width;
+            delta.Y = Node.GetTransform.GlobalRect.Height - Mask.Node.GetTransform.GlobalRect.Height;
+            //delta
+            Vector2 top = new Vector2();
+            top.X = size.X;
+            Node.GetTransform.offsetMax = top + delta * move;
+            Node.GetTransform.offsetMin = Node.GetTransform.offsetMax - size;
         }
 
         public override VisualComponent Clone()

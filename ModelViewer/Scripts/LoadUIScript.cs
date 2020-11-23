@@ -28,6 +28,7 @@ namespace ModelViewer
             ui7.GetTransform.offsetMin = new Vector2(20, -180);
             ui7.SetParent(ui0);
             var mask = (UIMaskComponent)ui7.AddComponent<UIMaskComponent>();
+
             //scrollbox test
             var ui = new UIElement();
             ui.GetTransform.anchorMax = new Vector2(0f, 1f);
@@ -39,6 +40,11 @@ namespace ModelViewer
             scrollBox.Mask = mask;
             scrollBox.ScrollDirection = ScrollMode.Vertical;
             scrollBox.color.W = 0.3f;
+
+            //scrollbar
+            var scrollBar = (ScrollBarComponent)ui7.AddComponent<ScrollBarComponent>();
+            scrollBar.SetScrollBox(scrollBox);
+
             var ui1 = new UIElement();
             ui1.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui1.GetTransform.anchorMin = new Vector2(0f, 1f);

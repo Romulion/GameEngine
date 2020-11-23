@@ -8,12 +8,16 @@ using OpenTK;
 namespace Toys
 {
     /// <summary>
-    /// Slider Component
-    /// filling from left to right
+    /// Scrollbar Component
+    /// Set on scrollbox Parent and link scrollbox
     /// </summary>
-    public class SliderCompoent : InteractableComponent
+    public class ScrollBarComponent : InteractableComponent
     {
         public Action OnValueChanged;
+        public ScrollBoxComponent ScrollBox
+        {
+            get; private set;
+        }
         ShaderUniform shaderUniform;
         ShaderUniform colorMask;
         static Texture2D bgTexture;
@@ -25,8 +29,10 @@ namespace Toys
         /// Slider value
         /// from 0 to 1
         /// </summary>
-        public float Value {
-            get {
+        public float Value
+        {
+            get
+            {
                 return value;
             }
             set
@@ -44,15 +50,11 @@ namespace Toys
         /// </summary>
         public float ButtonSize = 20;
         /// <summary>
-        /// Slider Box Heigth
+        /// Scroll Bar Heigth
         /// </summary>
-        public float SliderBoxSize = 7;
-        /// <summary>
-        /// Slider Box Fill Area Heigth
-        /// </summary>
-        public float SliderFillSize = 5;
+        public float ScrollBarSize = 20;
 
-        public SliderCompoent() : base(typeof(SliderCompoent))
+        public ScrollBarComponent() : base(typeof(ScrollBarComponent))
         {
             //Material = defaultMaterial;
             shaderUniform = Material.UniManager.GetUniform("model");
@@ -61,11 +63,18 @@ namespace Toys
             bgTexture = null;
             fillTexture = null;
             base.IsAllowDrag = true;
+            Value = 1;
         }
 
         //Load Default Data
-        static SliderCompoent()
+        static ScrollBarComponent()
         {
+        }
+
+        public void SetScrollBox(ScrollBoxComponent component)
+        {
+            ScrollBox = component;
+            ScrollBox.AddScrollBar(this);
         }
 
         internal override void AddComponent(UIElement nod)
@@ -82,36 +91,37 @@ namespace Toys
 
         internal override void Draw()
         {
-           
+            if (!ScrollBox)
+                return;
+
             Material.ApplyMaterial();
             //draw bg
             var trans = Node.GetTransform.GlobalTransform;
-            trans.M42 += (trans.M22 - SliderBoxSize) * 0.5f;
-            trans.M22 = SliderBoxSize;
+            trans.M41 += trans.M11 - ScrollBarSize;
+            trans.M11 = ScrollBarSize;
 
             bgTexture?.BindTexture();
-            colorMask.SetValue(new Vector4(Vector3.Zero,1));
+            colorMask.SetValue(new Vector4(Vector3.Zero, 1));
             shaderUniform.SetValue(trans);
             base.Draw();
 
-            //draw fill gauge
-            trans.M11 *= Value;
-            trans.M42 += (trans.M22 - SliderFillSize) * 0.5f;
-            trans.M22 = SliderFillSize;
-
-            fillTexture?.BindTexture();
-            colorMask.SetValue(Vector4.One);
-            shaderUniform.SetValue(trans);
-            base.Draw();
+            //knob size
+            var scrollSize = ScrollBox.Node.GetTransform.GlobalTransform.M22;
+            var trackSize = Node.GetTransform.GlobalTransform.M22;
+            var buttonSize = (float)(trackSize / scrollSize);
+            buttonSize = (buttonSize > 1) ? 1 : buttonSize;
+            buttonSize *= trackSize;
+            ButtonSize = buttonSize;
 
             //draw slider button
-            trans = Node.GetTransform.GlobalTransform;
-            trans.M41 += trans.M11 * Value - ButtonSize * 0.5f;
-            trans.M11 = trans.M22 =  ButtonSize;
+            //trans = Node.GetTransform.GlobalTransform;
+            trans.M42 += (trans.M22 - ButtonSize) * Value;
+            trans.M22 = ButtonSize;
             bgTexture?.BindTexture();
             colorMask.SetValue(color);
             shaderUniform.SetValue(trans);
             base.Draw();
+            
         }
 
         internal override void Hover()
@@ -124,7 +134,7 @@ namespace Toys
             if (State == ButtonStates.Clicked)
             {
                 State = ButtonStates.Normal;
-                color = new Vector4(Vector3.One * 0.9f,1);
+                color = new Vector4(Vector3.One * 0.9f, 1);
             }
         }
 
@@ -133,7 +143,7 @@ namespace Toys
             if (State == ButtonStates.Normal)
             {
                 State = ButtonStates.Clicked;
-                color = new Vector4(Vector3.One * 0.6f,1);
+                color = new Vector4(Vector3.One * 0.6f, 1);
             }
 
         }
@@ -143,7 +153,7 @@ namespace Toys
             if (State != ButtonStates.Normal)
             {
                 State = ButtonStates.Normal;
-                color = new Vector4(Vector3.One * 0.9f,1);
+                color = new Vector4(Vector3.One * 0.9f, 1);
             }
         }
 
@@ -154,24 +164,34 @@ namespace Toys
 
         internal override void PositionUpdate(float x, float y)
         {
+            if (!ScrollBox)
+                return;
 
             var oldValue = Value;
-            var trans = Node.GetTransform.GlobalRect;
-
-            Value = (x - trans.Left) / trans.Width;
+            var trans = Node.GetTransform.GlobalRect; 
+            var button = ButtonSize / 2;
+            if (y >= trans.Bottom - button)
+                Value = 1;
+            else if (y <= trans.Top + button)
+                Value = 0;
+            else
+                Value = (y - trans.Top - button) / (trans.Height - ButtonSize);
 
             if (oldValue != Value)
+            {
                 OnValueChanged?.Invoke();
+                ScrollBox.UpdatePositionScrollbox(new Vector2(0, 1 - Value));
+            }
         }
 
         public override VisualComponent Clone()
         {
-            var slider = new SliderCompoent();
-            slider.Material = Material;
-            slider.color = color;
+            var scrollbar = new ScrollBarComponent();
+            scrollbar.Material = Material;
+            scrollbar.color = color;
 
-            return slider;
+            return scrollbar;
         }
     }
-    
+
 }
