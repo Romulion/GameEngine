@@ -34,6 +34,7 @@ namespace Toys
             colorMask = Material.UniManager.GetUniform("color_mask");
             color = Vector4.One;
             Texture = defaultTexture;
+            base.IsAllowDrag = false;
         }
 
         //load default data

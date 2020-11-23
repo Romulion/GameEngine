@@ -38,6 +38,7 @@ namespace Toys
             colorMask = Material.UniManager.GetUniform("color_mask");
             color = Vector4.One;
             ScrollDirection = ScrollMode.Vertical;
+            base.IsAllowDrag = true;
         }
 
         static ScrollBoxComponent()

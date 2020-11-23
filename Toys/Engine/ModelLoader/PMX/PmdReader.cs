@@ -403,7 +403,19 @@ namespace Toys
             for (int i = 0; i < 10; i++)
             {
                 var toonName = reader.readStringLength(100);
-                toonData[i] = ResourcesManager.LoadAsset<Texture2D>(toonName);
+                //detect internal texture
+                if (toonName.StartsWith("toon"))
+                {
+                    var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
+                    using (var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.PMX." + toonName)))
+                    {
+                        toonData[i] = new Texture2D(pic, TextureType.Toon, toonName);
+                    }
+                }
+                else
+                {
+                    toonData[i] = ResourcesManager.LoadAsset<Texture2D>(toonName);
+                }
             }
 
             //assign toon textures to materials

@@ -60,6 +60,7 @@ namespace Toys
             color = Vector4.One;
             bgTexture = null;
             fillTexture = null;
+            base.IsAllowDrag = true;
         }
 
         //Load Default Data

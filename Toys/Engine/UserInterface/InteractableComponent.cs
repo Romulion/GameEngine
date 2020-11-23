@@ -20,6 +20,8 @@ namespace Toys {
     {
         protected InteractableComponent(Type type) : base(type) { }
 
+        internal bool IsAllowDrag;
+
         //state change processors
         /// <summary>
         /// Preceed mouse click down state

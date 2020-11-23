@@ -33,6 +33,8 @@ namespace ModelViewer
 
             var audioListener = AudioListener.GetListener();
             cameraNode.AddComponent(audioListener);
+
+            Node.AddComponent<LoadUIScript>();
         }
 
         void LoadModels()
