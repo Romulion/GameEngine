@@ -51,6 +51,7 @@ namespace Toys
             GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
             GL.BindVertexArray(0);
             GL.DepthFunc(DepthFunction.Less);
+            
         }
 
         void CreateBox()

@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace Toys
 {
 	public class MeshDrawerRigged : MeshDrawer

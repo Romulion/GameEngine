@@ -246,11 +246,5 @@ namespace Toys
 		{
 			GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
 		}
-
-        ~Mesh()
-        {
-            
-        }
-
 	}
 }

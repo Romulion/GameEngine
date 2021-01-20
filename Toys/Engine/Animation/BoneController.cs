@@ -13,11 +13,12 @@ namespace Toys
         BoneTransform[] _bonesOrdered;
 
 		public BoneController(BoneTransform[] bones)
-		{
-			_bones = bones;
+		{                
+            _bones = bones;
 			//making skeleton matrix
 			_skeleton = new Matrix4[bones.Length];
-			DefaultPos();
+            CheckBonesCount();
+            DefaultPos();
 		}
 
         public BoneController(Bone[] bones,bool order = false)
@@ -28,7 +29,8 @@ namespace Toys
             UpdateOrder(order);
 
             _skeleton = new Matrix4[bones.Length];
-            
+
+            CheckBonesCount();
             DefaultPos();
             UpdateSkeleton();
         }
@@ -47,6 +49,7 @@ namespace Toys
 
             _skeleton = new Matrix4[bones.Length];
 
+            CheckBonesCount();
             DefaultPos();
             UpdateSkeleton();
         }
@@ -117,11 +120,15 @@ namespace Toys
             {
                 if (_bonesOrdered[i].Parent != null)
                 {
-                    if (i == 82)
+                    /*
+                    if (i == 67 || i == 10 || i ==66 || i == 127 | i == 0)
                     {
-                        //Console.WriteLine(bonesOrdered[i].Parent.World2BoneInitial);
-                        //Console.WriteLine(bonesOrdered[i].InitialLocalTransform);
+                        Console.WriteLine(i);
+                        Console.WriteLine(_bonesOrdered[i].Parent.Bone.Index);
+                        Console.WriteLine(_bonesOrdered[i].Parent.World2BoneInitial);
+                        Console.WriteLine(_bonesOrdered[i].InitialLocalTransform);
                     }
+                    */
                     _bonesOrdered[i].World2BoneInitial = _bonesOrdered[i].InitialLocalTransform * _bonesOrdered[i].Parent.World2BoneInitial;
                 }
             }
@@ -223,6 +230,15 @@ namespace Toys
                 _skeleton[n] = Matrix4.Identity;
                 _bones[n].ResetTransform(false);
             }
+        }
+
+
+        private void CheckBonesCount()
+        {
+            var settings = Settings.GetInstance();
+            var logger = new Logger("BoneController");
+            if (settings.System.MaxBonesCount < _bones.Length)
+                logger.Error(String.Format("bone count {0} exceed maximum value  {1}", _bones.Length, settings.System.MaxBonesCount), "");
         }
     }
 }

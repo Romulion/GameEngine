@@ -15,10 +15,11 @@ namespace ModelViewer
             GLWindow window = new GLWindow();
             var scene = CoreEngine.MainScene;
 
-
+            
             SceneNode cameraNode = new SceneNode();
             cameraNode.Name = "Camera";
             var camera = (Camera)cameraNode.AddComponent<Camera>();
+            
             cameraNode.GetTransform.Position = new OpenTK.Vector3(0, 2f, 0);
             camera.Background = new BackgroundSkybox();
             scene.AddNode2Root(cameraNode);
@@ -36,6 +37,9 @@ namespace ModelViewer
                 //ISS.SetDSS(script);
                 
                 SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
+                //var md =  modelNode.GetComponent<MeshDrawer>();
+                //for(int i = 0; i < md.Materials.Length; i++)
+                //   md.Materials[i] = 
                 if (modelNode)
                 {
                     modelNode.AddComponent<TestScript>();
@@ -49,7 +53,7 @@ namespace ModelViewer
             {
                 var testScene = (TestSceneLoader)CoreEngine.Shared.ScriptHolder.AddComponent<TestSceneLoader>();
             }
-
+            
             var task = new Task(() =>
             {
                 Application.Init();
@@ -58,7 +62,7 @@ namespace ModelViewer
                 Application.Run();
             });
             task.Start();
-
+            
             window.Title = "ModelViewer";
             window.Run(60);
         }

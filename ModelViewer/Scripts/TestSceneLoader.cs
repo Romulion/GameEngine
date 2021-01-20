@@ -15,7 +15,7 @@ namespace ModelViewer
         private void Start()
         {
             LoadDefault();
-            LoadModels();
+            //LoadModels();
         }
 
         void LoadDefault()
@@ -34,7 +34,8 @@ namespace ModelViewer
             var audioListener = AudioListener.GetListener();
             cameraNode.AddComponent(audioListener);
 
-            Node.AddComponent<LoadUIScript>();
+            //load ui
+            //Node.AddComponent<LoadUIScript>();
         }
 
         void LoadModels()
@@ -54,6 +55,7 @@ namespace ModelViewer
                 //src.Play();
             }
             
+            /*
             var model2 = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Hinata\Seifuku.pmx");
             if (model2)
             {
@@ -65,7 +67,7 @@ namespace ModelViewer
                 //model2.AddComponent(src);
                 //src.Play();
             }
-            
+            */
 
         }
 

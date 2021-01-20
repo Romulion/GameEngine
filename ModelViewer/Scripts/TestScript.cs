@@ -52,6 +52,11 @@ namespace ModelViewer
             // bc.UpdateSkeleton();
             // Console.WriteLine(bc.GetBone(65).TransformMatrix);
             //bc.GetBone(3).SetTransform(new Vector3(0, -0.5f, 0));
+            /*
+            Console.WriteLine(bc.GetBone(67).World2BoneInitial);
+            Console.WriteLine(bc.GetBone(66).World2BoneInitial);
+            Console.WriteLine(bc.GetBone(66).InitialLocalTransform);
+            */
         }
 
         void Start()
@@ -149,8 +154,9 @@ namespace ModelViewer
 
         void Update()
         {
-            //update++;
-            //bc.GetBone(3).SetTransform(new Vector3(0, -0.25f + 0.4f * (float)Math.Cos(update * 3 * Math.PI / 180), 0));
+            update++;
+            //bc.GetBone(127).SetTransform(new Vector3(0, -0.25f + 0.4f * (float)Math.Cos(update * 3 * Math.PI / 180), 0));
+            //bc.GetBone(67).SetTransform(new Quaternion(0, 0, (float)(update * 3 * Math.PI / 180)),Vector3.Zero);
             /*
             if (active)
             {

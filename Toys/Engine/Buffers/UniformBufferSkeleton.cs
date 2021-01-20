@@ -7,12 +7,13 @@ namespace Toys
 {
 	public class UniformBufferSkeleton: UniformBuffer
 	{
-		const int maxBonesCount = 700;
 		const int boneMatrixSize = 64;
 		const string name = "skeleton";
+		int maxBonesCount;
 
-		public UniformBufferSkeleton(int bindingPoint) : base(maxBonesCount * boneMatrixSize, name, bindingPoint)
+		public UniformBufferSkeleton(int bindingPoint, int bonesCount) : base(bonesCount * boneMatrixSize, name, bindingPoint)
 		{
+			maxBonesCount = bonesCount;
 		}
 
 		public void SetBones(Matrix4[] mat)

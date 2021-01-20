@@ -202,8 +202,8 @@ namespace Toys
                 comp.RemoveComponent();
                 comp.Unload();
             }
+            components.Clear();
         }
-
         #region Save System preps
         public Dictionary<string,string> SaveSequence(bool extended = false)
         {
