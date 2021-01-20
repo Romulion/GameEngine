@@ -23,10 +23,10 @@ namespace Toys
         {
             canvas = (Canvas)Node.AddComponent<Canvas>();
             canvas.Root = new UIElement();
+            img = (RawImage)canvas.Root.AddComponent<RawImage>();
             text = (TextBox)canvas.Root.AddComponent<TextBox>();
             rect = canvas.Root.GetTransform;
             text.textCanvas.colour = Vector3.Zero;
-            img = (RawImage)canvas.Root.AddComponent<RawImage>();
             rect.anchorMax = new Vector2(0, 1);
             rect.anchorMin = new Vector2(0, 1);
             rect.offsetMin = new Vector2(20,-32);

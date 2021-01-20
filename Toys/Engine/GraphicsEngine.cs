@@ -180,7 +180,7 @@ namespace Toys
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.StencilTest);
             UIEngine.DrawUI();
-            TextRender.RenderText();
+            //TextRender.RenderText();
             GL.Disable(EnableCap.StencilTest);
             GL.Enable(EnableCap.DepthTest);
         }

@@ -47,19 +47,20 @@ namespace Toys
 
         internal override void AddComponent(UIElement node)
         {
+            
             CoreEngine.gEngine.TextRender.textBoxes.Add(this);
-            Node = node;
+            base.AddComponent(node);
         }
 
         internal override void RemoveComponent()
         {
-            if (Node)
-                Node = null;
             CoreEngine.gEngine.TextRender.textBoxes.Remove(this);
+            base.RemoveComponent();
         }
 
         internal override void Draw()
         {
+            CoreEngine.gEngine.TextRender.Render(this);
         }
 
         public override VisualComponent Clone()
