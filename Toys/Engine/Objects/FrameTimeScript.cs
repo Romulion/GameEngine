@@ -27,6 +27,7 @@ namespace Toys
             text = (TextBox)canvas.Root.AddComponent<TextBox>();
             rect = canvas.Root.GetTransform;
             text.textCanvas.colour = Vector3.Zero;
+            text.textCanvas.alignVertical = TextAlignVertical.Center;
             rect.anchorMax = new Vector2(0, 1);
             rect.anchorMin = new Vector2(0, 1);
             rect.offsetMin = new Vector2(20,-32);
@@ -37,7 +38,7 @@ namespace Toys
         {
             if (frames >= framesMax)
             {
-                text.SetText((update / frames).ToString("C2") + "  " + (render / frames).ToString("C2"));
+                text.SetText((update / frames).ToString("C2") + " " + (render / frames).ToString("C2"));
                 frames = 0;
                 update = 0;
                 render = 0;

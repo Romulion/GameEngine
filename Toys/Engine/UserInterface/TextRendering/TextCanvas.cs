@@ -17,7 +17,13 @@ namespace Toys
     }
     public class TextCanvas
     {
+        /// <summary>
+        /// Horizontaly allign to node box
+        /// </summary>
         public TextAlignHorizontal alignHorizontal;
+        /// <summary>
+        /// Vertically allign to node box
+        /// </summary>
         public TextAlignVertical alignVertical;
         internal int VAO;
         internal int VBO;

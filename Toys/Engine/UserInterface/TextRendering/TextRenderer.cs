@@ -18,6 +18,7 @@ namespace Toys
 		Dictionary<char, Character> chars = new Dictionary<char, Character>();
 		Matrix4 projection;
         static int mapSize = 1024;
+        static int size = 30;
         Texture2D charmap;
 		Shader shdr;
         Vector3 position = Vector3.Zero;
@@ -49,7 +50,7 @@ namespace Toys
                 face = new Face(lib, ReadFont(assembly.GetManifestResourceStream(defPath)), 0);
             }
 
-            face.SetPixelSizes(0, 30);
+            face.SetPixelSizes(0, (uint)size);
             projection = Matrix4.CreateOrthographicOffCenter(0, 800, 0, 600, 0f, -0.01f);
             ShaderManager shdmMgmt = ShaderManager.GetInstance;
             shdmMgmt.LoadShader("text");
@@ -137,12 +138,22 @@ namespace Toys
             int i = 0;
             canvas.Width = 0;
             canvas.Heigth = 0;
+            float rowHeigth = 0;
+             
 
             foreach (var c in canvas.Text)
             {
                 if (c == 8381)
                     continue;
 
+                //move to new line
+                if (c == '\n' || c == '\r')
+                {
+                    x = 0;
+                    y -= size;
+                    continue;
+                }
+                    
                 var chr = GetCharacter(c);
                 float xpos = x + chr.Bearing.X;
                 float ypos = y - (chr.Size.Y - chr.Bearing.Y);
@@ -150,8 +161,8 @@ namespace Toys
                 float h = chr.Size.Y;
 
                 //update text size
-                if (canvas.Heigth < ypos + h)
-                    canvas.Heigth = ypos + h;
+                if (y == 0 && rowHeigth < chr.Size.Y - y)
+                    rowHeigth = chr.Size.Y - y;
                 if (canvas.Width < xpos + w)
                     canvas.Width = xpos + w;
 
@@ -165,10 +176,15 @@ namespace Toys
                 };
 
                 Array.Copy(verts, 0, vertices, i, verts.Length);
-                x += (int)((chr.Advance >> 6) );
+                x += (chr.Advance >> 6);
 
                 i += 24;
             }
+            
+            canvas.Heigth = rowHeigth - y;
+            
+            for (int n = 1; n < vertices.Length; n += 4)
+                vertices[n] -= y;
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, canvas.VBO);
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, vertices.Length * 4, vertices);
@@ -251,6 +267,7 @@ namespace Toys
 
         private Vector3 CalculatePosition(TextCanvas textCanvas, RectTransform transform)
         {
+            
             Vector3 location = Vector3.UnitZ;
             switch (textCanvas.alignVertical)
             {

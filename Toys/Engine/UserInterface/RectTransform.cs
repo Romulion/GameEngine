@@ -37,7 +37,15 @@ namespace Toys
 
         //calculated values
         public RectangleF GlobalRect { get; private set; }
+        /// <summary>
+        /// Top right position (in pixels)
+        /// relative to anchor
+        /// </summary>
         internal Vector2 Max { get; private set; }
+        /// <summary>
+        /// Bottom left position (in pixels)
+        /// relative to anchor
+        /// </summary>
         internal Vector2 Min { get; private set; }
         private Matrix4 transformMat;
         private UIElement baseNode;
