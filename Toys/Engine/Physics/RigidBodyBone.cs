@@ -79,7 +79,19 @@ namespace Toys
             BoneController.GetBones[BoneID].Phys = true;
         }
 
-		public void Reinstalize(OpenTK.Matrix4 world)
+        public void SyncBody2BoneRot(OpenTK.Matrix4 world)
+        {
+            return;
+            var temp = Body.WorldTransform.Convert();
+            temp.M41 = startTransform.M41;
+            temp.M42 = startTransform.M42;
+            temp.M43 = startTransform.M43;
+            var mat = startTransform.Convert().Inverted() * temp;
+            BoneController.GetBones[BoneID].PhysTransform = mat * world;
+            BoneController.GetBones[BoneID].Phys = true;
+        }
+
+        public void Reinstalize(OpenTK.Matrix4 world)
 		{
             Body.WorldTransform = startTransform * world.Convert();
             Body.InterpolationWorldTransform = Body.WorldTransform;

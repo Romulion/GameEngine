@@ -81,20 +81,22 @@ namespace Toys
                     jointSpring6.LinearLowerLimit = GetVec3(JointParameters.PosMin);
 					jointSpring6.LinearUpperLimit = GetVec3(JointParameters.PosMax);
                     
+					
                     jointSpring6.EnableSpring(0,true);
                     jointSpring6.EnableSpring(1,true);
                     jointSpring6.EnableSpring(2,true);
+					jointSpring6.EnableSpring(4, true);
+					jointSpring6.EnableSpring(5, true);
+					jointSpring6.EnableSpring(6, true);
+					
+					jointSpring6.SetStiffness(0, JointParameters.PosSpring.X);
+					jointSpring6.SetStiffness(1, JointParameters.PosSpring.Y);
+					jointSpring6.SetStiffness(2, JointParameters.PosSpring.Z);
+					jointSpring6.SetStiffness(3, JointParameters.RotSpring.X);
+					jointSpring6.SetStiffness(4, JointParameters.RotSpring.Y);
+					jointSpring6.SetStiffness(5, JointParameters.RotSpring.Z);
 
-                    /*
-                    jointSpring6.SetBounce(0,jcon.PosSpring.X);
-                    jointSpring6.SetBounce(1,jcon.PosSpring.Y);
-                    jointSpring6.SetBounce(2,jcon.PosSpring.Z);
-                    
-                    jointSpring6.SetDamping(0,jcon.RotSpring.X);
-                    jointSpring6.SetDamping(1,jcon.RotSpring.Y);
-                    jointSpring6.SetDamping(2,jcon.RotSpring.Z);
-                    */
-                    jointSpring6.SetEquilibriumPoint();
+					jointSpring6.SetEquilibriumPoint();
                     Constraint = jointSpring6;
                     break;
 			}
