@@ -3,7 +3,7 @@ using BulletSharp;
 using System.Drawing;
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
-using OpenTK;
+using OpenTK.Mathematics;
 
 namespace Toys
 {

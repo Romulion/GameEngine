@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Toys;
+using OpenTK.Mathematics;
 
 
 namespace ModelViewer
@@ -15,7 +16,7 @@ namespace ModelViewer
         private void Start()
         {
             LoadDefault();
-            //LoadModels();
+            LoadModels();
         }
 
         void LoadDefault()
@@ -35,16 +36,16 @@ namespace ModelViewer
             cameraNode.AddComponent(audioListener);
 
             //load ui
-            //Node.AddComponent<LoadUIScript>();
+            Node.AddComponent<LoadUIScript>();
         }
 
         void LoadModels()
         {
-            var model1 = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Michelle\Seifuku.pmx");
+            var model1 = ResourcesManager.LoadAsset<SceneNode>(@"..\Assets\Models\Michelle\Seifuku.pmx");
             if (model1)
             {
                 model1.Name = "Michelle.Seifuku";
-                model1.GetTransform.Position = OpenTK.Vector3.UnitZ * 2;
+                model1.GetTransform.Position = Vector3.UnitZ * 2;
                 CoreEngine.MainScene.AddNode2Root(model1);
                 //var manager = model1.GetComponent<PhysicsManager>();
                 model1.AddComponent<NpcAI>();

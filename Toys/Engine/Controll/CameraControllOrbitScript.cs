@@ -1,6 +1,7 @@
 ﻿using System;
-using OpenTK;
-using OpenTK.Input;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Toys
 {
@@ -15,7 +16,7 @@ namespace Toys
         public int angleStep = 4, angleThresold = 2;
         public float speed = 0.01f;
 
-        private int wheel = 0;
+        private Vector2 wheel = Vector2.Zero;
         private bool mousePressed;
 
         //camera space
@@ -37,8 +38,8 @@ namespace Toys
 
         void MouseOrbit()
         {
-            var mouseState = Mouse.GetState();
-            if (game.Focused && !CoreEngine.gEngine.UIEngine.Busy && mousePressed && mouseState.IsButtonDown(MouseButton.Left))
+            var mouseState = GLWindow.gLWindow.MouseState;
+            if (game.IsFocused && !CoreEngine.gEngine.UIEngine.Busy && mousePressed && mouseState.IsButtonDown(MouseButton.Left))
             {
 
                 if (mouseState.X - lastX > angleThresold)
@@ -73,9 +74,10 @@ namespace Toys
             else
                 mousePressed = false;
 
-            if (game.Focused)
+            if (game.IsFocused)
             {
-                int mDelta = mouseState.Wheel - wheel;
+                var mDelta = mouseState.Scroll - wheel;
+                /*
                 if (mDelta == 0)
                     return;
                 if (mDelta > 0)
@@ -83,6 +85,7 @@ namespace Toys
                 else if (mDelta < 0)
                     r += speed * 8f;
                 wheel = mouseState.Wheel;
+                */
             }
             transform.Position = camera.Target + CalcPos(r, phi, theta);
         }
@@ -91,17 +94,17 @@ namespace Toys
         void Update()
         {
             MouseOrbit();
-            var keyState = Keyboard.GetState();
+            var keyState = GLWindow.gLWindow.KeyboardState;
             // camera strafe
-            if (game.Focused)
+            if (game.IsFocused)
             {
-                if (keyState[Key.PageUp])
+                if (keyState.IsKeyDown(Keys.PageUp))
                 {
                     camera.Target += speed * cameraUp;
                     transform.Position += speed * cameraUp;
                 }
 
-                if (keyState[Key.PageDown])
+                if (keyState.IsKeyDown(Keys.PageDown))
                 {
                     camera.Target -= speed * cameraUp;
                     transform.Position -= speed * cameraUp;
@@ -111,31 +114,31 @@ namespace Toys
                 Vector3 left = Vector3.Cross(front,cameraUp);
                 //movment
                 
-                if (keyState[Key.W])
+                if (keyState.IsKeyDown(Keys.W))
                 {
                     camera.Target += speed * front;
                     transform.Position += speed * front;
                 }
 
-                if (keyState[Key.A])
+                if (keyState.IsKeyDown(Keys.A))
                 {
                     camera.Target -= speed * left;
                     transform.Position -= speed * left;
                 }
 
-                if (keyState[Key.S])
+                if (keyState.IsKeyDown(Keys.S))
                 {
                     camera.Target -= speed * front;
                     transform.Position -= speed * front;
                 }
 
-                if (keyState[Key.D])
+                if (keyState.IsKeyDown(Keys.D))
                 {
                     camera.Target += speed * left;
                     transform.Position += speed * left;
                 }
                 
-                if (keyState[Key.R])
+                if (keyState.IsKeyDown(Keys.R))
                 {
                     transform.Position = new Vector3(0f, 1f, 0f);
 

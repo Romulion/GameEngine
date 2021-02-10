@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Toys;
-using OpenTK;
+using OpenTK.Mathematics;
 
 namespace ModelViewer
 {

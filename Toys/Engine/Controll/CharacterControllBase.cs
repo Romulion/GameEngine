@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using BulletSharp;
 using BulletSharp.Math;
-//using OpenTK;
 
 namespace Toys
 {
@@ -65,10 +64,10 @@ namespace Toys
         {
             //update node position
             var transform = _ghostObject.WorldTransform;
-            Node.GetTransform.Position = new OpenTK.Vector3(transform.M41, transform.M42, transform.M43);
+            Node.GetTransform.Position = new OpenTK.Mathematics.Vector3(transform.M41, transform.M42, transform.M43);
         }
 
-        protected void Teleport(OpenTK.Vector3 position)
+        protected void Teleport(OpenTK.Mathematics.Vector3 position)
         {
             var pos = position.Convert();
             _charController.Warp(ref pos);

@@ -33,10 +33,10 @@ namespace Toys
 
         public float elapsed { get; private set; }
 
-		public static Scene MainScene;
-        public static ShareData Shared;
+		public static Scene MainScene { get; set; }
+        public static ShareData Shared { get; set; }
 
-		public CoreEngine()
+        public CoreEngine()
 		{
 			Instalize();
 			ActiveCore = this;

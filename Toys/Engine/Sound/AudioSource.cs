@@ -6,22 +6,23 @@ using System.Threading.Tasks;
 using NAudio;
 using NAudio.Wave;
 using OpenTK.Audio.OpenAL;
-using OpenTK;
+using OpenTK.Mathematics;
 using System.Runtime.InteropServices;
 
 namespace Toys
 {
     public class AudioSource : Component
     {
-        int buffer, source, bps;
+        int bufferID, sourceID, bps;
         int sampleRate = 0;
         byte[] byteBuffer;
         Vector3 dir = Vector3.UnitZ;
         public bool IsPlaing { get; private set; }
         public AudioSource() : base(typeof(AudioSource))
         {
-            AL.GenBuffers(1, out buffer);
-            AL.GenSources(1, out source);
+            AL.GenSource();
+            bufferID = AL.GenBuffer();
+            sourceID = AL.GenSource();
             IsPlaing = false;
         }
 
@@ -45,11 +46,11 @@ namespace Toys
             var format = GetFormat(audioData.WaveFormat.Channels,bps);
             IntPtr unmanagedPointer = Marshal.AllocHGlobal(byteBuffer.Length);
             Marshal.Copy(byteBuffer, 0, unmanagedPointer, byteBuffer.Length);
-            AL.BufferData(buffer, format, unmanagedPointer, byteBuffer.Length, audioData.WaveFormat.SampleRate);
+            AL.BufferData(bufferID, format, unmanagedPointer, byteBuffer.Length, audioData.WaveFormat.SampleRate);
             Marshal.FreeHGlobal(unmanagedPointer);
-            AL.Source(source, ALSourcei.Buffer, buffer);
-            AL.Source(source, ALSourceb.Looping, true);
-            AL.Source(source, ALSource3f.Direction, ref dir);
+            AL.Source(sourceID, ALSourcei.Buffer, bufferID);
+            AL.Source(sourceID, ALSourceb.Looping, true);
+            AL.Source(sourceID, ALSource3f.Direction, ref dir);
 
             sampleRate = audioData.WaveFormat.SampleRate;
         }
@@ -79,7 +80,7 @@ namespace Toys
         {
             int sampleCount = (int)(sampleRate * 0.016f);
             int position;
-            AL.GetSource(source, ALGetSourcei.ByteOffset, out position);
+            AL.GetSource(sourceID, ALGetSourcei.ByteOffset, out position);
             float result = 0;
 
             if (bps == 8)
@@ -111,19 +112,19 @@ namespace Toys
 
         public void Play()
         {
-            AL.SourcePlay(source);
+            AL.SourcePlay(sourceID);
             IsPlaing = true;
         }
 
         public void Pause()
         {
-            AL.SourcePause(source);
+            AL.SourcePause(sourceID);
             IsPlaing = false;
         }
 
         public void Stop()
         {
-            AL.SourceStop(source);
+            AL.SourceStop(sourceID);
             IsPlaing = false;
         }
 
@@ -131,7 +132,7 @@ namespace Toys
         internal void Update()
         {
             var pos = Node.GetTransform.Position;
-            AL.Source(source, ALSource3f.Position, ref pos);
+            AL.Source(sourceID, ALSource3f.Position, ref pos);
             //AL.Source(source, ALSource3f.Direction,Node.GetTransform.GetDirection());
             //AL.Source(source, ALSource3f.Velocity, ref pos);
         }
@@ -151,8 +152,8 @@ namespace Toys
 
         internal override void Unload()
         {
-            AL.DeleteSource(source);
-            AL.DeleteBuffer(buffer);
+            AL.DeleteSource(sourceID);
+            AL.DeleteBuffer(bufferID);
         }
     }
 }

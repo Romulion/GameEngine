@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Toys;
-using OpenTK;
 
 namespace ModelViewerWF
 {
@@ -14,7 +13,7 @@ namespace ModelViewerWF
         {
 
             GLWindow window = new GLWindow();
-            var scene = window.Engine.MainScene;
+            Scene scene = CoreEngine.MainScene;
             if (args.Length != 0)
             {
                 SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
@@ -27,7 +26,7 @@ namespace ModelViewerWF
             cameraNode.AddComponent(camera);
             cameraNode.AddComponent<CameraControllOrbitScript>();
             //cameraNode.AddComponent<FrameTimeScript>();
-            cameraNode.GetTransform.Position = new Vector3(0, 1f, 3);
+            //cameraNode.GetTransform.Position = new Vector3(0, 1f, 3);
 
             scene.AddNode2Root(cameraNode);
             cameraNode.AddComponent<DynamicFormScript>();
@@ -45,7 +44,7 @@ namespace ModelViewerWF
             task.Start();
 
             window.Title = "ModelViewer";
-            window.Run(60);
+            window.Run();
         }
     }
 }

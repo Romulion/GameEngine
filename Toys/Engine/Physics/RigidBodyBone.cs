@@ -66,20 +66,20 @@ namespace Toys
                 Body.SetCustomDebugColor(new Vector3(0, 0, 1));
         }
 
-        public void SyncBone2Body(OpenTK.Matrix4 world)
+        public void SyncBone2Body(OpenTK.Mathematics.Matrix4 world)
 		{
             var mat = (BoneController.GetBone(BoneID).TransformMatrix * world).Convert();
             Body.MotionState.WorldTransform = startTransform * mat;
         }
 
-		public void SyncBody2Bone(OpenTK.Matrix4 world)
+		public void SyncBody2Bone(OpenTK.Mathematics.Matrix4 world)
 		{
             var mat = startTransform.Convert().Inverted() * Body.WorldTransform.Convert();
             BoneController.GetBones[BoneID].PhysTransform = mat * world;
             BoneController.GetBones[BoneID].Phys = true;
         }
 
-        public void SyncBody2BoneRot(OpenTK.Matrix4 world)
+        public void SyncBody2BoneRot(OpenTK.Mathematics.Matrix4 world)
         {
             return;
             var temp = Body.WorldTransform.Convert();
@@ -91,7 +91,7 @@ namespace Toys
             BoneController.GetBones[BoneID].Phys = true;
         }
 
-        public void Reinstalize(OpenTK.Matrix4 world)
+        public void Reinstalize(OpenTK.Mathematics.Matrix4 world)
 		{
             Body.WorldTransform = startTransform * world.Convert();
             Body.InterpolationWorldTransform = Body.WorldTransform;

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenTK;
-using OpenTK.Input;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 
 namespace Toys
@@ -19,8 +19,8 @@ namespace Toys
         int theta = 90;
         int thetaMax = 170;
         int thetaMin = 10;
-        int lastX = 0;
-        int lastY = 0;
+        float lastX = 0;
+        float lastY = 0;
         public int angleStep = 4, angleThresold = 2;
 
         void Awake()
@@ -35,8 +35,8 @@ namespace Toys
         }
         void MouseControll()
         {
-            var mouseState = Mouse.GetState();
-            if (game.Focused && !CoreEngine.gEngine.UIEngine.Busy && mousePressed && mouseState.IsButtonDown(MouseButton.Left))
+            var mouseState = GLWindow.gLWindow.MouseState;
+            if (game.IsFocused && !CoreEngine.gEngine.UIEngine.Busy && mousePressed && mouseState.IsButtonDown(MouseButton.Button1))
             {
 
                 if (mouseState.X - lastX > angleThresold)

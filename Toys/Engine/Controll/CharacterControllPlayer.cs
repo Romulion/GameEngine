@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenTK.Input;
-using OpenTK;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using OpenTK.Mathematics;
 using BulletSharp;
 
 namespace Toys
@@ -61,15 +61,15 @@ namespace Toys
 
             
 
-            KeyboardState kb = Keyboard.GetState();
-            if (game.Focused && kb.IsKeyDown(Key.Up)){
+            var keyState = GLWindow.gLWindow.KeyboardState;
+            if (game.IsFocused && keyState.IsKeyDown(Keys.Up)){
                 Walk(CoreEngine.ActiveCore.elapsed);
             }
-            else if (GLWindow.gLWindow.Focused && kb.IsKeyDown(Key.Down))
+            else if (GLWindow.gLWindow.IsFocused && keyState.IsKeyDown(Keys.Down))
             {
                 Walk(-CoreEngine.ActiveCore.elapsed);
             }
-            else if (GLWindow.gLWindow.Focused && kb.IsKeyDown(Key.Space))
+            else if (GLWindow.gLWindow.IsFocused && keyState.IsKeyDown(Keys.Space))
             {
                 Jump();
             }

@@ -106,7 +106,7 @@ namespace Toys
         }
 
 
-		private Vector3 GetVec3(OpenTK.Vector3 vec3)
+		private Vector3 GetVec3(OpenTK.Mathematics.Vector3 vec3)
 		{
 			return new Vector3(vec3.X, vec3.Y, vec3.Z);
 		}

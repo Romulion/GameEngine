@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Input;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.Common;
 
 namespace Toys
 {
@@ -17,8 +13,9 @@ namespace Toys
         bool pause = false;
         bool pauseKey = false;
         bool visibleKey = false;
-        public GLWindow() : base(640, 480, new GraphicsMode(32, 8, 8, 4))
+        public GLWindow() : base(new GameWindowSettings(), new NativeWindowSettings() { NumberOfSamples = 4 })
         {
+            base.Size = new OpenTK.Mathematics.Vector2i(640,480);
             gLWindow = this;
             Initialize();
         }
@@ -33,60 +30,59 @@ namespace Toys
         void Initialize()
         {
             Engine = new CoreEngine();
-            Load += OnLoad;
+            Load += OnStart;
+            
             UpdateFrame += Update;
             RenderFrame += Render;
-            Closing += (s, ev) => Engine.Close();
+            Closed += () => Engine.Close();
         }
 
-
-        void OnLoad(object sender, EventArgs e)
+        void OnStart()
         {
             VSync = VSyncMode.On;
             Engine.OnLoad();
-            Resize += (s, ev) =>
+            Resize += (ev) =>
             {
-                if (Width != 0 && Height != 0)
-                    Engine.Resize(Width, Height);
+                if (Size.X != 0 && Size.Y != 0)
+                    Engine.Resize(Size.X, Size.Y);
             };
         }
 
-        void Update(object sender, EventArgs e)
+        void Update(FrameEventArgs e)
         {
-            if (Focused)
+            if (IsFocused)
             {
-                var keystate = Keyboard.GetState();
-                if (keystate[Key.Escape])
+                if (KeyboardState.IsKeyDown(Keys.Escape))
                 {
-                    Exit();
+                    Close();
                 }
-                if (keystate[Key.F])
+                if (KeyboardState.IsKeyDown(Keys.F))
                 {
                     GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
                 }
-                if (keystate[Key.L])
+                if (KeyboardState.IsKeyDown(Keys.L))
                 {
                     GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
                 }
-                if (keystate[Key.P])
+                if (KeyboardState.IsKeyDown(Keys.P))
                 {
                     GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
                 }
 
-                if (keystate[Key.O] && !pauseKey)
+                if (KeyboardState.IsKeyDown(Keys.O) && !pauseKey)
                 {
                     pause = !pause;
                     pauseKey = true;
                 }
-                else if (!keystate[Key.O] && pauseKey)
+                else if (!KeyboardState.IsKeyDown(Keys.O) && pauseKey)
                     pauseKey = false;
 
-                if (keystate[Key.V] && !visibleKey)
+                if (KeyboardState.IsKeyDown(Keys.V) && !visibleKey)
                 {
-                    Visible = !Visible;
+                    IsVisible = !IsVisible;
                     visibleKey = true;
                 }
-                else if (!keystate[Key.V] && visibleKey)
+                else if (!KeyboardState.IsKeyDown(Keys.V) && visibleKey)
                     visibleKey = false;
             }
 
@@ -94,7 +90,7 @@ namespace Toys
                 Engine.Update();
         }
 
-        void Render(object sender, EventArgs e)
+        void Render(FrameEventArgs e)
         {
             if (!pause)
                 Engine.Render();

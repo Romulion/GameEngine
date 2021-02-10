@@ -1102,7 +1102,7 @@ namespace Paloma
                                             this.ImageByteHandle.AddrOfPinnedObject());
 
             // lets free the pinned bytes
-            if (this.ImageByteHandle != null && this.ImageByteHandle.IsAllocated)
+            if (this.ImageByteHandle.IsAllocated)
                 this.ImageByteHandle.Free();
 
 
@@ -1384,7 +1384,7 @@ namespace Paloma
                         this.bmpImageThumbnail = new Bitmap(iWidth, iHeight, iStride, pfPixelFormat,
                                                         this.ThumbnailByteHandle.AddrOfPinnedObject());
 
-                        if (this.ThumbnailByteHandle != null && this.ThumbnailByteHandle.IsAllocated)
+                        if (this.ThumbnailByteHandle.IsAllocated)
                             this.ThumbnailByteHandle.Free();
                     }
 
@@ -1444,11 +1444,11 @@ namespace Paloma
                 this.bmpImageThumbnail = null;
             }
 
-            if (this.ImageByteHandle != null && this.ImageByteHandle.IsAllocated)
+            if (this.ImageByteHandle.IsAllocated)
                 this.ImageByteHandle.Free();
 
 
-            if (this.ThumbnailByteHandle != null && this.ThumbnailByteHandle.IsAllocated)
+            if (this.ThumbnailByteHandle.IsAllocated)
                 this.ThumbnailByteHandle.Free();
 
             this.objTargaHeader = new TargaHeader();
@@ -1552,23 +1552,20 @@ namespace Paloma
                         this.bmpImageThumbnail.Dispose();
                     }
 
-                    if (this.ImageByteHandle != null)
+
+                    if (this.ImageByteHandle.IsAllocated)
                     {
-                        if (this.ImageByteHandle.IsAllocated)
-                        {
-                            this.ImageByteHandle.Free();
-                        }
-                       
+                        this.ImageByteHandle.Free();
                     }
 
-                    if (this.ThumbnailByteHandle != null)
-                    {
-                        if (this.ThumbnailByteHandle.IsAllocated)
-                        {
-                            this.ThumbnailByteHandle.Free();
-                        }
 
+
+
+                    if (this.ThumbnailByteHandle.IsAllocated)
+                    {
+                        this.ThumbnailByteHandle.Free();
                     }
+
 
                     if (this.objTargaHeader != null)
                     {

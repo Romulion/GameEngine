@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenTK.Input;
-using OpenTK;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL;
 
 namespace Toys
@@ -138,22 +138,23 @@ namespace Toys
         internal void CheckMouse()
         {
             
-            if (!GLWindow.gLWindow.Focused)
+            if (!GLWindow.gLWindow.IsFocused)
                 return;
-            MouseState ms = Mouse.GetCursorState();
+            var ms = GLWindow.gLWindow.MouseState;
+            //Console.WriteLine(ms.Position);
+            //var point = GLWindow.gLWindow.PointToClient(new Vector2i((int)ms.Position.X, (int)ms.Position.Y));
 
-            var point = GLWindow.gLWindow.PointToClient(new System.Drawing.Point(ms.X, ms.Y));
-            
-            Vector2 cursorWindowPosition = new Vector2(point.X, point.Y);
+            //Vector2 cursorWindowPosition = new Vector2(point.X, point.Y);
+            Vector2 cursorWindowPosition = ms.Position;
 
             //skip out of boundary
-            if (cursorWindowPosition.X < 0 || cursorWindowPosition.Y < 0 || cursorWindowPosition.X > GLWindow.gLWindow.Width || cursorWindowPosition.Y > GLWindow.gLWindow.Height)
+            if (cursorWindowPosition.X < 0 || cursorWindowPosition.Y < 0 || cursorWindowPosition.X > GLWindow.gLWindow.Size.X || cursorWindowPosition.Y > GLWindow.gLWindow.Size.Y)
                 return;
 
             //converting y coordinate
-            cursorWindowPosition.Y = GLWindow.gLWindow.Height - cursorWindowPosition.Y;
+            cursorWindowPosition.Y = GLWindow.gLWindow.Size.Y - cursorWindowPosition.Y;
 
-
+            
             //detect drag for elements not supporting it
             if (!dragEnabled && clicked)
             {
@@ -173,7 +174,7 @@ namespace Toys
 
 
             //inform current element about mouseup
-            if (clicked && ms.IsButtonUp(MouseButton.Left))
+            if (clicked && !ms.IsButtonDown(MouseButton.Left))
             {
                 clickContext?.ClickUpState();
                 clickContext = null;

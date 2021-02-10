@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 //using BulletSharp;
 //using BulletSharp.Math;
 //using OpenTK.Input;
-using OpenTK;
+using OpenTK.Mathematics;
 using Toys;
 
 namespace ModelViewer
@@ -150,13 +150,17 @@ namespace ModelViewer
             jointSpring61.SetEquilibriumPoint();
             World.AddConstraint(jointSpring61, true);
             */
+            //bc.GetBone(279).SetTransform(new Quaternion(0, (float)(Math.PI / 180 * 30), 0), Vector3.Zero);
+            //bc.GetBone(281).SetTransform(new Quaternion(0, (float)(Math.PI / 180 * 30), 0), Vector3.Zero);
         }
 
         void Update()
         {
-            update++;
-            //bc.GetBone(127).SetTransform(new Vector3(0, -0.25f + 0.4f * (float)Math.Cos(update * 3 * Math.PI / 180), 0));
-            //bc.GetBone(67).SetTransform(new Quaternion(0, 0, (float)(update * 3 * Math.PI / 180)),Vector3.Zero);
+            //update++;
+            //bc.GetBone(280).SetTransform(new Vector3(0, -0.25f + 0.4f * (float)Math.Cos(update * 3 * Math.PI / 180), 0));
+            //bc.GetBone(279).SetTransform(new Quaternion(0, (float)(update * 3 * Math.PI / 180),0),Vector3.Zero);
+
+            //bc.GetBone(281).SetTransform(new Quaternion((float)(update * 3 * Math.PI / 180), 0,0), Vector3.Zero);
             /*
             if (active)
             {

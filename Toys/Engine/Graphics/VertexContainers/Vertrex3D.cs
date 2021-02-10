@@ -1,5 +1,5 @@
 ﻿using System;
-using OpenTK;
+using OpenTK.Mathematics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 

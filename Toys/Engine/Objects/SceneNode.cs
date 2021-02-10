@@ -234,9 +234,9 @@ namespace Toys
             transform.Scale = ParceString(saveData["Scale"]);
         }
 
-        private OpenTK.Vector3 ParceString(string vector)
+        private OpenTK.Mathematics.Vector3 ParceString(string vector)
         {
-            var vec3 = OpenTK.Vector3.Zero;
+            var vec3 = OpenTK.Mathematics.Vector3.Zero;
             try
             {
                 var values = vector.Split(',');

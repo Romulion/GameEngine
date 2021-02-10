@@ -3,7 +3,7 @@
  * Figure out how interpolation works
  */
 using System;
-using OpenTK;
+using OpenTK.Mathematics;
 
 namespace Toys
 {

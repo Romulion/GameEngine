@@ -1,7 +1,7 @@
 ﻿using Toys;
 using System.Threading.Tasks;
 using Gtk;
-using OpenTK;
+using OpenTK.Mathematics;
 using System.IO;
 using System;
 
@@ -20,7 +20,7 @@ namespace ModelViewer
             cameraNode.Name = "Camera";
             var camera = (Camera)cameraNode.AddComponent<Camera>();
             
-            cameraNode.GetTransform.Position = new OpenTK.Vector3(0, 2f, 0);
+            cameraNode.GetTransform.Position = new Vector3(0, 2f, 0);
             camera.Background = new BackgroundSkybox();
             scene.AddNode2Root(cameraNode);
 
@@ -64,7 +64,7 @@ namespace ModelViewer
             task.Start();
             
             window.Title = "ModelViewer";
-            window.Run(60);
+            window.Run();
         }
     }
 }

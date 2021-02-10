@@ -1,5 +1,5 @@
 ﻿using System;
-using OpenTK;
+using OpenTK.Mathematics;
 using System.Runtime.InteropServices;
 
 namespace Toys

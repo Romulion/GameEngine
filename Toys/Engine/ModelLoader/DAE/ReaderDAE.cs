@@ -1,8 +1,7 @@
 using System;
 using System.Xml;
 using System.Collections.Generic;
-
-using OpenTK;
+using OpenTK.Mathematics;
 
 namespace Toys
 {

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenTK.Input;
-using OpenTK;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using OpenTK.Mathematics;
 
 namespace Toys
 {
@@ -13,7 +13,7 @@ namespace Toys
     {
         bool keyPressed;
         Material face;
-        KeyboardState ks;
+        KeyboardState keyState;
         int currentFace = 0;
         Vector2[] exprList =
         {
@@ -51,14 +51,14 @@ namespace Toys
                 return;
 
             Vector4 trans = Vector4.Zero;
-            ks = Keyboard.GetState();
+            keyState = GLWindow.gLWindow.KeyboardState;
 
-            if (ks.IsKeyUp(Key.E))
+            if (keyState.IsKeyDown(Keys.E))
             {
                 keyPressed = false;
             }
 
-            if (ks.IsKeyDown(Key.E) && !keyPressed)
+            if (keyState.IsKeyDown(Keys.E) && !keyPressed)
             {
                 if (currentFace == 15)
                     currentFace = 0;

@@ -1,5 +1,5 @@
 using System;
-using OpenTK;
+using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 

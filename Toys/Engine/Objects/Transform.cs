@@ -1,5 +1,5 @@
 ﻿using System;
-using OpenTK;
+using OpenTK.Mathematics;
 
 namespace Toys
 {
@@ -106,7 +106,7 @@ namespace Toys
             set
             {
                 rotationQuaternion = value;
-                rotation = rotationQuaternion.ToEulerXYZ();
+                rotation = rotationQuaternion.ToEulerAngles();
                 RecalculateLocal();
             }
         }

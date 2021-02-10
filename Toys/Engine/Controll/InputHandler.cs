@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenTK.Input;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using OpenTK.Windowing.Common;
 
 namespace Toys
 {
@@ -16,7 +17,7 @@ namespace Toys
         readonly char[] altAsciiTable = { '`', '-', '=', ',', '>', ';', '\'', ',', '^', '/', '\\' };
         readonly char[] altnum = { ')', '!', '@', '#', '$', '%', '^', '&', '*', '(' };
 
-        List<Key> blockedKeys = new List<Key>();
+        List<Keys> blockedKeys = new List<Keys>();
 
         TextInputComponent inputContext;
         KeyboardState keyboardState;
@@ -27,7 +28,7 @@ namespace Toys
         public InputHandler()
         {
             windowHandler = GLWindow.gLWindow;
-            windowHandler.KeyPress += ProcessInputEvent;
+            windowHandler.TextInput += ProcessInputEvent;
             windowHandler.KeyDown += WindowHandler_KeyDown;
             textBuffer = new StringBuilder(10);
         }
@@ -47,7 +48,7 @@ namespace Toys
 
         internal void Update()
         {
-            keyboardState = Keyboard.GetState();
+            keyboardState = GLWindow.gLWindow.KeyboardState;
             ProcessInput();
         }
 
@@ -142,20 +143,23 @@ namespace Toys
                 }
         */
 
-        private void ProcessInputEvent(object sender, OpenTK.KeyPressEventArgs e)
+        
+        private void ProcessInputEvent(TextInputEventArgs e)
         {
             if (inputContext)
-                textBuffer.Append(e.KeyChar);
+                textBuffer.Append(e.AsString);
         }
 
-        private void WindowHandler_KeyDown(object sender, KeyboardKeyEventArgs e)
+       
+
+        private void WindowHandler_KeyDown(KeyboardKeyEventArgs e)
         {
             if (!inputContext)
                 return;
 
-            if (e.Key == Key.BackSpace)
+            if (e.Key == Keys.Backspace)
                 remove = true;
-            else if (e.Key == Key.Enter || e.Key == Key.Escape)
+            else if (e.Key == Keys.Enter || e.Key == Keys.Escape)
                 release = true;
         }
         void ReleaseContext()

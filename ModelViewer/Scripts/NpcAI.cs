@@ -1,6 +1,6 @@
 ﻿using System;
 using Toys;
-using OpenTK;
+using OpenTK.Mathematics;
 using BulletSharp;
 
 namespace ModelViewer

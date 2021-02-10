@@ -4,8 +4,7 @@ using SharpFont;
 using System.Reflection;
 using System.IO;
 using System.Collections.Generic;
-using OpenTK;
-using OpenTK.Graphics;
+using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL;
 
 namespace Toys
@@ -16,7 +15,7 @@ namespace Toys
 		Face face;
 		string font = "font.ttf";
 		Dictionary<char, Character> chars = new Dictionary<char, Character>();
-		Matrix4 projection;
+	    Matrix4 projection;
         static int mapSize = 1024;
         static int size = 30;
         Texture2D charmap;

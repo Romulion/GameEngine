@@ -7,7 +7,7 @@ namespace Toys
 {
     public class PhysicsManager : ScriptingComponent
     {
-        public delegate void BoneBodySyncer(OpenTK.Matrix4 world);
+        public delegate void BoneBodySyncer(OpenTK.Mathematics.Matrix4 world);
         RigidBodyBone[] rigitBodies;
         BoneController bones;
         Joint[] joints;

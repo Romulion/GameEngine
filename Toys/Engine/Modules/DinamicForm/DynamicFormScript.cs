@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenTK.Input;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.Windows.Forms;
-using OpenTK;
+using OpenTK.Mathematics;
 
 namespace Toys
 {
@@ -74,8 +73,8 @@ namespace Toys
                 imageBitmap = new Bitmap(width, height);
             }
             
-            KeyboardState keyState = Keyboard.GetState();
-            if (keyState[Key.B] && !keyPressed)
+            var keyState = GLWindow.gLWindow.KeyboardState;
+            if (keyState.IsKeyPressed(OpenTK.Windowing.GraphicsLibraryFramework.Keys.B) && !keyPressed)
             {
                 if (camera.RenderBuffer != 0)
                 {
@@ -96,7 +95,7 @@ namespace Toys
                 keyPressed = true;
             }
 
-            if (!keyState[Key.B] && keyPressed)
+            if (!keyState.IsKeyPressed(OpenTK.Windowing.GraphicsLibraryFramework.Keys.B) && keyPressed)
                 keyPressed = false;
         }
 

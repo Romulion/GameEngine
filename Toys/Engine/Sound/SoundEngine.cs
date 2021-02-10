@@ -10,8 +10,8 @@ namespace Toys
 {
     class SoundEngine
     {
-        IntPtr device;
-        ContextHandle context;
+        ALDevice device;
+        ALContext context;
         string version;
         string vendor;
         string renderer;
@@ -21,18 +21,18 @@ namespace Toys
 
         public SoundEngine()
         {
-            context = ContextHandle.Zero;
+            context = ALContext.Null;
             Initialize();
             sourceList = new List<AudioSource>();
         }
 
         void Initialize()
         {
-            device = Alc.OpenDevice(null);
+            device = ALC.OpenDevice(null);
             unsafe
             {
-                context = Alc.CreateContext(device, (int*)null);
-                Alc.MakeContextCurrent(context);
+                context = ALC.CreateContext(device, (int*)null);
+                ALC.MakeContextCurrent(context);
             }
             //Console.WriteLine(Alc.GetString(IntPtr.Zero, AlcGetString.AllDevicesSpecifier));
             version = AL.Get(ALGetString.Version);
@@ -64,18 +64,18 @@ namespace Toys
 
         public void Dispose()
         {
-            if (context != ContextHandle.Zero)
+            if (context != ALContext.Null)
             {
-                Alc.MakeContextCurrent(ContextHandle.Zero);
-                Alc.DestroyContext(context);
+                ALC.MakeContextCurrent(ALContext.Null);
+                ALC.DestroyContext(context);
             }
-            context = ContextHandle.Zero;
+            context = ALContext.Null;
 
             if (device != IntPtr.Zero)
             {
-                Alc.CloseDevice(device);
+                ALC.CloseDevice(device);
             }
-            device = IntPtr.Zero;
+            device = ALDevice.Null;
         }
     }
 }
