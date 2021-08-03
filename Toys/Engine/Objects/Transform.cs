@@ -4,7 +4,7 @@ using OpenTK.Mathematics;
 namespace Toys
 {
 
-    public class Transform
+    public class Transform : Component
     {
         private Matrix4 localT;
         private SceneNode baseNode;
@@ -12,6 +12,7 @@ namespace Toys
 		Vector3 rotation;
 		Vector3 position;
         Vector3 scale;
+        const float ratio = (float)(Math.PI / 180);
 
         /// <summary>
         /// Get Matrix in World Coordinates
@@ -21,7 +22,7 @@ namespace Toys
             get; private set;
         } 
 
-        internal Transform(SceneNode node)
+        internal Transform(SceneNode node) : base (typeof(Transform))
         {
             localT = Matrix4.Identity;
             GlobalTransform = Matrix4.Identity;
@@ -80,14 +81,16 @@ namespace Toys
         /// </summary>
         public Vector3 Rotation
         {
+            
             get
             {
-                return rotation;
+                Quaternion.ToEulerAngles(rotationQuaternion, out rotation);
+                return rotation / ratio;
             }
 
             set
             {
-                rotation = value;
+                rotation = value * ratio;
                 rotationQuaternion = Quaternion.FromEulerAngles(rotation);
                 RecalculateLocal();
             }
@@ -122,6 +125,19 @@ namespace Toys
         private void RecalculateLocal()
         {
             localT = Matrix4.CreateScale(scale) * Matrix4.CreateFromQuaternion(rotationQuaternion) * Matrix4.CreateTranslation(position);
+        }
+
+        internal override void AddComponent(SceneNode nod)
+        {
+            Node = nod;
+        }
+
+        internal override void RemoveComponent()
+        {
+            Node = null;
+        }
+        internal override void Unload()
+        {
         }
     }
 }

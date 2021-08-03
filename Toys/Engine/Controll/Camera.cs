@@ -41,9 +41,9 @@ namespace Toys
             set { projType = value; }
         }
 
-        public float NearPlane { get; private set;}
-        public float FarPlane { get; private set;}
-        public float FOV { get; private set; }
+        public float NearPlane { get; set;}
+        public float FarPlane { get; set;}
+        public float FOV { get; set; }
         public Matrix4 Projection { get; private set; }
         public int Width;
         public int Height;
@@ -74,11 +74,11 @@ namespace Toys
 		{
 			get { return Node.GetTransform.Position; }
 		}
-		public Matrix4 GetLook
+        internal Matrix4 GetLook
 		{
 			get { return look; }
 		}
-		public Vector3 GetUp
+		internal Vector3 GetUp
 		{
 			get { return cameraUp; }
 		}

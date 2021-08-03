@@ -89,7 +89,6 @@ namespace Toys
             elapsed *= .001f;
             frameTimer.Start();
             time.Start();
-            
             sEngine.Awake();
             sEngine.Start();
             sEngine.Update();

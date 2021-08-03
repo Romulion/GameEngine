@@ -40,6 +40,7 @@ namespace Toys
             Parent = null;
             ParentScene = null;
             transform = new Transform(this);
+            AddComponent(transform);
         }
 
         public Transform GetTransform

@@ -143,6 +143,18 @@ namespace ModelViewer
                     btn.Show();
                     y += 35;
                 }
+                else
+                {
+                    Button btn = new Button();
+                    btn.Label = component.Type.Name;
+                    btn.Clicked += (sender, e) => {DrawComponent(component); };
+                    btn.Name = "btnComp";
+                    fixedComponents.Put(btn, 0, y);
+                    btn.Show();
+                    y += 35;
+                    
+                }
+
             }
             //delete button
             
@@ -207,6 +219,18 @@ namespace ModelViewer
                 y += 35;
             }
             
+        }
+
+
+        void DrawComponent(Component comp)
+        {
+            ClearChildrens(fixed4);
+            var fieds = comp.Type.GetProperties();
+            int offset = 0;
+            foreach (var fied in fieds)
+            {
+                PropertiesButtons.DrawField(comp, fied, fixed4, ref offset);
+            }
         }
 
         void AnimatorWindow(Animator animator)
