@@ -7,16 +7,23 @@ using OpenTK.Mathematics;
 
 namespace Toys
 {
+    //Temporaly only single instance
     public class NavigationMesh
     {
         public NavigationCell[] navigationCells { get; private set; }
-
-        public NavigationMesh(Vertex3D[] mesh, int[] indexes)
+        static NavigationMesh navMesh;
+        private NavigationMesh(Vertex3D[] mesh, int[] indexes)
         {
             navigationCells = new NavigationCell[indexes.Length / 3];
             CreateActiveArea(mesh, indexes);
         }
 
+        public static void Instalize(Vertex3D[] mesh, int[] indexes)
+        {
+            navMesh = new NavigationMesh(mesh, indexes);
+        }
+
+        public static NavigationMesh GetInstance { get { return navMesh; }}
 
         public NavigationCell GetCellFromPosition(Vector3 position)
         {

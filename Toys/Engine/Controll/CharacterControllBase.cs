@@ -26,7 +26,7 @@ namespace Toys
         private void CreatePlayerBox()
         {
             const float stepHeight = 0.35f;
-            CapsuleShape shape = new CapsuleShape(1, 1.7f);
+            CapsuleShape shape = new CapsuleShape(0.7f, 1.7f);
             _ghostObject = new PairCachingGhostObject()
             {
                 CollisionShape = shape,

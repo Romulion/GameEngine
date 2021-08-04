@@ -54,7 +54,7 @@ namespace Toys
         public Camera() : base(typeof(Camera))
 		{
             NearPlane = 0.1f;
-            FarPlane = 30.0f;
+            FarPlane = 100.0f;
             FOV = 60;
             projType = ProjectionType.Perspective;
             Main = true;
@@ -90,6 +90,7 @@ namespace Toys
 
 		internal void CalcLook()
 		{
+
             look = Matrix4.LookAt(Node.GetTransform.Position, cameraTarget, cameraUp);
         }
         #endregion

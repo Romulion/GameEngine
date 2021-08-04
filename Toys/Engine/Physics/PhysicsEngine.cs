@@ -121,6 +121,40 @@ namespace Toys
             }
         }
 
+        public void SetScene(OpenTK.Mathematics.Vector3[] mesh, int[] indexes, OpenTK.Mathematics.Matrix4 startTransform)
+        {
+            //convert openTK to BulentSharp
+            var meshP = new Vector3[mesh.Length];
+            for (int i = 0; i < mesh.Length; i++)
+            {
+                meshP[i] = mesh[i].Convert();
+            }
+
+            TriangleIndexVertexArray triangles = new TriangleIndexVertexArray(indexes, meshP);
+            CollisionShape shape = new BvhTriangleMeshShape(triangles,true);
+            shape.CalculateLocalInertia(0);
+            RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(0, new DefaultMotionState(startTransform.Convert()), shape, Vector3.Zero);
+            RigidBody Body = new RigidBody(rbInfo);
+            Body.CollisionFlags = CollisionFlags.StaticObject;
+            Body.UserObject = "Ground";
+
+            World.AddRigidBody(Body, CollisionFilterGroups.StaticFilter, CollisionFilterGroups.CharacterFilter);
+            /*
+            const float staticMass = 0;
+            RigidBody body;
+            CollisionShape shape = new TriangleMesh()
+            Matrix groundTransform = Matrix.Translation(0, -0.5f, 0);
+            using (var rbInfo = new RigidBodyConstructionInfo(staticMass, null, shape)
+            {
+                StartWorldTransform = groundTransform,
+            })
+            {
+                body = new RigidBody(rbInfo);
+            }
+            World.AddRigidBody(body, CollisionFilterGroups.StaticFilter, CollisionFilterGroups.AllFilter);
+            */
+        }
+
         public void SetGravity(OpenTK.Mathematics.Vector3 grav)
         {
             World.Gravity = new Vector3(grav.X, grav.Y, grav.Z);

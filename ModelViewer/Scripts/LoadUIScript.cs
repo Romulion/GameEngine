@@ -10,6 +10,7 @@ namespace ModelViewer
 {
     class LoadUIScript : ScriptingComponent
     {
+        public CharControll cc;
         void Awake()
         {
             var canvas = (Canvas)Node.AddComponent<Canvas>();
@@ -60,7 +61,7 @@ namespace ModelViewer
             butLabel1.SetText("path");
             butLabel1.textCanvas.Scale = 0.5f;
 
-            //image1.OnClick = () => { cc?.SetDestination(camera.Node.GetTransform.Position); };
+            image1.OnClick = () => { cc?.SetDestination(CoreEngine.GetCamera.Node.GetTransform.Position); };
             var ui2 = new UIElement();
             ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
@@ -75,7 +76,7 @@ namespace ModelViewer
             butLabel2.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
             butLabel2.textCanvas.alignVertical = TextAlignVertical.Center;
             var button = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
-            //button.OnClick = () => { cc?.Go(); };
+            button.OnClick = () => { cc?.Go(); };
             //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
             //ISS.SetDSS(script);
             ui1.SetParent(ui);

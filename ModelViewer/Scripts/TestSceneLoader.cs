@@ -12,11 +12,13 @@ namespace ModelViewer
     class TestSceneLoader : ScriptingComponent
     {
         public TestScript Button;
-
+        LoadUIScript uiScript;
+        CharControll cc;
         private void Start()
         {
-            LoadDefault();
             LoadModels();
+            LoadDefault();
+            
         }
 
         void LoadDefault()
@@ -36,11 +38,46 @@ namespace ModelViewer
             cameraNode.AddComponent(audioListener);
 
             //load ui
-            Node.AddComponent<LoadUIScript>();
+            uiScript = (LoadUIScript) Node.AddComponent<LoadUIScript>();
+            uiScript.cc = cc;
         }
 
         void LoadModels()
         {
+
+            MeshData[] meshData;
+            var build = ResourcesManager.LoadAsset<SceneNode>(@"..\Assets\Models\School1F\School.pmx");
+            if (build)
+            {
+                build.Name = "School1F";
+                CoreEngine.MainScene.AddNode2Root(build);
+                var serviceData = new ReaderDAE(@"..\Assets\Models\School1F\School.dae");
+                meshData = serviceData.GetMeshes();
+                NavigationMesh.Instalize(meshData[0].vertices, meshData[0].indeces);
+
+                //test NavMap draw
+                Mesh mesh = new Mesh(meshData[0].vertices, meshData[0].indeces);
+                Material[] Materials = new Material[meshData[0].indeces.Length / 3];
+                var shdrst = new ShaderSettings();
+                shdrst.Ambient = true;
+                for (int i = 0; i < Materials.Length; i++)
+                {
+                    Materials[i] = new MaterialPMX(shdrst, new RenderDirectives());
+                    Materials[i].Offset = i * 3;
+                    Materials[i].Count = 3;
+                }
+                MeshDrawer md = new MeshDrawer(mesh, Materials);
+
+                //get position
+                Vector3[] verts = new Vector3[meshData[1].vertices.Length];
+                for (int i = 0; i < verts.Length; i++)
+                {
+                    verts[i] = meshData[1].vertices[i].Position;
+                }
+                CoreEngine.pEngine.SetScene(verts, meshData[1].indeces, build.GetTransform.GlobalTransform);
+                Node.AddComponent(md);
+            }
+            
             var model1 = ResourcesManager.LoadAsset<SceneNode>(@"..\Assets\Models\Michelle\Seifuku.pmx");
             if (model1)
             {
@@ -49,13 +86,18 @@ namespace ModelViewer
                 CoreEngine.MainScene.AddNode2Root(model1);
                 //var manager = model1.GetComponent<PhysicsManager>();
                 model1.AddComponent<NpcAI>();
+                cc = (CharControll)model1.AddComponent<CharControll>();
+
+
+
+                
                 //Button.image1.OnClick += () => manager?.ReinstalizeBodys();
 
                 //var src = ResourcesManager.LoadAsset<AudioSource>(@"Assets\Sound\mumi.mp3");
                 //model1.AddComponent(src);
                 //src.Play();
             }
-            
+
             /*
             var model2 = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Hinata\Seifuku.pmx");
             if (model2)
@@ -71,6 +113,7 @@ namespace ModelViewer
             */
 
         }
+
 
         AnimationController CreateAnimationController()
         {

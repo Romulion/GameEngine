@@ -59,17 +59,16 @@ namespace Toys
                 activeObject = null;
             }
 
-            
 
             var keyState = GLWindow.gLWindow.KeyboardState;
             if (game.IsFocused && keyState.IsKeyDown(Keys.Up)){
                 Walk(CoreEngine.ActiveCore.elapsed);
             }
-            else if (GLWindow.gLWindow.IsFocused && keyState.IsKeyDown(Keys.Down))
+            else if (game.IsFocused && keyState.IsKeyDown(Keys.Down))
             {
                 Walk(-CoreEngine.ActiveCore.elapsed);
             }
-            else if (GLWindow.gLWindow.IsFocused && keyState.IsKeyDown(Keys.Space))
+            else if (game.IsFocused && keyState.IsKeyDown(Keys.Space))
             {
                 Jump();
             }

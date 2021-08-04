@@ -38,7 +38,6 @@ namespace Toys
 					shape = new SphereShape(rcon.Size.X);
 					break;
 			}
-
             if (rcon.Phys == PhysType.FollowBone)
                 rcon.Mass = 0;
             
@@ -47,23 +46,25 @@ namespace Toys
             Vector3 inertia = Vector3.Zero;
             if (isDynamic)
                 shape.CalculateLocalInertia(rcon.Mass, out inertia);
-			startTransform = Matrix.RotationYawPitchRoll(rcon.Rotation.Y, rcon.Rotation.X, rcon.Rotation.Z) * Matrix.Translation(rcon.Position.Convert());
+            startTransform = Matrix.RotationYawPitchRoll(rcon.Rotation.Y, rcon.Rotation.X, rcon.Rotation.Z) * Matrix.Translation(rcon.Position.Convert());
             rbInfo = new RigidBodyConstructionInfo(rcon.Mass, new DefaultMotionState(startTransform), shape, inertia);
 			Body = new RigidBody(rbInfo);
             Body.ActivationState = ActivationState.DisableDeactivation;
             Body.Friction = rcon.Friction;
             Body.SetDamping(rcon.MassAttenuation, rcon.RotationDamping);
             Body.Restitution = rcon.Restitution;
-
             if (rcon.Phys == PhysType.FollowBone)
             {
-                Body.SetCustomDebugColor(new Vector3(0, 1, 0));
+                //Body.SetCustomDebugColor(new Vector3(0, 1, 0));
                 Body.CollisionFlags = Body.CollisionFlags | CollisionFlags.KinematicObject;
             }
+            /*
             else if (rcon.Phys == PhysType.Gravity)
                 Body.SetCustomDebugColor(new Vector3(1, 0, 0));
             else if (rcon.Phys == PhysType.GravityBone)
                 Body.SetCustomDebugColor(new Vector3(0, 0, 1));
+            */
+            //Disabled debug color cause its freeze engine on 3rd model load
         }
 
         public void SyncBone2Body(OpenTK.Mathematics.Matrix4 world)

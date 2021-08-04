@@ -47,8 +47,11 @@ namespace Toys
 				}
 			}
 
-			if (libmatsNode == null || libeffsNode == null)
-				throw new Exception();
+            if (libmatsNode == null || libeffsNode == null)
+            {
+                DAEMaterials = new List<DAEMaterial>(0);
+                return;
+            }
 
             LoadTextures(xRoot);
             var mats = libmatsNode.FindNodes("material");

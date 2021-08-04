@@ -14,8 +14,9 @@ namespace Toys
 		Material[] mats;
 		List<Bone> bones = new List<Bone>();
 		const float multiplier = 0.01f;
+        DAEMeshLoader meshreader;
 
-		public ReaderDAE(string filename)
+        public ReaderDAE(string filename)
 		{
 			file = filename;
 			int indx = filename.LastIndexOf('\\');
@@ -26,23 +27,20 @@ namespace Toys
             xDoc = new XmlDocument();
 			xDoc.Load(filename);
 			LoadLibraries();
-		}
+        }
 
 		void LoadLibraries()
 		{
 			XmlElement xRoot = xDoc.DocumentElement;
-
-			var meshreader = new DAEMeshLoader(xRoot);
+            meshreader = new DAEMeshLoader(xRoot);
 			mesh = meshreader.LoadMesh();
-
-			//bones
-			LoadBones(xRoot);
-			//materials
-			var daemats = new DAEMaterialReader(xRoot, dir);
+            //bones
+            LoadBones(xRoot);
+            //materials
+            var daemats = new DAEMaterialReader(xRoot, dir);
             var matsList = daemats.GetMaterials();
             mats = new Material[meshreader.DAEGeometry.Count];
-            
-			for (int i = 0; i < meshreader.DAEGeometry.Count; i++)
+            for (int i = 0; i < meshreader.DAEGeometry.Count; i++)
 			{
                 int prev = 0;
                 var meshItem = meshreader.DAEGeometry[i];
@@ -62,7 +60,7 @@ namespace Toys
                     prev += matRef.Item2;
                 }
 			}
-		}
+        }
 
 		void LoadBones(XmlElement xRoot)
 		{
@@ -77,6 +75,7 @@ namespace Toys
 					break;
 				}
 			}
+
 
 			var scene = xBones.FindNodes("visual_scene");
 
@@ -99,9 +98,40 @@ namespace Toys
 			}
         }
 
+        public MeshData[] GetMeshes()
+        {
+
+
+
+            MeshData[] mesh = new MeshData[meshreader.DAEGeometry.Count];
+            for(int i = 0; i< mesh.Length; i++)
+            {
+                List<Vertex3D> verts = new List<Vertex3D>();
+                List<int> indeces = new List<int>();
+                var gc = meshreader.DAEGeometry[i];
+                for (int n = 0; n < gc.Positions.Length; n++)
+                {
+                    verts.Add(new Vertex3D(gc.Positions[n], gc.Normals[n], gc.UVs[n]));
+                }
+                foreach (int index in gc.Indeces)
+                {
+                    indeces.Add(index);
+                }
+                //Console.WriteLine("{0} {1}", offset,  gc.Indeces.Length);
+                mesh[i] = new MeshData();
+                mesh[i].vertices = verts.ToArray();
+                mesh[i].indeces = indeces.ToArray();
+            }
+            return mesh;
+        }
+
+
 		void getBone(XmlNode xmlNode, int parent)
 		{
-			int index = bones.Count;
+            if (xmlNode == null)
+                return;
+
+            int index = bones.Count;
             string name = xmlNode.Attributes.GetNamedItem("name").Value;
             var matrtx = xmlNode.FindNodes("matrix");
             Matrix4 mat = Matrix4.Identity;

@@ -47,9 +47,7 @@ namespace Toys
             rigitBodies = new RigidBodyBone[rigits.Length];
             for (int i = 0; i < rigits.Length; i++)
             {
-
-				rigitBodies[i] = new RigidBodyBone(rigits[i]);
-
+                rigitBodies[i] = new RigidBodyBone(rigits[i]);
                 //skipping bone binding for no index riggs (ushort indexes only)
                 if (rigits[i].BoneIndex < bones.GetBones.Length && rigits[i].BoneIndex >=0)
                 {
@@ -102,15 +100,17 @@ namespace Toys
 
         internal override void Unload()
         {
-
             foreach (var joint in joints)
             {
                 World.RemoveConstraint(joint.Constraint);
                 joint.Constraint.Dispose();
             }
+
             foreach (var rigid in rigitBodies)
             {
                 World.RemoveCollisionObject(rigid.Body);
+                rigid.Body.MotionState.Dispose();
+                rigid.Body.RemoveCustomDebugColor();
                 rigid.Body.Dispose();
             }
             base.Unload();

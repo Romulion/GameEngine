@@ -14,7 +14,6 @@ namespace ModelViewer
             
             GLWindow window = new GLWindow();
             var scene = CoreEngine.MainScene;
-
             
             SceneNode cameraNode = new SceneNode();
             cameraNode.Name = "Camera";

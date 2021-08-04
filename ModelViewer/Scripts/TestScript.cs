@@ -190,7 +190,7 @@ namespace ModelViewer
         {
            return ((float)grad / 180 * (float)Math.PI);
         }
-
+/*
         void CreateNavMesh()
         {
             var data = new float[]
@@ -263,7 +263,7 @@ namespace ModelViewer
             var cell1 = navMesh.GetCellFromPosition(new Vector3(0));
             var cell2 = navMesh.GetCellFromPosition(new Vector3(-1.0431f, 0, 1.53819f));
         }
-
+*/
         void MadePath(int start)
         {
             foreach (var mat in Materials)

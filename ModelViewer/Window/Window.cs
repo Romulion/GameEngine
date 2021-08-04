@@ -81,6 +81,9 @@ namespace ModelViewer
                 {
                     SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(fileChooserAdd.Filename);
                     scene.AddNode2Root(modelNode);
+                    //Set name
+                    var path = System.IO.Path.GetDirectoryName(fileChooserAdd.Filename);
+                    modelNode.Name = path.Substring(path.LastIndexOf('\\') + 1) + "." + System.IO.Path.GetFileNameWithoutExtension(fileChooserAdd.Filename);
                 });
                 wait.WaitOne();
                 ClearChildrens(fixedScene);
