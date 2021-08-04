@@ -27,7 +27,6 @@ namespace Toys
                 return null;
             var frontier = new PriorityQueue<NavigationCell>();
             frontier.Enqueue(startCell, 0);
-
             parent[startCell] = startCell;
             costTable[startCell] = 0;
             while (frontier.Count > 0)
@@ -54,11 +53,9 @@ namespace Toys
                 }
                 
             }
-
             //path not found
             if (!parent.ContainsKey(finishCell))
                 return new NavigationCell[0];
-
             var cell = finishCell;
             var path = new List<NavigationCell>();
             path.Add(finishCell);

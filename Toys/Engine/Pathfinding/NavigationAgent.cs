@@ -40,7 +40,6 @@ namespace Toys
             pathMesh = aStar.CalculatePath(start, goal);
             if (pathMesh == null)
                 return new Vector3[] { };
-
             //if point in one
             if (pathMesh.Length < 2)
                 return new Vector3[] { goal };
@@ -100,7 +99,7 @@ namespace Toys
                 }
             }
 
-            return OptimizePath(pathMesh, start, goal).ToArray();
+            return OptimizePathNew(pathMesh, start, goal).ToArray();
         }
 
         //using funnel algorith
@@ -110,7 +109,12 @@ namespace Toys
             Vector3[] rightNodeBacklog = new Vector3[3];
             Vector3[] leftNodeBacklog = new Vector3[3];
 
+
+            List<Vector3> leftBoundary = new List<Vector3>();
+            List<Vector3> rightBoundary = new List<Vector3>();
+
             var startNode = path[startPoint];
+
             //find linked edge
             int id = Array.IndexOf(startNode.linkedCells, path[startPoint + 1]);
             var pair = vertexPairs[id];
@@ -144,7 +148,7 @@ namespace Toys
                     //rotate edges log
                     rightNodeBacklog[0] = rightNodeBacklog[1];
                     rightNodeBacklog[1] = rightNodeBacklog[2];
-
+                    Console.WriteLine("left {0}", i);
                     //move to next point
                     rightNodeBacklog[2] = nextBorderNode[rightNodeBacklog[2]];
 
@@ -153,6 +157,7 @@ namespace Toys
                     var result = Vector3.Dot(referenceVector, Vector3.Cross(rightVec, rightNodeBacklog[1]- start));
                     if (result < 0)
                     {
+                        rightBoundary.Add(rightNodeBacklog[2]);
                         rightVec = rightNodeBacklog[1] - start;
                         Console.WriteLine("right block {0}", i);
                         rightBlock = true;
@@ -162,7 +167,7 @@ namespace Toys
                 //right side
                 else if (!leftBlock && (node.NodeVertex[pairSet[0]] == leftNodeBacklog[2] || node.NodeVertex[pairSet[1]] == leftNodeBacklog[2]))
                 {
-
+                    Console.WriteLine("right {0}", i);
                     //rotate edges log
                     leftNodeBacklog[0] = leftNodeBacklog[1];
                     leftNodeBacklog[1] = leftNodeBacklog[2];
@@ -176,7 +181,7 @@ namespace Toys
                     //path corner detected
                     if (result < 0)
                     {
-                        
+                        leftBoundary.Add(leftNodeBacklog[2]);
                         leftVec = leftNodeBacklog[1] - start;
                         Console.WriteLine("left block {0}", i);
                         leftBlock = true;
@@ -196,6 +201,9 @@ namespace Toys
                 if (Vector3.Dot(referenceVector, Vector3.Cross(leftVec, rightVec)) < 0)
                 {
                     Console.WriteLine("path break line {0}", i);
+                    Console.WriteLine(leftVec);
+                    Console.WriteLine(rightVec);
+                    Console.WriteLine(Vector3.Dot(referenceVector, Vector3.Cross(leftVec, rightVec)));
 
                     float leftLength = leftVec.LengthSquared, rightLength = rightVec.LengthSquared;
                     if (rightBlock && rightLength < leftLength)
@@ -235,6 +243,178 @@ namespace Toys
 
                 
             }
+
+            Console.WriteLine("Path:");
+            foreach (var val in pathOptimized)
+                Console.WriteLine(val);
+            return pathOptimized;
+        }
+
+
+        List<Vector3> OptimizePathNew(NavigationCell[] path, Vector3 start, Vector3 end, int startPoint = 0)
+        {
+            List<Vector3> pathOptimized = new List<Vector3>();
+            //Vector3[] rightNodeBacklog = new Vector3[3];
+            //Vector3[] leftNodeBacklog = new Vector3[3];
+
+            List<Vector3> leftBorder = new List<Vector3>();
+            List<Vector3> rightBorder = new List<Vector3>();
+            Vector3 leftNodeLast = new Vector3();
+            Vector3 rightNodeLast = new Vector3();
+
+            var startNode = path[startPoint];
+
+            //find linked edge
+            int id = Array.IndexOf(startNode.linkedCells, path[startPoint + 1]);
+            var pair = vertexPairs[id];
+
+            leftNodeLast = startNode.NodeVertex[pair[1]];
+            rightNodeLast = startNode.NodeVertex[pair[0]];
+            leftBorder.Add(start);
+            leftBorder.Add(leftNodeLast);
+            rightBorder.Add(start);
+            rightBorder.Add(rightNodeLast);
+
+            //for storaging prev vector
+            bool leftBlock = false, rightBlock = false;
+            Vector3 rightVec = rightNodeLast - start,
+                    leftVec = leftNodeLast - start;
+
+            var referenceVector = Vector3.Cross(leftVec, rightVec);
+            for (int i = startPoint + 1; i < path.Length - 1; i++)
+            {
+
+                int[] pairSet = vertexPairs[notBindedEdges[i]];
+                var node = path[i];
+
+                //Console.WriteLine("Node {0} {1} {2}", i, node.NodeVertex[pairSet[0]], node.NodeVertex[pairSet[1]]) ;
+
+                //left side
+                if (node.NodeVertex[pairSet[0]] == rightNodeLast || node.NodeVertex[pairSet[1]] == rightNodeLast)
+                {
+                    //rotate edges log
+                    //rightNodeBacklog[0] = rightNodeBacklog[1];
+                    //rightNodeBacklog[1] = rightNodeBacklog[2];
+                    //move to next point
+                    rightNodeLast = nextBorderNode[rightNodeLast];
+                    //check inside
+
+                    rightVec = rightNodeLast - rightBorder[rightBorder.Count - 2];
+                    var result = Vector3.Dot(referenceVector, Vector3.Cross(rightVec, rightBorder[rightBorder.Count - 1] - rightBorder[rightBorder.Count - 2]));
+                    if (result < 0)
+                    {
+                        rightBorder.Add(rightNodeLast);
+                        Console.WriteLine("right block {0}", i);
+                        //rightBlock = true;
+                    }
+                    else
+                    {
+                        rightBorder[rightBorder.Count - 1] = rightNodeLast;
+                    }
+
+                    //check Intersect with right
+                    for (int n = 1; n < leftBorder.Count; n++)
+                    {
+                        if (Vector3.Dot(referenceVector, Vector3.Cross(leftBorder[n] - leftBorder[n - 1], rightVec)) < 0)
+                        {
+                            rightBorder[rightBorder.Count - 2] = leftBorder[n];
+                            pathOptimized.Add(leftBorder[n]);
+                            leftBorder.RemoveRange(0, n);
+                            break;
+                        }
+                    }
+
+                }
+                //right side
+                else if (node.NodeVertex[pairSet[0]] == leftNodeLast || node.NodeVertex[pairSet[1]] == leftNodeLast)
+                {
+                    //move to next point
+                    leftNodeLast = nextBorderNode[leftNodeLast];
+                    //check inside
+                    leftVec = leftNodeLast - leftBorder[leftBorder.Count - 2];
+                    var result = Vector3.Dot(referenceVector, Vector3.Cross(leftBorder[leftBorder.Count - 1] - leftBorder[leftBorder.Count - 2], leftVec));
+                    //path corner detected
+                    if (result < 0)
+                    {
+                        leftBorder.Add(leftNodeLast);
+                        Console.WriteLine("left block {0}", i);
+                    }
+                    else
+                    {
+                        leftBorder[leftBorder.Count - 1] = leftNodeLast;
+                    }
+
+                    //check Intersect with left
+                    for (int n = 1; n < rightBorder.Count; n++)
+                    {
+                        if (Vector3.Dot(referenceVector, Vector3.Cross(rightBorder[n] - rightBorder[n-1], leftVec)) > 0)
+                        {
+                            
+                            leftBorder[leftBorder.Count - 2] = rightBorder[n];
+                            pathOptimized.Add(rightBorder[n]);
+                            rightBorder.RemoveRange(0, n);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            
+            if (pathOptimized.Count > 0)
+            {
+            
+                leftVec = end - pathOptimized[pathOptimized.Count - 1];
+                //Finish corner mapping
+                for (int n = 1; n < rightBorder.Count; n++)
+                {
+                    if (Vector3.Dot(referenceVector, Vector3.Cross(rightBorder[n] - rightBorder[n - 1], leftVec)) > 0)
+                        pathOptimized.Add(rightBorder[n]);
+                }
+
+                for (int n = 1; n < leftBorder.Count; n++)
+                {
+                    if (Vector3.Dot(referenceVector, Vector3.Cross(leftBorder[n] - leftBorder[n - 1], leftVec)) < 0)
+                        pathOptimized.Add(leftBorder[n]);
+                }
+            }
+        
+            pathOptimized.Add(end);
+
+            /*
+            Console.WriteLine("Path:");
+            foreach (var val in pathOptimized)
+                Console.WriteLine(val);
+            Console.WriteLine("Path end");
+            
+            Console.WriteLine("Path l:");
+            foreach (var val in leftBorder)
+                Console.WriteLine(val);
+            Console.WriteLine("Path end");
+            Console.WriteLine("Path r:");
+            foreach (var val in rightBorder)
+                Console.WriteLine(val);
+            Console.WriteLine("Path end");
+            */
+            
+            //Avoid corners
+            if (pathOptimized.Count > 1)
+                for (int m = 0; m < pathOptimized.Count - 1; m++)
+                {
+                    Vector3 strt = (m == 0) ? start : pathOptimized[m - 1];
+                    Vector3 direction = (strt - pathOptimized[m]).Normalized() + (pathOptimized[m + 1] - pathOptimized[m]).Normalized();
+                    direction.Normalize();
+                    pathOptimized[m] -= direction * AgentSize;
+                }
+
+
+            Console.WriteLine("Path corner:");
+            foreach (var val in pathOptimized)
+                Console.WriteLine(val);
+            Console.WriteLine("Path end");
+            
+
+
+
             return pathOptimized;
         }
     }
