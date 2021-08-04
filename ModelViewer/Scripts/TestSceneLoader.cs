@@ -14,6 +14,7 @@ namespace ModelViewer
         public TestScript Button;
         LoadUIScript uiScript;
         CharControll cc;
+        Material[] Materials;
         private void Start()
         {
             LoadModels();
@@ -57,7 +58,7 @@ namespace ModelViewer
 
                 //test NavMap draw
                 Mesh mesh = new Mesh(meshData[0].vertices, meshData[0].indeces);
-                Material[] Materials = new Material[meshData[0].indeces.Length / 3];
+                Materials = new Material[meshData[0].indeces.Length / 3];
                 var shdrst = new ShaderSettings();
                 shdrst.Ambient = true;
                 for (int i = 0; i < Materials.Length; i++)
@@ -87,10 +88,10 @@ namespace ModelViewer
                 //var manager = model1.GetComponent<PhysicsManager>();
                 model1.AddComponent<NpcAI>();
                 cc = (CharControll)model1.AddComponent<CharControll>();
+                cc.Materials = Materials;
 
 
 
-                
                 //Button.image1.OnClick += () => manager?.ReinstalizeBodys();
 
                 //var src = ResourcesManager.LoadAsset<AudioSource>(@"Assets\Sound\mumi.mp3");

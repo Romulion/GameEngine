@@ -33,13 +33,13 @@ namespace ModelViewer
             navAgent.AgentSize = 1f;
             try
             {
-                walk = AnimationLoader.Load("walk.lmd");
-                idle = AnimationLoader.Load("idle.lmd");
+                walk = AnimationLoader.Load(@"..\Assets\Animations\walk001.vmd");
+                idle = AnimationLoader.Load(@"..\Assets\Animations\02.vmd");
                 animator = Node.GetComponent<Animator>() as Animator;
                 animator.AnimationData = idle;
                 animator.Play();
             }
-            catch (Exception) { }
+            catch (Exception e) { Console.WriteLine(e.Message); }
         }
 
 
@@ -68,7 +68,7 @@ namespace ModelViewer
                 path = pathTask.Result;
                 if (path.Length > 0)
                 {
-                    //UpdatePathColor();
+                    UpdatePathColor();
                     waipoint = 0;
                     direction = path[0] - Node.GetTransform.Position;
                     prevDist = direction.Length;
@@ -126,6 +126,8 @@ namespace ModelViewer
             Vector3 look = new Vector3(Node.GetTransform.GlobalTransform.M31, Node.GetTransform.GlobalTransform.M32, Node.GetTransform.GlobalTransform.M33);
             look.Normalize();
 
+            Console.WriteLine(dir);
+            Console.WriteLine(look);
             Vector3 axis = Vector3.Cross(look, dir);
             var rotation = Quaternion.FromAxisAngle(axis, (float)Math.Acos(Vector3.Dot(dir, look)));
             Node.GetTransform.RotationQuaternion *= rotation;
@@ -139,8 +141,10 @@ namespace ModelViewer
             foreach (var mat in Materials)
                 mat.UniManager.Set("ambient_color", Vector3.Zero);
 
+
             foreach (var waipoint in navAgent.pathMesh)
             {
+                
                 Materials[waipoint.Index].UniManager.Set("ambient_color", Vector3.UnitY);
             }
         }

@@ -259,8 +259,6 @@ namespace Toys
 
             List<Vector3> leftBorder = new List<Vector3>();
             List<Vector3> rightBorder = new List<Vector3>();
-            Vector3 leftNodeLast = new Vector3();
-            Vector3 rightNodeLast = new Vector3();
 
             var startNode = path[startPoint];
 
@@ -268,15 +266,13 @@ namespace Toys
             int id = Array.IndexOf(startNode.linkedCells, path[startPoint + 1]);
             var pair = vertexPairs[id];
 
-            leftNodeLast = startNode.NodeVertex[pair[1]];
-            rightNodeLast = startNode.NodeVertex[pair[0]];
+            Vector3 leftNodeLast = startNode.NodeVertex[pair[1]];
+            Vector3 rightNodeLast = startNode.NodeVertex[pair[0]];
             leftBorder.Add(start);
             leftBorder.Add(leftNodeLast);
             rightBorder.Add(start);
             rightBorder.Add(rightNodeLast);
 
-            //for storaging prev vector
-            bool leftBlock = false, rightBlock = false;
             Vector3 rightVec = rightNodeLast - start,
                     leftVec = leftNodeLast - start;
 
@@ -292,10 +288,8 @@ namespace Toys
                 //left side
                 if (node.NodeVertex[pairSet[0]] == rightNodeLast || node.NodeVertex[pairSet[1]] == rightNodeLast)
                 {
-                    //rotate edges log
-                    //rightNodeBacklog[0] = rightNodeBacklog[1];
-                    //rightNodeBacklog[1] = rightNodeBacklog[2];
                     //move to next point
+                    //Console.WriteLine("Right {0}", rightNodeLast);
                     rightNodeLast = nextBorderNode[rightNodeLast];
                     //check inside
 
@@ -330,6 +324,7 @@ namespace Toys
                 {
                     //move to next point
                     leftNodeLast = nextBorderNode[leftNodeLast];
+                    //Console.WriteLine("Left {0}", leftNodeLast);
                     //check inside
                     leftVec = leftNodeLast - leftBorder[leftBorder.Count - 2];
                     var result = Vector3.Dot(referenceVector, Vector3.Cross(leftBorder[leftBorder.Count - 1] - leftBorder[leftBorder.Count - 2], leftVec));
@@ -359,25 +354,21 @@ namespace Toys
                 }
             }
 
-            
-            if (pathOptimized.Count > 0)
-            {
-            
-                leftVec = end - pathOptimized[pathOptimized.Count - 1];
-                //Finish corner mapping
-                for (int n = 1; n < rightBorder.Count; n++)
-                {
-                    if (Vector3.Dot(referenceVector, Vector3.Cross(rightBorder[n] - rightBorder[n - 1], leftVec)) > 0)
-                        pathOptimized.Add(rightBorder[n]);
-                }
 
-                for (int n = 1; n < leftBorder.Count; n++)
-                {
-                    if (Vector3.Dot(referenceVector, Vector3.Cross(leftBorder[n] - leftBorder[n - 1], leftVec)) < 0)
-                        pathOptimized.Add(leftBorder[n]);
-                }
+            //Finish corner mapping
+            var strt = (pathOptimized.Count == 0) ? start : pathOptimized[pathOptimized.Count - 1];
+            leftVec = end - strt;
+            for (int n = 1; n < rightBorder.Count; n++)
+            {
+                if (Vector3.Dot(referenceVector, Vector3.Cross(rightBorder[n] - rightBorder[n - 1], leftVec)) > 0)
+                    pathOptimized.Add(rightBorder[n]);
             }
-        
+
+            for (int n = 1; n < leftBorder.Count; n++)
+            {
+                if (Vector3.Dot(referenceVector, Vector3.Cross(leftBorder[n] - leftBorder[n - 1], leftVec)) < 0)
+                    pathOptimized.Add(leftBorder[n]);
+            }
             pathOptimized.Add(end);
 
             /*
@@ -400,18 +391,18 @@ namespace Toys
             if (pathOptimized.Count > 1)
                 for (int m = 0; m < pathOptimized.Count - 1; m++)
                 {
-                    Vector3 strt = (m == 0) ? start : pathOptimized[m - 1];
+                    strt = (m == 0) ? start : pathOptimized[m - 1];
                     Vector3 direction = (strt - pathOptimized[m]).Normalized() + (pathOptimized[m + 1] - pathOptimized[m]).Normalized();
                     direction.Normalize();
                     pathOptimized[m] -= direction * AgentSize;
                 }
 
-
+            /*
             Console.WriteLine("Path corner:");
             foreach (var val in pathOptimized)
                 Console.WriteLine(val);
             Console.WriteLine("Path end");
-            
+            */
 
 
 

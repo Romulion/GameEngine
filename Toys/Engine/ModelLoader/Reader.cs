@@ -112,7 +112,8 @@ namespace Toys
 
         public static string jis2utf(byte[] bytes)
         {
-            return Encoding.Unicode.GetString(Encoding.Convert(Encoding.GetEncoding(932), Encoding.Unicode, bytes));
+            var decoder = CodePagesEncodingProvider.Instance.GetEncoding(932);
+            return Encoding.Unicode.GetString(Encoding.Convert(decoder, Encoding.Unicode, bytes));
         }
     }
 }
