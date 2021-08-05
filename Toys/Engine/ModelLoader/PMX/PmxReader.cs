@@ -73,11 +73,8 @@ namespace Toys
 			for (int i = 0; i < meshSize; i++)
 			{
 				Vector3 pos = reader.readVector3() * multipler;
-				Vector3 normal = reader.readVector3() * multipler;
+				Vector3 normal = reader.readVector3().Normalized() ;
 				Vector2 uv = reader.readVector2();
-				//mirroring x axis
-				//pos.X = -pos.X;
-				//normal.X = -normal.X;
 				int[] bonesIndexes = {0,0,0,0};
 				Vector4 bonesWeigth = new Vector4(0f);
 
@@ -135,6 +132,9 @@ namespace Toys
 					default:
 						throw new Exception("Not suppornet weigth code " + Weigth);
 				}
+				//Convert left to right coordinates
+				pos.Z = -pos.Z;
+				normal.Z = -normal.Z;
 
 				verticesR[i] = new VertexRigged3D(pos, normal, uv,new IVector4(bonesIndexes),bonesWeigth);
 				//vertices[i] = new Vertex3D(pos, normal, uv);
@@ -145,9 +145,8 @@ namespace Toys
 			int[] indexes = new int[indexSize];
 			for (int i = 0; i < indexSize; i++)
 			{
-                indexes[i] = reader.readVal(header.GetVertexIndexSize);
-                //invering triangles
-                /*
+				//indexes[i] = reader.readVal(header.GetVertexIndexSize);
+				//invert triangles to convert left to right coordinates
 				int res = i % 3;
 				if (res == 0)
 					indexes[i + 1] = reader.readVal(header.GetVertexIndexSize);
@@ -155,9 +154,15 @@ namespace Toys
 					indexes[i - 1] = reader.readVal(header.GetVertexIndexSize);
 				else 
 					indexes[i] = reader.readVal(header.GetVertexIndexSize);
-			    */
             }
 			//mesh = new Mesh(vertices, indexes);
+			/*
+			var ofst =  3 * 51424;
+			Console.WriteLine("{0} {1} {2}", indexes[ofst], indexes[ofst + 1], indexes[ofst+ 2]);
+			Console.WriteLine(verticesR[indexes[ofst]].Position);
+			Console.WriteLine(verticesR[indexes[ofst+1]].Position);
+			Console.WriteLine(verticesR[indexes[ofst+2]].Position);
+			*/
 			meshRigged = new Mesh(verticesR, indexes);
 		}
 
@@ -223,7 +228,7 @@ namespace Toys
                 
 				var outln = new Outline();
 				outln.EdgeColour = reader.readVector4();
-				outln.EdgeScaler = reader.ReadSingle() * 0.3f;
+				outln.EdgeScaler = reader.ReadSingle() * 0.03f;
 
 				int difTexIndex = reader.readVal(header.GetTextureIndexSize);
 
@@ -330,7 +335,7 @@ namespace Toys
 
 				Vector3 Position = reader.readVector3() * multipler;
 
-                int parentIndex = 0;
+				int parentIndex = 0;
                 if (header.GetBoneIndexSize == 2)
                 {
                     parentIndex = unchecked((short)reader.readVal(header.GetBoneIndexSize));
@@ -410,17 +415,21 @@ namespace Toys
                 bones[i] = bone;
 			}
 
-            //convert position from model to parent bone
-            for (int i = bones.Length - 1; i > -1; i--)
+			var reverce = Matrix4.CreateScale(new Vector3(1, 1, -1));
+			//convert position from model to parent bone
+			for (int i = bones.Length - 1; i > -1; i--)
             {
                 Bone bone = bones[i];
                 if (bone.ParentIndex >= 0 && bone.ParentIndex < bones.Length){
                     bone.Parent2Local =  Matrix4.CreateTranslation(bone.Position - bones[bone.ParentIndex].Position);
                 }
-            }
+
+				//Convert left to right coordinates
+				bone.Parent2Local = reverce * bone.Parent2Local * reverce;
+			}
 
 
-            boneOrder = new int[bones.Length];
+			boneOrder = new int[bones.Length];
             int m = 0;
             for (int n = 0; n <= maxLevel; n++)
             {
@@ -470,7 +479,8 @@ namespace Toys
 						case 1: //vertex
 							int index = reader.readVal(header.GetVertexIndexSize);
 							Vector3 pos = reader.readVector3() * multipler;
-                            ((MorphVertex)morphs[i]).AddVertex(pos, index);
+
+							((MorphVertex)morphs[i]).AddVertex(pos, index);
                             break;
 						case 2:  //bone morph
 							reader.readVal(header.GetBoneIndexSize);
@@ -577,7 +587,7 @@ namespace Toys
 				rigit.Friction = reader.ReadSingle();
 				rigit.Phys = (PhysType)reader.ReadByte();
 
-                rigitBodies[i] = rigit;
+				rigitBodies[i] = rigit;
 			}
 		}
 
@@ -595,6 +605,7 @@ namespace Toys
 				joint.RigitBody1 =  reader.readVal(header.GetRigidBodyIndexSize);
 				joint.RigitBody2 =  reader.readVal(header.GetRigidBodyIndexSize);
 				joint.Position = reader.readVector3() * multipler;
+				
 				joint.Rotation = reader.readVector3();
 				joint.PosMin = reader.readVector3() * multipler;
 				joint.PosMax = reader.readVector3() * multipler;
@@ -603,7 +614,7 @@ namespace Toys
 				joint.PosSpring = reader.readVector3() * multipler;
 				joint.RotSpring = reader.readVector3();
 
-                joints[i] = joint;
+				joints[i] = joint;
 			}
 
 		}
@@ -646,11 +657,24 @@ namespace Toys
 		{
 			get
 			{
-				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats,new BoneController(bones, boneOrder), morphs);
-				md.OutlineDrawing = true;
 
+				/*
+				//debug faces
+				var mats1 = new Material[mats.Length + 1];
+				Array.Copy(mats, mats1, mats.Length);
+				ShaderSettings sdrs = new ShaderSettings();
+				RenderDirectives rndd = new RenderDirectives();
+				mats1[mats1.Length-1] = new MaterialPM(sdrs, rndd);
+				mats1[mats1.Length - 1].Offset = 51424 * 3;
+				mats1[mats1.Length - 1].Count = 3;
+				*/
+				var transform = Matrix4.CreateScale(new Vector3(1, 1, -1));
+
+				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs);
+				md.OutlineDrawing = true;
 				var node = new SceneNode();
 				node.AddComponent(md);
+
 				node.AddComponent(new Animator(md.skeleton));
                 node.AddComponent(new PhysicsManager(rigitBodies, joints, md.skeleton));
 				return node;

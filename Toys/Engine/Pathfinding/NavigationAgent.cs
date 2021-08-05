@@ -98,7 +98,6 @@ namespace Toys
                     }
                 }
             }
-            Console.WriteLine(33);
             return OptimizePathNew(pathMesh, start, goal).ToArray();
         }
 
@@ -273,25 +272,16 @@ namespace Toys
 
             Vector3 rightVec = rightNodeLast - start,
                     leftVec = leftNodeLast - start;
-            Console.WriteLine(1);
-            Console.WriteLine("Path l:");
-            foreach (var val in leftBorder)
-                Console.WriteLine(val);
-            Console.WriteLine("Path end");
-            Console.WriteLine("Path r:");
-            foreach (var val in rightBorder)
-                Console.WriteLine(val);
-            Console.WriteLine("Path end");
 
             var referenceVector = Vector3.Cross(leftVec, rightVec);
-            Console.WriteLine(referenceVector);
+            //Console.WriteLine(referenceVector);
             for (int i = startPoint + 1; i < path.Length - 1; i++)
             {
-                Console.WriteLine("index {0}", i);
+                //Console.WriteLine("index {0}", i);
                 
                 int[] pairSet = vertexPairs[notBindedEdges[i]];
                 var node = path[i];
-                Console.WriteLine("Node {0} {1}", node.NodeVertex[pairSet[0]], node.NodeVertex[pairSet[1]]) ;
+                //Console.WriteLine("Node {0} {1}", node.NodeVertex[pairSet[0]], node.NodeVertex[pairSet[1]]) ;
                 
                 //Console.WriteLine("Path r:");
 
@@ -434,12 +424,12 @@ namespace Toys
                     pathOptimized[m] -= direction * AgentSize;
                 }
 
-            
+            /*
             Console.WriteLine("Path corner:");
             foreach (var val in pathOptimized)
                 Console.WriteLine(val);
             Console.WriteLine("Path end");
-            
+            */
 
 
 

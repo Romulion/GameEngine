@@ -15,7 +15,7 @@ namespace Toys
         Vector4 cameraDir;
         GLWindow game;
         bool mousePressed = false;
-        int phi = 90;
+        int phi = -90;
         int theta = 90;
         int thetaMax = 170;
         int thetaMin = 10;

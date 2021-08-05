@@ -103,6 +103,12 @@ namespace Toys
 
                 Vector3 pos = _reader.readVector3() * _multipler;
                 Vector4 rot = _reader.readVector4();
+
+                //Convert left to right coordinates
+                pos.Z = -pos.Z;
+                rot.Z = -rot.Z;
+                rot.W = -rot.W;
+
                 if (frame > framesCount)
                     framesCount = frame;
                 //??? interpolation data ???

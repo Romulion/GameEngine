@@ -68,7 +68,7 @@ namespace ModelViewer
                 path = pathTask.Result;
                 if (path.Length > 0)
                 {
-                    UpdatePathColor();
+                    //UpdatePathColor();
                     waipoint = 0;
                     direction = path[0] - Node.GetTransform.Position;
                     prevDist = direction.Length;

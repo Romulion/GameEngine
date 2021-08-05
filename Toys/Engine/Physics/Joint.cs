@@ -45,6 +45,11 @@ namespace Toys
 
 
 			var jointSpace = Matrix.RotationYawPitchRoll(JointParameters.Rotation.Y, JointParameters.Rotation.X, JointParameters.Rotation.Z) * Matrix.Translation(GetVec3(JointParameters.Position));
+			
+			//Convert left to right coordinates
+			var reverce = Matrix.Scaling(new Vector3(1, 1, -1));
+			jointSpace = reverce * jointSpace * reverce;
+
 			var temp1 = body1.WorldTransform;
 			temp1.Invert();
 			var conn1 = jointSpace * temp1;

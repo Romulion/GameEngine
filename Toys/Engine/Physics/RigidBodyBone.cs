@@ -47,6 +47,11 @@ namespace Toys
             if (isDynamic)
                 shape.CalculateLocalInertia(rcon.Mass, out inertia);
             startTransform = Matrix.RotationYawPitchRoll(rcon.Rotation.Y, rcon.Rotation.X, rcon.Rotation.Z) * Matrix.Translation(rcon.Position.Convert());
+
+            //Convert left to right coordinates
+            var reverce = Matrix.Scaling(new Vector3(1,1,-1));
+            startTransform = reverce * startTransform * reverce;
+
             rbInfo = new RigidBodyConstructionInfo(rcon.Mass, new DefaultMotionState(startTransform), shape, inertia);
 			Body = new RigidBody(rbInfo);
             Body.ActivationState = ActivationState.DisableDeactivation;

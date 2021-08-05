@@ -30,7 +30,7 @@ namespace Toys
 
         internal int RenderBuffer = 0;
         //camera space
-        Vector3 cameraTarget = new Vector3(0f, 1f, 0f);
+        Vector3 cameraTarget = new Vector3(0f, 0f, 1f);
 		Vector3 cameraUp = new Vector3(0.0f, 1.0f, 0.0f);
 		Matrix4 look;
 
@@ -90,7 +90,6 @@ namespace Toys
 
 		internal void CalcLook()
 		{
-
             look = Matrix4.LookAt(Node.GetTransform.Position, cameraTarget, cameraUp);
         }
         #endregion
