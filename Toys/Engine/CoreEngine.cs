@@ -16,7 +16,7 @@ namespace Toys
 		internal static GraphicsEngine gEngine { get; private set; }
         public static PhysicsEngine pEngine { get; private set; }
         internal static ScriptingEngine sEngine { get; private set; }
-        internal static CoreEngine ActiveCore { get; private set; }
+        public static CoreEngine ActiveCore { get; private set; }
         internal static SoundEngine aEngine { get; private set; }
         internal static AnimationEngine animEngine { get; private set; }
         public static Time time { get; private set; }

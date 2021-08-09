@@ -26,7 +26,7 @@ namespace Toys
         void Awake()
         {
             camera = (Camera)Node.GetComponent<Camera>();
-            cameraDir = new Vector4(0, 0, 1, 1);
+            cameraDir = new Vector4(0, 0, -1, 1);
             game = GLWindow.gLWindow;
         }
         void Update()
@@ -47,10 +47,8 @@ namespace Toys
                 {
                     phi -= angleStep;
                 }
-
                 if (phi > 360) phi -= 360;
                 if (phi < 0) phi += 360;
-
                 if (mouseState.Y - lastY > angleThresold && theta <= thetaMax)
                 {
                     theta -= angleStep;
@@ -59,16 +57,12 @@ namespace Toys
                 {
                     theta += angleStep;
                 }
-
                 if (theta > thetaMax)
                     theta = thetaMax;
                 else if (theta < thetaMin)
                     theta = thetaMin;
-
                 Node.GetTransform.RotationQuaternion = CalculateRotation(1, phi, theta);
-                Node.GetTransform.RotationQuaternion = Quaternion.Identity;
                 Node.GetTransform.UpdateGlobalTransform();
-
                 lastY = mouseState.Y;
                 lastX = mouseState.X;
             }
@@ -80,10 +74,16 @@ namespace Toys
             }
             else
                 mousePressed = false;
-
-            camera.Target = (cameraDir * Node.GetTransform.GlobalTransform).Xyz;
+            
         }
 
+        public void RecalculateAngles()
+        {
+            var dir = new Vector4(0, 0, -1, 1);
+            var newdir = (dir * Node.GetTransform.GlobalTransform).Xyz - Node.GetTransform.Position;
+            phi = (int)(MathF.Atan2(newdir.Z, newdir.X) * 180 / MathF.PI);
+            theta = (int)(MathF.Acos(newdir.Y / newdir.Xzy.Length) * 180 / MathF.PI);
+        }
 
         Vector3 CalcPos(float r, int Iphi, int Itheta)
         {
@@ -108,7 +108,7 @@ namespace Toys
 
         float radians(float degrees)
         {
-            return (float)Math.PI * degrees / 180.0f;
+            return MathF.PI * degrees / 180.0f;
         }
     }
 }

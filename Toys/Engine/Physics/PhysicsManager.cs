@@ -95,7 +95,9 @@ namespace Toys
 		public void ReinstalizeBodys()
 		{
             foreach (var body in rigitBodies)
+            {
                 body.Reinstalize(worldTrans.GlobalTransform);
+            }
 		}
 
         internal override void Unload()

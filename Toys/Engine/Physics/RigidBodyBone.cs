@@ -101,7 +101,7 @@ namespace Toys
 		{
             Body.WorldTransform = startTransform * world.Convert();
             Body.InterpolationWorldTransform = Body.WorldTransform;
-            Body.ClearForces();
+            Body.ClearForces();    
         }
     }
 }

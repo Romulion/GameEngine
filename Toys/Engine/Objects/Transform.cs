@@ -125,6 +125,7 @@ namespace Toys
         private void RecalculateLocal()
         {
             localT = Matrix4.CreateScale(scale) * Matrix4.CreateFromQuaternion(rotationQuaternion) * Matrix4.CreateTranslation(position);
+            UpdateGlobalTransform();
         }
 
         internal override void AddComponent(SceneNode nod)

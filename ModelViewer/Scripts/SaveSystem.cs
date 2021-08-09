@@ -17,7 +17,6 @@ namespace ModelViewer
             var camera = CoreEngine.GetCamera.Node.GetTransform;
             save.cameraPos = camera.Position;
             save.cameraRot = camera.RotationQuaternion;
-
             var nodes = CoreEngine.MainScene.FindByName("Michelle.Seifuku");
             if (nodes.Length > 0)
             {
@@ -32,10 +31,18 @@ namespace ModelViewer
         {
 
             var camera = CoreEngine.GetCamera.Node.GetTransform;
+            var ccp = camera.Node.GetComponent<CharacterControllPlayer>();
+
+            /*
+            var dir = new OpenTK.Mathematics.Vector4(0, 0, -1, 1);
+            var newdir = (dir * camera.GlobalTransform).Xyz - camera.Position;
+            Console.WriteLine(newdir);
+            */
+            ccp.LoadPos(save.cameraPos);
             camera.Position = save.cameraPos;
             camera.RotationQuaternion = save.cameraRot;
-            Console.WriteLine(save.cameraPos);
-            Console.WriteLine(save.cameraRot);
+            var cps = camera.Node.GetComponent<CameraPOVScript>();
+            cps.RecalculateAngles();
             var nodes = CoreEngine.MainScene.FindByName("Michelle.Seifuku");
             if (nodes.Length > 0)
             {
@@ -43,7 +50,8 @@ namespace ModelViewer
                 nodes[0].GetTransform.RotationQuaternion = save.charRot;
 
                 var phys = nodes[0].GetComponent<PhysicsManager>();
-                phys.ReinstalizeBodys();
+
+                CoreEngine.ActiveCore.AddTask = () => phys.ReinstalizeBodys();
             }
         }
 

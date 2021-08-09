@@ -96,7 +96,7 @@ namespace Toys
 
 		internal void CalcLook()
 		{
-            look = Matrix4.LookAt(Node.GetTransform.Position, cameraTarget, cameraUp);
+            look = Matrix4.LookAt(Node.GetTransform.Position, (new Vector4(cameraTarget, 1) * Node.GetTransform.GlobalTransform).Xyz, cameraUp);
         }
         #endregion
         internal override void AddComponent(SceneNode nod)

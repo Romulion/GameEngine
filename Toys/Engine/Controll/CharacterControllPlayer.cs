@@ -81,6 +81,10 @@ namespace Toys
             
         }
 
+        public void LoadPos(Vector3 pos)
+        {
+            base.Teleport(pos);
+        }
     }
 }
 

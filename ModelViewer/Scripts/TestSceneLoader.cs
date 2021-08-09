@@ -86,7 +86,8 @@ namespace ModelViewer
             if (model1)
             {
                 model1.Name = "Michelle.Seifuku";
-                model1.GetTransform.Position = -Vector3.UnitZ * 2;
+                model1.GetTransform.Position = Vector3.UnitZ * 2;
+                model1.GetTransform.RotationQuaternion = new Quaternion(0,MathF.PI,0);
                 CoreEngine.MainScene.AddNode2Root(model1);
                 //var manager = model1.GetComponent<PhysicsManager>();
                 model1.AddComponent<NpcAI>();
@@ -103,7 +104,6 @@ namespace ModelViewer
                 //model1.AddComponent(src);
                 //src.Play();
             }
-
             /*
             var model2 = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Hinata\Seifuku.pmx");
             if (model2)
