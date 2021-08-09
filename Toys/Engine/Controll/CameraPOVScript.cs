@@ -66,6 +66,7 @@ namespace Toys
                     theta = thetaMin;
 
                 Node.GetTransform.RotationQuaternion = CalculateRotation(1, phi, theta);
+                Node.GetTransform.RotationQuaternion = Quaternion.Identity;
                 Node.GetTransform.UpdateGlobalTransform();
 
                 lastY = mouseState.Y;

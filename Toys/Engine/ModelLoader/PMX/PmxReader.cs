@@ -668,7 +668,6 @@ namespace Toys
 				mats1[mats1.Length - 1].Offset = 51424 * 3;
 				mats1[mats1.Length - 1].Count = 3;
 				*/
-				var transform = Matrix4.CreateScale(new Vector3(1, 1, -1));
 
 				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs);
 				md.OutlineDrawing = true;

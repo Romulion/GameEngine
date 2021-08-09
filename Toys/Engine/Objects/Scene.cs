@@ -67,6 +67,15 @@ namespace Toys
         }
 
         /// <summary>
+        /// Get array of root scene nodes
+        /// </summary>
+        /// <returns></returns>
+        public SceneNode[] GetRootNodes()
+        {
+            return root.GetChilds();
+        }
+
+        /// <summary>
         /// Find first node in scene using name
         /// </summary>
         /// <param name="name">Exact name of node</param>

@@ -4,26 +4,27 @@ using OpenTK.Input;
 using OpenTK.Graphics;
 namespace Toys
 {
-	public enum ProjectionType
-	{ 
-		Perspective = 1,
-		Orthographic = 2
-	}
+    public enum ProjectionType
+    {
+        Perspective = 1,
+        Orthographic = 2
+    }
 
     public enum DisplayClearFlag
     {
-       Nothing,
-       Color,
-       Depth,
+        Nothing,
+        Color,
+        Depth,
     }
 
-
-	public class Camera : Component
+    [Serializable]
+    public class Camera : Component
 	{
-        
+        [SaveScene]
         public bool Active { get; set;}
         public bool Main { get; internal set; }
 
+        [SaveScene]
         public int RenderMask { get; set; }
 
         public BackgroundBase Background;
@@ -36,19 +37,24 @@ namespace Toys
 
         public Color4 ClearColor = new Color4(0.0f, 0.1f, 0.1f, 0f);
         ProjectionType projType = ProjectionType.Perspective;
+        [SaveScene]
         public ProjectionType projectionType {
             get { return projType; }
             set { projType = value; }
         }
 
+        [SaveScene]
         public float NearPlane { get; set;}
+        [SaveScene]
         public float FarPlane { get; set;}
+        [SaveScene]
         public float FOV { get; set; }
-        public Matrix4 Projection { get; private set; }
-        public int Width;
-        public int Height;
-        public int OrthSize;
-
+        
+        internal Matrix4 Projection { get; private set; }
+        [SaveScene]
+        public int Width { get; internal set; }
+        [SaveScene]
+        public int Height { get; internal set; }
 
         int cameraHeigth = 2;
         public Camera() : base(typeof(Camera))

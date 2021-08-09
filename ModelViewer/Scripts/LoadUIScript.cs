@@ -136,6 +136,43 @@ namespace ModelViewer
 
             //slider1.OnValueChanged = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };    
 
+            Console.WriteLine(1111);
+
+            //save test
+            var save = new SaveSystem();
+            var ui8 = new UIElement();
+            ui8.GetTransform.anchorMax = new Vector2(1f, 1f);
+            ui8.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui8.GetTransform.offsetMax = new Vector2(0, -145);
+            ui8.GetTransform.offsetMin = new Vector2(0, -170);
+            var image5 = (ButtonComponent)ui8.AddComponent<ButtonComponent>();
+
+            var butLabel5 = (TextBox)ui8.AddComponent<TextBox>();
+            butLabel5.textCanvas.colour = new Vector3(1, 0, 0);
+            butLabel5.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
+            butLabel5.textCanvas.alignVertical = TextAlignVertical.Center;
+
+            butLabel5.SetText("Save");
+            butLabel5.textCanvas.Scale = 0.5f;
+
+            image5.OnClick = () => { save.SaveGame(); };
+            var ui6 = new UIElement();
+            ui6.GetTransform.anchorMax = new Vector2(1f, 1f);
+            ui6.GetTransform.anchorMin = new Vector2(0f, 1f);
+            ui6.GetTransform.offsetMax = new Vector2(0, -175);
+            ui6.GetTransform.offsetMin = new Vector2(0, -200);
+            var butLabel6 = (TextBox)ui6.AddComponent<TextBox>();
+
+            butLabel6.SetText("Load");
+            butLabel6.textCanvas.Scale = 0.5f;
+
+            butLabel6.textCanvas.colour = new Vector3(1, 1, 0);
+            butLabel6.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
+            butLabel6.textCanvas.alignVertical = TextAlignVertical.Center;
+            var button5 = (ButtonComponent)ui6.AddComponent<ButtonComponent>();
+            button5.OnClick = () => { save.LoadGame(); };
+            ui6.SetParent(ui);
+            ui8.SetParent(ui);
         }
 
 

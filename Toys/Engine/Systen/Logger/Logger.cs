@@ -54,7 +54,7 @@ namespace Toys
 
 		public void Info(string Message, string path)
 		{
-			ProceedEntry(Level.Error, Message, path);
+			ProceedEntry(Level.Info, Message, path);
 		}
 
 		void ProceedEntry(Level severenety, string message, string path)
