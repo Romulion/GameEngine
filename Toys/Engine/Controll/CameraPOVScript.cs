@@ -51,11 +51,11 @@ namespace Toys
                 if (phi < 0) phi += 360;
                 if (mouseState.Y - lastY > angleThresold && theta <= thetaMax)
                 {
-                    theta -= angleStep;
+                    theta += angleStep;
                 }
                 else if (mouseState.Y - lastY < -angleThresold && theta >= thetaMin)
                 {
-                    theta += angleStep;
+                    theta -= angleStep;
                 }
                 if (theta > thetaMax)
                     theta = thetaMax;

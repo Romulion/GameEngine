@@ -46,42 +46,29 @@ namespace ModelViewer
             var scrollBar = (ScrollBarComponent)ui7.AddComponent<ScrollBarComponent>();
             scrollBar.SetScrollBox(scrollBox);
 
-            var ui1 = new UIElement();
-            ui1.GetTransform.anchorMax = new Vector2(1f, 1f);
-            ui1.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui1.GetTransform.offsetMax = new Vector2(0, 0);
-            ui1.GetTransform.offsetMin = new Vector2(0, -25);
-            var image1 = (ButtonComponent)ui1.AddComponent<ButtonComponent>();
 
-            var butLabel1 = (TextBox)ui1.AddComponent<TextBox>();
-            butLabel1.textCanvas.colour = new Vector3(1, 0, 0);
-            butLabel1.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
-            butLabel1.textCanvas.alignVertical = TextAlignVertical.Center;
 
-            butLabel1.SetText("path");
-            butLabel1.textCanvas.Scale = 0.5f;
+            var btn2 = new Toys.UserInterface.ButtonPrefab("path");
+            var btnTrtans2 = btn2.GetTransform;
+            btnTrtans2.anchorMax = new Vector2(1f, 1f);
+            btnTrtans2.anchorMin = new Vector2(0f, 1f);
+            btnTrtans2.offsetMax = new Vector2(0, -0);
+            btnTrtans2.offsetMin = new Vector2(0, -25);
+            btn2.SetAction(() => { cc?.SetDestination(CoreEngine.GetCamera.Node.GetTransform.Position); });
+            btn2.SetParent(ui);
 
-            image1.OnClick = () => { cc?.SetDestination(CoreEngine.GetCamera.Node.GetTransform.Position); };
-            var ui2 = new UIElement();
-            ui2.GetTransform.anchorMax = new Vector2(1f, 1f);
-            ui2.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui2.GetTransform.offsetMax = new Vector2(0, -30);
-            ui2.GetTransform.offsetMin = new Vector2(0, -55);
-            var butLabel2 = (TextBox)ui2.AddComponent<TextBox>();
 
-            butLabel2.SetText("Go/Stop");
-            butLabel2.textCanvas.Scale = 0.5f;
+            var btn3 = new Toys.UserInterface.ButtonPrefab("Go/Stop");
+            var btnTrtans3 = btn3.GetTransform;
+            btnTrtans3.anchorMax = new Vector2(1f, 1f);
+            btnTrtans3.anchorMin = new Vector2(0f, 1f);
+            btnTrtans3.offsetMax = new Vector2(0, -30);
+            btnTrtans3.offsetMin = new Vector2(0, -55);
+            btn3.SetAction(() => { cc?.Go(); });
+            btn3.SetParent(ui);
+            btn3.label.textCanvas.colour = new Vector3(1, 1, 0);
 
-            butLabel2.textCanvas.colour = new Vector3(1, 1, 0);
-            butLabel2.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
-            butLabel2.textCanvas.alignVertical = TextAlignVertical.Center;
-            var button = (ButtonComponent)ui2.AddComponent<ButtonComponent>();
-            button.OnClick = () => { cc?.Go(); };
-            //var ISS = (ImageStreamerScript)node.AddComponent<ImageStreamerScript>();
-            //ISS.SetDSS(script);
-            ui1.SetParent(ui);
-            ui2.SetParent(ui);
-
+            /*
             var ui3 = new UIElement();
             ui3.GetTransform.anchorMax = new Vector2(1f, 1f);
             ui3.GetTransform.anchorMin = new Vector2(0f, 1f);
@@ -97,7 +84,6 @@ namespace ModelViewer
             ui4.GetTransform.offsetMin = new Vector2(0, -110);
             ui4.SetParent(ui);
             var checkbox = (CheckboxComponent)ui4.AddComponent<CheckboxComponent>();
-            //checkbox.OnChange = () => Console.WriteLine(444);
             var butLabel4 = (TextBox)ui4.AddComponent<TextBox>();
             butLabel4.textCanvas.colour = new Vector3(1, 0, 0);
             butLabel4.textCanvas.alignHorizontal = TextAlignHorizontal.Left;
@@ -113,6 +99,7 @@ namespace ModelViewer
             ui5.GetTransform.offsetMin = new Vector2(0, -140);
             ui5.SetParent(ui);
             var input = (TextInputComponent)ui5.AddComponent<TextInputComponent>();
+            */
             //debug textures
             /*
             var canvas1 = (Canvas)Node.AddComponent<Canvas>();
@@ -136,43 +123,26 @@ namespace ModelViewer
 
             //slider1.OnValueChanged = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };    
 
-            Console.WriteLine(1111);
-
             //save test
             var save = new SaveSystem();
-            var ui8 = new UIElement();
-            ui8.GetTransform.anchorMax = new Vector2(1f, 1f);
-            ui8.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui8.GetTransform.offsetMax = new Vector2(0, -145);
-            ui8.GetTransform.offsetMin = new Vector2(0, -170);
-            var image5 = (ButtonComponent)ui8.AddComponent<ButtonComponent>();
 
-            var butLabel5 = (TextBox)ui8.AddComponent<TextBox>();
-            butLabel5.textCanvas.colour = new Vector3(1, 0, 0);
-            butLabel5.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
-            butLabel5.textCanvas.alignVertical = TextAlignVertical.Center;
+            var btn = new Toys.UserInterface.ButtonPrefab("Save");
+            var btnTrtans = btn.GetTransform;
+            btnTrtans.anchorMax = new Vector2(1f, 1f);
+            btnTrtans.anchorMin = new Vector2(0f, 1f);
+            btnTrtans.offsetMax = new Vector2(0, -60);
+            btnTrtans.offsetMin = new Vector2(0, -85);
+            btn.SetAction(() => { save.SaveGame(); });
+            btn.SetParent(ui);
 
-            butLabel5.SetText("Save");
-            butLabel5.textCanvas.Scale = 0.5f;
-
-            image5.OnClick = () => { save.SaveGame(); };
-            var ui6 = new UIElement();
-            ui6.GetTransform.anchorMax = new Vector2(1f, 1f);
-            ui6.GetTransform.anchorMin = new Vector2(0f, 1f);
-            ui6.GetTransform.offsetMax = new Vector2(0, -175);
-            ui6.GetTransform.offsetMin = new Vector2(0, -200);
-            var butLabel6 = (TextBox)ui6.AddComponent<TextBox>();
-
-            butLabel6.SetText("Load");
-            butLabel6.textCanvas.Scale = 0.5f;
-
-            butLabel6.textCanvas.colour = new Vector3(1, 1, 0);
-            butLabel6.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
-            butLabel6.textCanvas.alignVertical = TextAlignVertical.Center;
-            var button5 = (ButtonComponent)ui6.AddComponent<ButtonComponent>();
-            button5.OnClick = () => { save.LoadGame(); };
-            ui6.SetParent(ui);
-            ui8.SetParent(ui);
+            var btn1 = new Toys.UserInterface.ButtonPrefab("Load");
+            var btnTrtans1 = btn1.GetTransform;
+            btnTrtans1.anchorMax = new Vector2(1f, 1f);
+            btnTrtans1.anchorMin = new Vector2(0f, 1f);
+            btnTrtans1.offsetMax = new Vector2(0, -90);
+            btnTrtans1.offsetMin = new Vector2(0, -115);
+            btn1.SetAction(() => { save.LoadGame(); });
+            btn1.SetParent(ui);
         }
 
 
