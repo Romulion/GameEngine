@@ -51,6 +51,7 @@ namespace Toys
                 }
                 
             }
+            /*
             else if (activeObject != null)
             {
                 //reset look
@@ -58,7 +59,7 @@ namespace Toys
                 lookCallback = null;
                 activeObject = null;
             }
-
+            */
 
             var keyState = GLWindow.gLWindow.KeyboardState;
             if (game.IsFocused && keyState.IsKeyDown(Keys.Up)){

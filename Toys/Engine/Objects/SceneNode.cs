@@ -120,7 +120,7 @@ namespace Toys
         /// Initialize and add component of selected type
         /// </summary>
         /// <returns>new component</returns>
-        public Component AddComponent<T>() where T : Component
+        public T AddComponent<T>() where T : Component
         {
             Type t = typeof(T);
             try
@@ -129,7 +129,7 @@ namespace Toys
                 comp.Type = t;
                 comp.AddComponent(this);
                 components.Add(comp);
-                return comp;
+                return (T)comp;
             }
             catch (Exception e)
             {

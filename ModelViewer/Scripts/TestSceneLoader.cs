@@ -48,12 +48,12 @@ namespace ModelViewer
         {
 
             MeshData[] meshData;
-            var build = ResourcesManager.LoadAsset<SceneNode>(@"..\Assets\Models\School1F\School.pmx");
+            var build = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\School1F\School.pmx");
             if (build)
             {
                 build.Name = "School1F";
                 CoreEngine.MainScene.AddNode2Root(build);
-                var serviceData = new ReaderDAE(@"..\Assets\Models\School1F\School.dae");
+                var serviceData = new ReaderDAE(@"Assets\Models\School1F\School.dae");
                 meshData = serviceData.GetMeshes();
                 NavigationMesh.Instalize(meshData[0].vertices, meshData[0].indeces);
 
@@ -82,7 +82,7 @@ namespace ModelViewer
                 
             }
             
-            var model1 = ResourcesManager.LoadAsset<SceneNode>(@"..\Assets\Models\Michelle\Seifuku.pmx");
+            var model1 = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Michelle\Seifuku.pmx");
             if (model1)
             {
                 model1.Name = "Michelle.Seifuku";

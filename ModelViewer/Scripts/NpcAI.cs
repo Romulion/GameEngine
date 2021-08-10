@@ -25,12 +25,17 @@ namespace ModelViewer
         float thetaMax = (float)(60 * Math.PI / 180);
         float phiMin = (float)(-70 * Math.PI / 180);
         float phiMax = (float)(70 * Math.PI / 180);
-
+        int timer = 180;
+        Morph face;
+        AudioSource audio;
         void Start()
         {
             var rigged = Node.GetComponent<Animator>();
             if (rigged)
+            {
                 head = rigged.BoneController.GetBone("頭");
+                head.FollowAnimation = false;
+            }
 
             //create head ray collision object
             headBox = new SphereShape(0.35f);
@@ -42,11 +47,16 @@ namespace ModelViewer
             headBody.UserObject = new Action<Vector3>(triggerSwitch);
             headBody.UserIndex = 1;
 
-             
             targetAngle = new Vector2(thetaDef,phiDef);
             angle = targetAngle;
             angSpeed = Vector2.Zero;
+
+            audio = Node.AddComponent<AudioSource>();
+            audio.SetAudioClip(ResourcesManager.LoadAsset<AudioClip>(@"Assets\Sound\13\voice_120.mp3"));
+            var morphes =  Node.GetComponent<MeshDrawer>().Morphes;
+            face = Array.Find(morphes,(a) => a.Name == "むみぃ");
         }
+
 
         void Update()
         {              
@@ -57,7 +67,9 @@ namespace ModelViewer
             //head.SetTransform(Quaternion.FromEulerAngles(0,0,0.5f * (float)Math.Sin(i*Math.PI/180)));
 
             i++;
-            
+            if (timer-- < 1)
+                triggerSwitch(Vector3.Zero);
+
             if (targetAngle != Vector2.Zero)
             {
 
@@ -93,11 +105,21 @@ namespace ModelViewer
                 targetAngle.Y = phiDef;
                 CalcRotation();
                 lookTo = looker;
+                face.MorphDegree = 0f;
             }
             else
             {
                 looked = true;
+                timer = 300;
 
+                if (lookTo == Vector3.Zero)
+                {
+                    if (!audio.IsPlaing)
+                    {
+                        audio.Play();
+                    }
+                    face.MorphDegree = 1f;
+                }
                 if (looker != lookTo)
                 {
                     lookTo = looker;
@@ -129,7 +151,12 @@ namespace ModelViewer
                         targetAngle.Y = phiMax;
 
                     CalcRotation();
+
+                    
+
                 }
+
+                
             }
         }
 

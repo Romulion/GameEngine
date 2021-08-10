@@ -37,7 +37,7 @@ namespace Toys
 			shdr = ShaderManager.GetInstance.GetShader("shadow");
 
 			//locate source
-			pos = new Vector3(-1f, 2f, -1f);
+			pos = new Vector3(-1f, 2f, 1f);
 			look = new Vector3(0f, 0f, 0f);
 
 

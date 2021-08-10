@@ -13,10 +13,10 @@ namespace Toys
 {
     public class AudioSource : Component
     {
-        int bufferID, sourceID, bps;
-        int sampleRate = 0;
-        byte[] byteBuffer;
+        AudioClip clip;
+        int bufferID, sourceID;
         Vector3 dir = Vector3.UnitZ;
+        bool looping;
         public bool IsPlaing { get; private set; }
         public AudioSource() : base(typeof(AudioSource))
         {
@@ -24,68 +24,34 @@ namespace Toys
             bufferID = AL.GenBuffer();
             sourceID = AL.GenSource();
             IsPlaing = false;
+            looping = false;
         }
-
-        public AudioSource(AudioFileReader audioData): this()
+        public void SetAudioClip(AudioClip audio)
         {
-            IWaveProvider sampler;
-            bps = audioData.WaveFormat.BitsPerSample;
-            if (audioData.WaveFormat.BitsPerSample > 16)
-            {
-                sampler = audioData.ToWaveProvider16();
-                byteBuffer = new byte[audioData.Length * audioData.WaveFormat.BitsPerSample / 16];
-                sampler.Read(byteBuffer, 0, byteBuffer.Length);
-                bps = 16;
-            }
-            else
-            {
-                byteBuffer = new byte[audioData.Length];
-                audioData.Read(byteBuffer, 0, byteBuffer.Length);
-            }
+            clip = audio;
             //read data to pointer
-            var format = GetFormat(audioData.WaveFormat.Channels,bps);
-            IntPtr unmanagedPointer = Marshal.AllocHGlobal(byteBuffer.Length);
-            Marshal.Copy(byteBuffer, 0, unmanagedPointer, byteBuffer.Length);
-            AL.BufferData(bufferID, format, unmanagedPointer, byteBuffer.Length, audioData.WaveFormat.SampleRate);
+            var format = clip.GetFormat(clip.Channels, clip.Bps);
+            IntPtr unmanagedPointer = Marshal.AllocHGlobal(clip.ByteBuffer.Length);
+            Marshal.Copy(clip.ByteBuffer, 0, unmanagedPointer, clip.ByteBuffer.Length);
+            AL.BufferData(bufferID, format, unmanagedPointer, clip.ByteBuffer.Length, clip.SampleRate);
             Marshal.FreeHGlobal(unmanagedPointer);
             AL.Source(sourceID, ALSourcei.Buffer, bufferID);
-            AL.Source(sourceID, ALSourceb.Looping, true);
+            AL.Source(sourceID, ALSourceb.Looping, looping);
             AL.Source(sourceID, ALSource3f.Direction, ref dir);
 
-            sampleRate = audioData.WaveFormat.SampleRate;
         }
 
-        ALFormat GetFormat(int channels, int bps)
-        {
-            ALFormat result = ALFormat.Mono16;
-            if (channels == 2)
-            {
-                if (bps == 8)
-                    result = ALFormat.Stereo8;
-                else if (bps == 16)
-                    result = ALFormat.Stereo16;
-            }
-            else if (channels == 1)
-            {
-                if (bps == 8)
-                    result = ALFormat.Mono8;
-                else if (bps == 16)
-                    result = ALFormat.Mono16;
-            }
-            
-            return result;
-        }
 
         public float GetCurrentVolume()
         {
-            int sampleCount = (int)(sampleRate * 0.016f);
+            int sampleCount = (int)(clip.SampleRate * 0.016f);
             int position;
             AL.GetSource(sourceID, ALGetSourcei.ByteOffset, out position);
             float result = 0;
 
-            if (bps == 8)
-                result = byteBuffer[position] / (float)byte.MaxValue;
-            else if (bps == 16)
+            if (clip.Bps == 8)
+                result = clip.ByteBuffer[position] / (float)byte.MaxValue;
+            else if (clip.Bps == 16)
             {
                 int n = 0;
                 for (int i = -sampleCount; i < sampleCount; i++)
@@ -94,9 +60,9 @@ namespace Toys
                     var pos = position + i * 2;
                     if (pos < 0)
                         continue;
-                    if (pos > byteBuffer.Length)
+                    if (pos > clip.ByteBuffer.Length)
                         break;
-                    result += BitConverter.ToUInt16(byteBuffer, pos);
+                    result += BitConverter.ToUInt16(clip.ByteBuffer, pos);
                     n++;
                 }
 
@@ -105,9 +71,19 @@ namespace Toys
 
                 Console.WriteLine((float)ushort.MaxValue * n);
             }
-            else if (bps == 32)
-                result = BitConverter.ToUInt32(byteBuffer, position) / (float)uint.MaxValue;
+            else if (clip.Bps == 32)
+                result = BitConverter.ToUInt32(clip.ByteBuffer, position) / (float)uint.MaxValue;
             return -(float)Math.Log10(result);
+        }
+
+        public bool IsLooping
+        {
+            get { return looping; }
+            set
+            {
+                looping = value;
+                AL.Source(sourceID, ALSourceb.Looping, looping);
+            }
         }
 
         public void Play()
@@ -133,8 +109,11 @@ namespace Toys
         {
             var pos = Node.GetTransform.Position;
             AL.Source(sourceID, ALSource3f.Position, ref pos);
-            //AL.Source(source, ALSource3f.Direction,Node.GetTransform.GetDirection());
-            //AL.Source(source, ALSource3f.Velocity, ref pos);
+
+            int play;
+            AL.GetSource(sourceID, ALGetSourcei.SourceState, out play);
+            if (play == (int)ALSourceState.Stopped)
+                IsPlaing = false;
         }
         internal override void AddComponent(SceneNode nod)
         {

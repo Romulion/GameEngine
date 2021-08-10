@@ -9,6 +9,7 @@ namespace Toys
         public Matrix4 TransformMatrix;
         public Matrix4 PhysTransform;
         public bool Phys = false;
+        public bool FollowAnimation = true;
 
         //initial bone space coordinetes for reference
         Matrix4 boneSpaceTranstorm;

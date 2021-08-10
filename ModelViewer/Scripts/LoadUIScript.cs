@@ -46,7 +46,7 @@ namespace ModelViewer
             var scrollBar = (ScrollBarComponent)ui7.AddComponent<ScrollBarComponent>();
             scrollBar.SetScrollBox(scrollBox);
 
-
+            
 
             var btn2 = new Toys.UserInterface.ButtonPrefab("path");
             var btnTrtans2 = btn2.GetTransform;
@@ -57,7 +57,7 @@ namespace ModelViewer
             btn2.SetAction(() => { cc?.SetDestination(CoreEngine.GetCamera.Node.GetTransform.Position); });
             btn2.SetParent(ui);
 
-
+            
             var btn3 = new Toys.UserInterface.ButtonPrefab("Go/Stop");
             var btnTrtans3 = btn3.GetTransform;
             btnTrtans3.anchorMax = new Vector2(1f, 1f);
@@ -65,8 +65,7 @@ namespace ModelViewer
             btnTrtans3.offsetMax = new Vector2(0, -30);
             btnTrtans3.offsetMin = new Vector2(0, -55);
             btn3.SetAction(() => { cc?.Go(); });
-            btn3.SetParent(ui);
-            btn3.label.textCanvas.colour = new Vector3(1, 1, 0);
+            btn3.SetParent(ui);            
 
             /*
             var ui3 = new UIElement();

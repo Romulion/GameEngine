@@ -479,7 +479,7 @@ namespace Toys
 						case 1: //vertex
 							int index = reader.readVal(header.GetVertexIndexSize);
 							Vector3 pos = reader.readVector3() * multipler;
-
+							pos.Z = -pos.Z;
 							((MorphVertex)morphs[i]).AddVertex(pos, index);
                             break;
 						case 2:  //bone morph

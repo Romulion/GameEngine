@@ -83,6 +83,10 @@ namespace Toys
                     rotation = Quaternion.FromAxisAngle(Vector3.UnitZ, rot.Z) * Quaternion.FromAxisAngle(Vector3.UnitY, rot.Y) * Quaternion.FromAxisAngle(Vector3.UnitX, rot.X);
                 }
 
+                //skip masked out bone
+                if (!BoneController.GetBone(pair.Key).FollowAnimation)
+                    continue;
+
                 if (_animation.TransType == Animation.TransformType.LocalRelative)
                     BoneController.GetBone(pair.Key).SetTransform(rotation, pos);
                 else if (_animation.TransType == Animation.TransformType.LocalAbsolute)

@@ -33,8 +33,8 @@ namespace ModelViewer
             navAgent.AgentSize = 1f;
             try
             {
-                walk = AnimationLoader.Load(@"..\Assets\Animations\walk001.vmd");
-                idle = AnimationLoader.Load(@"..\Assets\Animations\02.vmd");
+                walk = AnimationLoader.Load(@"Assets\Animations\walk001.vmd");
+                idle = AnimationLoader.Load(@"Assets\Animations\02.vmd");
                 animator = Node.GetComponent<Animator>() as Animator;
                 animator.AnimationData = idle;
                 animator.Play();

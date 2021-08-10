@@ -30,10 +30,12 @@ namespace Toys
             transform = Node.GetTransform;
             r = 3.5f;
             game = GLWindow.gLWindow;
-            camera = (Camera)Node.GetComponent<Camera>();
-            camera.Target = Vector3.UnitY;
-            camera.Target -= new Vector3(0,0.25f,0);
-            transform.Position = camera.Target + CalcPos(r, phi, theta);
+            camera = Node.GetComponent<Camera>();
+            var pos = CalcPos(r, phi, theta);
+            cameraOffset = new Vector3(0, 1f, 0);
+            camera.Target = cameraOffset - pos;
+            transform.Position = cameraOffset;
+            
         }
 
         void MouseOrbit()
@@ -41,7 +43,7 @@ namespace Toys
             var mouseState = GLWindow.gLWindow.MouseState;
             if (game.IsFocused && !CoreEngine.gEngine.UIEngine.Busy && mousePressed && mouseState.IsButtonDown(MouseButton.Left))
             {
-
+                
                 if (mouseState.X - lastX > angleThresold)
                 {
                     phi += angleStep;
@@ -50,7 +52,6 @@ namespace Toys
                 {
                     phi -= angleStep;
                 }
-
                 if (mouseState.Y - lastY > angleThresold && theta < thetaMax)
                 {
                     theta += angleStep;
@@ -60,7 +61,7 @@ namespace Toys
                     theta -= angleStep;
                 }
 
-                transform.Position = camera.Target + CalcPos(r, phi, theta);
+                //transform.Position = CalcPos(r, phi, theta);
 
                 lastY = mouseState.Y;
                 lastX = mouseState.X;
@@ -73,21 +74,19 @@ namespace Toys
             }
             else
                 mousePressed = false;
-
+            //Change distance by wheel
             if (game.IsFocused)
             {
                 var mDelta = mouseState.Scroll - wheel;
-                /*
-                if (mDelta == 0)
-                    return;
-                if (mDelta > 0)
+                if (mDelta.Y > 0)
                     r -= speed * 8f;
-                else if (mDelta < 0)
+                else if (mDelta.Y < 0)
                     r += speed * 8f;
-                wheel = mouseState.Wheel;
-                */
+                wheel = mouseState.Scroll;
             }
-            transform.Position = camera.Target + CalcPos(r, phi, theta);
+
+            transform.Position = CalcPos(r, phi, theta);
+            camera.Target = (new Vector4(cameraOffset, 1) * transform.GlobalTransform.Inverted()).Xyz;
         }
 
         //setuping camera movement
@@ -100,14 +99,14 @@ namespace Toys
             {
                 if (keyState.IsKeyDown(Keys.PageUp))
                 {
-                    camera.Target += speed * cameraUp;
-                    transform.Position += speed * cameraUp;
+                    cameraOffset += speed * cameraUp;
+                    //transform.Position += speed * cameraUp;
                 }
 
                 if (keyState.IsKeyDown(Keys.PageDown))
                 {
-                    camera.Target -= speed * cameraUp;
-                    transform.Position -= speed * cameraUp;
+                    cameraOffset -= speed * cameraUp;
+                    //transform.Position -= speed * cameraUp;
                 }
 
                 Vector3 front = camera.Target - transform.Position;
@@ -141,7 +140,6 @@ namespace Toys
                 if (keyState.IsKeyDown(Keys.R))
                 {
                     transform.Position = new Vector3(0f, 1f, 0f);
-
                     phi = 90;
                     theta = 90;
                     r = R;
@@ -161,7 +159,7 @@ namespace Toys
             x = r * (float)Math.Sin(theta) * (float)Math.Cos(phi);
             z = r * (float)Math.Sin(theta) * (float)Math.Sin(phi);
             y = r * -(float)Math.Cos(theta);
-            return new Vector3(x, y, z);
+            return new Vector3(x, y, z) + cameraOffset;
         }
 
         float radians(float degrees)
