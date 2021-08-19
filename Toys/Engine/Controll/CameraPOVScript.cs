@@ -14,10 +14,10 @@ namespace Toys
         Vector4 cameraDir;
         GLWindow game;
         bool mousePressed = false;
-        int phi = -90;
-        int theta = 90;
-        int thetaMax = 170;
-        int thetaMin = 10;
+        int phi = 0;
+        int theta = 0;
+        int thetaMax = 80;
+        int thetaMin = -80;
         float lastX = 0;
         float lastY = 0;
         public int angleStep = 4, angleThresold = 2;
@@ -58,9 +58,9 @@ namespace Toys
                     theta = thetaMax;
                 else if (theta < thetaMin)
                     theta = thetaMin;
-                Node.Parent.GetTransform.RotationQuaternion = CalculateRotation(1, phi, 90);
-                
-                Node.GetTransform.RotationQuaternion = CalculateRotation(1, -90, theta);
+                Node.Parent.GetTransform.RotationQuaternion = CalculateRotationPhi(phi);
+                //Node.GetTransform.RotationQuaternion = CalculateRotation(1,-90, theta);
+                Node.GetTransform.RotationQuaternion = CalculateRotationTheta(theta);
                 Node.Parent.GetTransform.UpdateGlobalTransform();
                 lastY = mouseState.Y;
                 lastX = mouseState.X;
@@ -79,15 +79,15 @@ namespace Toys
         {
             var dir = new Vector4(0, 0, -1, 1);
             var newdir = (dir * Node.GetTransform.GlobalTransform).Xyz - Node.GetTransform.GlobalTransform.ExtractTranslation();
-            phi = (int)(MathF.Atan2(newdir.Z, newdir.X) * 180 / MathF.PI);
-            theta = (int)(MathF.Acos(newdir.Y / newdir.Xzy.Length) * 180 / MathF.PI);
+            phi = (int)(MathF.Atan2(newdir.Z, newdir.X) * 180 / MathF.PI + 90);
+            theta = (int)(MathF.Acos(newdir.Y / newdir.Xzy.Length) * 180 / MathF.PI - 90);
         }
 
         Vector3 CalcPos(float r, int Iphi, int Itheta)
         {
             float x, y, z;
-            float phi = radians(Iphi);
-            float theta = radians(Itheta);
+            float phi = MathHelper.ConvertGrad2Radians(Iphi);
+            float theta = MathHelper.ConvertGrad2Radians(Itheta);
 
             x = r * MathF.Sin(theta) * MathF.Cos(phi);
             z = r * MathF.Sin(theta) * MathF.Sin(phi);
@@ -97,16 +97,29 @@ namespace Toys
 
         Quaternion CalculateRotation(float r, int Iphi, int Itheta)
         {
+            
             var look = cameraDir.Xyz;
             var dir = CalcPos(r, Iphi, Itheta);
-            dir.Normalize();
+
             Vector3 axis = Vector3.Cross(look, dir);
+
             return Quaternion.FromAxisAngle(axis, MathF.Acos(Vector3.Dot(dir, look)));
+
+            //return Quaternion.FromAxisAngle(Vector3.UnitX, MathHelper.ConvertGrad2Radians(Itheta)) * Quaternion.FromAxisAngle(Vector3.UnitY, MathHelper.ConvertGrad2Radians(-Iphi));
+            //return Quaternion.FromEulerAngles(MathHelper.ConvertGrad2Radians(Itheta), MathHelper.ConvertGrad2Radians(-Iphi),0);
         }
 
-        float radians(float degrees)
+        Quaternion CalculateRotationPhi(int Iphi)
         {
-            return MathF.PI * degrees / 180.0f;
+            Vector3 axis = Vector3.UnitY;
+
+            return Quaternion.FromAxisAngle(axis, MathHelper.ConvertGrad2Radians(-Iphi));
+        }
+
+        Quaternion CalculateRotationTheta(int Itheta)
+        {
+            Vector3 axis = Vector3.UnitX;
+            return Quaternion.FromAxisAngle(axis, MathHelper.ConvertGrad2Radians(Itheta));
         }
     }
 }
