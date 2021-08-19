@@ -37,9 +37,11 @@ namespace Toys
         {
             worldTrans = Node.GetTransform;
             World = CoreEngine.pEngine.World;
+            
             InstalizeRigitBody(Rigits);
             InstalizeJoints(Jcons);
             ReinstalizeBodys();
+            
         }
 
         void InstalizeRigitBody(RigidContainer[] rigits)
@@ -86,18 +88,22 @@ namespace Toys
 
         void PreRender()
         {
+            
             var worldInverted = worldTrans.GlobalTransform;
             worldInverted.Invert();
             postPhysics(worldInverted);
+            
         }
 
 		//test
 		public void ReinstalizeBodys()
 		{
+            
             foreach (var body in rigitBodies)
             {
                 body.Reinstalize(worldTrans.GlobalTransform);
             }
+            
 		}
 
         internal override void Unload()

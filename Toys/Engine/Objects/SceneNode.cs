@@ -39,7 +39,7 @@ namespace Toys
 			components = new List<Component>();
             Parent = null;
             ParentScene = null;
-            transform = new Transform(this);
+            transform = new Transform();
             AddComponent(transform);
         }
 

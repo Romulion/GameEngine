@@ -13,6 +13,7 @@ namespace Toys
         DiscreteDynamicsWorld world;
         KinematicCharacterController _charController;
         protected PairCachingGhostObject _ghostObject;
+        float charHeighth = 1.8f;
         public float WalkSpeed { get; set; }
         public float RunSpeed { get; set; }
         protected void Awake()
@@ -26,7 +27,7 @@ namespace Toys
         private void CreatePlayerBox()
         {
             const float stepHeight = 0.35f;
-            CapsuleShape shape = new CapsuleShape(0.7f, 1.7f);
+            CapsuleShape shape = new CapsuleShape(0.4f, charHeighth);
             _ghostObject = new PairCachingGhostObject()
             {
                 CollisionShape = shape,
@@ -64,12 +65,13 @@ namespace Toys
         {
             //update node position
             var transform = _ghostObject.WorldTransform;
-            Node.GetTransform.Position = new OpenTK.Mathematics.Vector3(transform.M41, transform.M42, transform.M43);
+            Node.GetTransform.Position = new OpenTK.Mathematics.Vector3(transform.M41, transform.M42 - charHeighth, transform.M43);
         }
 
         protected void Teleport(OpenTK.Mathematics.Vector3 position)
         {
             var pos = position.Convert();
+            pos.Y += 0.3f;
             _charController.Warp(ref pos);
         }
     }

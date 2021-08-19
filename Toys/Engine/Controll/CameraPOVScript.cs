@@ -11,7 +11,6 @@ namespace Toys
 {
     public class CameraPOVScript : ScriptingComponent
     {
-        Camera camera;
         Vector4 cameraDir;
         GLWindow game;
         bool mousePressed = false;
@@ -25,7 +24,6 @@ namespace Toys
 
         void Awake()
         {
-            camera = (Camera)Node.GetComponent<Camera>();
             cameraDir = new Vector4(0, 0, -1, 1);
             game = GLWindow.gLWindow;
         }
@@ -38,7 +36,6 @@ namespace Toys
             var mouseState = GLWindow.gLWindow.MouseState;
             if (game.IsFocused && !CoreEngine.gEngine.UIEngine.Busy && mousePressed && mouseState.IsButtonDown(MouseButton.Button1))
             {
-
                 if (mouseState.X - lastX > angleThresold)
                 {
                     phi += angleStep;
@@ -61,8 +58,10 @@ namespace Toys
                     theta = thetaMax;
                 else if (theta < thetaMin)
                     theta = thetaMin;
-                Node.GetTransform.RotationQuaternion = CalculateRotation(1, phi, theta);
-                Node.GetTransform.UpdateGlobalTransform();
+                Node.Parent.GetTransform.RotationQuaternion = CalculateRotation(1, phi, 90);
+                
+                Node.GetTransform.RotationQuaternion = CalculateRotation(1, -90, theta);
+                Node.Parent.GetTransform.UpdateGlobalTransform();
                 lastY = mouseState.Y;
                 lastX = mouseState.X;
             }
@@ -74,13 +73,12 @@ namespace Toys
             }
             else
                 mousePressed = false;
-            
         }
 
         public void RecalculateAngles()
         {
             var dir = new Vector4(0, 0, -1, 1);
-            var newdir = (dir * Node.GetTransform.GlobalTransform).Xyz - Node.GetTransform.Position;
+            var newdir = (dir * Node.GetTransform.GlobalTransform).Xyz - Node.GetTransform.GlobalTransform.ExtractTranslation();
             phi = (int)(MathF.Atan2(newdir.Z, newdir.X) * 180 / MathF.PI);
             theta = (int)(MathF.Acos(newdir.Y / newdir.Xzy.Length) * 180 / MathF.PI);
         }
@@ -91,9 +89,9 @@ namespace Toys
             float phi = radians(Iphi);
             float theta = radians(Itheta);
 
-            x = r * (float)Math.Sin(theta) * (float)Math.Cos(phi);
-            z = r * (float)Math.Sin(theta) * (float)Math.Sin(phi);
-            y = r * -(float)Math.Cos(theta);
+            x = r * MathF.Sin(theta) * MathF.Cos(phi);
+            z = r * MathF.Sin(theta) * MathF.Sin(phi);
+            y = r * -MathF.Cos(theta);
             return new Vector3(x, y, z);
         }
 
@@ -103,7 +101,7 @@ namespace Toys
             var dir = CalcPos(r, Iphi, Itheta);
             dir.Normalize();
             Vector3 axis = Vector3.Cross(look, dir);
-            return Quaternion.FromAxisAngle(axis, (float)Math.Acos(Vector3.Dot(dir, look)));
+            return Quaternion.FromAxisAngle(axis, MathF.Acos(Vector3.Dot(dir, look)));
         }
 
         float radians(float degrees)

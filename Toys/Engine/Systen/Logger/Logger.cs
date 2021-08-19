@@ -37,22 +37,22 @@ namespace Toys
 
 		}
 
-		public void Warning(string Message, string path)
+		public void Warning(string Message, string path = "")
 		{
 			ProceedEntry(Level.Warning, Message, path);
 		}
 
-		public void Critical(string Message, string path)
+		public void Critical(string Message, string path = "")
 		{
 			ProceedEntry(Level.Critical, Message, path);
 		}
 
-		public void Error(string Message, string path)
+		public void Error(string Message, string path = "")
 		{
 			ProceedEntry(Level.Error, Message, path);
 		}
 
-		public void Info(string Message, string path)
+		public void Info(string Message, string path = "")
 		{
 			ProceedEntry(Level.Info, Message, path);
 		}

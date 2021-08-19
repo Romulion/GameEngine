@@ -14,20 +14,21 @@ namespace ModelViewer
             
             GLWindow window = new GLWindow();
             var scene = CoreEngine.MainScene;
-            
+
             SceneNode cameraNode = new SceneNode();
             cameraNode.Name = "Camera";
-            var camera = (Camera)cameraNode.AddComponent<Camera>();
-            
+            var camera = cameraNode.AddComponent<Camera>();
+
             cameraNode.GetTransform.Position = new Vector3(0, 2f, 0);
             camera.Background = new BackgroundSkybox();
-            scene.AddNode2Root(cameraNode);
 
             CoreEngine.Shared.ScriptHolder.AddComponent<FrameTimeScript>();
 
             //character view mode
             if (args.Length != 0)
             {
+
+                scene.AddNode2Root(cameraNode);
                 cameraNode.AddComponent<DynamicFormScript>();
 
                 //Remote Image Streaming
@@ -50,7 +51,7 @@ namespace ModelViewer
             //scene mode
             else
             {
-                var testScene = (TestSceneLoader)CoreEngine.Shared.ScriptHolder.AddComponent<TestSceneLoader>();
+                var testScene = CoreEngine.Shared.ScriptHolder.AddComponent<TestSceneLoader>();
             }
             
             var task = new Task(() =>

@@ -33,19 +33,25 @@ namespace ModelViewer
             //test.camera = camera;
             //Button = test;
             var cameraNode = CoreEngine.GetCamera.Node;
-            cameraNode.AddComponent<CharacterControllPlayer>();
+            var playerNode = new SceneNode();
+            playerNode.Name = "Player";
+            playerNode.GetTransform.Position = new Vector3(0, 0.5f, 0);
+            cameraNode.GetTransform.Position = new Vector3(0, 2.35f, 0);
+            CoreEngine.MainScene.AddNode2Root(playerNode);
+            playerNode.AddComponent<CharacterControllPlayer>();
+
+            cameraNode.SetParent(playerNode);
             cameraNode.AddComponent<CameraPOVScript>();
 
             var audioListener = AudioListener.GetListener();
             cameraNode.AddComponent(audioListener);
-
             //load ui
-            uiScript = (LoadUIScript) Node.AddComponent<LoadUIScript>();
+            uiScript = Node.AddComponent<LoadUIScript>();
             uiScript.cc = cc;
         }
 
         void LoadModels()
-        {
+        { 
 
             MeshData[] meshData;
             var build = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\School1F\School.pmx");
@@ -91,10 +97,10 @@ namespace ModelViewer
                 CoreEngine.MainScene.AddNode2Root(model1);
                 //var manager = model1.GetComponent<PhysicsManager>();
                 model1.AddComponent<NpcAI>();
-                cc = (CharControll)model1.AddComponent<CharControll>();
+                cc = model1.AddComponent<CharControll>();
                 cc.Materials = Materials;
 
-                var anim = model1.GetComponent<Animator>() as Animator;
+                var anim = model1.GetComponent<Animator>();
                 bc = anim.BoneController;
 
                 //Console.WriteLine(bc.GetBone("頭").World2BoneInitial);

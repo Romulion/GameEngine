@@ -42,7 +42,6 @@ namespace Toys
             get { return projType; }
             set { projType = value; }
         }
-
         [SaveScene]
         public float NearPlane { get; set;}
         [SaveScene]
@@ -78,7 +77,7 @@ namespace Toys
         #region Transforms
         public Vector3 GetPos
 		{
-			get { return Node.GetTransform.Position; }
+			get { return Node.GetTransform.GlobalTransform.ExtractTranslation(); }
 		}
         internal Matrix4 GetLook
 		{
@@ -96,7 +95,7 @@ namespace Toys
 
 		internal void CalcLook()
 		{
-            look = Matrix4.LookAt(Node.GetTransform.Position, (new Vector4(cameraTarget, 1) * Node.GetTransform.GlobalTransform).Xyz, cameraUp);
+            look = Matrix4.LookAt(Node.GetTransform.GlobalTransform.ExtractTranslation(), (new Vector4(cameraTarget, 1) * Node.GetTransform.GlobalTransform).Xyz, cameraUp);
         }
         #endregion
         internal override void AddComponent(SceneNode nod)

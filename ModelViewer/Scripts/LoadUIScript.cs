@@ -54,7 +54,7 @@ namespace ModelViewer
             btnTrtans2.anchorMin = new Vector2(0f, 1f);
             btnTrtans2.offsetMax = new Vector2(0, -0);
             btnTrtans2.offsetMin = new Vector2(0, -25);
-            btn2.SetAction(() => { cc?.SetDestination(CoreEngine.GetCamera.Node.GetTransform.Position); });
+            btn2.SetAction(() => { cc?.SetDestination(CoreEngine.GetCamera.Node.GetTransform.GlobalTransform.ExtractTranslation()); });
             btn2.SetParent(ui);
 
             

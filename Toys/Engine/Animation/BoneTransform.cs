@@ -9,6 +9,9 @@ namespace Toys
         public Matrix4 TransformMatrix;
         public Matrix4 PhysTransform;
         public bool Phys = false;
+        /// <summary>
+        /// Disable animation for this bone
+        /// </summary>
         public bool FollowAnimation = true;
 
         //initial bone space coordinetes for reference

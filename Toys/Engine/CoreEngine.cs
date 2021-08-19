@@ -31,8 +31,6 @@ namespace Toys
             }
         }
 
-        public float elapsed { get; private set; }
-
 		public static Scene MainScene { get; set; }
         public static ShareData Shared { get; set; }
 
@@ -56,7 +54,7 @@ namespace Toys
                 animEngine = new AnimationEngine();
                 time = new Time();
                 frameTimer = new Time();
-                elapsed = 0.01f;
+                frameTimer.FrameTime = 0.01f;
             }
 			catch (Exception e)
 			{
@@ -85,8 +83,7 @@ namespace Toys
 
 		internal void Update()
 		{
-            elapsed = (float)frameTimer.Stop();
-            elapsed *= .001f;
+            frameTimer.FrameTime = (float)frameTimer.Stop() * .001f;
             frameTimer.Start();
             time.Start();
             sEngine.Awake();
@@ -100,12 +97,12 @@ namespace Toys
 				task = null;
 			}
 			MainScene.Update();
-            animEngine.Upadate(elapsed);
+            animEngine.Upadate(frameTimer.FrameTime);
             gEngine.UIEngine.UpdateUI();
             gEngine.UIEngine.CheckMouse();
             //physics
 #if PHYS
-            pEngine.Update(elapsed);
+            pEngine.Update(frameTimer.FrameTime);
 #endif
             aEngine.Update();
             sEngine.PreRender();

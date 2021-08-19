@@ -7,7 +7,6 @@ namespace Toys
     public class Transform : Component
     {
         private Matrix4 localT;
-        private SceneNode baseNode;
         Quaternion rotationQuaternion;
 		Vector3 rotation;
 		Vector3 position;
@@ -22,14 +21,13 @@ namespace Toys
             get; private set;
         } 
 
-        internal Transform(SceneNode node) : base (typeof(Transform))
+        internal Transform() : base (typeof(Transform))
         {
             localT = Matrix4.Identity;
             GlobalTransform = Matrix4.Identity;
             rotationQuaternion = Quaternion.Identity;
             rotation = Vector3.Zero;
             position = Vector3.Zero;
-            baseNode = node;
             scale = Vector3.One;
         }
     
@@ -116,8 +114,10 @@ namespace Toys
 
         internal void UpdateGlobalTransform()
         {
-            if (baseNode.Parent != null)
-                GlobalTransform = baseNode.Parent.GetTransform.GlobalTransform * localT;
+            if (Node.Parent != null)
+            {
+                GlobalTransform = localT * Node.Parent.GetTransform.GlobalTransform;
+            }
             else
                 GlobalTransform = localT;
         }

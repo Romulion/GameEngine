@@ -7,6 +7,7 @@ namespace Toys
     {
         public double RenderTime { get; internal set; }
         public double UpdateTime { get; internal set; }
+        public float FrameTime { get; internal set; }
         Stopwatch stopwatch;
         static double resolution = (double)1000 / Stopwatch.Frequency;
 
