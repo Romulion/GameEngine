@@ -23,7 +23,7 @@ namespace ModelViewer
         Animation walk;
         Animation idle;
         Animator animator;
-
+        float keepDistance = 0.7f;
 
         void Start()
         {
@@ -74,6 +74,16 @@ namespace ModelViewer
                     prevDist = direction.Length;
                     direction.Normalize();
                     RotateToDirection(direction);
+
+                    //stop before target
+                    Vector3 dest = Vector3.Zero;
+                    if (path.Length > 1)
+                        dest = path[path.Length - 1] - path[path.Length - 2];
+                    else
+                        dest = direction;
+                    dest.Normalize();
+                    path[path.Length - 1] -= dest * keepDistance;
+
                     Console.WriteLine("path calc completed");
                 }
                 else
@@ -86,6 +96,7 @@ namespace ModelViewer
             if (path != null && isWalking)
             {
                 var coord = Node.GetTransform.Position;
+                path[waipoint].Y = 0;
                 var distance = (coord - path[waipoint]).Length;
                 if (distance < 0.06f || prevDist < distance)
                 {
@@ -103,8 +114,6 @@ namespace ModelViewer
                         WalkingState(false);
                         path = null;
                     }
-
-
                 }
                 else
                 {
@@ -113,8 +122,6 @@ namespace ModelViewer
                     Node.GetTransform.Position += direction * move;
                     prevDist = distance;
                 }
-
-
 
             }
 
@@ -125,11 +132,9 @@ namespace ModelViewer
             dir.Y = 0;
             Vector3 look = new Vector3(Node.GetTransform.GlobalTransform.M31, Node.GetTransform.GlobalTransform.M32, Node.GetTransform.GlobalTransform.M33);
             look.Normalize();
-
-            Console.WriteLine(dir);
-            Console.WriteLine(look);
             Vector3 axis = Vector3.Cross(look, dir);
-            var rotation = Quaternion.FromAxisAngle(axis, (float)Math.Acos(Vector3.Dot(dir, look)));
+            float dot = Vector3.Dot(dir, look);
+            var rotation = Quaternion.FromAxisAngle(axis, MathF.Atan2(axis.Length, dot));
             Node.GetTransform.RotationQuaternion *= rotation;
         }
 
