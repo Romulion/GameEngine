@@ -403,7 +403,6 @@ namespace Toys
             foreach (var val in pathOptimized)
                 Console.WriteLine(val);
             Console.WriteLine("Path end");
-            
             Console.WriteLine("Path l:");
             foreach (var val in leftBorder)
                 Console.WriteLine(val);
@@ -413,7 +412,8 @@ namespace Toys
                 Console.WriteLine(val);
             Console.WriteLine("Path end");
             */
-            
+
+            var pathCorners = new List<Vector3>(pathOptimized);
             //Avoid corners
             if (pathOptimized.Count > 1)
                 for (int m = 0; m < pathOptimized.Count - 1; m++)
@@ -421,19 +421,17 @@ namespace Toys
                     strt = (m == 0) ? start : pathOptimized[m - 1];
                     Vector3 direction = (strt - pathOptimized[m]).Normalized() + (pathOptimized[m + 1] - pathOptimized[m]).Normalized();
                     direction.Normalize();
-                    pathOptimized[m] -= direction * AgentSize;
+                    pathCorners[m] -= direction * AgentSize;
                 }
 
             /*
             Console.WriteLine("Path corner:");
-            foreach (var val in pathOptimized)
+            foreach (var val in pathCorners)
                 Console.WriteLine(val);
             Console.WriteLine("Path end");
             */
 
-
-
-            return pathOptimized;
+            return pathCorners;
         }
     }
 }
