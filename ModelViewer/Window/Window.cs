@@ -122,7 +122,7 @@ namespace ModelViewer
                     Button btn = new Button();
                     btn.Label = "MeshDrawerRigged";
                     btn.Name = "btnComp";
-                    btn.Clicked += (sender, e) => { MeshDrawerRig((MeshDrawerRigged)component); };
+                    btn.Clicked += (sender, e) => { MeshDrawer((MeshDrawerRigged)component); };
                     fixedComponents.Put(btn, 0, y);
                     btn.Show();
                     y += 35;
@@ -132,6 +132,7 @@ namespace ModelViewer
                     Button btn = new Button();
                     btn.Label = "MeshDrawer";
                     btn.Name = "btnComp";
+                    btn.Clicked += (sender, e) => { MeshDrawer((MeshDrawer)component); };
                     fixedComponents.Put(btn, 0, y);
                     btn.Show();
                     y += 35;
@@ -177,7 +178,7 @@ namespace ModelViewer
             
         }
 
-        void MeshDrawerRig(MeshDrawerRigged meshDrawer)
+        void MeshDrawer(MeshDrawer meshDrawer)
         {
             ClearChildrens(fixed4);
             int y = 0;
@@ -189,7 +190,7 @@ namespace ModelViewer
                 fixed4.Put(btn, 0, y);
                 btn.Show();
                 y += 35;
-                btn.Clicked += (s, e) => { SetMorphList(meshDrawer.Morphes); fixed6.Show();  notebook.Page = morphPanel; };
+                btn.Clicked += (s, e) => { SetMorphList(meshDrawer.Morphes); fixed6.Show(); notebook.Page = morphPanel; };
             }
             foreach (var mat in meshDrawer.Materials)
             {
@@ -221,9 +222,8 @@ namespace ModelViewer
                 btn.Show();
                 y += 35;
             }
-            
-        }
 
+        }
 
         void DrawComponent(Component comp)
         {
