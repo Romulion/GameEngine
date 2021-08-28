@@ -61,7 +61,7 @@ namespace Toys
 
             //World = new DiscreteDynamicsWorldMultiThreaded(dispatcher, broadphase, cspm, csM, collisionConf);
             //World.Gravity = new Vector3(0, 0f, 0);
-            CreateFloor();
+           // CreateFloor();
             //World.LatencyMotionStateInterpolation = false;
 
             //for character controllers

@@ -77,7 +77,7 @@ namespace Toys
                 Texture2D texture = null;
                 var source = imageNode.FindNodes("init_from");
                 if (source.Length == 1) {
-                    texture = ResourcesManager.LoadAsset<Texture2D>(source[0].InnerText);
+                    texture = ResourcesManager.LoadAsset<Texture2D>(dir + source[0].InnerText);
                     textures.Add(id, texture);
                 }
                 //dont load textures from binary data
@@ -85,21 +85,20 @@ namespace Toys
         }
 
         void CompleteMaterial(XmlNode materialNode, XmlNode root)
-		{
-			var mat = new DAEMaterial();
-			mat.ID = materialNode.Attributes.GetNamedItem("id").Value;
-			mat.Name = materialNode.Attributes.GetNamedItem("name").Value;
+        {
+            var mat = new DAEMaterial();
+            mat.ID = materialNode.Attributes.GetNamedItem("id").Value;
+            mat.Name = materialNode.Attributes.GetNamedItem("name").Value;
             materialIDReference.Add(mat.ID, mat.Name);
             var inst = materialNode.GetNode("instance_effect");
 
-			string effectId = inst.Attributes.GetNamedItem("url").Value.Replace("#", "");
-			string diffuseId = "";
+            string effectId = inst.Attributes.GetNamedItem("url").Value.Replace("#", "");
+            string diffuseId = "";
 
-			var effect = root.FindId(effectId);
-			var prof = effect.GetNode("profile_COMMON");
-			var technique = prof.GetNode("technique");
-			var shadingType = technique.FirstChild;
-
+            var effect = root.FindId(effectId);
+            var prof = effect.GetNode("profile_COMMON");
+            var technique = prof.GetNode("technique");
+            var shadingType = technique.FirstChild;
             if (shadingType.Name == "phong")
             {
                 foreach (XmlNode setting in shadingType.ChildNodes)
@@ -130,38 +129,68 @@ namespace Toys
                     //TODO: make custom shaders
                 }
             }
+            else if (shadingType.Name == "lambert")
+            {
+                foreach (XmlNode setting in shadingType.ChildNodes)
+                {
+                    if (setting.Name == "emission")
+                        mat.Emission = GetColor(setting);
+                    //else if (setting.Name == "ambient")
+                    //    mat.Ambient = GetColor(setting);
+                    //else if (setting.Name == "specular")
+                    //    mat.Specular = GetColor(setting);
+                    else if (setting.Name == "diffuse")
+                    {
+                        var child = setting.FirstChild;
+                        if (child.Name == "texture")
+                            diffuseId = setting.GetNode("texture").Attributes.GetNamedItem("texture").Value;
+                    }
+                    //TODO: make custom shaders
+                }
+            }
             else
                 throw new Exception(String.Format("unsupported shading type {0}", shadingType.Name));
-
             string textureid = "";
-			var sampler = prof.FindAttrib(diffuseId, "sid").FirstChild;
-			var source = sampler.FindNodes("source");
-			if (source.Length == 1)
-			{
-				textureid = source[0].InnerText;
-			}
-			else
-				throw new Exception();
-            var surf = prof.FindAttrib(textureid, "sid").FirstChild;
-			mat.TextureName = surf.FindNodes("init_from")[0].InnerText;
-			//if (mat.TextureName.IndexOf("_id", 0) > 0)
-			//{
-				//mat.TextureName = mat.TextureName.Remove(mat.TextureName.IndexOf("_id", 0));
-			//}
-            try
+            if (diffuseId != "")
             {
-                mat.DiffuseTexture = textures[mat.TextureName];
-                //mat.TextureName += "." + surf.FindNodes("format")[0].InnerText.ToLower();
-            }
-            catch (Exception) { }
-			//mat.DiffuseTexture = new Texture2D(dir + mat.TextureName, TextureType.Diffuse);
+                var sampler = prof.FindAttrib(diffuseId, "sid").FirstChild;
+                var source = sampler.FindNodes("source");
+                if (source.Length == 1)
+                {
+                    textureid = source[0].InnerText;
+                }
+                else
+                    throw new Exception();
+                var surf = prof.FindAttrib(textureid, "sid").FirstChild;
+                mat.TextureName = surf.FindNodes("init_from")[0].InnerText;
 
-            var wrapS = sampler.FindNodes("wrap_s");
-            if (wrapS.Length > 0)
-                mat.DiffuseTexture.WrapModeU = wrapModes[wrapS[0].InnerText];
-            var wrapT = sampler.FindNodes("wrap_t");
-            if (wrapT.Length > 0)
-                mat.DiffuseTexture.WrapModeV = wrapModes[wrapT[0].InnerText];
+
+            
+                //if (mat.TextureName.IndexOf("_id", 0) > 0)
+                //{
+                //mat.TextureName = mat.TextureName.Remove(mat.TextureName.IndexOf("_id", 0));
+                //}
+                try
+                {
+                    mat.DiffuseTexture = textures[mat.TextureName];
+                    //mat.TextureName += "." + surf.FindNodes("format")[0].InnerText.ToLower();
+                }
+                catch (Exception) { }
+                //mat.DiffuseTexture = new Texture2D(dir + mat.TextureName, TextureType.Diffuse);
+
+                var wrapS = sampler.FindNodes("wrap_s");
+                if (wrapS.Length > 0)
+                    mat.DiffuseTexture.WrapModeU = wrapModes[wrapS[0].InnerText];
+                var wrapT = sampler.FindNodes("wrap_t");
+                if (wrapT.Length > 0)
+                    mat.DiffuseTexture.WrapModeV = wrapModes[wrapT[0].InnerText];
+            }
+            else
+            {
+                mat.TextureName = "";
+                mat.DiffuseTexture = Texture2D.LoadEmpty();
+            }
+
             DAEMaterials.Add(mat);
         }
 

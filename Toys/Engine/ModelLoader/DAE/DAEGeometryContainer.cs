@@ -14,10 +14,9 @@ namespace Toys
 		public Vector3[] Colors;
 		public Vector4[] BoneWeigths;
 		public IVector4[] BoneIndeces;
-        public List<Tuple<string, int>> MaterialIndexTable;
+        public List<DAEMaterialBinding> MaterialIndexTable;
 		public int[] Indeces;
 		//public string MaterialName;
-		public int Offset;
         internal string ControllerId;
 
 		public DAEGeometryContainer()
@@ -29,7 +28,7 @@ namespace Toys
 			BoneWeigths = new Vector4[vertCount];
 			BoneIndeces = new IVector4[vertCount];
             */
-            MaterialIndexTable = new List<Tuple<string, int>>();
+            MaterialIndexTable = new List<DAEMaterialBinding>();
 
         }
 	}

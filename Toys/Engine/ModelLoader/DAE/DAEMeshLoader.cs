@@ -65,158 +65,156 @@ namespace Toys
                     catch (Exception) { }
                 }
             }
+            /*
             //Read Materials
             foreach (var meshInst in DAEGeometry)
             {
                 for (int i = 0; i < meshInst.MaterialIndexTable.Count; i++)
                 {
-                    Console.WriteLine(i);
+                    //Console.WriteLine(i);
                     //Console.WriteLine("{0} {1}",meshInst.Indeces.Length, meshInst.ControllerId + ";" + meshInst.MaterialIndexTable[i].Item1);
-                    meshInst.MaterialIndexTable[i] = new Tuple<string, int>(controllerMaterialRef[meshInst.ControllerId + ";" + meshInst.MaterialIndexTable[i].Item1], meshInst.MaterialIndexTable[i].Item2);
+                    meshInst.MaterialIndexTable[i] = new Tuple<string, int>(controllerMaterialRef[meshInst.MaterialIndexTable[i].Item1], meshInst.MaterialIndexTable[i].Item2);
                 }
             }
+            */
         }
 
-		void ReadMesh(XmlNode geometry)
-		{
-			string vertID = "";
-			string normID = "";
-			string textID = "";
-			
-			XmlNode mesh = geometry.FirstChild;
-            
-			DAEGeometryContainer gc = new DAEGeometryContainer();
+        void ReadMesh(XmlNode geometry)
+        {
+            XmlNode mesh = geometry.FirstChild;
+            string PositionID = "";
+            string NormalID = "";
+            string TextureID = "";
+            DAEGeometryContainer gc = new DAEGeometryContainer();
             List<int> indexes = new List<int>();
+
             //initializing mesh data
+            int vertexCount = 0;
             foreach (XmlNode source in mesh.FindNodes("triangles"))
-			{
+            {
+                var materialReference = new DAEMaterialBinding();
                 var cnt = source.Attributes.GetNamedItem("count").Value;
+                materialReference.Count = int.Parse(cnt) * 3;
+                vertexCount += materialReference.Count;
+
+                
 
                 //check material present
                 XmlNode nod = source.Attributes.GetNamedItem("material");
-                string mat = (nod == null) ? "" : nod.Value;
-                int offsets = 0;
-                int[] indexesNew = null;
+                if (nod != null)
+                    materialReference.Name = nod.Value;
                 foreach (XmlNode input in source.ChildNodes)
-				{
+                {
                     if (input.Name == "input")
                     {
                         string src = input.Attributes.GetNamedItem("source").Value;
                         src = src.Replace("#", "");
-
                         switch (input.Attributes.GetNamedItem("semantic").Value)
                         {
                             case "VERTEX":
-
-                                vertID = src;
+                                materialReference.OffsetPosition = int.Parse(input.Attributes.GetNamedItem("offset").Value);
+                                PositionID = src;
                                 break;
                             case "NORMAL":
-                                var off = int.Parse(input.Attributes.GetNamedItem("offset").Value);
-                                if (offsets < off)
-                                    offsets++;
-                                normID = src;
+                                materialReference.OffsetNormal = int.Parse(input.Attributes.GetNamedItem("offset").Value);
+                                NormalID = src;
                                 break;
                             case "TEXCOORD":
-                                var ofs = int.Parse(input.Attributes.GetNamedItem("offset").Value);
-                                if (offsets < ofs)
-                                    offsets++;
-                                textID = src;
+                                //skip additional uv maps
+                                if (input.Attributes.GetNamedItem("set") == null || input.Attributes.GetNamedItem("set").Value == "0")
+                                {
+                                    materialReference.OffsetUV = int.Parse(input.Attributes.GetNamedItem("offset").Value);
+                                    TextureID = src;
+                                }
                                 break;
                         }
                     }
                     else if (input.Name == "p")
-                    {
-                        indexesNew = ReduceIndexes(StringParser.readIntArray(input.InnerText),offsets);
-                        indexes.AddRange(indexesNew);
-                    }
-				}
-                if (mat != "")
-                    gc.MaterialIndexTable.Add(new Tuple<string, int>(mat, indexesNew.Length));
+                        materialReference.Indexes = StringParser.readIntArray(input.InnerText);
+                }
+                gc.MaterialIndexTable.Add(materialReference);
             }
 
-            int maxIndex = indexes.Max() + 1;
-            gc.Positions = new Vector3[maxIndex];
-            gc.Normals = new Vector3[maxIndex];
-            gc.UVs = new Vector2[maxIndex];
-            gc.Colors = new Vector3[maxIndex];
-            gc.BoneWeigths = new Vector4[maxIndex];
-            gc.BoneIndeces = new IVector4[maxIndex];
+            gc.Colors = new Vector3[vertexCount];
+            gc.BoneWeigths = new Vector4[vertexCount];
+            gc.BoneIndeces = new IVector4[vertexCount];
+            gc.Indeces = new int[vertexCount];
 
-            gc.Indeces = indexes.ToArray();
+            //gc.Indeces = indexes.ToArray();
             gc.ID = geometry.Attributes.GetNamedItem("id").Value;
             gc.Name = geometry.Attributes.GetNamedItem("name").Value;
             //if (gc.Name != "tr0029_00_hairSkin")
             //    return;
             DAEGeometry.Add(gc);
 
-            //vertices
-            XmlNode vertS = mesh.FindId(vertID);
-			var inpts = vertS.FindNodes("input");
-			if (inpts[0].Attributes != null && inpts[0].Attributes.GetNamedItem("semantic") != null)
-			{
-				
-				if (inpts[0].Attributes.GetNamedItem("semantic").Value == "POSITION")
-				{
-					string src = inpts[0].Attributes.GetNamedItem("source").Value;
+            //Create vertexes from idexes
 
-					XmlNode vert = mesh.FindId(src.Replace("#",""));
 
-					var flp = vert.FindNodes("float_array");
-
-					float[] flsp = StringParser.readFloatArray(flp[0].InnerText, 1f);
-					max = (flsp.Max() > max) ? flsp.Max() : max;
-					int io = 0;
-					for (int n = 0; n < flsp.Length && io < gc.Positions.Length; n += 3)
-					{
-						gc.Positions[io] = new Vector3(flsp[n], flsp[n + 1], flsp[n + 2]);
-						io++;
-					}
-
-				}
-				else
-                    logger.Warning("wrong position semantic type: " + inpts[0].Attributes.GetNamedItem("semantic").Value, "DAEMeshLoader.ReadMesh");
-                
-            }
-
-            int i = 0;
-			//get normals
-			if (normID != "")
-			{
-				XmlNode norm = mesh.FindId(normID);
-				var fl = norm.FindNodes("float_array");
-
-				float[] fls = StringParser.readFloatArray(fl[0].InnerText);
-
-				for (int n = 0; n < fls.Length && i < gc.Normals.Length; n += 3)
-				{
-					gc.Normals[i] = new Vector3(fls[n], fls[n + 1], fls[n + 2]);
-					gc.Normals[i].Normalize();
-					i++;
-				}
-			}
-			else 
-			{
-				for (int n = 0; i<gc.Normals.Length; n += 3)
-				{
-					gc.Normals[i] = Vector3.Zero;
-					i++;
-				}
-			}
-            //get texcoord
-            if (textID != "")
+            XmlNode vertS = mesh.FindId(PositionID);
+            var inpts = vertS.FindNodes("input");
+            if (inpts[0].Attributes != null && inpts[0].Attributes.GetNamedItem("semantic") != null)
             {
-                XmlNode uvtex = mesh.FindId(textID);
 
+                if (inpts[0].Attributes.GetNamedItem("semantic").Value == "POSITION")
+                {
+                    string src = inpts[0].Attributes.GetNamedItem("source").Value;
+
+                    XmlNode vert = mesh.FindId(src.Replace("#", ""));
+
+                    var flp = vert.FindNodes("float_array");
+
+                    float[] flsp = StringParser.readFloatArray(flp[0].InnerText);
+                    gc.Positions = new Vector3[flsp.Length/3];
+                    //max = (flsp.Max() > max) ? flsp.Max() : max;
+                    //Console.WriteLine(flsp[2182 * 3]);
+                    for (int n = 0; n < flsp.Length; n += 3)
+                    {
+                       // Console.WriteLine(n);
+                        gc.Positions[n /3] = new Vector3(flsp[n], flsp[n + 1], flsp[n + 2]);
+                    }
+                }
+                else
+                    logger.Warning("wrong position semantic type: " + inpts[0].Attributes.GetNamedItem("semantic").Value, "DAEMeshLoader.ReadMesh");
+
+            }
+            int i = 0;
+            //get normals
+            if (NormalID != "")
+            {
+                XmlNode norm = mesh.FindId(NormalID);
+                var fl = norm.FindNodes("float_array");
+                float[] fls = StringParser.readFloatArray(fl[0].InnerText);
+                gc.Normals = new Vector3[fls.Length];
+                for (int n = 0; n < fls.Length && i < gc.Normals.Length; n += 3)
+                {
+                    gc.Normals[i] = new Vector3(fls[n], fls[n + 1], fls[n + 2]);
+                    gc.Normals[i].Normalize();
+                    i++;
+                }
+            }
+            else
+            {
+                for (int n = 0; i < gc.Normals.Length; n += 3)
+                {
+                    gc.Normals[i] = Vector3.Zero;
+                    i++;
+                }
+            }
+            //get texcoord
+            if (TextureID != "")
+            {
+                XmlNode uvtex = mesh.FindId(TextureID);
+                //Console.WriteLine(textID);
                 var accessor = uvtex.FindNodes("technique_common")[0].FirstChild;
                 int stride = int.Parse(accessor.Attributes.GetNamedItem("stride").Value);
 
                 var fluv = uvtex.FindNodes("float_array");
                 float[] fls1 = StringParser.readFloatArray(fluv[0].InnerText);
+                gc.UVs = new Vector2[fls1.Length];
                 i = 0;
-
                 for (int n = 0; n < fls1.Length && i < gc.UVs.Length; n += stride)
                 {
-                    gc.UVs[i] = new Vector2( fls1[n], 1 - fls1[n + 1]);
+                    gc.UVs[i] = new Vector2(fls1[n], 1 - fls1[n + 1]);
                     i++;
                 }
             }
@@ -294,30 +292,52 @@ namespace Toys
             }
             return elemets;
         }
+
         private void MakeControllerMatDict(List<XmlNode> nodes)
         {
             foreach (var node in nodes)
             {
                 try
                 {
-                    var instance = node.FindNodes("instance_controller")[0];
-                    var controller = instance.Attributes.GetNamedItem("url").Value;
-                    var bm = instance.FindNodes("bind_material")[0];
-                    var tc = bm.FindNodes("technique_common")[0];
-                    var im = tc.FindNodes("instance_material");
-                    foreach (var inMat in im)
+                    //if (instance == null)
+                        
+                    var instance = node.FindNodes("instance_controller");
+                    if (instance.Length > 0)
                     {
-                        var materialID = inMat.Attributes.GetNamedItem("target").Value;
-                        var symbol = inMat.Attributes.GetNamedItem("symbol").Value;
-                        controllerMaterialRef.Add(controller.Remove(0, 1) + ";" + symbol, materialID.Remove(0, 1));
-                        //Console.WriteLine("{0} {1}", controller.Remove(0, 1) + ";" + symbol, materialID.Remove(0, 1));
+                        var controller = instance[0].Attributes.GetNamedItem("url").Value;
+                        var bm = instance[0].FindNodes("bind_material")[0];
+                        var tc = bm.FindNodes("technique_common")[0];
+                        var im = tc.FindNodes("instance_material");
+                        foreach (var inMat in im)
+                        {
+                            var materialID = inMat.Attributes.GetNamedItem("target").Value;
+                            var symbol = inMat.Attributes.GetNamedItem("symbol").Value;
+                            controllerMaterialRef.Add(symbol, materialID.Remove(0, 1));
+                            //Console.WriteLine("{0} {1}", controller.Remove(0, 1) + ";" + symbol, materialID.Remove(0, 1));
+                        }
                     }
-
+                    else
+                    {
+                        var geometry =  node.FindNodes("instance_geometry");
+                        var bm = geometry[0].FindNodes("bind_material")[0];
+                        var tc = bm.FindNodes("technique_common")[0];
+                        var im = tc.FindNodes("instance_material");
+                        foreach (var inMat in im)
+                        {
+                            var materialID = inMat.Attributes.GetNamedItem("target").Value;
+                            var symbol = inMat.Attributes.GetNamedItem("symbol").Value;
+                            controllerMaterialRef.Add(symbol, materialID.Remove(0, 1));
+                            //Console.WriteLine("{0} {1}", symbol, materialID.Remove(0, 1));
+                        }
+                    }
                 }
-                catch (Exception e) { //Console.WriteLine(e.StackTrace);
+                catch (Exception e) 
+                {
+                    //Console.WriteLine(e.StackTrace);
                 }
             }
         }
+
 
         private int[] ReduceIndexes(int[] raw, int offset)
         {
@@ -334,31 +354,33 @@ namespace Toys
             }
             return array;
         }
-		public Mesh LoadMesh()
+		public Mesh[] LoadMesh()
 		{
-			List<VertexRigged3D> verts = new List<VertexRigged3D>();
-			List<int> indeces = new List<int>();
-
-			int offset = 0;
-			int vertsOffset = 0;
-			foreach (var gc in DAEGeometry)
-			{
-				for (int n = 0; n < gc.Positions.Length; n++)
-				{
-					verts.Add(new VertexRigged3D(gc.Positions[n], gc.Normals[n], gc.UVs[n], gc.BoneIndeces[n], gc.BoneWeigths[n]));
-				}
-				foreach (int index in gc.Indeces)
-				{
-					indeces.Add(index + vertsOffset);
-				}
-				gc.Offset = offset;
-				vertsOffset += gc.Positions.Length;
-				offset += gc.Indeces.Length;
-                //Console.WriteLine("{0} {1}", offset,  gc.Indeces.Length);
-            }
-
-			Mesh mesh = new Mesh(verts.ToArray(), indeces.ToArray());
+            Mesh[] mesh = new Mesh[DAEGeometry.Count];
             
+
+            for (int i = 0; i < DAEGeometry.Count; i++)
+			{
+                var verts = new VertexRigged3D[DAEGeometry[i].Indeces.Length];
+                
+                int offset = 0;
+                foreach (var mat in DAEGeometry[i].MaterialIndexTable)
+                {
+                    mat.Offset = offset;
+                    for (int n = 0; n < mat.Count; n++)
+                    {
+                        var indx = mat.Indexes;
+                        var mul = indx.Length / mat.Count;
+                        verts[offset] = new VertexRigged3D(DAEGeometry[i].Positions[indx[n * mul + mat.OffsetPosition]], 
+                            DAEGeometry[i].Normals[indx[n * mul + mat.OffsetNormal]], DAEGeometry[i].UVs[indx[n * mul + mat.OffsetUV]], 
+                            new IVector4(new int[4] { 0, 0, 0, 0 }), Vector4.Zero);
+                        DAEGeometry[i].Indeces[offset] = offset++;
+                    }
+
+                }
+                mesh[i] = new Mesh(verts, DAEGeometry[i].Indeces);
+                
+            }            
 			return mesh;
 		}
         

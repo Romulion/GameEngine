@@ -5,124 +5,129 @@ using OpenTK.Mathematics;
 
 namespace Toys
 {
-	public class ReaderDAE : IModelLoader
-	{
-		string file;
-		XmlDocument xDoc;
-		string dir;
-		Mesh mesh;
-		Material[] mats;
-		List<Bone> bones = new List<Bone>();
-		const float multiplier = 0.01f;
+    public class ReaderDAE : IModelLoader
+    {
+        string file;
+        XmlDocument xDoc;
+        string dir;
+        Mesh[] mesh;
+        Material[][] mats;
+        List<Bone> bones = new List<Bone>();
+        const float multiplier = 0.01f;
         DAEMeshLoader meshreader;
 
         public ReaderDAE(string filename)
-		{
-			file = filename;
-			int indx = filename.LastIndexOf('\\');
+        {
+            file = filename;
+            int indx = filename.LastIndexOf('\\');
             if (indx >= 0)
                 dir = filename.Substring(0, indx) + '\\';
             else
                 dir = "";
             xDoc = new XmlDocument();
-			xDoc.Load(filename);
-			LoadLibraries();
+            xDoc.Load(filename);
+            LoadLibraries();
         }
 
-		void LoadLibraries()
-		{
-			XmlElement xRoot = xDoc.DocumentElement;
+        void LoadLibraries()
+        {
+            XmlElement xRoot = xDoc.DocumentElement;
             meshreader = new DAEMeshLoader(xRoot);
-			mesh = meshreader.LoadMesh();
+            mesh = meshreader.LoadMesh();
             //bones
             LoadBones(xRoot);
             //materials
             var daemats = new DAEMaterialReader(xRoot, dir);
             var matsList = daemats.GetMaterials();
-            mats = new Material[meshreader.DAEGeometry.Count];
-            for (int i = 0; i < meshreader.DAEGeometry.Count; i++)
-			{
-                int prev = 0;
+            mats = new Material[meshreader.DAEGeometry.Count][];
+            for (int i = 0; i < mesh.Length; i++)
+            {
                 var meshItem = meshreader.DAEGeometry[i];
-                foreach (var matRef in meshItem.MaterialIndexTable)
+                var materials = meshItem.MaterialIndexTable;
+                mats[i] = new Material[materials.Count];
+                
+                for (int n = 0; n < materials.Count; n++)
                 {
-                    var matname = daemats.materialIDReference[matRef.Item1];
+                    if (materials[n].Name == "")
+                    {
+                        //mats[i][n] = Material("default");
+                        continue;
+                    }
+                        
 
-
+                    var matname = daemats.materialIDReference[materials[n].Name];
                     var matTemplate = matsList.Find((obj) => obj.Name == matname);
 
-                    mats[i] = matTemplate.Clone();
-                    mats[i].Name = meshItem.Name;
-                    mats[i].UniManager.Set("ambient_color", Vector3.One);
-                    mats[i].Count = matRef.Item2;
-                    mats[i].Offset = meshItem.Offset + prev;
-                    //Console.WriteLine("{0} {1} {2}", matname, mats[i].Offset, mats[i].Count);
-                    prev += matRef.Item2;
+                    var mat = matTemplate.Clone();
+                    mat.Name = matname;
+                    mat.UniManager.Set("ambient_color", Vector3.One);
+                    mat.Count = materials[n].Count;
+                    mat.Offset = materials[n].Offset;
+                    mats[i][n] = mat;                    
                 }
-			}
+            }
         }
 
-		void LoadBones(XmlElement xRoot)
-		{
-			string node = "library_visual_scenes";
-			List<Bone> bons = new List<Bone>();
-			XmlNode xBones = null;
-			foreach (XmlNode xnode in xRoot)
-			{
-				if (xnode.Name == node)
-				{
-					xBones = xnode;
-					break;
-				}
-			}
-
-
-			var scene = xBones.FindNodes("visual_scene");
-
-			if (scene.Length > 0)
-			{
-				getBone(scene[0].FindAttrib("JOINT","type"),-1);
+        void LoadBones(XmlElement xRoot)
+        {
+            string node = "library_visual_scenes";
+            List<Bone> bons = new List<Bone>();
+            XmlNode xBones = null;
+            foreach (XmlNode xnode in xRoot)
+            {
+                if (xnode.Name == node)
+                {
+                    xBones = xnode;
+                    break;
+                }
             }
 
-			//set childs
-			for (int i = 0; i < bones.Count; i++)
-			{
-				List<int> childs = new List<int>();
-				for (int n = 0; n < bones.Count; n++)
-					if (bones[n].ParentIndex == i)
-					{
-						childs.Add(n);
-					}
 
-				bones[i].Childs = childs.ToArray();
-			}
+            var scene = xBones.FindNodes("visual_scene");
+
+            if (scene.Length > 0)
+            {
+                getBone(scene[0].FindAttrib("JOINT", "type"), -1);
+            }
+
+            //set childs
+            for (int i = 0; i < bones.Count; i++)
+            {
+                List<int> childs = new List<int>();
+                for (int n = 0; n < bones.Count; n++)
+                    if (bones[n].ParentIndex == i)
+                    {
+                        childs.Add(n);
+                    }
+
+                bones[i].Childs = childs.ToArray();
+            }
         }
 
-        public MeshData[] GetMeshes()
+        //Obsolette
+        public Dictionary<string, MeshData> GetMeshes()
         {
-
-
-
-            MeshData[] mesh = new MeshData[meshreader.DAEGeometry.Count];
-            for(int i = 0; i< mesh.Length; i++)
+            var meshes = new Dictionary<string, MeshData>();
+            for (int i = 0; i< mesh.Length; i++)
             {
                 List<Vertex3D> verts = new List<Vertex3D>();
                 List<int> indeces = new List<int>();
                 var gc = meshreader.DAEGeometry[i];
+                Console.WriteLine(gc.Name);
                 for (int n = 0; n < gc.Positions.Length; n++)
                 {
-                    verts.Add(new Vertex3D(gc.Positions[n], gc.Normals[n], gc.UVs[n]));
+                    verts.Add(new Vertex3D(gc.Positions[n], Vector3.Zero, Vector2.Zero));
                 }
-                foreach (int index in gc.Indeces)
+                for (int m = 0; m < gc.MaterialIndexTable[0].Indexes.Length; m +=3)
                 {
-                    indeces.Add(index);
+                    indeces.Add(gc.MaterialIndexTable[0].Indexes[m]);
                 }
-                //Console.WriteLine("{0} {1}", offset,  gc.Indeces.Length);
-                mesh[i] = new MeshData();
-                mesh[i].vertices = verts.ToArray();
-                mesh[i].indeces = indeces.ToArray();
+                var mesh = new MeshData();
+                mesh.vertices = verts.ToArray();
+                mesh.indeces = indeces.ToArray();
+                meshes.Add(gc.Name, mesh);
             }
-            return mesh;
+            return meshes;
         }
 
 
@@ -195,10 +200,24 @@ namespace Toys
 
 		public SceneNode GetModel
 		{
-			get
-			{
-				return null;
-			}
+            get
+            {
+                var node = new SceneNode();
+                for (int i = 0; i < mesh.Length; i++)
+                    if (bones.Count > 0)
+                    {
+                        MeshDrawerRigged md = new MeshDrawerRigged(mesh[i], mats[i], new BoneController(bones.ToArray(), true));
+                        md.OutlineDrawing = true;
+                        node.AddComponent(md);
+                        node.AddComponent(new Animator(md.skeleton));
+                    }
+                    else
+                    {
+                        MeshDrawer md = new MeshDrawer(mesh[i], mats[i]);
+                        node.AddComponent(md);
+                    }
+                return node;
+            }
 		}
 
 
@@ -206,12 +225,14 @@ namespace Toys
 		{
 			get
 			{
-				
-				MeshDrawerRigged md = new MeshDrawerRigged(mesh, mats,new BoneController(bones.ToArray(),true));
-				md.OutlineDrawing = true;
-				var node = new SceneNode();
-				node.AddComponent(md);
-                node.AddComponent(new Animator(md.skeleton));
+                var node = new SceneNode();
+                for (int i = 0; i < mesh.Length; i++)
+                {
+                    MeshDrawerRigged md = new MeshDrawerRigged(mesh[i], mats[i], new BoneController(bones.ToArray(), true));
+                    md.OutlineDrawing = true;
+                    node.AddComponent(md);
+                    node.AddComponent(new Animator(md.skeleton));
+                }
 				return node; 
 
 			}

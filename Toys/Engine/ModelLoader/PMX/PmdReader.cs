@@ -522,11 +522,18 @@ namespace Toys
         {
             get
             {
+                /*
                 MeshDrawer md = new MeshDrawer(mesh, mats);
                 md.OutlineDrawing = true;
                 var node = new SceneNode();
                 node.AddComponent(md);
-
+                */
+                MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs);
+                md.OutlineDrawing = true;
+                var node = new SceneNode();
+                node.AddComponent(md);
+                node.AddComponent(new Animator(md.skeleton));
+                node.AddComponent(new PhysicsManager(rigitBodies, joints, md.skeleton));
                 return node;
             }
         }

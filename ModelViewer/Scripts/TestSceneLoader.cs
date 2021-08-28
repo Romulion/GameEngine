@@ -51,9 +51,9 @@ namespace ModelViewer
         }
 
         void LoadModels()
-        { 
+        {
 
-            MeshData[] meshData;
+            /*
             var build = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\School1F\School.pmx");
             if (build)
             {
@@ -78,27 +78,64 @@ namespace ModelViewer
                 MeshDrawer md = new MeshDrawer(mesh, Materials);
                 Node.AddComponent(md);
                 */
-                //Load Collision Mesh
-                Vector3[] verts = new Vector3[meshData[1].vertices.Length];
-                for (int i = 0; i < verts.Length; i++)
-                {
-                    verts[i] = meshData[1].vertices[i].Position;
-                }
-                CoreEngine.pEngine.SetScene(verts, meshData[1].indeces, build.GetTransform.GlobalTransform);
-                
+            //Load Collision Mesh
+            /*
+            Vector3[] verts = new Vector3[meshData[1].vertices.Length];
+            for (int i = 0; i < verts.Length; i++)
+            {
+                verts[i] = meshData[1].vertices[i].Position;
             }
-            
+            CoreEngine.pEngine.SetScene(verts, meshData[1].indeces, build.GetTransform.GlobalTransform);
+
+        }
+        */
+
+            //var build = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Home\house.dae");
+            //if (build)
+            //{
+            //  build.Name = "Home";
+            // CoreEngine.MainScene.AddNode2Root(build);
+            //var serviceData = new ReaderDAE(@"Assets\Models\School1F\School.dae");
+            //meshData = serviceData.GetMeshes();
+            //NavigationMesh.Instalize(meshData[0].vertices, meshData[0].indeces);
+
+            /*
+            //test NavMap draw
+            Mesh mesh = new Mesh(meshData[0].vertices, meshData[0].indeces);
+            Materials = new Material[meshData[0].indeces.Length / 3];
+            var shdrst = new ShaderSettings();
+            shdrst.Ambient = true;
+            for (int i = 0; i < Materials.Length; i++)
+            {
+                Materials[i] = new MaterialPMX(shdrst, new RenderDirectives());
+                Materials[i].Offset = i * 3;
+                Materials[i].Count = 3;
+            }
+            MeshDrawer md = new MeshDrawer(mesh, Materials);
+            Node.AddComponent(md);
+            */
+            //Load Collision Mesh
+            /*
+            Vector3[] verts = new Vector3[meshData[1].vertices.Length];
+            for (int i = 0; i < verts.Length; i++)
+            {
+                verts[i] = meshData[1].vertices[i].Position;
+            }
+            CoreEngine.pEngine.SetScene(verts, meshData[1].indeces, build.GetTransform.GlobalTransform);
+            */
+            //}
+
             var model1 = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Michelle\Seifuku.pmx");
             if (model1)
             {
                 model1.Name = "Michelle.Seifuku";
                 model1.GetTransform.Position = Vector3.UnitZ * 2;
-                model1.GetTransform.RotationQuaternion = new Quaternion(0,MathF.PI,0);
+                model1.GetTransform.RotationQuaternion = new Quaternion(0, MathF.PI, 0);
                 CoreEngine.MainScene.AddNode2Root(model1);
                 //var manager = model1.GetComponent<PhysicsManager>();
                 model1.AddComponent<NpcAI>();
                 cc = model1.AddComponent<CharControll>();
-                cc.Materials = Materials;
+                //cc.Materials = Materials;
 
                 var anim = model1.GetComponent<Animator>();
                 bc = anim.BoneController;
@@ -109,6 +146,43 @@ namespace ModelViewer
                 //var src = ResourcesManager.LoadAsset<AudioSource>(@"Assets\Sound\mumi.mp3");
                 //model1.AddComponent(src);
                 //src.Play();
+            }
+
+            var build = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Home\house.dae");
+            if (build)
+            {
+                build.Name = "Home";
+                CoreEngine.MainScene.AddNode2Root(build);
+
+                var serviceData = new ReaderDAE(@"Assets\Models\Home\house_add.dae");
+                var meshData = serviceData.GetMeshes();
+                if (meshData.ContainsKey("NavMap"))
+                    NavigationMesh.Instalize(meshData["NavMap"].vertices, meshData["NavMap"].indeces);
+
+                if (meshData.ContainsKey("Phys"))
+                {
+                    Vector3[] verts = new Vector3[meshData["Phys"].vertices.Length];
+                    for (int i = 0; i < verts.Length; i++)
+                    {
+                        verts[i] = meshData["Phys"].vertices[i].Position;
+                        Console.WriteLine(verts[i]);
+                    }
+                    CoreEngine.pEngine.SetScene(verts, meshData["Phys"].indeces, build.GetTransform.GlobalTransform);
+                }
+                /*
+                Mesh mesh = new Mesh(meshData[0].vertices, meshData[0].indeces);
+                Materials = new Material[meshData[0].indeces.Length / 3];
+                var shdrst = new ShaderSettings();
+                shdrst.Ambient = true;
+                for (int i = 0; i < Materials.Length; i++)
+                {
+                    Materials[i] = new MaterialPMX(shdrst, new RenderDirectives());
+                    Materials[i].Offset = i * 3;
+                    Materials[i].Count = 3;
+                }
+                MeshDrawer md = new MeshDrawer(mesh, Materials);
+                Node.AddComponent(md);
+                */
             }
             /*
             var model2 = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Hinata\Seifuku.pmx");
@@ -126,14 +200,14 @@ namespace ModelViewer
             //SceneSaveLoadSystem.Save2File("");
         }
 
-        /*
-        void Update()
-        {
-            bc.GetBone("頭").SetTransform(new Vector3(0, 0, 0));
-        }
-        */
+            /*
+            void Update()
+            {
+                bc.GetBone("頭").SetTransform(new Vector3(0, 0, 0));
+            }
+            */
 
-        AnimationController CreateAnimationController()
+            AnimationController CreateAnimationController()
         {
             var controller = new AnimationController();
 

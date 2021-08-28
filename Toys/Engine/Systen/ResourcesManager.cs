@@ -43,7 +43,7 @@ namespace Toys
 			else if (tp == typeof(SceneNode))
 			{
 				IModelLoader model = ModelLoader.Load(path);
-				asset = model?.GetRiggedModel;
+				asset = model?.GetModel;
 			}
             else if (tp == typeof(AudioClip))
             {
