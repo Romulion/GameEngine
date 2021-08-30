@@ -24,6 +24,8 @@ namespace ModelViewer
         Animation idle;
         Animator animator;
         float keepDistance = 0.7f;
+        bool IsRotating = false;
+        float roteteSpeed = Toys.MathHelper.ConvertGrad2Radians(15);
 
         void Start()
         {
@@ -62,7 +64,9 @@ namespace ModelViewer
 
         void Update()
         {
-            if (pathTask != null && pathTask.IsCompleted)
+            if (IsRotating)
+                RotateToDirection(direction);
+            else if (pathTask != null && pathTask.IsCompleted)
             {
 
                 path = pathTask.Result;
@@ -73,7 +77,8 @@ namespace ModelViewer
                     direction = path[0] - Node.GetTransform.Position;
                     prevDist = direction.Length;
                     direction.Normalize();
-                    RotateToDirection(direction);
+                    IsRotating = true;
+                    //RotateToDirection(direction);
 
                     //stop before target
                     Vector3 dest = Vector3.Zero;
@@ -92,8 +97,7 @@ namespace ModelViewer
                 }
                 pathTask = null;
             }
-
-            if (path != null && isWalking)
+            else if (path != null && isWalking)
             {
                 var coord = Node.GetTransform.Position;
                 path[waipoint].Y = 0;
@@ -107,7 +111,8 @@ namespace ModelViewer
                         prevDist = dir.Length;
                         dir.Normalize();
                         direction = dir;
-                        RotateToDirection(dir);
+                        IsRotating = true;
+                        //RotateToDirection(dir);
                     }
                     else
                     {
@@ -127,6 +132,12 @@ namespace ModelViewer
 
         }
 
+        public void RotateCharacter(Vector3 dir)
+        {
+            direction = dir;
+            IsRotating = true;
+        }
+
         void RotateToDirection(Vector3 dir)
         {
             dir.Y = 0;
@@ -134,7 +145,12 @@ namespace ModelViewer
             look.Normalize();
             Vector3 axis = Vector3.Cross(look, dir);
             float dot = Vector3.Dot(dir, look);
-            var rotation = Quaternion.FromAxisAngle(axis, MathF.Atan2(axis.Length, dot));
+            float angle = MathF.Atan2(axis.Length, dot);
+            if (MathF.Abs(angle) < roteteSpeed)
+                IsRotating = false;
+            else
+                angle = (angle < 0) ? -roteteSpeed: roteteSpeed;
+            var rotation = Quaternion.FromAxisAngle(axis, angle);
             Node.GetTransform.RotationQuaternion *= rotation;
         }
 
