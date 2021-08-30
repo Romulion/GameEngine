@@ -75,7 +75,7 @@ namespace Toys
 
 
         /// <summary>
-        /// Euler Angle Rotation; Order XYZ
+        /// Euler Angle Rotation; Order XYZ; Degrees
         /// </summary>
         public Vector3 Rotation
         {

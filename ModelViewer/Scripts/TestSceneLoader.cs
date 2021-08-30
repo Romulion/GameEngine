@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Toys;
 using OpenTK.Mathematics;
+using System.Xml;
 
 
 namespace ModelViewer
@@ -36,7 +37,7 @@ namespace ModelViewer
             var playerNode = new SceneNode();
             playerNode.Name = "Player";
             playerNode.GetTransform.Position = new Vector3(0, 0.5f, 0);
-            cameraNode.GetTransform.Position = new Vector3(0, 2.35f, 0);
+            cameraNode.GetTransform.Position = new Vector3(0, 2.14f, 0);
             CoreEngine.MainScene.AddNode2Root(playerNode);
             playerNode.AddComponent<CharacterControllPlayer>();
 
@@ -165,7 +166,6 @@ namespace ModelViewer
                     for (int i = 0; i < verts.Length; i++)
                     {
                         verts[i] = meshData["Phys"].vertices[i].Position;
-                        Console.WriteLine(verts[i]);
                     }
                     CoreEngine.pEngine.SetScene(verts, meshData["Phys"].indeces, build.GetTransform.GlobalTransform);
                 }
@@ -183,6 +183,7 @@ namespace ModelViewer
                 MeshDrawer md = new MeshDrawer(mesh, Materials);
                 Node.AddComponent(md);
                 */
+
             }
             /*
             var model2 = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Hinata\Seifuku.pmx");
@@ -198,6 +199,8 @@ namespace ModelViewer
             }
             */
             //SceneSaveLoadSystem.Save2File("");
+
+            LoadAssetLocations(@"Assets\Models\Home\house_assets.dae",build);
         }
 
             /*
@@ -225,9 +228,57 @@ namespace ModelViewer
             return controller;
         }
 
-        void LoadEnviropment()
+        void LoadAssetLocations(string file, SceneNode parent)
         {
+            var xDoc = new XmlDocument();
+            xDoc.Load(file);
+            var xRoot = xDoc.DocumentElement;
+            var visualScenes = xRoot.FindNodes("library_visual_scenes")[0];
+            var visualScene = visualScenes.ChildNodes[0];
+            var nodes = visualScene.ChildNodes;
+            string instanceName = "";
+            foreach (XmlNode node in nodes)
+            {
+                var name = node.Attributes.GetNamedItem("name").Value;
+                if (name == null)
+                    continue;
+                //Console.WriteLine(name);
+                var comps = name.Split(':');
+                var objType = comps[0];
+                
 
+                SceneNode assetNode = null;
+                if (objType == "Asset")
+                {
+
+                    var path = comps[1];
+                    //remove index
+                    var indx = path.IndexOf('#');
+                    if (indx > 0)
+                        path = path.Remove(path.IndexOf('#'));
+                    instanceName = path;
+                    path = @"Assets\Models\" + path.Replace('.', '\\') + ".dae";
+                    assetNode = ResourcesManager.LoadAsset<SceneNode>(path);
+
+                }
+
+                
+                if (assetNode)
+                {
+                    assetNode.Name = instanceName;
+                    assetNode.SetParent(parent);
+                    //Location
+                    var floatArray = StringParser.readFloatArray(node.ChildNodes[0].InnerText);
+                    Matrix4 transform = new Matrix4(floatArray[0], floatArray[1], floatArray[2], floatArray[3],
+                        floatArray[4], floatArray[5], floatArray[6], floatArray[7],
+                        floatArray[8], floatArray[9], floatArray[10], floatArray[11],
+                        floatArray[12], floatArray[13], floatArray[14], floatArray[15]);
+                    transform.Transpose();
+                    assetNode.GetTransform.Position = transform.ExtractTranslation();
+                    assetNode.GetTransform.RotationQuaternion = transform.ExtractRotation();
+                    assetNode.GetTransform.Scale = transform.ExtractScale();
+                }
+            }
         }
 
         void LoadNavMap()

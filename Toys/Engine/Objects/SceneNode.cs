@@ -205,6 +205,14 @@ namespace Toys
             }
             components.Clear();
         }
+
+        public override Resource Clone()
+        {
+            var result = new SceneNode();
+
+            result.components = components;
+            return result;
+        }
         #region Save System preps
         public Dictionary<string,string> SaveSequence(bool extended = false)
         {
@@ -250,5 +258,6 @@ namespace Toys
             return vec3;
         }
         #endregion
+
     }
 }

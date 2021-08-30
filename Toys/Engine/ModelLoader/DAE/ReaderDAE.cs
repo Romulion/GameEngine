@@ -113,7 +113,6 @@ namespace Toys
                 List<Vertex3D> verts = new List<Vertex3D>();
                 List<int> indeces = new List<int>();
                 var gc = meshreader.DAEGeometry[i];
-                Console.WriteLine(gc.Name);
                 for (int n = 0; n < gc.Positions.Length; n++)
                 {
                     verts.Add(new Vertex3D(gc.Positions[n], Vector3.Zero, Vector2.Zero));

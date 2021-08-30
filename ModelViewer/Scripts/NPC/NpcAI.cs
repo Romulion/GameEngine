@@ -74,10 +74,6 @@ namespace ModelViewer
 
             var transform = head.World2BoneInitial * head.TransformMatrix * Node.GetTransform.GlobalTransform;
             headBody.WorldTransform = transform.Convert();
-            //Console.WriteLine(headBody.WorldTransform.Origin);
-            //head.SetTransform(Quaternion.FromEulerAngles(0,0.5f * (float)Math.Sin(i*Math.PI/180),0));
-            //head.SetTransform(Quaternion.FromEulerAngles(0.5f * (float)Math.Sin(i*Math.PI/180),0,0));
-            //head.SetTransform(Quaternion.FromEulerAngles(0,0,0.5f * (float)Math.Sin(i*Math.PI/180)));
 
             i++;
             if (looked && timer-- == 0)

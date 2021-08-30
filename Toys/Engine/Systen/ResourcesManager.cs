@@ -23,7 +23,14 @@ namespace Toys
             if (resources.ContainsKey(path))
             {
                 if (resources[path].IsAlive)
-                    return resources[path].Target as T;
+                {
+                    T result = resources[path].Target as T;
+                    if (typeof(T) != typeof(SceneNode))
+                    {
+                        result = result.Clone() as T;
+                    }
+                    return result;
+                }
                 else
                     resources.Remove(path);
             }
