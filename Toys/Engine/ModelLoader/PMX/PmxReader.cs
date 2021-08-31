@@ -400,8 +400,8 @@ namespace Toys
 						if (reader.ReadByte() == 1)
 						{
                             link.IsLimit = true;
-							link.LimitMin = reader.readVector3();
-							link.LimitMax = reader.readVector3();
+							link.LimitMin = -reader.readVector3();
+							link.LimitMax = -reader.readVector3();
 						}
                         links[n] = link;
 					}

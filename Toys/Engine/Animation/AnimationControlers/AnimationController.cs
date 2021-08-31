@@ -6,11 +6,20 @@ using System.Threading.Tasks;
 
 namespace Toys
 {
-    public class AnimationController : Component
+    public class AnimationController
     {
         AnimationNode context;
         List<AnimationNode> animationList;
-        public Animator TargetAnimator;
+        Animator animator;
+        public Animator TargetAnimator
+        {
+            get { return animator; }
+            set
+            {
+                animator = value;
+                UpdateContext(context);
+            }
+        }
         bool changed;
 
         Dictionary<string, bool> boolDict;
@@ -18,10 +27,17 @@ namespace Toys
         Dictionary<string, int> intDict;
 
 
-        public AnimationController() : base(typeof(AnimationController))
+        public AnimationController(AnimationNode animation)
         {
+            context = animation;
             animationList = new List<AnimationNode>();
+            AddAnimation(animation);
+
+            boolDict = new Dictionary<string, bool>();
+            floatDict = new Dictionary<string, float>();
+            intDict = new Dictionary<string, int>();
         }
+
 
         public void SetBool(string key, bool value)
         {
@@ -74,6 +90,11 @@ namespace Toys
                 return 0;
         }
 
+        public AnimationNode FindNode(string name)
+        {
+            return animationList.Find(n => n.Name == name);
+        }
+
         internal void Update()
         {
             //check transition
@@ -89,7 +110,7 @@ namespace Toys
                     }
                 }
             }
-
+            
             //check next animation
             if (!context.Repeat && context.NextAnimation != null)
             {
@@ -131,21 +152,8 @@ namespace Toys
         {
             context = newContext;
             TargetAnimator.AnimationData = context.MainAnimation;
-        }
-
-        internal override void Unload()
-        {
-
-        }
-
-        internal override void AddComponent(SceneNode node)
-        {
-            CoreEngine.animEngine.controllers.Add(this);
-        }
-
-        internal override void RemoveComponent()
-        {
-            CoreEngine.animEngine.controllers.Remove(this);
+            TargetAnimator.Play();
+            TargetAnimator.IsRepeat = context.Repeat;
         }
     }
 }

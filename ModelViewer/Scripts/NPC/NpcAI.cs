@@ -19,7 +19,6 @@ namespace ModelViewer
         Vector2 angle;
         Vector2 targetAngle;
         Vector2 angSpeed;
-        Vector2 angleBias = new Vector2(MathF.PI / 2, MathF.PI / 2);
         float thetaDef = 0;
         float phiDef = 0;
         float thetaMin = -60 * MathF.PI / 180;

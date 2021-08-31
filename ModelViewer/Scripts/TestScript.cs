@@ -25,7 +25,7 @@ namespace ModelViewer
         public Camera camera;
         Material[] Materials;
         int node = 0;
-        public CharControll cc;
+        public NPCNavigationController cc;
         AudioListener audioListener;
         AudioSource src;
         SliderCompoent slider;

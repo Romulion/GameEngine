@@ -10,7 +10,10 @@ namespace ModelViewer
 {
     class LoadUIScript : ScriptingComponent
     {
-        public CharControll cc;
+        public NPCNavigationController cc;
+        bool Rotated = false;
+        bool Start = false;
+        Vector3 dir;
         void Awake()
         {
             var canvas = (Canvas)Node.AddComponent<Canvas>();
@@ -65,7 +68,7 @@ namespace ModelViewer
             btnTrtans3.offsetMax = new Vector2(0, -30);
             btnTrtans3.offsetMin = new Vector2(0, -55);
             btn3.SetAction(() => { cc?.Go(); });
-            btn3.SetParent(ui);            
+            btn3.SetParent(ui);
 
             /*
             var ui3 = new UIElement();
@@ -142,8 +145,50 @@ namespace ModelViewer
             btnTrtans1.offsetMin = new Vector2(0, -115);
             btn1.SetAction(() => { save.LoadGame(); });
             btn1.SetParent(ui);
+
+
+            var btn6 = new Toys.UserInterface.ButtonPrefab("Sit");
+            var btnTrtans6 = btn6.GetTransform;
+            btnTrtans6.anchorMax = new Vector2(1f, 1f);
+            btnTrtans6.anchorMin = new Vector2(0f, 1f);
+            btnTrtans6.offsetMax = new Vector2(0, -120);
+            btnTrtans6.offsetMin = new Vector2(0, -145);
+            btn6.SetAction(GoSit);
+            btn6.SetParent(ui);
         }
 
 
+        void Update()
+        {
+            if (!Start)
+                return;
+
+            if (!Rotated && !cc.IsBusy)
+            {
+                cc.RotateCharacter(dir);
+                Rotated = true;
+            }
+            else if (Rotated && !cc.IsBusy)
+            {
+                cc.AnimController.SetBool("sit", true);
+                Start = false;
+            }
+
+        }
+
+        void GoSit()
+        {            
+            var nodes = CoreEngine.MainScene.FindByName("Furniture.ChairLiving");
+            if (nodes.Length < 1)
+                return;
+            var loc = nodes[0].GetTransform.GlobalTransform;
+            var pos = (new Vector4(0,0,0.3f,1) * loc).Xyz;
+            loc = loc.ClearTranslation();
+            dir = (Vector4.UnitZ * loc).Xyz;
+            Rotated = false;
+            Console.WriteLine(pos);
+            cc?.GoImmedeatly(pos);
+            Start = true;
+        }
     }
 }

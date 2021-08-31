@@ -8,25 +8,31 @@ using OpenTK.Mathematics;
 
 namespace ModelViewer
 {
-    class CharControll : ScriptingComponent
+    class NPCNavigationController : ScriptingComponent
     {
         public NavigationMesh navMesh;
         public Material[] Materials;
         Task<Vector3[]> pathTask;
         Vector3[] path;
         NavigationAgent navAgent;
-        bool isWalking;
+        public bool isWalking { get; private set; }
         int waipoint = 0;
         public float speed = 0.03f;
         Vector3 direction;
         float prevDist;
-        Animation walk;
-        Animation idle;
         Animator animator;
-        float keepDistance = 0.7f;
+        public AnimationController AnimController { get; private set; }
+        public float keepDistance = 0.0f;
         bool IsRotating = false;
-        float roteteSpeed = Toys.MathHelper.ConvertGrad2Radians(15);
+        float roteteSpeed = Toys.MathHelper.ConvertGrad2Radians(5);
+        bool IsStartImmedeatly = false;
 
+        public bool IsBusy { 
+            get 
+            {
+                return IsStartImmedeatly || IsRotating || isWalking;
+            } 
+        }
         void Start()
         {
             //CreateNavMesh();
@@ -35,11 +41,8 @@ namespace ModelViewer
             navAgent.AgentSize = 1f;
             try
             {
-                walk = AnimationLoader.Load(@"Assets\Animations\walk001.vmd");
-                idle = AnimationLoader.Load(@"Assets\Animations\02.vmd");
-                animator = Node.GetComponent<Animator>();
-                animator.AnimationData = idle;
-                animator.Play();
+                CreateAnimationController();
+
             }
             catch (Exception e) { Console.WriteLine(e.Message); }
         }
@@ -47,19 +50,29 @@ namespace ModelViewer
 
         public void SetDestination(Vector3 dest)
         {
-            WalkingState(false);
+            AnimController.SetFloat("speed", 0f);
             path = null;
-
             pathTask = navAgent.SearchPathAsync(Node.GetTransform.Position, dest);
-            Console.WriteLine("path calc started");
         }
 
         public void Go()
         {
             if (path != null && path.Length > 0 && !isWalking)
-                WalkingState(true);
+            {
+                isWalking = true;
+                AnimController.SetFloat("speed", 1f);
+            }
             else
-                WalkingState(false);
+                AnimController.SetFloat("speed", 0f);
+
+        }
+
+        public void GoImmedeatly(Vector3 dest)
+        {
+            IsStartImmedeatly = true;
+            path = null;
+
+            pathTask = navAgent.SearchPathAsync(Node.GetTransform.Position, dest);
         }
 
         void Update()
@@ -78,7 +91,6 @@ namespace ModelViewer
                     prevDist = direction.Length;
                     direction.Normalize();
                     IsRotating = true;
-                    //RotateToDirection(direction);
 
                     //stop before target
                     Vector3 dest = Vector3.Zero;
@@ -89,7 +101,12 @@ namespace ModelViewer
                     dest.Normalize();
                     path[path.Length - 1] -= dest * keepDistance;
 
-                    Console.WriteLine("path calc completed");
+                    if (IsStartImmedeatly)
+                    {
+                        Go();
+                        IsStartImmedeatly = false;
+                    }
+
                 }
                 else
                 {
@@ -116,8 +133,9 @@ namespace ModelViewer
                     }
                     else
                     {
-                        WalkingState(false);
+                        AnimController.SetFloat("speed", 0f);
                         path = null;
+                        isWalking = false;
                     }
                 }
                 else
@@ -170,6 +188,7 @@ namespace ModelViewer
             }
         }
 
+        /*
         void WalkingState(bool state)
         {
             if (isWalking && !state)
@@ -191,6 +210,34 @@ namespace ModelViewer
                 }
             }
 
+        }
+
+        */
+
+        void CreateAnimationController()
+        {
+            animator = Node.GetComponent<Animator>();
+
+            
+
+            var idle = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\02.vmd"));
+            var walk = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\walk001.vmd"));
+            var idleSit = new AnimationNode(ResourcesManager.LoadAsset <Animation>(@"Assets\Animations\SitSmall0.3m.vmd"));
+            var idleSit2 = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\SitIdleSmall0.3.vmd"));
+            idleSit.Repeat = false;
+            AnimController = new AnimationController(idle);
+            var idleWalkTransit = new AnimationTransition((anim) => anim.GetFloat("speed") > 0, walk);
+            var walkIdleTransit = new AnimationTransition((anim) => anim.GetFloat("speed") == 0, idle);
+            var idleSitTransit = new AnimationTransition((anim) => anim.GetBool("sit"), idleSit);
+            idleSit.NextAnimation = idleSit2;
+            idle.Transitions.Add(idleWalkTransit);
+            idle.Transitions.Add(idleSitTransit);
+            walk.Transitions.Add(walkIdleTransit);
+            AnimController.AddAnimation(idle);
+            AnimController.AddAnimation(walk);
+            AnimController.AddAnimation(idleSit);
+            AnimController.AddAnimation(idleSit2);
+            animator.Controller = AnimController;
         }
 
         /*

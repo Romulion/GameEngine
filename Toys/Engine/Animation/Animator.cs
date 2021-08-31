@@ -13,6 +13,7 @@ namespace Toys
         /// </summary>
         public BoneController BoneController { get; private set; }
         Animation _animation;
+        AnimationController animController;
         bool _isPlaing = false;
         float _time = 0f;
         float _length = 0;
@@ -45,7 +46,7 @@ namespace Toys
 
 		internal void Update(float delta)
         {
-            
+            animController?.Update();
             if (!_isPlaing)
 				return;
             _isEnded = false;
@@ -97,11 +98,26 @@ namespace Toys
             {
                 if (!IsRepeat)
                 {
+                    //Pause();
                     _isPlaing = false;
                     _isEnded = true;
                 }
             }
         }
+
+        public AnimationController Controller 
+        {
+            get
+            {
+                return animController;
+            }
+            set
+            {
+                animController = value;
+                animController.TargetAnimator = this;
+            }
+        }
+
 
         public Animation AnimationData
         {
@@ -115,6 +131,7 @@ namespace Toys
                     _length = (_animation.frames.Length - 1) / (float)_animation.Framerate;
                     _frameLength = 1 / (float)_animation.Framerate;
                     Instalize(_animation.frames[0]);
+                    _time = 0;
                 }
                 catch (Exception e)
                 {

@@ -14,7 +14,7 @@ namespace ModelViewer
     {
         public TestScript Button;
         LoadUIScript uiScript;
-        CharControll cc;
+        NPCNavigationController cc;
         Material[] Materials;
         BoneController bc;
         private void Start()
@@ -135,7 +135,7 @@ namespace ModelViewer
                 CoreEngine.MainScene.AddNode2Root(model1);
                 //var manager = model1.GetComponent<PhysicsManager>();
                 model1.AddComponent<NpcAI>();
-                cc = model1.AddComponent<CharControll>();
+                cc = model1.AddComponent<NPCNavigationController>();
                 //cc.Materials = Materials;
 
                 var anim = model1.GetComponent<Animator>();
@@ -209,24 +209,6 @@ namespace ModelViewer
                 bc.GetBone("頭").SetTransform(new Vector3(0, 0, 0));
             }
             */
-
-            AnimationController CreateAnimationController()
-        {
-            var controller = new AnimationController();
-
-            var idle = new AnimationNode();
-            idle.MainAnimation = ResourcesManager.LoadAsset<Animation>("");
-            var walk = new AnimationNode();
-            walk.MainAnimation = ResourcesManager.LoadAsset<Animation>("");
-
-            var idleWalkTransit = new AnimationTransition((anim) => anim.GetFloat("speed") > 0, walk);
-            var walkIdleTransit = new AnimationTransition((anim) => anim.GetFloat("speed") == 0, idle);
-
-            idle.Transitions.Add(idleWalkTransit);
-            walk.Transitions.Add(walkIdleTransit);
-
-            return controller;
-        }
 
         void LoadAssetLocations(string file, SceneNode parent)
         {
