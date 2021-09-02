@@ -10,9 +10,11 @@ namespace Toys
         public float FrameTime { get; internal set; }
         Stopwatch stopwatch;
         static double resolution = (double)1000 / Stopwatch.Frequency;
+        public long FrameCount { get; internal set; }
 
         public Time()
         {
+            FrameCount = 0;
             stopwatch = new Stopwatch();
         }
 

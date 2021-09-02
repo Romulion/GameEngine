@@ -8,7 +8,7 @@ namespace Toys
 {
     public class AnimationController
     {
-        AnimationNode context;
+        public AnimationNode CurrentAnimation { get; private set; }
         List<AnimationNode> animationList;
         Animator animator;
         public Animator TargetAnimator
@@ -17,7 +17,7 @@ namespace Toys
             set
             {
                 animator = value;
-                UpdateContext(context);
+                UpdateContext(CurrentAnimation);
             }
         }
         bool changed;
@@ -29,7 +29,7 @@ namespace Toys
 
         public AnimationController(AnimationNode animation)
         {
-            context = animation;
+            CurrentAnimation = animation;
             animationList = new List<AnimationNode>();
             AddAnimation(animation);
 
@@ -101,21 +101,21 @@ namespace Toys
             if (changed)
             {
                 changed = false;
-                for (int i = 0; i < context.Transitions.Count; i++)
+                for (int i = 0; i < CurrentAnimation.Transitions.Count; i++)
                 {
-                    if (context.Transitions[i].Condition(this))
+                    if (CurrentAnimation.Transitions[i].Condition(this))
                     {
-                        UpdateContext(context.Transitions[i].TargetAnimation);
+                        UpdateContext(CurrentAnimation.Transitions[i].TargetAnimation);
                         return;
                     }
                 }
             }
             
             //check next animation
-            if (!context.Repeat && context.NextAnimation != null)
+            if (!CurrentAnimation.Repeat && CurrentAnimation.NextAnimation != null)
             {
                 if (TargetAnimator.IsEnded)
-                    UpdateContext(context.NextAnimation);
+                    UpdateContext(CurrentAnimation.NextAnimation);
             }
         }
 
@@ -124,7 +124,7 @@ namespace Toys
         /// </summary>
         public void SetEntry(AnimationNode node)
         {
-            context = node;
+            CurrentAnimation = node;
             AddAnimation(node);
         }
 
@@ -150,10 +150,10 @@ namespace Toys
         /// <param name="newContext"></param>
         void UpdateContext(AnimationNode newContext) 
         {
-            context = newContext;
-            TargetAnimator.AnimationData = context.MainAnimation;
+            CurrentAnimation = newContext;
+            TargetAnimator.AnimationData = CurrentAnimation.MainAnimation;
             TargetAnimator.Play();
-            TargetAnimator.IsRepeat = context.Repeat;
+            TargetAnimator.IsRepeat = CurrentAnimation.Repeat;
         }
     }
 }

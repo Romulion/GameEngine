@@ -50,7 +50,7 @@ namespace ModelViewer
             scrollBar.SetScrollBox(scrollBox);
 
             
-
+            /*
             var btn2 = new Toys.UserInterface.ButtonPrefab("path");
             var btnTrtans2 = btn2.GetTransform;
             btnTrtans2.anchorMax = new Vector2(1f, 1f);
@@ -59,15 +59,15 @@ namespace ModelViewer
             btnTrtans2.offsetMin = new Vector2(0, -25);
             btn2.SetAction(() => { cc?.SetDestination(CoreEngine.GetCamera.Node.GetTransform.GlobalTransform.ExtractTranslation()); });
             btn2.SetParent(ui);
-
+            */
             
-            var btn3 = new Toys.UserInterface.ButtonPrefab("Go/Stop");
+            var btn3 = new Toys.UserInterface.ButtonPrefab("Ко мне");
             var btnTrtans3 = btn3.GetTransform;
             btnTrtans3.anchorMax = new Vector2(1f, 1f);
             btnTrtans3.anchorMin = new Vector2(0f, 1f);
-            btnTrtans3.offsetMax = new Vector2(0, -30);
-            btnTrtans3.offsetMin = new Vector2(0, -55);
-            btn3.SetAction(() => { cc?.Go(); });
+            btnTrtans3.offsetMax = new Vector2(0, -0);
+            btnTrtans3.offsetMin = new Vector2(0, -25);
+            btn3.SetAction(() => { cc?.AnimController.SetBool("sit", false);  cc?.GoImmedeatly(CoreEngine.GetCamera.Node.GetTransform.GlobalTransform.ExtractTranslation(), true);  });
             btn3.SetParent(ui);
 
             /*
@@ -124,7 +124,8 @@ namespace ModelViewer
             //MadePath(31);
 
             //slider1.OnValueChanged = () => { active = false; physics.SetGravity(new Vector3(0, -10, 0)); };    
-
+            /*
+             * 
             //save test
             var save = new SaveSystem();
 
@@ -145,14 +146,14 @@ namespace ModelViewer
             btnTrtans1.offsetMin = new Vector2(0, -115);
             btn1.SetAction(() => { save.LoadGame(); });
             btn1.SetParent(ui);
+            */
 
-
-            var btn6 = new Toys.UserInterface.ButtonPrefab("Sit");
+            var btn6 = new Toys.UserInterface.ButtonPrefab("Место");
             var btnTrtans6 = btn6.GetTransform;
             btnTrtans6.anchorMax = new Vector2(1f, 1f);
             btnTrtans6.anchorMin = new Vector2(0f, 1f);
-            btnTrtans6.offsetMax = new Vector2(0, -120);
-            btnTrtans6.offsetMin = new Vector2(0, -145);
+            btnTrtans6.offsetMax = new Vector2(0, -30);
+            btnTrtans6.offsetMin = new Vector2(0, -55);
             btn6.SetAction(GoSit);
             btn6.SetParent(ui);
         }
@@ -177,7 +178,8 @@ namespace ModelViewer
         }
 
         void GoSit()
-        {            
+        {
+            //ChairLiving
             var nodes = CoreEngine.MainScene.FindByName("Furniture.ChairLiving");
             if (nodes.Length < 1)
                 return;
@@ -186,7 +188,6 @@ namespace ModelViewer
             loc = loc.ClearTranslation();
             dir = (Vector4.UnitZ * loc).Xyz;
             Rotated = false;
-            Console.WriteLine(pos);
             cc?.GoImmedeatly(pos);
             Start = true;
         }

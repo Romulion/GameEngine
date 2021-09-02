@@ -83,6 +83,7 @@ namespace Toys
 
 		internal void Update()
 		{
+            time.FrameCount++;
             frameTimer.FrameTime = (float)frameTimer.Stop() * .001f;
             frameTimer.Start();
             time.Start();

@@ -22,10 +22,11 @@ namespace ModelViewer
         float prevDist;
         Animator animator;
         public AnimationController AnimController { get; private set; }
-        public float keepDistance = 0.0f;
+        float keepDistance = 0.7f;
         bool IsRotating = false;
         float roteteSpeed = Toys.MathHelper.ConvertGrad2Radians(5);
         bool IsStartImmedeatly = false;
+        bool isKeepDistance = false;
 
         public bool IsBusy { 
             get 
@@ -38,7 +39,7 @@ namespace ModelViewer
             //CreateNavMesh();
             navMesh = NavigationMesh.GetInstance;
             navAgent = new NavigationAgent(navMesh);
-            navAgent.AgentSize = 1f;
+            navAgent.AgentSize = .3f;
             try
             {
                 CreateAnimationController();
@@ -60,6 +61,7 @@ namespace ModelViewer
             if (path != null && path.Length > 0 && !isWalking)
             {
                 isWalking = true;
+                Console.WriteLine(4444);
                 AnimController.SetFloat("speed", 1f);
             }
             else
@@ -67,16 +69,18 @@ namespace ModelViewer
 
         }
 
-        public void GoImmedeatly(Vector3 dest)
+        public void GoImmedeatly(Vector3 dest, bool keepDistance = false)
         {
             IsStartImmedeatly = true;
             path = null;
-
+            isKeepDistance = keepDistance;
             pathTask = navAgent.SearchPathAsync(Node.GetTransform.Position, dest);
         }
 
         void Update()
         {
+            if (AnimController.CurrentAnimation.Name != "Idle" && !isWalking)
+                return;
             if (IsRotating)
                 RotateToDirection(direction);
             else if (pathTask != null && pathTask.IsCompleted)
@@ -99,7 +103,8 @@ namespace ModelViewer
                     else
                         dest = direction;
                     dest.Normalize();
-                    path[path.Length - 1] -= dest * keepDistance;
+                    if (isKeepDistance)
+                        path[path.Length - 1] -= dest * keepDistance;
 
                     if (IsStartImmedeatly)
                     {
@@ -129,7 +134,6 @@ namespace ModelViewer
                         dir.Normalize();
                         direction = dir;
                         IsRotating = true;
-                        //RotateToDirection(dir);
                     }
                     else
                     {
@@ -222,21 +226,36 @@ namespace ModelViewer
 
             var idle = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\02.vmd"));
             var walk = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\walk001.vmd"));
-            var idleSit = new AnimationNode(ResourcesManager.LoadAsset <Animation>(@"Assets\Animations\SitSmall0.3m.vmd"));
-            var idleSit2 = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\SitIdleSmall0.3.vmd"));
-            idleSit.Repeat = false;
+            var sitDown = new AnimationNode(ResourcesManager.LoadAsset <Animation>(@"Assets\Animations\SitDownMumi.vmd"));
+            var sitIdle = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\SitIdleMumi.vmd"));
+            var standUp = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\StandUpMumi.vmd"));
+
+            idle.Name = "Idle";
+            walk.Name = "Walk";
+            sitDown.Name = "Sitdown";
+            sitIdle.Name = "Sit Idle";
+            standUp.Name = "Standup";
+
+            sitDown.Repeat = false;
+            standUp.Repeat = false;
+            sitDown.NextAnimation = sitIdle;
+            standUp.NextAnimation = idle;
+
             AnimController = new AnimationController(idle);
             var idleWalkTransit = new AnimationTransition((anim) => anim.GetFloat("speed") > 0, walk);
             var walkIdleTransit = new AnimationTransition((anim) => anim.GetFloat("speed") == 0, idle);
-            var idleSitTransit = new AnimationTransition((anim) => anim.GetBool("sit"), idleSit);
-            idleSit.NextAnimation = idleSit2;
+            var idleSitTransit = new AnimationTransition((anim) => anim.GetBool("sit"), sitDown);
+            sitIdle.Transitions.Add(new AnimationTransition((anim) => !anim.GetBool("sit"), standUp));
             idle.Transitions.Add(idleWalkTransit);
             idle.Transitions.Add(idleSitTransit);
             walk.Transitions.Add(walkIdleTransit);
+
             AnimController.AddAnimation(idle);
             AnimController.AddAnimation(walk);
-            AnimController.AddAnimation(idleSit);
-            AnimController.AddAnimation(idleSit2);
+            AnimController.AddAnimation(sitDown);
+            AnimController.AddAnimation(sitIdle);
+            AnimController.AddAnimation(standUp);
+
             animator.Controller = AnimController;
         }
 
