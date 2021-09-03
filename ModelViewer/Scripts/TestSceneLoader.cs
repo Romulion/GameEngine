@@ -17,6 +17,7 @@ namespace ModelViewer
         NPCNavigationController cc;
         Material[] Materials;
         BoneController bc;
+        SceneNode canvas;
         private void Start()
         {
             LoadModels();
@@ -142,16 +143,15 @@ namespace ModelViewer
                 var anim = model1.GetComponent<Animator>();
                 bc = anim.BoneController;
                 
-                var textNode = new SceneNode();
-                textNode.GetTransform.Position = new Vector3(0, 1.8f, 0);
-                textNode.SetParent(model1);
-                var textboxCanvas = textNode.AddComponent<Canvas>();
+                canvas = new SceneNode();
+                canvas.GetTransform.Position = new Vector3(0, 1.8f, 0);
+                canvas.SetParent(model1);
+                var textboxCanvas = canvas.AddComponent<Canvas>();
                 var root = new UIElement();
                 textboxCanvas.Add2Root(root);
-                //root.AddComponent<RawImage>();
-                
+                root.AddComponent<RawImage>();
+
                 var text = (TextBox)root.AddComponent<TextBox>();
-                
                 var rect = root.GetTransform;
                 rect.anchorMax = new Vector2(0, 0);
                 rect.anchorMin = new Vector2(0, 0);
@@ -161,7 +161,7 @@ namespace ModelViewer
                 text.textCanvas.colour = Vector3.Zero;
                 text.textCanvas.alignVertical = TextAlignVertical.Center;
                 text.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
-                textboxCanvas.Mode = Canvas.RenderMode.ScreenSpace;
+                textboxCanvas.Mode = Canvas.RenderMode.WorldSpace;
                 textboxCanvas.Canvas2WorldScale = 0.0025f;
                 
                 /*
@@ -234,12 +234,13 @@ namespace ModelViewer
             LoadAssetLocations(@"Assets\Models\Home\house_assets.dae",build);
         }
 
-            /*
-            void Update()
-            {
-                bc.GetBone("頭").SetTransform(new Vector3(0, 0, 0));
-            }
-            */
+
+        void Update()
+        {
+            //bc.GetBone("頭").SetTransform(new Vector3(0, 0, 0));
+            canvas.GetTransform.LookAt(CoreEngine.GetCamera.GetPos);
+        }
+            
 
         void LoadAssetLocations(string file, SceneNode parent)
         {

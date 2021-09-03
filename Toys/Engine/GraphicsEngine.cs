@@ -179,7 +179,9 @@ namespace Toys
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, outputBuffer);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.StencilTest);
+            SetCullMode(FaceCullMode.Disable);
             UIEngine.DrawUI(MainCamera);
+            SetCullMode(FaceCullMode.Front);
             //TextRender.RenderText();
             GL.Disable(EnableCap.StencilTest);
             GL.Enable(EnableCap.DepthTest);

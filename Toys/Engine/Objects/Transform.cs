@@ -112,6 +112,112 @@ namespace Toys
             }
         }
 
+        public Vector3 Forward
+        {
+            get
+            {
+                var res = -Vector3.UnitZ;
+                if (Node.Parent != null)
+                {
+                    res = (Node.Parent.GetTransform.GlobalTransform * new Vector4(res, 1)).Xyz;
+                }
+                return res.Normalized();
+            }
+        }
+
+        public Vector3 Backward
+        {
+            get
+            {
+                var res = Vector3.UnitZ;
+                if (Node.Parent != null)
+                {
+                    res = (Node.Parent.GetTransform.GlobalTransform * new Vector4(res, 1)).Xyz;
+                }
+                return res.Normalized();
+            }
+        }
+
+        public Vector3 Up
+        {
+            get
+            {
+                var res = Vector3.UnitY;
+                if (Node.Parent != null)
+                {
+                    res = (Node.Parent.GetTransform.GlobalTransform * new Vector4(res, 1)).Xyz;
+                }
+                return res.Normalized();
+            }
+        }
+
+
+        public Vector3 Down
+        {
+            get
+            {
+                var res = -Vector3.UnitY;
+                if (Node.Parent != null)
+                {
+                    res = (Node.Parent.GetTransform.GlobalTransform * new Vector4(res, 1)).Xyz;
+                }
+                return res.Normalized();
+            }
+        }
+
+        public Vector3 Right
+        {
+            get
+            {
+                var res = Vector3.UnitX;
+                if (Node.Parent != null)
+                {
+                    res = (Node.Parent.GetTransform.GlobalTransform * new Vector4(res, 1)).Xyz;
+                }
+                return res.Normalized();
+            }
+        }
+
+        public Vector3 Left
+        {
+            get
+            {
+                var res = -Vector3.UnitX;
+                if (Node.Parent != null)
+                {
+                    res = (Node.Parent.GetTransform.GlobalTransform * new Vector4(res, 1)).Xyz;
+                }
+                return res.Normalized();
+            }
+        }
+
+        public Vector3 GlobalPosition
+        {
+            get
+            {
+                return GlobalTransform.ExtractTranslation();
+            }
+        }
+
+        public Quaternion GlobalRotaion
+        {
+            get
+            {
+                return GlobalTransform.ExtractRotation();
+            }
+        }
+
+        public void LookAt(Vector3 target)
+        {
+            var pos = GlobalPosition;
+            target.Y = pos.Y;
+            var look = Matrix4.LookAt(pos, target, Up);
+            if (float.IsNaN(look.M11))
+                return;
+            localT = (Node.Parent.GetTransform.GlobalTransform * look).Inverted() * Matrix4.CreateFromAxisAngle(Vector3.UnitY, MathF.PI);
+            UpdateGlobalTransform();
+        }
+
         internal void UpdateGlobalTransform()
         {
             if (Node.Parent != null)

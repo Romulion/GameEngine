@@ -146,7 +146,14 @@ namespace ModelViewer
 
             targetAngle -= angleInit;
 
+
+
             //limit rotation
+            if (targetAngle.X > MathF.PI)
+                targetAngle.X -= 2 * MathF.PI;
+            else if (targetAngle.X < -MathF.PI)
+                targetAngle.X += 2 * MathF.PI;
+
             if (targetAngle.Y < thetaMin)
                 targetAngle.Y = thetaMin;
             else if (targetAngle.Y > thetaMax)
