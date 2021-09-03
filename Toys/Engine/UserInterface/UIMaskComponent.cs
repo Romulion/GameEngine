@@ -18,8 +18,8 @@ namespace Toys
         public UIMaskComponent() : base(typeof(UIMaskComponent))
         {
             //Material = defaultMaterial;
-            shaderUniform = Material.UniManager.GetUniform("model");
-            colorMask = Material.UniManager.GetUniform("color_mask");
+            shaderUniform = Material.UniformManager.GetUniform("model");
+            colorMask = Material.UniformManager.GetUniform("color_mask");
             //color = Vector4.One * 0.1f;
             color = Vector4.Zero;
             AllowMultiple = false;
@@ -40,13 +40,13 @@ namespace Toys
             */
         }
 
-        internal override void Draw()
+        internal override void Draw(Matrix4 worldTransform)
         {
             Material.ApplyMaterial();
-            shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
+            shaderUniform.SetValue(Node.GetTransform.GlobalTransform * worldTransform);
             colorMask.SetValue(color);
             //texture?.BindTexture();
-            base.Draw();
+            base.Draw(worldTransform);
         }
 
         internal override void AddComponent(UIElement nod)

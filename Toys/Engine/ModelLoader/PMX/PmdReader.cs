@@ -180,10 +180,10 @@ namespace Toys
                 mat.Specular = specularPower;
                 mat.DiffuseColor = difColor;
                 mat.AmbientColour = ambientColour;
-                mat.UniManager.Set("specular_color", specularColour);
-                mat.UniManager.Set("ambient_color", ambientColour);
-                mat.UniManager.Set("specular_power", specularPower);
-                mat.UniManager.Set("diffuse_color", difColor);
+                mat.UniformManager.Set("specular_color", specularColour);
+                mat.UniformManager.Set("ambient_color", ambientColour);
+                mat.UniformManager.Set("specular_power", specularPower);
+                mat.UniformManager.Set("diffuse_color", difColor);
 
                 if (mat.DiffuseColor.W < 0.001f)
                     mat.RenderDirrectives.IsRendered = false;

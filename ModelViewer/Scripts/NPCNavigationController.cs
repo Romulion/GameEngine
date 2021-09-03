@@ -182,13 +182,13 @@ namespace ModelViewer
             if (navAgent.pathMesh == null)
                 return;
             foreach (var mat in Materials)
-                mat.UniManager.Set("ambient_color", Vector3.Zero);
+                mat.UniformManager.Set("ambient_color", Vector3.Zero);
 
 
             foreach (var waipoint in navAgent.pathMesh)
             {
                 
-                Materials[waipoint.Index].UniManager.Set("ambient_color", Vector3.UnitY);
+                Materials[waipoint.Index].UniformManager.Set("ambient_color", Vector3.UnitY);
             }
         }
 

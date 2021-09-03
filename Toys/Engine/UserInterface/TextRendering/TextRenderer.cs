@@ -9,17 +9,17 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Toys
 {
-	internal class TextRenderer
-	{
-		Library lib;
-		Face face;
-		string font = "font.ttf";
-		Dictionary<char, Character> chars = new Dictionary<char, Character>();
-	    Matrix4 projection;
+    internal class TextRenderer
+    {
+        Library lib;
+        Face face;
+        string font = "font.ttf";
+        Dictionary<char, Character> chars = new Dictionary<char, Character>();
+        Matrix4 projection;
         static int mapSize = 1024;
         static int size = 30;
         Texture2D charmap;
-		Shader shdr;
+        Shader shdr;
         Vector3 position = Vector3.Zero;
         int x, y, ymax;
         List<TextCanvas> texts = new List<TextCanvas>();
@@ -27,9 +27,6 @@ namespace Toys
 
         ShaderUniform projUniform;
         ShaderUniform colorUniform;
-        ShaderUniform posUniform;
-
-        int ScreenWidth, ScreenHeigth;
 
         internal TextRenderer()
         {
@@ -50,7 +47,7 @@ namespace Toys
             }
 
             face.SetPixelSizes(0, (uint)size);
-            projection = Matrix4.CreateOrthographicOffCenter(0, 800, 0, 600, 0f, -0.01f);
+            //projection = Matrix4.CreateOrthographicOffCenter(0, 800, 0, 600, 0f, -0.01f);
             ShaderManager shdmMgmt = ShaderManager.GetInstance;
             shdmMgmt.LoadShader("text");
             shdr = shdmMgmt.GetShader("text");
@@ -61,15 +58,11 @@ namespace Toys
             {
                 if (uniform.Name == "projection")
                     projUniform = uniform;
-                else if (uniform.Name == "position_scale")
-                    posUniform = uniform;
                 else if (uniform.Name == "textColor")
                     colorUniform = uniform;
             }
-            projUniform.SetValue(projection);
             charmap = Texture2D.CreateCharMap(mapSize, mapSize);
         }
-
 
         Character GetCharacter(char c)
         {
@@ -94,16 +87,16 @@ namespace Toys
                 ymax = bitmap.Rows;
 
             charmap.AddSubImage(bitmap.Buffer, x, y, bitmap.Width, bitmap.Rows);
-            Character ch = new Character(new Vector2(x/ (float)mapSize, y / (float)mapSize),
-										 new Vector2(bitmap.Width, bitmap.Rows),
-										 new Vector2(face.Glyph.BitmapLeft, face.Glyph.BitmapTop),
-										 face.Glyph.Advance.X.Value);
-			chars.Add(c, ch);
+            Character ch = new Character(new Vector2(x / (float)mapSize, y / (float)mapSize),
+                                         new Vector2(bitmap.Width, bitmap.Rows),
+                                         new Vector2(face.Glyph.BitmapLeft, face.Glyph.BitmapTop),
+                                         face.Glyph.Advance.X.Value);
+            chars.Add(c, ch);
 
             x += bitmap.Width;
 
             bitmap.Dispose();
-            
+
             return ch;
         }
 
@@ -114,7 +107,9 @@ namespace Toys
             GL.BindVertexArray(VAO);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
             GL.EnableVertexAttribArray(0);
-            GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Float, false, 4 * 4, 0);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * 4, 0);
+            GL.EnableVertexAttribArray(1);
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * 4, 3 * 4);
             GL.BindVertexArray(0);
 
             var canvas = new TextCanvas(VAO, VBO);
@@ -131,14 +126,14 @@ namespace Toys
             GL.ActiveTexture(TextureUnit.Texture0);
             charmap.BindTexture();
 
-            float[] vertices = new float[6 * 4* canvas.Text.Length];
+            float[] vertices = new float[6 * 5 * canvas.Text.Length];
             int x = 0;
             int y = 0;
             int i = 0;
             canvas.Width = 0;
             canvas.Heigth = 0;
             float rowHeigth = 0;
-             
+
 
             foreach (var c in canvas.Text)
             {
@@ -152,7 +147,7 @@ namespace Toys
                     y -= size;
                     continue;
                 }
-                    
+
                 var chr = GetCharacter(c);
                 float xpos = x + chr.Bearing.X;
                 float ypos = y - (chr.Size.Y - chr.Bearing.Y);
@@ -166,79 +161,44 @@ namespace Toys
                     canvas.Width = xpos + w;
 
                 float[] verts = {
-                     xpos,    ypos + h,   chr.Position.X, chr.Position.Y,
-                     xpos,     ypos,      chr.Position.X, chr.Position.Y + chr.Size.Y / mapSize,
-                     xpos + w, ypos,       chr.Position.X + chr.Size.X / mapSize, chr.Position.Y + chr.Size.Y / mapSize ,
-                     xpos,     ypos + h,   chr.Position.X, chr.Position.Y ,
-                     xpos + w, ypos,       chr.Position.X + chr.Size.X / mapSize, chr.Position.Y + chr.Size.Y / mapSize ,
-                     xpos + w, ypos + h,   chr.Position.X + chr.Size.X / mapSize, chr.Position.Y 
+                     xpos,    ypos + h,  0,     chr.Position.X, chr.Position.Y,
+                     xpos,     ypos,     0,     chr.Position.X, chr.Position.Y + chr.Size.Y / mapSize,
+                     xpos + w, ypos,     0,     chr.Position.X + chr.Size.X / mapSize, chr.Position.Y + chr.Size.Y / mapSize ,
+                     xpos,     ypos + h, 0,     chr.Position.X, chr.Position.Y ,
+                     xpos + w, ypos,     0,     chr.Position.X + chr.Size.X / mapSize, chr.Position.Y + chr.Size.Y / mapSize ,
+                     xpos + w, ypos + h, 0,     chr.Position.X + chr.Size.X / mapSize, chr.Position.Y
                 };
-
                 Array.Copy(verts, 0, vertices, i, verts.Length);
                 x += (chr.Advance >> 6);
 
-                i += 24;
+                i += 30;
             }
-            
             canvas.Heigth = rowHeigth - y;
-            
-            for (int n = 1; n < vertices.Length; n += 4)
+
+            for (int n = 1; n < vertices.Length; n += 5)
                 vertices[n] -= y;
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, canvas.VBO);
             GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, vertices.Length * 4, vertices);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
             canvas.StringLength = canvas.Text.Length;
         }
-        
-		byte[] ReadFont(Stream strm)
-		{
-			byte[] buffer = new byte[16 * 1024];
-			using (MemoryStream ms = new MemoryStream())
-			{
-				int read;
-				while ((read = strm.Read(buffer, 0, buffer.Length)) > 0)
-				{
-					ms.Write(buffer, 0, read);
-				}
-				return ms.ToArray();
-			}
-		}
 
-		internal void Resize(int width, int heigth)
-		{
-            ScreenWidth = width;
-            ScreenHeigth = heigth;
-            projection = Matrix4.CreateOrthographicOffCenter(0, width, 0, heigth, 0f, -0.01f);
-			projUniform.SetValue(projection);
-		}
-
-		internal void RenderText()
-		{
-            GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
-            shdr.ApplyShader();
-            foreach (var text in textBoxes)
+        byte[] ReadFont(Stream strm)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
             {
-                //stencil masking
-                if (text.Node.MaskCheck == 0)
-                    GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
-                else
-                    GL.StencilFunc(StencilFunction.Equal, text.Node.MaskCheck, 0xFF);
-
-                colorUniform.SetValue(text.textCanvas.colour);
-                position = CalculatePosition(text.textCanvas,text.Node.GetTransform);
-                position.Z = text.textCanvas.Scale;
-                posUniform.SetValue(position);
-                GL.ActiveTexture(TextureUnit.Texture0);
-                charmap.BindTexture();
-                GL.BindVertexArray(text.textCanvas.VAO);
-                GL.DrawArrays(PrimitiveType.Triangles, 0, 6 * text.textCanvas.StringLength);
+                int read;
+                while ((read = strm.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
             }
-            GL.BindVertexArray(0);
-		}
+        }
 
-        internal void Render(TextBox text)
+        internal void Render(TextBox text, Matrix4 worldTransform)
         {
             //GL.StencilFunc(StencilFunction.Always, 0, 0xFF);
             shdr.ApplyShader();
@@ -249,25 +209,24 @@ namespace Toys
                 GL.StencilFunc(StencilFunction.Equal, text.Node.MaskCheck, 0xFF);
 
             colorUniform.SetValue(text.textCanvas.colour);
-            position = CalculatePosition(text.textCanvas, text.Node.GetTransform);
-            position.Z = text.textCanvas.Scale;
-            posUniform.SetValue(position);
+            var translation = Matrix4.CreateScale(text.textCanvas.Scale) * CalculatePosition(text.textCanvas, text.Node.GetTransform);
+            projUniform.SetValue(translation * worldTransform);
             GL.ActiveTexture(TextureUnit.Texture0);
             charmap.BindTexture();
             GL.BindVertexArray(text.textCanvas.VAO);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 6 * text.textCanvas.StringLength);
         }
 
-		internal void Unload()
-		{
-			lib.Dispose();
-			face.Dispose();
-		}
-
-        private Vector3 CalculatePosition(TextCanvas textCanvas, RectTransform transform)
+        internal void Unload()
         {
-            
-            Vector3 location = Vector3.UnitZ;
+            lib.Dispose();
+            face.Dispose();
+        }
+
+        private Matrix4 CalculatePosition(TextCanvas textCanvas, RectTransform transform)
+        {
+
+            Vector3 location = Vector3.Zero;
             switch (textCanvas.alignVertical)
             {
                 case TextAlignVertical.Bottom:
@@ -293,7 +252,7 @@ namespace Toys
                     location.X = (transform.Min.X + transform.Max.X - textCanvas.Width * textCanvas.Scale) * 0.5f;
                     break;
             }
-            return location;
+            return Matrix4.CreateTranslation(location);
         }
 
         internal void UnloadText(TextCanvas canvas)
@@ -302,5 +261,5 @@ namespace Toys
             GL.DeleteVertexArray(canvas.VAO);
             GL.DeleteBuffer(canvas.VBO);
         }
-	}
+    }
 }

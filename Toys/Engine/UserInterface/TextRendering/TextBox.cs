@@ -58,9 +58,9 @@ namespace Toys
             base.RemoveComponent();
         }
 
-        internal override void Draw()
+        internal override void Draw(Matrix4 worldTransform)
         {
-            CoreEngine.gEngine.TextRender.Render(this);
+            CoreEngine.gEngine.TextRender.Render(this, worldTransform);
         }
 
         public override VisualComponent Clone()

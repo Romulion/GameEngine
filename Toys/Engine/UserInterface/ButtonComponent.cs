@@ -30,8 +30,8 @@ namespace Toys
         public ButtonComponent() : base(typeof(ButtonComponent))
         {
             //Material = defaultMaterial;
-            shaderUniform = Material.UniManager.GetUniform("model");
-            colorMask = Material.UniManager.GetUniform("color_mask");
+            shaderUniform = Material.UniformManager.GetUniform("model");
+            colorMask = Material.UniformManager.GetUniform("color_mask");
             color = Vector4.One;
             Texture = defaultTexture;
             base.IsAllowDrag = false;
@@ -69,13 +69,13 @@ namespace Toys
             base.RemoveComponent();
         }
 
-        internal override void Draw()
+        internal override void Draw(Matrix4 worldTransform)
         {
             Material.ApplyMaterial();
             colorMask.SetValue(color);
-            shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
+            shaderUniform.SetValue(Node.GetTransform.GlobalTransform * worldTransform);
             Texture?.BindTexture();
-            base.Draw();
+            base.Draw(worldTransform);
         }
 
         internal override void ClickDownState()

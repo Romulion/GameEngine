@@ -49,6 +49,7 @@ namespace ModelViewer
             //load ui
             uiScript = Node.AddComponent<LoadUIScript>();
             uiScript.cc = cc;
+
         }
 
         void LoadModels()
@@ -140,13 +141,43 @@ namespace ModelViewer
 
                 var anim = model1.GetComponent<Animator>();
                 bc = anim.BoneController;
+                
+                var textNode = new SceneNode();
+                textNode.GetTransform.Position = new Vector3(0, 1.8f, 0);
+                textNode.SetParent(model1);
+                var textboxCanvas = textNode.AddComponent<Canvas>();
+                var root = new UIElement();
+                textboxCanvas.Add2Root(root);
+                //root.AddComponent<RawImage>();
+                
+                var text = (TextBox)root.AddComponent<TextBox>();
+                
+                var rect = root.GetTransform;
+                rect.anchorMax = new Vector2(0, 0);
+                rect.anchorMin = new Vector2(0, 0);
+                rect.offsetMin = new Vector2(-100, -50);
+                rect.offsetMax = new Vector2(100, 50);
+                text.SetText("Test!!!\nText!!!!");
+                text.textCanvas.colour = Vector3.Zero;
+                text.textCanvas.alignVertical = TextAlignVertical.Center;
+                text.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
+                textboxCanvas.Mode = Canvas.RenderMode.ScreenSpace;
+                textboxCanvas.Canvas2WorldScale = 0.0025f;
+                
+                /*
+                root.UpdateTransform();
+                var scale = Matrix4.CreateOrthographic(800,600, -1,1);
+                var model = rect.GlobalTransform;// * Matrix4.CreateScale(1 / (float)CoreEngine.GetCamera.Width, 1 / (float)CoreEngine.GetCamera.Height, 1);
 
-                //Console.WriteLine(bc.GetBone("頭").World2BoneInitial);
-                //Button.image1.OnClick += () => manager?.ReinstalizeBodys();
-
-                //var src = ResourcesManager.LoadAsset<AudioSource>(@"Assets\Sound\mumi.mp3");
-                //model1.AddComponent(src);
-                //src.Play();
+                
+                Vector4 pos = model * new Vector4(1, 1, 0, 1);
+                Console.WriteLine(model);
+                //pos.X /= 800;
+                //pos.Y /= 600;
+                Console.WriteLine(scale * pos);
+                
+                Console.WriteLine(new Vector4(800, 300, 0, 1)* Matrix4.CreateTranslation(-400, -300, 0));
+                */
             }
 
             var build = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Home\house.dae");

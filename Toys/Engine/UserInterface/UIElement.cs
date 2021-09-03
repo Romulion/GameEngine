@@ -15,6 +15,7 @@ namespace Toys
         public string Name;
         public bool Active = true;
         List<VisualComponent> components;
+        public Canvas ParentCanvas { get; internal set; }
 
         internal int MaskCheck;
         internal bool IsMask { get; set; }

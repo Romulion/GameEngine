@@ -179,7 +179,7 @@ namespace Toys
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, outputBuffer);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.StencilTest);
-            UIEngine.DrawUI();
+            UIEngine.DrawUI(MainCamera);
             //TextRender.RenderText();
             GL.Disable(EnableCap.StencilTest);
             GL.Enable(EnableCap.DepthTest);
@@ -192,7 +192,6 @@ namespace Toys
             MainCamera.Width = newWidth;
             MainCamera.Height = newHeight;
             MainCamera.CalcProjection();
-			TextRender.Resize(newWidth, newHeight);
         }
 
         internal void SetCullMode(FaceCullMode cullMode)

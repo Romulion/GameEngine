@@ -67,7 +67,7 @@ namespace Toys
         /// </summary>
         public UIElement Node { get; protected set; }
 
-        internal virtual void Draw()
+        internal virtual void Draw(Matrix4 worldTransform)
         {
             Mesh.BindVAO();
             Mesh.Draw();

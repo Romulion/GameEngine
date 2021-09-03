@@ -57,8 +57,8 @@ namespace Toys
         public ScrollBarComponent() : base(typeof(ScrollBarComponent))
         {
             //Material = defaultMaterial;
-            shaderUniform = Material.UniManager.GetUniform("model");
-            colorMask = Material.UniManager.GetUniform("color_mask");
+            shaderUniform = Material.UniformManager.GetUniform("model");
+            colorMask = Material.UniformManager.GetUniform("color_mask");
             color = Vector4.One;
             bgTexture = null;
             fillTexture = null;
@@ -89,7 +89,7 @@ namespace Toys
             base.RemoveComponent();
         }
 
-        internal override void Draw()
+        internal override void Draw(Matrix4 worldTransform)
         {
             if (!ScrollBox)
                 return;
@@ -103,7 +103,7 @@ namespace Toys
             bgTexture?.BindTexture();
             colorMask.SetValue(new Vector4(Vector3.Zero, 1));
             shaderUniform.SetValue(trans);
-            base.Draw();
+            base.Draw(worldTransform * worldTransform);
 
             //knob size
             var scrollSize = ScrollBox.Node.GetTransform.GlobalTransform.M22;
@@ -119,8 +119,8 @@ namespace Toys
             trans.M22 = ButtonSize;
             bgTexture?.BindTexture();
             colorMask.SetValue(color);
-            shaderUniform.SetValue(trans);
-            base.Draw();
+            shaderUniform.SetValue(trans * worldTransform);
+            base.Draw(worldTransform);
             
         }
 

@@ -31,18 +31,18 @@ namespace Toys
 
             if (mode == 0)
             {
-                material.UniManager.Modify(this, diffuseName, (Vector4.One - (Vector4.One - DiffuseColor) * degree), ModifyType.Multiply);
-                material.UniManager.Modify(this, ambientName, (Vector3.One - (Vector3.One - AmbientColor) * degree), ModifyType.Multiply);
-                material.UniManager.Modify(this, specularName, (Vector3.One - (Vector3.One - SpecularColor) * degree), ModifyType.Multiply);
+                material.UniformManager.Modify(this, diffuseName, (Vector4.One - (Vector4.One - DiffuseColor) * degree), ModifyType.Multiply);
+                material.UniformManager.Modify(this, ambientName, (Vector3.One - (Vector3.One - AmbientColor) * degree), ModifyType.Multiply);
+                material.UniformManager.Modify(this, specularName, (Vector3.One - (Vector3.One - SpecularColor) * degree), ModifyType.Multiply);
             }
             else if (mode == 1)
             {
-                material.UniManager.Modify(this, diffuseName, DiffuseColor * degree, ModifyType.Add);
-                material.UniManager.Modify(this, ambientName, AmbientColor * degree, ModifyType.Add);
-                material.UniManager.Modify(this, specularName, SpecularColor * degree, ModifyType.Add);
+                material.UniformManager.Modify(this, diffuseName, DiffuseColor * degree, ModifyType.Add);
+                material.UniformManager.Modify(this, ambientName, AmbientColor * degree, ModifyType.Add);
+                material.UniformManager.Modify(this, specularName, SpecularColor * degree, ModifyType.Add);
             }
 
-            var diffUniform = material.UniManager.GetUniform(diffuseName);
+            var diffUniform = material.UniformManager.GetUniform(diffuseName);
             if (((Vector4)diffUniform.GetValue()).W < 0.001f)
                 material.RenderDirrectives.IsRendered = false;
             else

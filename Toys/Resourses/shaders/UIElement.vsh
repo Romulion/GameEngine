@@ -13,18 +13,9 @@ out vec2 TexCoords;
 
 uniform mat4 model;
 
-const mat4 toScreen = mat4 (
-	2, 0, 0, 0,
-	0, 2, 0, 0,
-	0, 0, 2, 0,
-   -1,-1, 0, 1
-);
-
 void main()
 {
 	vec4 pos = model * vec4(aPos, 1.0);
-	pos.x *= screenData.z;
-	pos.y *= screenData.w;
-    gl_Position =  toScreen * pos;
+    gl_Position =  pos;
     TexCoords = aTex;
 }  

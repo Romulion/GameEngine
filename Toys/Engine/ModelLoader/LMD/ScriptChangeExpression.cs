@@ -65,7 +65,7 @@ namespace Toys
                 else
                     currentFace++;
                 trans.Xy = exprList[currentFace];
-                face.UniManager.Set("uv_translation", trans);
+                face.UniformManager.Set("uv_translation", trans);
                 keyPressed = true;
             }
         }

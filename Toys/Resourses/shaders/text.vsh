@@ -1,12 +1,12 @@
 #version 330 core
-layout (location = 0) in vec4 vertex;
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec2 aTex;
 out vec2 TexCoords;
 
 uniform mat4 projection;
-uniform vec3 position_scale;
 
 void main()
 {
-	gl_Position = (projection * vec4(vertex.xy * position_scale.z + position_scale.xy, 0.0, 1.0));
-    TexCoords = vertex.zw;
-}  
+    gl_Position = projection * vec4(aPos, 1.0);
+    TexCoords = aTex;
+}

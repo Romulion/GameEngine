@@ -35,8 +35,8 @@ namespace Toys
         public ScrollBoxComponent() : base(typeof(ScrollBoxComponent))
         {
             //Material = defaultMaterial;
-            shaderUniform = Material.UniManager.GetUniform("model");
-            colorMask = Material.UniManager.GetUniform("color_mask");
+            shaderUniform = Material.UniformManager.GetUniform("model");
+            colorMask = Material.UniformManager.GetUniform("color_mask");
             color = Vector4.One;
             ScrollDirection = ScrollMode.Vertical;
             base.IsAllowDrag = true;
@@ -63,15 +63,15 @@ namespace Toys
             base.RemoveComponent();
         }
 
-        internal override void Draw()
+        internal override void Draw(Matrix4 worldTransform)
         {
 
             Material.ApplyMaterial();
             colorMask.SetValue(color);
-            shaderUniform.SetValue(Node.GetTransform.GlobalTransform);
+            shaderUniform.SetValue(Node.GetTransform.GlobalTransform * worldTransform);
             if (Texture)
                 Texture.BindTexture();
-            base.Draw();
+            base.Draw(worldTransform);
         }
 
         internal override void ClickDownState()

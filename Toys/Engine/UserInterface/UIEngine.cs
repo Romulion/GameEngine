@@ -38,10 +38,10 @@ namespace Toys
             buttons = new List<InteractableComponent>();
         }
 
-        private List<UIElement> SortCanvas(UIElement root, int maskID = 0)
+        private List<UIElement> SortCanvas(UIElement root, Canvas canvas, int maskID = 0)
         {
             var elements = new List<UIElement>();
-
+            root.ParentCanvas = canvas;
             if (root.Active)
             {
                 //process mask
@@ -58,7 +58,7 @@ namespace Toys
                 root.UpdateTransform();
                 foreach (var child in root.Childs)
                 {
-                    elements.AddRange(SortCanvas(child,maskID));
+                    elements.AddRange(SortCanvas(child, canvas, maskID));
                 }
             }
             return elements;
@@ -70,8 +70,8 @@ namespace Toys
             var elements = new List<UIElement>();
             foreach (var canvas in canvases)
             {
-                if (canvas.Root)
-                    elements.AddRange(SortCanvas(canvas.Root)); 
+                foreach (var root in canvas.GetNodes())
+                    elements.AddRange(SortCanvas(root, canvas)); 
             }
             activeButtons.Clear();
             activeComponents.Clear();
@@ -93,8 +93,10 @@ namespace Toys
             }
         }
 
-        internal void DrawUI()
+        internal void DrawUI(Camera camera)
         {
+            var projection = Matrix4.CreateOrthographicOffCenter(0, CoreEngine.GetCamera.Width, 0,  CoreEngine.GetCamera.Height, -1, 1);
+            var projectionWorld = camera.GetLook * camera.Projection;
             int currMask = 0;
             GL.StencilFunc(StencilFunction.Always, currMask, 0xFF);
             GL.StencilMask(0x00);
@@ -114,7 +116,7 @@ namespace Toys
                         }
                     }
                     GL.StencilMask(0xFF);
-                    component.Draw();
+                    component.Draw(projection);
                     GL.StencilMask(0x00);
                 }
                 else
@@ -130,7 +132,11 @@ namespace Toys
                         else
                             GL.StencilFunc(StencilFunction.Equal, currMask, 0xFF);
                     }
-                    component.Draw();
+                    if (component.Node.ParentCanvas.Mode == Canvas.RenderMode.WorldSpace)
+                        component.Draw(Matrix4.CreateScale(component.Node.ParentCanvas.Canvas2WorldScale) * component.Node.ParentCanvas.Node.GetTransform.GlobalTransform * projectionWorld);
+                    //else if (component.Node.ParentCanvas.Mode == Canvas.RenderMode.ScreenSpace)
+                    else
+                        component.Draw(projection);
                 }
             }
         }

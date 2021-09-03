@@ -21,17 +21,21 @@ namespace Toys
         RawImage img;
         void Awake()
         {
-            canvas = (Canvas)Node.AddComponent<Canvas>();
-            canvas.Root = new UIElement();
-            img = (RawImage)canvas.Root.AddComponent<RawImage>();
-            text = (TextBox)canvas.Root.AddComponent<TextBox>();
-            rect = canvas.Root.GetTransform;
+            canvas = Node.AddComponent<Canvas>();
+            canvas.Mode = Canvas.RenderMode.Overlay;
+            var root = new UIElement();
+            img = (RawImage)root.AddComponent<RawImage>();
+            text = (TextBox)root.AddComponent<TextBox>();
+            rect = root.GetTransform;
             text.textCanvas.colour = Vector3.Zero;
             text.textCanvas.alignVertical = TextAlignVertical.Center;
+            text.SetScale(0.7f);
             rect.anchorMax = new Vector2(0, 1);
             rect.anchorMin = new Vector2(0, 1);
             rect.offsetMin = new Vector2(20,-32);
             rect.offsetMax = new Vector2(160,-8);
+
+            canvas.Add2Root(root);
         }
 
         void Update()

@@ -34,8 +34,8 @@ namespace Toys
         internal ButtonStates State { get; private set; }
         public TextInputComponent() : base(typeof(CheckboxComponent))
         {
-            shaderUniform = Material.UniManager.GetUniform("model");
-            colorMask = Material.UniManager.GetUniform("color_mask");
+            shaderUniform = Material.UniformManager.GetUniform("model");
+            colorMask = Material.UniformManager.GetUniform("color_mask");
             color = Vector4.One;
             Text.textCanvas.colour = Vector3.Zero;
             Text.textCanvas.alignHorizontal = TextAlignHorizontal.Left;
@@ -105,16 +105,16 @@ namespace Toys
             base.Unload();
         }
 
-        internal override void Draw()
+        internal override void Draw(Matrix4 worldTransform)
         {
             Material.ApplyMaterial();
             var trans = Node.GetTransform.GlobalTransform;
-            shaderUniform.SetValue(trans);
+            shaderUniform.SetValue(trans * worldTransform);
             colorMask.SetValue(color);
 
             //draw box
             Texture?.BindTexture();
-            base.Draw();
+            base.Draw(worldTransform);
 
             //draw caret
             if (IsFocused)
@@ -122,9 +122,9 @@ namespace Toys
                 trans.M41 += Text.textCanvas.Width + caretPadding;
                 trans.M11 = CaretSize.X;
                 trans.M22 = CaretSize.Y;
-                shaderUniform.SetValue(trans);
+                shaderUniform.SetValue(trans * worldTransform);
                 colorMask.SetValue(new Vector4(Vector3.Zero, 0.5f));
-                base.Draw();
+                base.Draw(worldTransform);
             }
         }
 

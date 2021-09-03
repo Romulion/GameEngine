@@ -88,10 +88,10 @@ namespace Toys
                 mat.Name = MaterialName;
                 mat.Outline.EdgeScaler = 0.1f;
                 materialTable.Add(MaterialName, mat);
-                mat.UniManager.Set("uv_scale", Vector4.One);
+                mat.UniformManager.Set("uv_scale", Vector4.One);
                 //scale face shadow texture
                 if (MaterialName.Contains("face"))
-                    mat.UniManager.Set("uv_scale", new Vector4(1,1,4,4));
+                    mat.UniformManager.Set("uv_scale", new Vector4(1,1,4,4));
                 try
                 {
                     ReadTexturesFromMaterial(MaterialName, mat);

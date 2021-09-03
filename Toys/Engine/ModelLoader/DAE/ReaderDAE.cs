@@ -60,7 +60,7 @@ namespace Toys
 
                     var mat = matTemplate.Clone();
                     mat.Name = matname;
-                    mat.UniManager.Set("ambient_color", Vector3.One);
+                    mat.UniformManager.Set("ambient_color", Vector3.One);
                     mat.Count = materials[n].Count;
                     mat.Offset = materials[n].Offset;
                     mats[i][n] = mat;                    

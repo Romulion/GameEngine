@@ -34,8 +34,8 @@ namespace Toys
         public CheckboxComponent() : base(typeof(CheckboxComponent))
         {
             //Material = defaultMaterial;
-            shaderUniform = Material.UniManager.GetUniform("model");
-            colorMask = Material.UniManager.GetUniform("color_mask");
+            shaderUniform = Material.UniformManager.GetUniform("model");
+            colorMask = Material.UniformManager.GetUniform("color_mask");
             color = Vector4.One;
         }
 
@@ -112,7 +112,7 @@ namespace Toys
             base.Unload();
         }
 
-        internal override void Draw()
+        internal override void Draw(Matrix4 worldTransform)
         {
             Material.ApplyMaterial();
 
@@ -121,19 +121,19 @@ namespace Toys
             trans.M41 += trans.M11 - BoxSize;
             trans.M11 = trans.M22  = BoxSize;
 
-            shaderUniform.SetValue(trans);
+            shaderUniform.SetValue(trans * worldTransform);
             colorMask.SetValue(color);
 
             //draw box
             Texture?.BindTexture();
-            base.Draw();
+            base.Draw(worldTransform);
 
             //draw mark
             if (IsOn)
             {
                 colorMask.SetValue(Vector4.One);
                 chekMarkDefault?.BindTexture();
-                base.Draw();
+                base.Draw(worldTransform);
             }
         }
 

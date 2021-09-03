@@ -30,7 +30,7 @@ namespace Toys
         internal override void ApplyMaterial()
         {
             base.ApplyMaterial();
-            foreach (var uni in UniManager.uniforms)
+            foreach (var uni in UniformManager.uniforms)
                 uni.Assign();
         }
 

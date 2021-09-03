@@ -267,7 +267,7 @@ namespace ModelViewer
         void MadePath(int start)
         {
             foreach (var mat in Materials)
-                mat.UniManager.Set("ambient_color", Vector3.Zero);
+                mat.UniformManager.Set("ambient_color", Vector3.Zero);
 
             int end = 25;
             //var searcher = new AStarSearch(navMesh);
@@ -279,12 +279,12 @@ namespace ModelViewer
                 Console.WriteLine(result.Length);
                 foreach (var waipoint in navAgent.pathMesh)
                 {
-                    Materials[waipoint.Index].UniManager.Set("ambient_color", Vector3.UnitY);
+                    Materials[waipoint.Index].UniformManager.Set("ambient_color", Vector3.UnitY);
                     //     Console.WriteLine(waipoint.Index);
                 }
             }
-            Materials[start].UniManager.Set("ambient_color", Vector3.UnitX);
-            Materials[end].UniManager.Set("ambient_color", Vector3.UnitZ);
+            Materials[start].UniformManager.Set("ambient_color", Vector3.UnitX);
+            Materials[end].UniformManager.Set("ambient_color", Vector3.UnitZ);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Toys
 		public string Name { get; set; }
 		public int Offset { get; set; }
 		public int Count { get; set; }
-        public ShaderUniformManager UniManager { get; protected set; }
+        public ShaderUniformManager UniformManager { get; protected set; }
 
         protected Dictionary<TextureType, Texture2D> textures;
 		protected Shader shaderProgram;
@@ -30,7 +30,7 @@ namespace Toys
             shaderProgram = shader;
             Texture2D txtr = Texture2D.LoadEmpty();
 			TextureUnit unit = TextureUnit.Texture0;
-            UniManager = new ShaderUniformManager(shaderProgram.GetUniforms,this);
+            UniformManager = new ShaderUniformManager(shaderProgram.GetUniforms,this);
 
 			shaderProgram.ApplyShader();
             if (ShaderSettings.TextureDiffuse)

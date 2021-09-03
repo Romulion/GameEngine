@@ -55,8 +55,8 @@ namespace Toys
         public SliderCompoent() : base(typeof(SliderCompoent))
         {
             //Material = defaultMaterial;
-            shaderUniform = Material.UniManager.GetUniform("model");
-            colorMask = Material.UniManager.GetUniform("color_mask");
+            shaderUniform = Material.UniformManager.GetUniform("model");
+            colorMask = Material.UniformManager.GetUniform("color_mask");
             color = Vector4.One;
             bgTexture = null;
             fillTexture = null;
@@ -80,7 +80,7 @@ namespace Toys
             base.RemoveComponent();
         }
 
-        internal override void Draw()
+        internal override void Draw(Matrix4 worldTransform)
         {
            
             Material.ApplyMaterial();
@@ -91,8 +91,8 @@ namespace Toys
 
             bgTexture?.BindTexture();
             colorMask.SetValue(new Vector4(Vector3.Zero,1));
-            shaderUniform.SetValue(trans);
-            base.Draw();
+            shaderUniform.SetValue(trans * worldTransform);
+            base.Draw(worldTransform);
 
             //draw fill gauge
             trans.M11 *= Value;
@@ -101,8 +101,8 @@ namespace Toys
 
             fillTexture?.BindTexture();
             colorMask.SetValue(Vector4.One);
-            shaderUniform.SetValue(trans);
-            base.Draw();
+            shaderUniform.SetValue(trans * worldTransform);
+            base.Draw(worldTransform);
 
             //draw slider button
             trans = Node.GetTransform.GlobalTransform;
@@ -110,8 +110,8 @@ namespace Toys
             trans.M11 = trans.M22 =  ButtonSize;
             bgTexture?.BindTexture();
             colorMask.SetValue(color);
-            shaderUniform.SetValue(trans);
-            base.Draw();
+            shaderUniform.SetValue(trans * worldTransform);
+            base.Draw(worldTransform);
         }
 
         internal override void Hover()

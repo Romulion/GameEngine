@@ -220,7 +220,7 @@ namespace Toys
                 shdrst.Ambient = true;
                 var mat  = new MaterialPMX(shdrst, rddir);
 				mat.Name = DAEMaterials[i].Name;
-                mat.UniManager.Set("ambient_color", DAEMaterials[i].Ambient.Xyz);
+                mat.UniformManager.Set("ambient_color", DAEMaterials[i].Ambient.Xyz);
                 mat.SetTexture(DAEMaterials[i].DiffuseTexture, TextureType.Diffuse);
 
 				mats.Add(mat);

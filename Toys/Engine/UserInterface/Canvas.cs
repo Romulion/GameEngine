@@ -11,25 +11,30 @@ namespace Toys
     /// </summary>
     public class Canvas : Component
     {
-        List<UIElement> nodes = new List<UIElement>();
-        public UIElement Root;
-
-        public Canvas() : base(typeof(Canvas)) {}
+        List<UIElement> rootNodes = new List<UIElement>();
+        //public UIElement Root;
+        public RenderMode Mode { get; set; }
+        public bool IsActive = true;
+        public float Canvas2WorldScale { get; set; }
+        public Canvas() : base(typeof(Canvas)) { 
+            Canvas2WorldScale = 1; 
+        }
 
         public enum RenderMode
         {
             Overlay,
-            ScreenSpace
+            ScreenSpace,
+            WorldSpace,
         };
 
-        public void AddObject(UIElement node)
+        public void Add2Root(UIElement node)
         {
-            nodes.Add(node);
+            rootNodes.Add(node);
         }
 
         public UIElement[] GetNodes()
         {
-            return nodes.ToArray();
+            return rootNodes.ToArray();
         }
 
         internal override void AddComponent(SceneNode nod)
@@ -46,7 +51,8 @@ namespace Toys
 
         internal override void Unload()
         {
-            UnloadTree(Root);
+            foreach (var root in rootNodes)
+            UnloadTree(root);
         }
 
         private void UnloadTree(UIElement uie)

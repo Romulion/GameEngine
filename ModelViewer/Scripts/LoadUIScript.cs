@@ -16,15 +16,16 @@ namespace ModelViewer
         Vector3 dir;
         void Awake()
         {
-            var canvas = (Canvas)Node.AddComponent<Canvas>();
+            var canvas = Node.AddComponent<Canvas>();
+            canvas.Mode = Canvas.RenderMode.Overlay;
 
             var ui0 = new UIElement();
             ui0.GetTransform.anchorMax = new Vector2(0f, 1f);
             ui0.GetTransform.anchorMin = new Vector2(0f, 1f);
             ui0.GetTransform.offsetMax = new Vector2(400, 0);
             ui0.GetTransform.offsetMin = new Vector2(0, -400);
-            canvas.Root = ui0;
-            canvas.AddObject(ui0);
+            canvas.Add2Root(ui0);
+            
             var ui7 = new UIElement();
             ui7.GetTransform.anchorMax = new Vector2(0f, 1f);
             ui7.GetTransform.anchorMin = new Vector2(0f, 1f);
@@ -48,7 +49,7 @@ namespace ModelViewer
             //scrollbar
             var scrollBar = (ScrollBarComponent)ui7.AddComponent<ScrollBarComponent>();
             scrollBar.SetScrollBox(scrollBox);
-
+            
             
             /*
             var btn2 = new Toys.UserInterface.ButtonPrefab("path");
