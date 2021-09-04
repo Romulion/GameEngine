@@ -93,7 +93,7 @@ namespace Toys
                                          face.Glyph.Advance.X.Value);
             chars.Add(c, ch);
 
-            x += bitmap.Width;
+            x += bitmap.Width + 1;
 
             bitmap.Dispose();
 
