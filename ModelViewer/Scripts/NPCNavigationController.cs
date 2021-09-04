@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define DebugPath
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,9 @@ namespace ModelViewer
         bool IsStartImmedeatly = false;
         bool isKeepDistance = false;
 
+        //Debug
+        List<SceneNode> pathPoints = new List<SceneNode>();
+
         public bool IsBusy { 
             get 
             {
@@ -51,6 +55,7 @@ namespace ModelViewer
 
         public void SetDestination(Vector3 dest)
         {
+            Clenapath();
             AnimController.SetFloat("speed", 0f);
             path = null;
             pathTask = navAgent.SearchPathAsync(Node.GetTransform.Position, dest);
@@ -71,10 +76,17 @@ namespace ModelViewer
 
         public void GoImmedeatly(Vector3 dest, bool keepDistance = false)
         {
+            Clenapath();
             IsStartImmedeatly = true;
             path = null;
             isKeepDistance = keepDistance;
             pathTask = navAgent.SearchPathAsync(Node.GetTransform.Position, dest);
+
+#if DebugPath
+            var point = CreatePoint(dest);
+            pathPoints.Add(point);
+            CoreEngine.MainScene.AddNode2Root(point);
+#endif
         }
 
         void Update()
@@ -85,8 +97,17 @@ namespace ModelViewer
                 RotateToDirection(direction);
             else if (pathTask != null && pathTask.IsCompleted)
             {
-
                 path = pathTask.Result;
+#if DebugPath
+                foreach (var dest in path)
+                {
+                    var point = CreatePoint(dest);
+                    pathPoints.Add(point);
+                    CoreEngine.MainScene.AddNode2Root(point);
+                }
+#endif
+
+                
                 if (path.Length > 0)
                 {
                     //UpdatePathColor();
@@ -218,6 +239,7 @@ namespace ModelViewer
 
         */
 
+
         void CreateAnimationController()
         {
             animator = Node.GetComponent<Animator>();
@@ -259,6 +281,42 @@ namespace ModelViewer
             animator.Controller = AnimController;
         }
 
+
+        #region Debug Path
+        void Clenapath()
+        {
+            foreach (var poi in pathPoints)
+            {
+                CoreEngine.MainScene.RemoveNode(poi);
+                ResourcesManager.DeleteResource(poi);
+            }
+        }
+
+        SceneNode CreatePoint(Vector3 loc)
+        {
+            var canvas = new SceneNode();
+            canvas.GetTransform.Position = loc;
+            var textboxCanvas = canvas.AddComponent<Canvas>();
+            var root = new UIElement();
+            textboxCanvas.Add2Root(root);
+            root.AddComponent<RawImage>();
+
+            var text = (TextBox)root.AddComponent<TextBox>();
+            var rect = root.GetTransform;
+            rect.anchorMax = new Vector2(0, 0);
+            rect.anchorMin = new Vector2(0, 0);
+            rect.offsetMin = new Vector2(-50, -50);
+            rect.offsetMax = new Vector2(50, 50);
+            text.SetText("T");
+            text.textCanvas.colour = Vector3.Zero;
+            text.textCanvas.alignVertical = TextAlignVertical.Center;
+            text.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
+            textboxCanvas.Mode = Canvas.RenderMode.WorldSpace;
+            textboxCanvas.Canvas2WorldScale = 0.0025f;
+
+            return canvas;
+        }
+        #endregion
         /*
                 void CreateNavMesh()
                 {

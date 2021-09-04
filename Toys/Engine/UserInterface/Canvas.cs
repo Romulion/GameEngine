@@ -52,7 +52,7 @@ namespace Toys
         internal override void Unload()
         {
             foreach (var root in rootNodes)
-            UnloadTree(root);
+                UnloadTree(root);
         }
 
         private void UnloadTree(UIElement uie)

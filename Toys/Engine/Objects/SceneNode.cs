@@ -204,6 +204,9 @@ namespace Toys
                 comp.Unload();
             }
             components.Clear();
+
+            foreach (var child in GetChilds())
+                child.Unload();
         }
 
         //for model instancing

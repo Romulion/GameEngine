@@ -185,7 +185,7 @@ namespace ModelViewer
             if (nodes.Length < 1)
                 return;
             var loc = nodes[0].GetTransform.GlobalTransform;
-            var pos = (new Vector4(0,0,0.3f,1) * loc).Xyz;
+            var pos = (new Vector4(0,0,0.4f,1) * loc).Xyz;
             loc = loc.ClearTranslation();
             dir = (Vector4.UnitZ * loc).Xyz;
             Rotated = false;
