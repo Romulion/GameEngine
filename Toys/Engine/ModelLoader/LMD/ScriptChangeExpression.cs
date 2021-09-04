@@ -69,5 +69,10 @@ namespace Toys
                 keyPressed = true;
             }
         }
+
+        internal override Component Clone()
+        {
+            return new ScriptChangeExpression();
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace ModelViewerWF
             Scene scene = CoreEngine.MainScene;
             if (args.Length != 0)
             {
-                SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
+                SceneNode modelNode = ResourcesManager.LoadAsset<ModelPrefab>(args[0]).CreateNode();
                 modelNode.Name = "model";
                 scene.AddNode2Root(modelNode);
             }

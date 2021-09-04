@@ -128,7 +128,7 @@ namespace ModelViewer
             */
             //}
 
-            var model1 = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Michelle\Seifuku.pmx");
+            var model1 = ResourcesManager.LoadAsset<ModelPrefab>(@"Assets\Models\Michelle\Seifuku.pmx").CreateNode();
             if (model1)
             {
                 model1.Name = "Michelle.Seifuku";
@@ -180,7 +180,7 @@ namespace ModelViewer
                 */
             }
 
-            var build = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\Home\house.dae");
+            var build = ResourcesManager.LoadAsset<ModelPrefab>(@"Assets\Models\Home\house.dae").CreateNode();
             if (build)
             {
                 build.Name = "Home";
@@ -272,7 +272,7 @@ namespace ModelViewer
                         path = path.Remove(path.IndexOf('#'));
                     instanceName = path;
                     path = @"Assets\Models\" + path.Replace('.', '\\') + ".dae";
-                    assetNode = ResourcesManager.LoadAsset<SceneNode>(path);
+                    assetNode = ResourcesManager.LoadAsset<ModelPrefab>(path).CreateNode();
 
                 }
 

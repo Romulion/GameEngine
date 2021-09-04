@@ -242,5 +242,10 @@ namespace Toys
         {
             CoreEngine.animEngine.animators.Remove(this);
         }
+
+        internal override Component Clone()
+        {
+            return new Animator(BoneController);
+        }
     }
 }

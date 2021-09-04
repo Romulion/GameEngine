@@ -9,7 +9,6 @@ namespace Toys
 	public class ResourcesManager
 	{
 		static Dictionary<string, WeakReference> resources = new Dictionary<string, WeakReference>();
-
 		CoreEngine ce;
 
 		public ResourcesManager(CoreEngine core)
@@ -19,39 +18,33 @@ namespace Toys
 
         public static T LoadAsset<T>(string path) where T : Resource
         {
-
+            Type tp = typeof(T);
             if (resources.ContainsKey(path))
             {
                 if (resources[path].IsAlive)
                 {
                     T result = resources[path].Target as T;
-                    if (typeof(T) != typeof(SceneNode))
-                    {
-                        result = result.Clone() as T;
-                    }
                     return result;
                 }
                 else
                     resources.Remove(path);
             }
-
-			Type tp = typeof(T);
-			Resource asset = null;
-			if (tp == typeof(MeshDrawer))
-			{
-				//IModelLoader model = ModelLoader.Load(path);
-				//asset = model.model;
-				//resources.Add(path, asset);
-			}
-			else if (tp == typeof(Texture2D))
-			{
-				asset = new Texture2D(path);
-			}
-			else if (tp == typeof(SceneNode))
-			{
-				IModelLoader model = ModelLoader.Load(path);
-				asset = model?.GetModel;
-			}
+            Resource asset = null;
+            if (tp == typeof(MeshDrawer))
+            {
+                //IModelLoader model = ModelLoader.Load(path);
+                //asset = model.model;
+                //resources.Add(path, asset);
+            }
+            else if (tp == typeof(Texture2D))
+            {
+                asset = new Texture2D(path);
+            }
+            else if (tp == typeof(ModelPrefab))
+            {
+                IModelLoader model = ModelLoader.Load(path);
+                asset = model?.GetModel;
+            }
             else if (tp == typeof(AudioClip))
             {
                 asset = new AudioClip(path);
@@ -60,10 +53,13 @@ namespace Toys
             {
                 asset = AnimationLoader.Load(path);
             }
+            else {
+                Console.WriteLine("Type not supported");
+            }
             if (asset)
 			{
 				asset.Id = path;
-				asset.Type = typeof(T);
+				asset.Type = tp;
                 resources.Add(path, new WeakReference(asset));
             }
             return asset as T;

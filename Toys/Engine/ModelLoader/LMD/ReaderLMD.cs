@@ -291,32 +291,32 @@ namespace Toys
             boneControll = new BoneController(bones,true);
         }
 
-        public SceneNode GetModel
+        public ModelPrefab GetModel
         {
             get
             {
-                var node = new SceneNode();
+                List<Component> comps = new List<Component>();
                 foreach (Mesh mesh in meshRigged)
                 {
                     MeshDrawer md = new MeshDrawer(new Mesh(mesh.Vertices, mesh.Indices));
-                    node.AddComponent(md);
+                    comps.Add(md);
                 }
-                return node;
+                return new ModelPrefab(comps);
             }
         }
 
-        public SceneNode GetRiggedModel
+        public ModelPrefab GetRiggedModel
         {
             get
             {
-                var node = new SceneNode();
+                List<Component> comps = new List<Component>();
                 foreach (MeshDrawerRigged mesh in mesDrawlers)
                 {
-                    node.AddComponent(mesh);
+                    comps.Add(mesh);
                 }
-                node.AddComponent(new Animator(boneControll));
-                node.AddComponent<ScriptChangeExpression>();
-                return node;
+                comps.Add(new Animator(boneControll));
+                comps.Add(new ScriptChangeExpression());
+                return new ModelPrefab(comps);
             }
         }
 

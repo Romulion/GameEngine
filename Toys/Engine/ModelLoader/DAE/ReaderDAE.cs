@@ -197,44 +197,44 @@ namespace Toys
         }
         */
 
-		public SceneNode GetModel
+		public ModelPrefab GetModel
 		{
             get
             {
-                var node = new SceneNode();
+                List<Component> comps = new List<Component>();
                 for (int i = 0; i < mesh.Length; i++)
                     if (bones.Count > 0)
                     {
                         MeshDrawerRigged md = new MeshDrawerRigged(mesh[i], mats[i], new BoneController(bones.ToArray(), true));
                         md.OutlineDrawing = true;
-                        node.AddComponent(md);
-                        node.AddComponent(new Animator(md.skeleton));
+                        comps.Add(md);
+                        comps.Add(new Animator(md.skeleton));
                     }
                     else
                     {
                         MeshDrawer md = new MeshDrawer(mesh[i], mats[i]);
-                        node.AddComponent(md);
+                        comps.Add(md);
                     }
-                return node;
+                return new ModelPrefab(comps);
             }
 		}
 
 
-		public SceneNode GetRiggedModel
+		public ModelPrefab GetRiggedModel
 		{
 			get
 			{
-                var node = new SceneNode();
+                List<Component> comps = new List<Component>();
                 for (int i = 0; i < mesh.Length; i++)
                 {
                     MeshDrawerRigged md = new MeshDrawerRigged(mesh[i], mats[i], new BoneController(bones.ToArray(), true));
                     md.OutlineDrawing = true;
-                    node.AddComponent(md);
-                    node.AddComponent(new Animator(md.skeleton));
+                    comps.Add(md);
+                    comps.Add(new Animator(md.skeleton));
                 }
-				return node; 
+				return new ModelPrefab(comps);
 
-			}
+            }
 		}
 
         //no morphes support

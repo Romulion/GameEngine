@@ -123,5 +123,10 @@ namespace Toys
             }
             base.Unload();
         }
+
+        internal override Component Clone()
+        {
+            return new PhysicsManager(Rigits, Jcons, bones);
+        }
     }
 }

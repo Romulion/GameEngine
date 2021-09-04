@@ -79,7 +79,7 @@ namespace ModelViewer
             {
                 var wait = core.AddNotyfyTask(() =>
                 {
-                    SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(fileChooserAdd.Filename);
+                    SceneNode modelNode = ResourcesManager.LoadAsset<ModelPrefab>(fileChooserAdd.Filename).CreateNode();
                     scene.AddNode2Root(modelNode);
                     //Set name
                     var path = System.IO.Path.GetDirectoryName(fileChooserAdd.Filename);

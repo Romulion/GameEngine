@@ -51,10 +51,5 @@ namespace Toys
 		{
 			return base.GetHashCode();
 		}
-
-		public virtual Resource Clone()
-        {
-			return this;
-        }
 	}
 }

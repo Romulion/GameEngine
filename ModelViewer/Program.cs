@@ -36,13 +36,13 @@ namespace ModelViewer
                 //var ISS = (ImageStreamerScript)cameraNode.AddComponent<ImageStreamerScript>();
                 //ISS.SetDSS(script);
                 
-                SceneNode modelNode = ResourcesManager.LoadAsset<SceneNode>(args[0]);
+                SceneNode modelNode = ResourcesManager.LoadAsset<ModelPrefab>(args[0]).CreateNode();
                 //var md =  modelNode.GetComponent<MeshDrawer>();
                 //for(int i = 0; i < md.Materials.Length; i++)
                 //   md.Materials[i] = 
                 if (modelNode)
                 {
-                    modelNode.AddComponent<TestScript>();
+                    //modelNode.AddComponent<TestScript>();
                     modelNode.Name = "model";
                     scene.AddNode2Root(modelNode);
                     cameraNode.AddComponent<CameraControllOrbitScript>();

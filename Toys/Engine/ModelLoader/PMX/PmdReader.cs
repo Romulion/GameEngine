@@ -518,37 +518,33 @@ namespace Toys
             return result;
         }
 
-        public SceneNode GetModel
+        public ModelPrefab GetModel
         {
             get
             {
-                /*
-                MeshDrawer md = new MeshDrawer(mesh, mats);
-                md.OutlineDrawing = true;
-                var node = new SceneNode();
-                node.AddComponent(md);
-                */
+                List<Component> comps = new List<Component>();
+
                 MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs);
                 md.OutlineDrawing = true;
-                var node = new SceneNode();
-                node.AddComponent(md);
-                node.AddComponent(new Animator(md.skeleton));
-                node.AddComponent(new PhysicsManager(rigitBodies, joints, md.skeleton));
-                return node;
+                comps.Add(md);
+                comps.Add(new Animator(md.skeleton));
+                comps.Add(new PhysicsManager(rigitBodies, joints, md.skeleton));
+                return new ModelPrefab(comps);
             }
         }
 
-        public SceneNode GetRiggedModel
+        public ModelPrefab GetRiggedModel
         {
             get
             {
+                List<Component> comps = new List<Component>();
+
                 MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs);
                 md.OutlineDrawing = true;
-                var node = new SceneNode();
-                node.AddComponent(md);
-                node.AddComponent(new Animator(md.skeleton));
-                node.AddComponent(new PhysicsManager(rigitBodies, joints, md.skeleton));
-                return node;
+                comps.Add(md);
+                comps.Add(new Animator(md.skeleton));
+                comps.Add(new PhysicsManager(rigitBodies, joints, md.skeleton));
+                return new ModelPrefab(comps);
             }
         }
 

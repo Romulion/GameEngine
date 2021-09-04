@@ -206,11 +206,16 @@ namespace Toys
             components.Clear();
         }
 
-        public override Resource Clone()
+        //for model instancing
+        internal SceneNode Clone()
         {
             var result = new SceneNode();
 
-            result.components = components;
+            foreach (var cpmnt in GetComponents())
+            {
+                if (cpmnt.Type != typeof(Transform))
+                    result.AddComponent(cpmnt.Clone());
+            }
             return result;
         }
         #region Save System preps

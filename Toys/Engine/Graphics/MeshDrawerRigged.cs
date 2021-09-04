@@ -55,5 +55,11 @@ namespace Toys
 
 			Mesh.ReleaseVAO();
 		}
-	}
+
+        internal override Component Clone()
+        {
+            //TODO: clone skeleton and morphes
+            return new MeshDrawerRigged(Mesh,Materials, skeleton,Morphes);
+        }
+    }
 }

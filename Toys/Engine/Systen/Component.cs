@@ -12,5 +12,10 @@ namespace Toys
         //system defined interpritation
         internal abstract void AddComponent(SceneNode nod);
         internal abstract void RemoveComponent();
+
+        internal virtual Component Clone()
+        {
+            return this;
+        }
     }
 }
