@@ -157,6 +157,16 @@ namespace ModelViewer
             btnTrtans6.offsetMin = new Vector2(0, -55);
             btn6.SetAction(GoSit);
             btn6.SetParent(ui);
+
+            var ai = cc.Node.GetComponent<NpcAI>();
+            var btn7 = new Toys.UserInterface.ButtonPrefab("Голос");
+            var btnTrtans7 = btn7.GetTransform;
+            btnTrtans7.anchorMax = new Vector2(1f, 1f);
+            btnTrtans7.anchorMin = new Vector2(0f, 1f);
+            btnTrtans7.offsetMax = new Vector2(0, -60);
+            btnTrtans7.offsetMin = new Vector2(0, -85);
+            btn7.SetAction(() => { ai?.PlayRandomVoice(); });
+            btn7.SetParent(ui);
         }
 
 

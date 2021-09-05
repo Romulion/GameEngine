@@ -143,27 +143,6 @@ namespace ModelViewer
                 var anim = model1.GetComponent<Animator>();
                 bc = anim.BoneController;
                 
-                canvas = new SceneNode();
-                canvas.GetTransform.Position = new Vector3(0, 1.8f, 0);
-                canvas.SetParent(model1);
-                var textboxCanvas = canvas.AddComponent<Canvas>();
-                var root = new UIElement();
-                textboxCanvas.Add2Root(root);
-                root.AddComponent<RawImage>();
-
-                var text = (TextBox)root.AddComponent<TextBox>();
-                var rect = root.GetTransform;
-                rect.anchorMax = new Vector2(0, 0);
-                rect.anchorMin = new Vector2(0, 0);
-                rect.offsetMin = new Vector2(-100, -50);
-                rect.offsetMax = new Vector2(100, 50);
-                text.SetText("Test!!!\nText!!!!");
-                text.textCanvas.colour = Vector3.Zero;
-                text.textCanvas.alignVertical = TextAlignVertical.Center;
-                text.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
-                textboxCanvas.Mode = Canvas.RenderMode.WorldSpace;
-                textboxCanvas.Canvas2WorldScale = 0.0025f;
-                
                 /*
                 root.UpdateTransform();
                 var scale = Matrix4.CreateOrthographic(800,600, -1,1);
@@ -238,7 +217,7 @@ namespace ModelViewer
         void Update()
         {
             //bc.GetBone("頭").SetTransform(new Vector3(0, 0, 0));
-            canvas.GetTransform.LookAt(CoreEngine.GetCamera.GetPos);
+           // canvas.GetTransform.LookAt(CoreEngine.GetCamera.GetPos);
         }
             
 

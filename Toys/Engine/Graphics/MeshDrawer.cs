@@ -144,6 +144,7 @@ namespace Toys
         internal override Component Clone()
         {
             var res = new MeshDrawer(Mesh, Materials,Morphes);
+            res.OutlineDrawing = OutlineDrawing;
             return res;
         }
     }

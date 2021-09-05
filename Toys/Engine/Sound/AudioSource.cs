@@ -20,7 +20,6 @@ namespace Toys
         public bool IsPlaing { get; private set; }
         public AudioSource() : base(typeof(AudioSource))
         {
-            AL.GenSource();
             bufferID = AL.GenBuffer();
             sourceID = AL.GenSource();
             IsPlaing = false;
@@ -28,7 +27,10 @@ namespace Toys
         }
         public void SetAudioClip(AudioClip audio)
         {
+            AL.SourceStop(sourceID);
+            AL.Source(sourceID, ALSourcei.Buffer, 0);
             clip = audio;
+            
             //read data to pointer
             var format = clip.GetFormat(clip.Channels, clip.Bps);
             IntPtr unmanagedPointer = Marshal.AllocHGlobal(clip.ByteBuffer.Length);
@@ -38,7 +40,6 @@ namespace Toys
             AL.Source(sourceID, ALSourcei.Buffer, bufferID);
             AL.Source(sourceID, ALSourceb.Looping, looping);
             AL.Source(sourceID, ALSource3f.Direction, ref dir);
-
         }
 
 
