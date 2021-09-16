@@ -18,7 +18,7 @@ namespace ModelViewer
         Material[] Materials;
         BoneController bc;
         SceneNode canvas;
-        private void Start()
+        private void Awake()
         {
             LoadModels();
             LoadDefault();
@@ -238,21 +238,22 @@ namespace ModelViewer
                 //Console.WriteLine(name);
                 var comps = name.Split(':');
                 var objType = comps[0];
-                
-
                 SceneNode assetNode = null;
                 if (objType == "Asset")
                 {
-
                     var path = comps[1];
                     //remove index
                     var indx = path.IndexOf('#');
+                    var suffix = "";
                     if (indx > 0)
-                        path = path.Remove(path.IndexOf('#'));
+                    {
+                        suffix = path.Substring(indx);
+                        path = path.Remove(indx);
+                    }
                     instanceName = path;
                     path = @"Assets\Models\" + path.Replace('.', '\\') + ".dae";
                     assetNode = ResourcesManager.LoadAsset<ModelPrefab>(path).CreateNode();
-
+                    assetNode.Name += suffix;
                 }
 
                 

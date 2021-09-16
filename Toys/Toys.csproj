@@ -150,6 +150,11 @@
     <Compile Remove="MainProcess.cs" />
     <Compile Remove="test.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Resourses\openvr_api.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputPath>..\bin\Debug\</OutputPath>

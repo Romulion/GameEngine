@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using OpenTK.Graphics.OpenGL;
 
 namespace Toys
 {
@@ -22,32 +23,25 @@ namespace Toys
 			renderer = new ModelRenderer();
 		}
 
-        /// <summary>
-        /// obsolette
-        /// </summary>
-        /// <param name="camera">camera to render from</param>
-		public void Render(Camera camera) 
+		public virtual void Render(MeshDrawer[] meshes, Camera camera)
 		{
-            renderer.Viev = camera.GetLook;
-            renderer.Projection = camera.Projection;
-            ubl.SetViewPos(camera.GetPos);
-			ubs.SetPvSpace(camera.GetLook * camera.Projection);
+			camera.CalcLook();
+			GL.Viewport(0, 0, camera.Width, camera.Height);
 
-			foreach (var node in CoreEngine.MainScene.GetNodes())
-			{
-				if (!node.Active)
-					continue;
+			//render scene to primary buffer
+			GL.BindFramebuffer(FramebufferTarget.Framebuffer, camera.RenderBuffer);
+			//SetCullMode(FaceCullMode.Disable);
+			//GL.ClearColor(MainCamera.ClearColor);
+			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-				MeshDrawer md = (MeshDrawer) node.GetComponent(typeof(MeshDrawer));
+			//render background first due to model transperancy
+			if (camera.Background != null)
+				camera.Background.DrawBackground(camera);
 
-				if (md == null)
-					continue;
-
-				renderer.Render(md);
-			}
+			RenderScene(meshes, camera);
 		}
 
-		public void Render(MeshDrawer[] meshes, Camera camera)
+		internal void RenderScene(MeshDrawer[] meshes, Camera camera)
 		{
             //frustrum culling and filltering
             MeshDrawer[] meshesSorted = new MeshDrawer[meshes.Length];
@@ -70,5 +64,10 @@ namespace Toys
 		        renderer.Render(meshesSorted[n]);
 			}
 		}
+	
+		internal virtual void Destroy()
+        {
+
+        }
 	}
 }

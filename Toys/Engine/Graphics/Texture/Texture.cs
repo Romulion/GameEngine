@@ -26,7 +26,7 @@ namespace Toys
     {
         protected Logger logger = new Logger("Texture");
         protected TextureTarget textureType;
-        protected int textureID;
+        internal int textureID { get; protected private set; }
         TextureWrapMode wrapU;
         TextureWrapMode wrapV;
         TextureWrapMode wrapW;
@@ -125,6 +125,21 @@ namespace Toys
         }
 
         public Texture() : base(typeof(Texture2D)) {}
+
+
+        public void GetImage(System.Drawing.Bitmap image)
+        {
+            var imageRectanglel = new System.Drawing.Rectangle(0, 0, Width, Height);
+            BindTexture();
+            var imageBits = image.LockBits(imageRectanglel, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            GetImage(imageBits.Scan0);
+            image.UnlockBits(imageBits);
+        }
+
+        public void GetImage(IntPtr imagePointer)
+        {
+            GL.GetTexImage(textureType, 0, PixelFormat.Bgra, PixelType.UnsignedByte, imagePointer);
+        }
 
         protected void GenerateTextureID()
         {

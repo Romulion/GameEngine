@@ -68,7 +68,7 @@ namespace ModelViewer
             btnTrtans3.anchorMin = new Vector2(0f, 1f);
             btnTrtans3.offsetMax = new Vector2(0, -0);
             btnTrtans3.offsetMin = new Vector2(0, -25);
-            btn3.SetAction(() => { cc?.AnimController.SetBool("sit", false);  cc?.GoImmedeatly(CoreEngine.GetCamera.Node.GetTransform.GlobalTransform.ExtractTranslation(), true);  });
+            btn3.SetAction(() => { cc?.AnimController.SetBool("sit", false);  cc?.GoImmedeatly(CoreEngine.GetCamera.Node.GetTransform.GlobalTransform.ExtractTranslation(), Vector3.Zero, null, true);  });
             btn3.SetParent(ui);
 
             /*
@@ -172,6 +172,7 @@ namespace ModelViewer
 
         void Update()
         {
+            /*
             if (!Start)
                 return;
 
@@ -186,21 +187,22 @@ namespace ModelViewer
                 Start = false;
             }
 
+            */
         }
 
         void GoSit()
         {
             //ChairLiving
-            var nodes = CoreEngine.MainScene.FindByName("Furniture.ChairLiving");
+            var nodes = CoreEngine.MainScene.FindByName("Furniture.Sofa2");
             if (nodes.Length < 1)
                 return;
             var loc = nodes[0].GetTransform.GlobalTransform;
-            var pos = (new Vector4(0,0,0.4f,1) * loc).Xyz;
+            var pos = (new Vector4(-0.375f, 0, 0.4f,1) * loc).Xyz;
             loc = loc.ClearTranslation();
             dir = (Vector4.UnitZ * loc).Xyz;
-            Rotated = false;
-            cc?.GoImmedeatly(pos);
-            Start = true;
+            //Rotated = false;
+            cc?.GoImmedeatly(pos, dir, () => cc.AnimController.SetBool("sit", true));
+            //Start = true;
         }
     }
 }

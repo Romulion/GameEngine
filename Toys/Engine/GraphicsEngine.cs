@@ -42,7 +42,11 @@ namespace Toys
 		public void OnLoad()
 		{
 			CoreEngine.MainScene.OnLoad();
-			MainRender = new MainRenderer();
+            if (CoreEngine.vrSystem != null)
+                MainRender = new VR.VRRenderer();
+            else
+                MainRender = new MainRenderer();
+
 			TextRender = new TextRenderer();
             CoreEngine.MainScene.GetLight.BindShadowMap();
 
@@ -159,19 +163,6 @@ namespace Toys
             //GL.Enable(EnableCap.Multisample);
             if (MainCamera != null)
             {
-                MainCamera.CalcLook();
-                GL.Viewport(0, 0, MainCamera.Width, MainCamera.Height);
-
-                //render scene to primary buffer
-                GL.BindFramebuffer(FramebufferTarget.Framebuffer, MainCamera.RenderBuffer);
-                SetCullMode(FaceCullMode.Disable);
-                GL.ClearColor(MainCamera.ClearColor);
-                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-                //render background first due to model transperancy
-                if (MainCamera.Background != null)
-                    MainCamera.Background.DrawBackground(MainCamera);
-
                 MainRender.Render(meshes.ToArray(), MainCamera);
             }
 

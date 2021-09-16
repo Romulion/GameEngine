@@ -49,16 +49,12 @@ namespace ModelViewer
             headBody = new RigidBody(rbInfo);
             CoreEngine.pEngine.World.AddRigidBody(headBody, (int)CollisionFilleters.Look, (int)CollisionFilleters.Look);
             //headBody.CollisionFlags |= CollisionFlags.KinematicObject;
-            //ManifoldPoint.ContactAdded = 
             headBody.UserObject = new Action<SceneNode>(triggerSwitch);
             headBody.UserIndex = 1;
-            //headBody.SetCustomDebugColor(BulletSharp.Math.Vector3.One);
             targetAngle = new Vector2(thetaDef,phiDef);
             angle = targetAngle;
             angSpeed = Vector2.Zero;
             audio = Node.AddComponent<AudioSource>();
-            //audio.SetAudioClip(ResourcesManager.LoadAsset<AudioClip>(@"Assets\Sound\13\voice_120.mp3"));
-            //expression.EyeLocationX = -1f;
 
             PrepareExpressions(rigged);
             PrepareSpeech();
@@ -119,7 +115,7 @@ namespace ModelViewer
                     {
                         PlayRandomVoice();
                     }
-                    faceController.ChangeEspression(expressionDict[4], 0.2f);
+                    faceController.ChangeEspression(expressionDict[1], 0.4f);
                 }
 
                 if (looker != lookTo)
@@ -267,7 +263,7 @@ namespace ModelViewer
         public void PlayRandomVoice()
         {
             var randomizer = new Random();
-            var num = randomizer.Next(1, 300);
+            var num = randomizer.Next(1, 198);
 
             if (clip)
                 ResourcesManager.DeleteResource(clip);

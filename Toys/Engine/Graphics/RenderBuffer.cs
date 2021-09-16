@@ -98,5 +98,10 @@ namespace Toys
                 RenderBufferDraw = RenderBufferOut;
             }
         }
+
+        internal void Destroy()
+        {
+            RenderTexture.Unload();
+        }
     }
 }

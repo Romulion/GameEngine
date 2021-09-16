@@ -1,4 +1,5 @@
 ﻿#define PHYS
+#define VR
 
 using System;
 using OpenTK;
@@ -19,6 +20,7 @@ namespace Toys
         public static CoreEngine ActiveCore { get; private set; }
         internal static SoundEngine aEngine { get; private set; }
         internal static AnimationEngine animEngine { get; private set; }
+        internal static VR.VRSystem vrSystem { get; private set; }
         public static Time time { get; private set; }
         public static Time frameTimer { get; private set; }
         Action task;
@@ -51,6 +53,9 @@ namespace Toys
                 sEngine = new ScriptingEngine();
                 iHandler = new InputHandler();
                 aEngine = new SoundEngine();
+#if VR
+                vrSystem = new VR.VRSystem();
+#endif
                 animEngine = new AnimationEngine();
                 time = new Time();
                 frameTimer = new Time();
@@ -67,6 +72,7 @@ namespace Toys
         {
             pEngine.Dispose();
             sEngine.Destroy();
+            vrSystem?.Exit();
         }
 
         //for Load event
@@ -87,6 +93,7 @@ namespace Toys
             frameTimer.FrameTime = (float)frameTimer.Stop() * .001f;
             frameTimer.Start();
             time.Start();
+            vrSystem?.Update();
             sEngine.Awake();
             sEngine.Start();
             sEngine.Update();

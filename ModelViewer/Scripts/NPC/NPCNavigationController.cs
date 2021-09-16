@@ -28,16 +28,12 @@ namespace ModelViewer
         float roteteSpeed = Toys.MathHelper.ConvertGrad2Radians(5);
         bool IsStartImmedeatly = false;
         bool isKeepDistance = false;
-
+        public bool IsTaskCompleted { get; private set; }
+        Vector3 targetDirection = Vector3.Zero;
+        Action OnComplete = null;
         //Debug
         List<SceneNode> pathPoints = new List<SceneNode>();
 
-        public bool IsBusy { 
-            get 
-            {
-                return IsStartImmedeatly || IsRotating || isWalking;
-            } 
-        }
         void Start()
         {
             //CreateNavMesh();
@@ -66,7 +62,6 @@ namespace ModelViewer
             if (path != null && path.Length > 0 && !isWalking)
             {
                 isWalking = true;
-                Console.WriteLine(4444);
                 AnimController.SetFloat("speed", 1f);
             }
             else
@@ -74,14 +69,16 @@ namespace ModelViewer
 
         }
 
-        public void GoImmedeatly(Vector3 dest, bool keepDistance = false)
+        public void GoImmedeatly(Vector3 dest, Vector3 faceDirection, Action onComplete = null, bool keepDistance = false)
         {
             Clenapath();
             IsStartImmedeatly = true;
             path = null;
             isKeepDistance = keepDistance;
             pathTask = navAgent.SearchPathAsync(Node.GetTransform.Position, dest);
-
+            targetDirection = faceDirection;
+            OnComplete = onComplete;
+            IsTaskCompleted = false;
 #if DebugPath
             var point = CreatePoint(dest);
             pathPoints.Add(point);
@@ -147,6 +144,7 @@ namespace ModelViewer
                 var distance = (coord - path[waipoint]).Length;
                 if (distance < 0.06f || prevDist < distance)
                 {
+                    //New waipoint
                     if (waipoint < path.Length - 1)
                     {
                         waipoint++;
@@ -156,11 +154,23 @@ namespace ModelViewer
                         direction = dir;
                         IsRotating = true;
                     }
+                    //Path complete
                     else
                     {
                         AnimController.SetFloat("speed", 0f);
                         path = null;
                         isWalking = false;
+
+                        if (targetDirection != Vector3.Zero)
+                        {
+                            direction = targetDirection;
+                            IsRotating = true;
+                        }
+                        else
+                        {
+                            OnComplete?.Invoke();
+                            IsTaskCompleted = true;
+                        }
                     }
                 }
                 else
@@ -174,7 +184,7 @@ namespace ModelViewer
             }
 
         }
-
+        
         public void RotateCharacter(Vector3 dir)
         {
             direction = dir;
@@ -190,9 +200,18 @@ namespace ModelViewer
             float dot = Vector3.Dot(dir, look);
             float angle = MathF.Atan2(axis.Length, dot);
             if (MathF.Abs(angle) < roteteSpeed)
+            {
                 IsRotating = false;
+                if (direction == targetDirection)
+                {
+                    targetDirection = Vector3.Zero;
+                    IsTaskCompleted = true;
+                    OnComplete?.Invoke();
+                }
+
+            }
             else
-                angle = (angle < 0) ? -roteteSpeed: roteteSpeed;
+                angle = (angle < 0) ? -roteteSpeed : roteteSpeed;
             var rotation = Quaternion.FromAxisAngle(axis, angle);
             Node.GetTransform.RotationQuaternion *= rotation;
         }
