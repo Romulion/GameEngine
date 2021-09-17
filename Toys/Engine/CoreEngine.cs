@@ -96,6 +96,7 @@ namespace Toys
             vrSystem?.Update();
             sEngine.Awake();
             sEngine.Start();
+            pEngine.Scene2Body?.Invoke();
             sEngine.Update();
             iHandler.Update();
             //mesh morpher
@@ -114,6 +115,7 @@ namespace Toys
 #endif
             aEngine.Update();
             sEngine.PreRender();
+            pEngine?.Body2Scene?.Invoke();
             time.UpdateTime = time.Stop();
         }
 

@@ -22,7 +22,8 @@ namespace ModelViewer
         {
             LoadModels();
             LoadDefault();
-            
+
+            CoreEngine.GetCamera.Node.AddComponent<Toys.VR.VRControllScript>();
         }
 
         void LoadDefault()
@@ -52,10 +53,26 @@ namespace ModelViewer
             uiScript = Node.AddComponent<LoadUIScript>();
             uiScript.cc = cc;
 
+
+            /*
+            var rhand = new SceneNode();
+            rhand.Name = "Lhand";
+            var size = new Vector3(0.23f, 0.23f, 0.25f);
+            rhand.AddComponent(Toys.Debug.TestBox.CreateBox(size));
+            rhand.GetTransform.Position = new Vector3(0, 2, -1f);
+            var physBox = rhand.AddComponent<Toys.Physics.RigitBodyBox>();
+            physBox.Size = size;
+            //physBox.Mass = 1;
+            physBox.IsKinematic = true;
+            physBox.SetFlags(-1, -1);
+            //CoreEngine.MainScene.AddNode2Root(rhand);
+            rhand.SetParent(CoreEngine.GetCamera.Node.Parent);
+            */
         }
 
         void LoadModels()
         {
+
 
             /*
             var build = ResourcesManager.LoadAsset<SceneNode>(@"Assets\Models\School1F\School.pmx");
@@ -133,7 +150,7 @@ namespace ModelViewer
             if (model1)
             {
                 model1.Name = "Michelle.Seifuku";
-                model1.GetTransform.Position = Vector3.UnitZ * 2;
+                model1.GetTransform.Position = Vector3.UnitZ * 0.5f;
                 model1.GetTransform.RotationQuaternion = new Quaternion(0, MathF.PI,0);
                 CoreEngine.MainScene.AddNode2Root(model1);
                 //var manager = model1.GetComponent<PhysicsManager>();

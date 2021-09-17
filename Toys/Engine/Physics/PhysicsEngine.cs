@@ -24,7 +24,10 @@ namespace Toys
     }
 	public class PhysicsEngine : IDisposable
 	{
-		CollisionDispatcher dispatcher;
+        internal Action Body2Scene;
+        internal Action Scene2Body;
+
+        CollisionDispatcher dispatcher;
 		DbvtBroadphase broadphase;
 		CollisionConfiguration collisionConf;
         //ConstraintSolverPoolMultiThreaded Solver;

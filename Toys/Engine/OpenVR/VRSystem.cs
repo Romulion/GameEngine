@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Valve.VR;
+using OpenTK.Mathematics;
 
 namespace Toys.VR
 {
@@ -21,6 +22,7 @@ namespace Toys.VR
         /// IPD in mm
         /// </summary>
         public int IPD = 68;
+        Transform rHandpos;
 
         internal VRSystem()
         {
@@ -57,10 +59,13 @@ namespace Toys.VR
             bound.vMax = 1;
             bound.uMax = 1;
 
+            /*
             var errProp = new ETrackedPropertyError();
             var str = new StringBuilder();
             vrContext.GetStringTrackedDeviceProperty(OpenVR.k_unTrackedDeviceIndex_Hmd, ETrackedDeviceProperty.Prop_TrackingSystemName_String, str, 100, ref errProp);
+            */
         }
+
 
 
         internal void Update()

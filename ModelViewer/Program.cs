@@ -45,7 +45,8 @@ namespace ModelViewer
                     //modelNode.AddComponent<TestScript>();
                     modelNode.Name = "model";
                     scene.AddNode2Root(modelNode);
-                    cameraNode.AddComponent<CameraControllOrbitScript>();
+                    //cameraNode.AddComponent<CameraControllOrbitScript>();
+                    cameraNode.AddComponent<Toys.VR.VRControllScript>();
                 }
             }
             //scene mode

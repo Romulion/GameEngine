@@ -34,7 +34,8 @@ namespace Toys
                 CollisionFlags = CollisionFlags.CharacterObject,
                 WorldTransform = Matrix.Translation(Node.GetTransform.Position.Convert() + Vector3.UnitY)
             };
-            world.AddCollisionObject(_ghostObject, CollisionFilterGroups.CharacterFilter, CollisionFilterGroups.StaticFilter | CollisionFilterGroups.DefaultFilter);
+            //world.AddCollisionObject(_ghostObject, CollisionFilterGroups.CharacterFilter, CollisionFilterGroups.StaticFilter | CollisionFilterGroups.DefaultFilter);
+            world.AddCollisionObject(_ghostObject, CollisionFilterGroups.AllFilter, CollisionFilterGroups.StaticFilter | CollisionFilterGroups.DefaultFilter);
             _charController = new KinematicCharacterController(_ghostObject, shape, stepHeight);
             world.AddAction(_charController);
         }
