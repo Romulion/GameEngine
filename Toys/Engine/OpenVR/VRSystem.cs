@@ -69,19 +69,28 @@ namespace Toys.VR
             while (vrContext.PollNextEvent(ref vrEvent, 64))
                 ProcessEvent(vrEvent);
 
-            controllerSystem.ParseTrackingFrame();
-            compositor.WaitGetPoses(game, render);
+            compositor.WaitGetPoses(render, game);
+            controllerSystem.Update(render);
 
             var ctrans = CoreEngine.GetCamera.Node.GetTransform;
             var pos = controllerSystem.HMD.Position;
-            pos.Y += 0.4f;
+            pos.Y +=  0.4f;
             ctrans.Position = pos;
             ctrans.RotationQuaternion = controllerSystem.HMD.Rotation;
+
+            //Console.WriteLine(controllerSystem.HMD.Position);
+            //Console.WriteLine(controllerSystem.HMD.Rotation.ToEulerAngles());
         }
 
         void ProcessEvent(VREvent_t vrEvent)
         {
             //Console.WriteLine((EVREventType) vrEvent.eventType);
+
+            switch ((EVREventType)vrEvent.eventType)
+            {
+                case EVREventType.VREvent_StandingZeroPoseReset:
+                    break;
+            }
 
             ETrackedDeviceClass trackedDeviceClass = vrContext.GetTrackedDeviceClass(vrEvent.trackedDeviceIndex);
             if(trackedDeviceClass != ETrackedDeviceClass.Controller) {

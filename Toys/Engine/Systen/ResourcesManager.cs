@@ -132,6 +132,15 @@ namespace Toys
             }
         }
 
+        /// <summary>
+        /// Path to assets directoy \..abs..\Assets\
+        /// </summary>
+        /// <returns></returns>
+        public static string GetAbsoluteAssetDirectory()
+        {
+            return AppDomain.CurrentDomain.BaseDirectory + "Assets" + Path.DirectorySeparatorChar;
+        }
+
         public static bool DeleteResource(string res)
         {
             WeakReference resource;

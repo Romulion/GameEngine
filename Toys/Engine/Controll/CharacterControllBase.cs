@@ -46,7 +46,7 @@ namespace Toys
                 var mat = Node.GetTransform.GlobalTransform;
                 var direction = new Vector3(mat.M31, 0, mat.M33);
                 direction.Normalize();
-                _charController.SetWalkDirection(direction * frameDelta * WalkSpeed);
+                _charController.SetWalkDirection(-direction * frameDelta * WalkSpeed);
             }
         }
 

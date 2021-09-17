@@ -43,6 +43,7 @@ namespace ModelViewer
             playerNode.AddComponent<CharacterControllPlayer>();
 
             cameraNode.SetParent(playerNode);
+
             cameraNode.AddComponent<CameraPOVScript>();
 
             var audioListener = AudioListener.GetListener();
@@ -133,7 +134,7 @@ namespace ModelViewer
             {
                 model1.Name = "Michelle.Seifuku";
                 model1.GetTransform.Position = Vector3.UnitZ * 2;
-                model1.GetTransform.RotationQuaternion = new Quaternion(0, MathF.PI, 0);
+                model1.GetTransform.RotationQuaternion = new Quaternion(0, MathF.PI,0);
                 CoreEngine.MainScene.AddNode2Root(model1);
                 //var manager = model1.GetComponent<PhysicsManager>();
                 model1.AddComponent<NpcAI>();
@@ -217,7 +218,7 @@ namespace ModelViewer
         void Update()
         {
             //bc.GetBone("頭").SetTransform(new Vector3(0, 0, 0));
-           // canvas.GetTransform.LookAt(CoreEngine.GetCamera.GetPos);
+            // canvas.GetTransform.LookAt(CoreEngine.GetCamera.GetPos);
         }
             
 

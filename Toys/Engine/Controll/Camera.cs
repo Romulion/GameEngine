@@ -31,7 +31,7 @@ namespace Toys
 
         internal int RenderBuffer = 0;
         //camera space
-        Vector3 cameraTarget = new Vector3(0f, 0f, 1f);
+        Vector3 cameraTarget = new Vector3(0f, 0f, -1f);
 		Vector3 cameraUp = new Vector3(0.0f, 1.0f, 0.0f);
 		Matrix4 look;
 
@@ -60,7 +60,11 @@ namespace Toys
 		{
             NearPlane = 0.1f;
             FarPlane = 100.0f;
+#if VR
+            FOV = 86;
+#else
             FOV = 60;
+#endif
             projType = ProjectionType.Perspective;
             Main = true;
             RenderMask = 1;
@@ -74,7 +78,7 @@ namespace Toys
                 Projection = Matrix4.CreateOrthographic(cameraHeigth * Width / (float)Height, cameraHeigth, NearPlane, FarPlane);
         }
 
-        #region Transforms
+#region Transforms
         public Vector3 GetPos
 		{
 			get { return Node.GetTransform.GlobalTransform.ExtractTranslation(); }
@@ -85,7 +89,7 @@ namespace Toys
 		}
 		internal Vector3 GetUp
 		{
-			get { return cameraUp; }
+			get { return Node.GetTransform.Up; }
 		}
         public Vector3 Target
         {
@@ -95,9 +99,9 @@ namespace Toys
 
 		internal void CalcLook()
 		{
-            look = Matrix4.LookAt(Node.GetTransform.GlobalTransform.ExtractTranslation(), (new Vector4(cameraTarget, 1) * Node.GetTransform.GlobalTransform).Xyz, cameraUp);
+            look = Matrix4.LookAt(Node.GetTransform.GlobalPosition, (new Vector4(cameraTarget, 1) * Node.GetTransform.GlobalTransform).Xyz, GetUp);
         }
-        #endregion
+#endregion
         internal override void AddComponent(SceneNode nod)
         {
             Node = nod;

@@ -59,7 +59,6 @@ namespace Toys
                 else if (theta < thetaMin)
                     theta = thetaMin;
                 Node.Parent.GetTransform.RotationQuaternion = CalculateRotationPhi(phi);
-                //Node.GetTransform.RotationQuaternion = CalculateRotation(1,-90, theta);
                 Node.GetTransform.RotationQuaternion = CalculateRotationTheta(theta);
                 Node.Parent.GetTransform.UpdateGlobalTransform();
                 lastY = mouseState.Y;
@@ -73,14 +72,17 @@ namespace Toys
             }
             else
                 mousePressed = false;
+
+            
+
         }
 
         public void RecalculateAngles()
         {
             var dir = new Vector4(0, 0, -1, 1);
             var newdir = (dir * Node.GetTransform.GlobalTransform).Xyz - Node.GetTransform.GlobalTransform.ExtractTranslation();
-            phi = (int)(MathF.Atan2(newdir.Z, newdir.X) * 180 / MathF.PI + 90);
-            theta = (int)(MathF.Acos(newdir.Y / newdir.Xzy.Length) * 180 / MathF.PI - 90);
+            phi = (int)(MathF.Atan2(newdir.Z, newdir.X) * 180 / MathF.PI);
+            theta = (int)(MathF.Acos(newdir.Y / newdir.Xzy.Length) * 180 / MathF.PI);
         }
 
         Vector3 CalcPos(float r, int Iphi, int Itheta)
@@ -119,7 +121,7 @@ namespace Toys
         Quaternion CalculateRotationTheta(int Itheta)
         {
             Vector3 axis = Vector3.UnitX;
-            return Quaternion.FromAxisAngle(axis, MathHelper.ConvertGrad2Radians(Itheta));
+            return Quaternion.FromAxisAngle(axis, MathHelper.ConvertGrad2Radians(-Itheta));
         }
     }
 }

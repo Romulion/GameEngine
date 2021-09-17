@@ -5,18 +5,20 @@ using OpenTK.Mathematics;
 
 namespace Toys.VR
 {
-    class ControllerData
+    public enum ControllerRole{ Left, Right };
+    public class ControllerData
     {
-        //Fields to be initialzed by iterateAssignIds() and setHands()
-        public int deviceId;  // Device ID according to the SteamVR system
-        public int hand;       // 0=invalid 1=left 2=right
-        public int idtrigger;  // Trigger axis id
-        public int idpad;      // Touchpad axis id
 
         //Analog button data to be set in ContollerCoods()
-        public float padX;
-        public float padY;
+        public Vector2 stick;
+        public bool button1;
+        public bool button2;
+        public bool trigPress;
+        public bool stickPress;
+        public bool grabress;
         public float trigVal;
+        public float grabVal;
+
 
         //Position set in ControllerCoords()
         public Vector3 pos;
@@ -26,12 +28,21 @@ namespace Toys.VR
 
         public string RenderModelName;
 
+        public ControllerRole controllerRole;
+
+        internal ulong sourceId = 0;
+        internal ulong triggerPressId = 0;
+        internal ulong stickerPosId = 0;
+        internal ulong stickerPressId = 0;
+        internal ulong button1PressId = 0;
+        internal ulong button2PressId = 0;
+        internal ulong grabPressId = 0;
+        internal ulong poseId = 0;
+
+
         public ControllerData()
         {
-            deviceId = -1;
-            hand = -1;
-            idtrigger = -1;
-            idpad = -1;
+
         }
     };
 }

@@ -15,12 +15,12 @@ namespace Toys.VR
 
         public Vector3 GetPosition
         {
-            get { return Position - StartPosition; }
+            get { return StartPosition - Position; }
         }
 
         public Quaternion GetRotation
         {
-            get { return Rotation.Inverted() * StartRotation; }
+            get { return StartRotation * Rotation.Inverted(); }
         }
     }
 

@@ -109,6 +109,8 @@ namespace Toys
                 rotationQuaternion = value;
                 rotation = rotationQuaternion.ToEulerAngles();
                 RecalculateLocal();
+
+               // Console.WriteLine(localT);
             }
         }
 
@@ -117,10 +119,7 @@ namespace Toys
             get
             {
                 var res = -Vector3.UnitZ;
-                if (Node.Parent != null)
-                {
-                    res = (Node.Parent.GetTransform.GlobalTransform * new Vector4(res, 1)).Xyz;
-                }
+                res = (new Vector4(res) * Node.GetTransform.GlobalTransform).Xyz;
                 return res.Normalized();
             }
         }
@@ -130,10 +129,8 @@ namespace Toys
             get
             {
                 var res = Vector3.UnitZ;
-                if (Node.Parent != null)
-                {
-                    res = (Node.Parent.GetTransform.GlobalTransform * new Vector4(res, 1)).Xyz;
-                }
+
+                res = (new Vector4(res) * Node.GetTransform.GlobalTransform).Xyz;
                 return res.Normalized();
             }
         }
@@ -142,11 +139,8 @@ namespace Toys
         {
             get
             {
-                var res = Vector3.UnitY;
-                if (Node.Parent != null)
-                {
-                    res = (Node.Parent.GetTransform.GlobalTransform * new Vector4(res, 1)).Xyz;
-                }
+                var res = (Vector4.UnitY * Node.GetTransform.GlobalTransform).Xyz;
+
                 return res.Normalized();
             }
         }
@@ -157,10 +151,8 @@ namespace Toys
             get
             {
                 var res = -Vector3.UnitY;
-                if (Node.Parent != null)
-                {
-                    res = (Node.Parent.GetTransform.GlobalTransform * new Vector4(res, 1)).Xyz;
-                }
+
+                res = (new Vector4(res) * Node.GetTransform.GlobalTransform).Xyz;
                 return res.Normalized();
             }
         }
@@ -172,7 +164,7 @@ namespace Toys
                 var res = Vector3.UnitX;
                 if (Node.Parent != null)
                 {
-                    res = (Node.Parent.GetTransform.GlobalTransform * new Vector4(res, 1)).Xyz;
+                    res = (new Vector4(res) * Node.Parent.GetTransform.GlobalTransform).Xyz;
                 }
                 return res.Normalized();
             }
@@ -185,7 +177,7 @@ namespace Toys
                 var res = -Vector3.UnitX;
                 if (Node.Parent != null)
                 {
-                    res = (Node.Parent.GetTransform.GlobalTransform * new Vector4(res, 1)).Xyz;
+                    res = (new Vector4(res) * Node.Parent.GetTransform.GlobalTransform).Xyz;
                 }
                 return res.Normalized();
             }

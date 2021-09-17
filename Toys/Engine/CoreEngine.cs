@@ -1,5 +1,4 @@
 ﻿#define PHYS
-#define VR
 
 using System;
 using OpenTK;
@@ -55,6 +54,7 @@ namespace Toys
                 aEngine = new SoundEngine();
 #if VR
                 vrSystem = new VR.VRSystem();
+                GLWindow.gLWindow.RenderFrequency = 80;
 #endif
                 animEngine = new AnimationEngine();
                 time = new Time();

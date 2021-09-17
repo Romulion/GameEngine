@@ -65,11 +65,6 @@ namespace Toys.VR
 
             //return camera back
             camera.Node.GetTransform.Position -= reye;
-
-            //Console.WriteLine
-            //Debug.DebugTexture.Save2File(rightBuffer.RenderTexture,"r");
-            //Debug.DebugTexture.Save2File(leftBuffer.RenderTexture, "l");
-            //Console.ReadLine();
         }
 
         Vector3 CalcRightEyePosition(Camera camera)

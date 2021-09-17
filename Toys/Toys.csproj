@@ -158,6 +158,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputPath>..\bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;PMXInvert</DefineConstants>
+    <DefineConstants>TRACE;PMXInvert, VR</DefineConstants>
   </PropertyGroup>
 </Project>

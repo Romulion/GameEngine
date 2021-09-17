@@ -11,31 +11,109 @@ namespace Toys.VR
     {
         //event 
         CVRSystem vrContext;
-        ControllerData[] controllers;
+        public ControllerData[] controllers;
         TrackerData[] trackers;
         ETrackedPropertyError trackError;
         uint vrControllerStateSize = 0;
         bool inDrawingMode = true;
-        bool doRumbleNow = false;
+        const string setName = "/actions/player";
+        VRActiveActionSet_t[] setList;
+
+        InputAnalogActionData_t analogData = new InputAnalogActionData_t();
+        InputDigitalActionData_t digitalData = new InputDigitalActionData_t();
+        InputPoseActionData_t posData = new InputPoseActionData_t();
+        uint analogDataSize;
+        uint digitalDataSize;
+        uint posDataSize;
+        uint setSize;
+
         public HMDData HMD { get; private set; }
 
         public VRControllerSystem(CVRSystem context)
         {
-            //OpenVR.Input.SetActionManifestPath();
+
+
             trackError = ETrackedPropertyError.TrackedProp_Success;
             vrContext = context;
             HMD = new HMDData();
-            controllers = new ControllerData[2] {new ControllerData(), new ControllerData ()};
-            ParseTrackingFrame();
+            HMD.Id = 0;
+            controllers = new ControllerData[2] { new ControllerData(), new ControllerData() };
+            //ParseTrackingFrame();
             ResetHMDLocation();
-            unsafe
-            {
-                vrControllerStateSize = (uint)sizeof(VRControllerState_t);
-            }
+            SetBindingsFromManifest();
+
+            Update(null);
+            ResetHMDLocation();
+            vrControllerStateSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(VRControllerState_t));
         }
+
+        void SetBindingsFromManifest()
+        {
+            
+            OpenVR.Input.SetActionManifestPath(ResourcesManager.GetAbsoluteAssetDirectory() + @"Other\actions.json");
+
+            setList = new VRActiveActionSet_t[] { new VRActiveActionSet_t() };
+            OpenVR.Input.GetActionSetHandle(setName, ref setList[0].ulActionSet);
+
+            controllers[0].controllerRole = ControllerRole.Left;
+            OpenVR.Input.GetInputSourceHandle("/user/hand/left", ref controllers[0].sourceId);
+            controllers[1].controllerRole = ControllerRole.Right;
+            OpenVR.Input.GetInputSourceHandle("/user/hand/right", ref controllers[1].sourceId);
+            
+            
+            for (int i = 0; i < 2; i++)
+            {
+                OpenVR.Input.GetActionHandle("/actions/player/in/pause", ref controllers[i].button1PressId);
+                OpenVR.Input.GetActionHandle("/actions/player/in/menu", ref controllers[i].button2PressId);
+                OpenVR.Input.GetActionHandle("/actions/player/in/grab", ref controllers[i].grabPressId);
+                OpenVR.Input.GetActionHandle("/actions/player/in/action", ref controllers[i].triggerPressId);
+                OpenVR.Input.GetActionHandle("/actions/player/in/trackpadpress", ref controllers[i].stickerPressId);
+                OpenVR.Input.GetActionHandle("/actions/player/in/trackpad", ref controllers[i].stickerPosId);
+                OpenVR.Input.GetActionHandle("/actions/player/in/pose", ref controllers[i].poseId);
+            }
+
+
+            
+
+            
+            setSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(VRActiveActionSet_t));
+            analogDataSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(InputAnalogActionData_t));
+            digitalDataSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(InputDigitalActionData_t));
+            posDataSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(InputPoseActionData_t));
+            
+        }
+
+        internal void Update(TrackedDevicePose_t[] pose)
+        {
+            
+            OpenVR.Input.UpdateActionState(setList, setSize);
+            for (int i = 0; i < 2; i++)
+            {
+                OpenVR.Input.GetDigitalActionData(controllers[i].button1PressId, ref digitalData, digitalDataSize, controllers[i].sourceId);
+                controllers[i].button1 = digitalData.bState;
+                OpenVR.Input.GetDigitalActionData(controllers[i].button2PressId, ref digitalData, digitalDataSize, controllers[i].sourceId);
+                controllers[i].button2 = digitalData.bState;
+                OpenVR.Input.GetDigitalActionData(controllers[i].triggerPressId, ref digitalData, digitalDataSize, controllers[i].sourceId);
+                controllers[i].trigPress = digitalData.bState;
+                OpenVR.Input.GetDigitalActionData(controllers[i].grabPressId, ref digitalData, digitalDataSize, controllers[i].sourceId);
+                controllers[i].grabress = digitalData.bState;
+                OpenVR.Input.GetDigitalActionData(controllers[i].stickerPressId, ref digitalData, digitalDataSize, controllers[i].sourceId);
+                controllers[i].stickPress = digitalData.bState;
+                OpenVR.Input.GetAnalogActionData(controllers[i].stickerPosId, ref analogData, analogDataSize, controllers[i].sourceId);
+                controllers[i].stick.X = analogData.x;
+                controllers[i].stick.Y = analogData.y;
+                OpenVR.Input.GetPoseActionDataForNextFrame(controllers[i].poseId, ETrackingUniverseOrigin.TrackingUniverseStanding ,ref posData, posDataSize, controllers[i].sourceId);
+                var mat = ConvertMatrix(posData.pose.mDeviceToAbsoluteTracking);
+                controllers[i].pos = mat.ExtractTranslation();
+                controllers[i].rot = mat.ExtractRotation();
+            }
+            HMDCoords();
+            //OpenVR.Input.GetAnalogActionData(val, ref analog, (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(InputAnalogActionData_t)), 0);
+        }
+
         internal void ProcessInputEvent(VREvent_t vrEvent)
         {
-
+            /*
             int controllerIndex = 0; //The index of the controllers[] array that corresponds with the controller that had a buttonEvent
             for (int i = 0; i < 2; i++) //Iterates across the array of controllers
             {
@@ -46,21 +124,21 @@ namespace Toys.VR
             }
 
             ControllerData pC = controllers[controllerIndex]; //The pointer to the ControllerData struct
-
+            //Console.WriteLine(OpenVR.Butt vrEvent.data.controller.button);
             if (vrEvent.data.controller.button == (uint)EVRButtonId.k_EButton_ApplicationMenu //Test if the ApplicationButton was pressed
                 && vrEvent.eventType == (uint)EVREventType.VREvent_ButtonUnpress)              //Test if the button is being released (the action happens on release, not press)
 
             {
                 inDrawingMode = !inDrawingMode;
-                doRumbleNow = true;
             }
             if (inDrawingMode) { }
-
+            */
         }
 
 
         void IterateAssignIds()
         {
+            /*
             var trackers = new List<TrackerData>();
             //Un-assigns the deviceIds and hands of controllers. If they are truely connected, will be re-assigned later in this function
             controllers[0].deviceId = -1;
@@ -134,10 +212,12 @@ namespace Toys.VR
             }
 
             this.trackers = trackers.ToArray();
+            */
         }
 
         void SetHands()
         {
+            /*
             for (int z = 0; z < 2; z++)
             {
                 ControllerData pC = controllers[z];
@@ -154,10 +234,12 @@ namespace Toys.VR
                     sHand = 2;
                 pC.hand = sHand;
             }
+            */
         }
 
         internal void ParseTrackingFrame()
         {
+            /*
             //Runs the iterateAssignIds() method if...
             if (HMD.Id < 0 ||                     // HMD id not yet initialized
                 controllers[0].deviceId < 0 ||       // One of the controllers not yet initialized
@@ -172,7 +254,8 @@ namespace Toys.VR
             }
             HMDCoords();
             ControllerCoords();
-            TrackerCoords();
+            TrackerCoords();     
+            */
         }
 
         void HMDCoords()
@@ -184,7 +267,7 @@ namespace Toys.VR
             TrackedDevicePose_t[] trackedDevicePose = new TrackedDevicePose_t[1];
             //if (vrContext.IsInputFocusCapturedByAnotherProcess())
             //    printf("\nINFO--Input Focus by Another Process");
-            vrContext.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0, trackedDevicePose);
+            vrContext.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0.1f, trackedDevicePose);
             var mat = ConvertMatrix(trackedDevicePose[0].mDeviceToAbsoluteTracking);
             HMD.Position = GetPosition(mat);
             HMD.Rotation = GetRotation(mat);
@@ -192,14 +275,14 @@ namespace Toys.VR
 
         void ControllerCoords()
         {
-            SetHands();
             /*
+            SetHands();
+            
             if (doRumbleNow)
             {
                 rumbleMsOffset = cpMillis();
                 doRumbleNow = false;
             }
-            */
 
             TrackedDevicePose_t trackedDevicePose = new TrackedDevicePose_t();
             VRControllerState_t controllerState = new VRControllerState_t();
@@ -220,7 +303,7 @@ namespace Toys.VR
 
                 if (pC.deviceId < 0 ||
                     !vrContext.IsTrackedDeviceConnected((uint)pC.deviceId) ||
-                    pC.hand </*=  Allow printing coordinates for invalid hand? Yes.*/ 0)
+                    pC.hand < 0)
                     continue;
 
                 vrContext.GetControllerStateWithPose(ETrackingUniverseOrigin.TrackingUniverseStanding, (uint)pC.deviceId, ref controllerState, vrControllerStateSize, ref trackedDevicePose);
@@ -286,8 +369,9 @@ namespace Toys.VR
                     }
                 if (inDrawingMode && indexN % 3 == 0 && indexN < (cylinderIndex + 1) * 3) //Vibrates the current cylinderIndex every thirty seconds or so
                     vrContext.TriggerHapticPulse(pC->deviceId, pC->idpad, 300);         //  see the definition of indexN above before the for loop
-                */
+                
             }
+            */
         }
 
         void TrackerCoords()
@@ -320,16 +404,19 @@ namespace Toys.VR
 
         internal Matrix4 ConvertMatrix (HmdMatrix34_t matrix)
         {
+            
             var mat4 = new Matrix4
             (
-                 matrix.m0, matrix.m4, matrix.m8, 0,
-                 matrix.m1, matrix.m5, matrix.m9, 0,
+                matrix.m0, matrix.m4, matrix.m8, 0,
+                matrix.m1, matrix.m5, matrix.m9, 0,
                 matrix.m2, matrix.m6, matrix.m10, 0,
                 matrix.m3, matrix.m7, matrix.m11, 0
             );
-            var reverce = Matrix4.CreateScale(new Vector3(-1, 1, -1));
-            mat4 = reverce * mat4 * reverce;
-            //mat4 *= Matrix4.CreateRotationY(MathF.PI);
+
+            
+            //var reverce = Matrix4.CreateScale(new Vector3(-1, 1, -1));
+            //mat4 = reverce * mat4 * reverce;
+            //mat4 = Matrix4.CreateRotationY(MathF.PI) * mat4 * Matrix4.CreateRotationY(MathF.PI);
             return mat4;
         }
 
