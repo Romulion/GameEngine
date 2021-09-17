@@ -90,6 +90,8 @@ namespace Toys
                 Engine.Update();
         }
 
+
+
         void Render(FrameEventArgs e)
         {
             if (!pause)

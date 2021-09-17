@@ -267,10 +267,12 @@ namespace Toys.VR
             TrackedDevicePose_t[] trackedDevicePose = new TrackedDevicePose_t[1];
             //if (vrContext.IsInputFocusCapturedByAnotherProcess())
             //    printf("\nINFO--Input Focus by Another Process");
-            vrContext.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0.1f, trackedDevicePose);
+            vrContext.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0f, trackedDevicePose);
             var mat = ConvertMatrix(trackedDevicePose[0].mDeviceToAbsoluteTracking);
             HMD.Position = GetPosition(mat);
             HMD.Rotation = GetRotation(mat);
+            //Console.WriteLine(111111);
+            //Console.WriteLine(mat);
         }
 
         void ControllerCoords()
@@ -412,11 +414,7 @@ namespace Toys.VR
                 matrix.m2, matrix.m6, matrix.m10, 0,
                 matrix.m3, matrix.m7, matrix.m11, 0
             );
-
             
-            //var reverce = Matrix4.CreateScale(new Vector3(-1, 1, -1));
-            //mat4 = reverce * mat4 * reverce;
-            //mat4 = Matrix4.CreateRotationY(MathF.PI) * mat4 * Matrix4.CreateRotationY(MathF.PI);
             return mat4;
         }
 

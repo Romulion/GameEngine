@@ -162,10 +162,8 @@ namespace Toys
             get
             {
                 var res = Vector3.UnitX;
-                if (Node.Parent != null)
-                {
-                    res = (new Vector4(res) * Node.Parent.GetTransform.GlobalTransform).Xyz;
-                }
+                res = (new Vector4(res) * Node.GetTransform.GlobalTransform).Xyz;
+                
                 return res.Normalized();
             }
         }
@@ -175,10 +173,7 @@ namespace Toys
             get
             {
                 var res = -Vector3.UnitX;
-                if (Node.Parent != null)
-                {
-                    res = (new Vector4(res) * Node.Parent.GetTransform.GlobalTransform).Xyz;
-                }
+                res = (new Vector4(res) * Node.GetTransform.GlobalTransform).Xyz;
                 return res.Normalized();
             }
         }

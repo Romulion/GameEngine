@@ -32,7 +32,6 @@ namespace Toys
         internal int RenderBuffer = 0;
         //camera space
         Vector3 cameraTarget = new Vector3(0f, 0f, -1f);
-		Vector3 cameraUp = new Vector3(0.0f, 1.0f, 0.0f);
 		Matrix4 look;
 
         public Color4 ClearColor = new Color4(0.0f, 0.1f, 0.1f, 0f);
@@ -73,7 +72,7 @@ namespace Toys
         internal void CalcProjection()
         {
             if (projType == ProjectionType.Perspective)
-                Projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI * (FOV / 180f), Width / (float)Height, NearPlane, FarPlane);
+                Projection = Matrix4.CreatePerspectiveFieldOfView(MathF.PI * (FOV / 180f), Width / (float)Height, NearPlane, FarPlane);
             else if (projType == ProjectionType.Orthographic)
                 Projection = Matrix4.CreateOrthographic(cameraHeigth * Width / (float)Height, cameraHeigth, NearPlane, FarPlane);
         }
@@ -101,7 +100,7 @@ namespace Toys
 		{
             look = Matrix4.LookAt(Node.GetTransform.GlobalPosition, (new Vector4(cameraTarget, 1) * Node.GetTransform.GlobalTransform).Xyz, GetUp);
         }
-#endregion
+        #endregion
         internal override void AddComponent(SceneNode nod)
         {
             Node = nod;

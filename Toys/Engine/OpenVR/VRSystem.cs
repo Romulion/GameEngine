@@ -65,6 +65,11 @@ namespace Toys.VR
 
         internal void Update()
         {
+            
+            if (CoreEngine.GetCamera.Width != (int)width)
+                CoreEngine.ActiveCore.Resize((int)width, (int)height);
+            
+
             var vrEvent =  new VREvent_t();
             while (vrContext.PollNextEvent(ref vrEvent, 64))
                 ProcessEvent(vrEvent);

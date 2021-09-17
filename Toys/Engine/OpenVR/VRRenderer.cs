@@ -28,11 +28,12 @@ namespace Toys.VR
 
         public override void Render(MeshDrawer[] meshes, Camera camera)
         {
+            GL.Viewport(0, 0, camera.Width, camera.Height);
             var reye = CalcRightEyePosition(camera);
             camera.Node.GetTransform.Position -= reye;
             //render scene to left eye
             camera.CalcLook();
-            GL.Viewport(0, 0, (int)vrSystem.width, (int)vrSystem.height);
+            
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, leftBuffer.RenderBufferDraw);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -49,7 +50,6 @@ namespace Toys.VR
             //render scene to right eye
             camera.Node.GetTransform.Position += 2 * reye;
             camera.CalcLook();
-            GL.Viewport(0, 0, (int)vrSystem.width, (int)vrSystem.height);
 
             //render scene to left eye
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, rightBuffer.RenderBufferDraw);
@@ -69,9 +69,8 @@ namespace Toys.VR
 
         Vector3 CalcRightEyePosition(Camera camera)
         {
-            var eyeDisplaysment = vrSystem.IPD * 0.5f * 0.001f;
+            var eyeDisplaysment = vrSystem.IPD * 0.0005f;
             var right = camera.Node.GetTransform.Right;
-
             return right * eyeDisplaysment;
         }
         internal override void Destroy()
