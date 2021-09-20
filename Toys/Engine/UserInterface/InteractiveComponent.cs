@@ -16,9 +16,9 @@ namespace Toys {
     /// <summary>
     /// Base class for Interactable Components
     /// </summary>
-    public abstract class InteractableComponent : VisualComponent
+    public abstract class InteractiveComponent : VisualComponent
     {
-        protected InteractableComponent(Type type) : base(type) { }
+        protected InteractiveComponent(Type type) : base(type) { }
 
         internal bool IsAllowDrag;
 

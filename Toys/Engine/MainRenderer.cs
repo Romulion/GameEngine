@@ -23,7 +23,7 @@ namespace Toys
 			renderer = new ModelRenderer();
 		}
 
-		public virtual void Render(MeshDrawer[] meshes, Camera camera)
+		internal virtual void Render(MeshDrawer[] meshes, Camera camera, UIEngine ui)
 		{
 			camera.CalcLook();
 			GL.Viewport(0, 0, camera.Width, camera.Height);
@@ -39,6 +39,7 @@ namespace Toys
 				camera.Background.DrawBackground(camera);
 
 			RenderScene(meshes, camera);
+			ui.DrawWorldUI(camera);
 		}
 
 		internal void RenderScene(MeshDrawer[] meshes, Camera camera)

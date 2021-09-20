@@ -11,7 +11,7 @@ namespace Toys
     /// Slider Component
     /// filling from left to right
     /// </summary>
-    public class SliderCompoent : InteractableComponent
+    public class SliderCompoent : InteractiveComponent
     {
         public Action OnValueChanged;
         ShaderUniform shaderUniform;

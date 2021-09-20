@@ -7,7 +7,7 @@ using OpenTK.Mathematics;
 
 namespace Toys
 {
-    public class TextInputComponent : InteractableComponent
+    public class TextInputComponent : InteractiveComponent
     {
         static Texture2D Texture;
         ShaderUniform shaderUniform;

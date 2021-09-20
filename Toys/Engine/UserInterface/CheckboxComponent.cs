@@ -7,7 +7,7 @@ using OpenTK.Mathematics;
 
 namespace Toys
 {
-    public class CheckboxComponent : InteractableComponent
+    public class CheckboxComponent : InteractiveComponent
     {
         //Graphics data
         static Texture2D Texture;

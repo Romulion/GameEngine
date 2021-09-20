@@ -163,7 +163,7 @@ namespace Toys
             //GL.Enable(EnableCap.Multisample);
             if (MainCamera != null)
             {
-                MainRender.Render(meshes.ToArray(), MainCamera);
+                MainRender.Render(meshes.ToArray(), MainCamera, UIEngine);
             }
 
             //render ui
@@ -171,7 +171,7 @@ namespace Toys
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.StencilTest);
             SetCullMode(FaceCullMode.Disable);
-            UIEngine.DrawUI(MainCamera);
+            UIEngine.DrawScreenUI(MainCamera);
             SetCullMode(FaceCullMode.Front);
             //TextRender.RenderText();
             GL.Disable(EnableCap.StencilTest);

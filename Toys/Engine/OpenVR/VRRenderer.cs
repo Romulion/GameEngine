@@ -26,7 +26,7 @@ namespace Toys.VR
         }
 
 
-        public override void Render(MeshDrawer[] meshes, Camera camera)
+        internal override void Render(MeshDrawer[] meshes, Camera camera, UIEngine ui)
         {
             GL.Viewport(0, 0, camera.Width, camera.Height);
             var reye = CalcRightEyePosition(camera);
@@ -43,6 +43,8 @@ namespace Toys.VR
                 camera.Background.DrawBackground(camera);
 
             RenderScene(meshes, camera);
+            ui.DrawWorldUI(camera);
+
             leftBuffer.DownSample();
             vrSystem.SetLeftEye(leftBuffer.RenderTexture.textureID);
 
@@ -60,6 +62,8 @@ namespace Toys.VR
                 camera.Background.DrawBackground(camera);
 
             RenderScene(meshes, camera);
+            ui.DrawWorldUI(camera);
+
             rightBuffer.DownSample();
             vrSystem.SetRightEye(rightBuffer.RenderTexture.textureID);
 

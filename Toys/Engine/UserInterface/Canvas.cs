@@ -11,6 +11,11 @@ namespace Toys
     /// </summary>
     public class Canvas : Component
     {
+
+        internal List<VisualComponent> activeComponents = new List<VisualComponent>();
+        internal List<InteractiveComponent> activeButtons = new List<InteractiveComponent>();
+        internal List<UIMaskComponent> masks = new List<UIMaskComponent>();
+
         List<UIElement> rootNodes = new List<UIElement>();
         //public UIElement Root;
         public RenderMode Mode { get; set; }
@@ -54,6 +59,7 @@ namespace Toys
             foreach (var root in rootNodes)
                 UnloadTree(root);
         }
+
 
         private void UnloadTree(UIElement uie)
         {

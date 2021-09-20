@@ -11,7 +11,7 @@ namespace Toys
     /// Scrollbar Component
     /// Set on scrollbox Parent and link scrollbox
     /// </summary>
-    public class ScrollBarComponent : InteractableComponent
+    public class ScrollBarComponent : InteractiveComponent
     {
         public Action OnValueChanged;
         public ScrollBoxComponent ScrollBox

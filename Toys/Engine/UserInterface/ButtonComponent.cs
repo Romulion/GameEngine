@@ -7,7 +7,7 @@ using OpenTK.Mathematics;
 
 namespace Toys
 {
-    public class ButtonComponent : InteractableComponent
+    public class ButtonComponent : InteractiveComponent
     {
         /// <summary>
         /// Event proceeded when button clicked

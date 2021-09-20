@@ -15,7 +15,7 @@ namespace Toys
         Both,
     }
 
-    public class ScrollBoxComponent : InteractableComponent
+    public class ScrollBoxComponent : InteractiveComponent
     {
         ShaderUniform shaderUniform;
         ShaderUniform colorMask;

@@ -13,12 +13,11 @@ namespace Toys
     {
         internal List<Canvas> canvases;
         internal List<VisualComponent> visualComponents;
-        internal List<InteractableComponent> buttons;
+        internal List<InteractiveComponent> buttons;
 
-        List<VisualComponent> activeComponents = new List<VisualComponent>();
-        List<InteractableComponent> activeButtons = new List<InteractableComponent>();
-        List<UIMaskComponent> masks = new List<UIMaskComponent>();
-        private InteractableComponent clickContext;
+        internal List<Canvas> activeCanvases = new List<Canvas>();
+
+        private InteractiveComponent clickContext;
         private bool clicked;
         Vector2 clickStartPosition;
         Vector2 dragThresold = new Vector2(5);
@@ -35,7 +34,7 @@ namespace Toys
         {
             canvases = new List<Canvas>();
             visualComponents = new List<VisualComponent>();
-            buttons = new List<InteractableComponent>();
+            buttons = new List<InteractiveComponent>();
         }
 
         private List<UIElement> SortCanvas(UIElement root, Canvas canvas, int maskID = 0)
@@ -51,9 +50,9 @@ namespace Toys
                     maskID++;
                     var mask = (UIMaskComponent)root.GetComponent<UIMaskComponent>();
                     mask.MaskValue = maskID;
-                    masks.Add(mask);
+                    canvas.masks.Add(mask);
+                    
                 }
-
                 elements.Add(root);
                 root.UpdateTransform();
                 foreach (var child in root.Childs)
@@ -66,47 +65,75 @@ namespace Toys
 
         internal void UpdateUI()
         {
-            masks.Clear();
-            var elements = new List<UIElement>();
+            activeCanvases.Clear();
             foreach (var canvas in canvases)
             {
-                foreach (var root in canvas.GetNodes())
-                    elements.AddRange(SortCanvas(root, canvas)); 
-            }
-            activeButtons.Clear();
-            activeComponents.Clear();
-
-            foreach (var element in elements)
-            {
-                foreach (var component in visualComponents)
+                var elements = new List<UIElement>();
+                canvas.masks.Clear();
+                canvas.activeButtons.Clear();
+                canvas.activeComponents.Clear();
+                if (canvas.IsActive)
                 {
-                    if (component.Node == element)
-                        activeComponents.Add(component);
-                }
+                    activeCanvases.Add(canvas);
+                    foreach (var root in canvas.GetNodes())
+                        elements.AddRange(SortCanvas(root, canvas));
 
-                foreach (var component in buttons)
-                {
-                    if (component.Node == element)
-                        activeButtons.Add(component);
-                }
+                    foreach (var element in elements)
+                    {
+                        foreach (var component in visualComponents)
+                        {
+                            if (component.Node == element)
+                                canvas.activeComponents.Add(component);
+                        }
 
+                        foreach (var component in buttons)
+                        {
+                            if (component.Node == element)
+                                canvas.activeButtons.Add(component);
+                        }
+                    }
+                    CheckMouse(canvas);
+                }
             }
         }
 
-        internal void DrawUI(Camera camera)
+        internal void DrawWorldUI(Camera camera)
         {
+            GL.Disable(EnableCap.DepthTest);
+            foreach (var canvas in activeCanvases)
+            {
+                if (canvas.Mode != Canvas.RenderMode.WorldSpace)
+                    continue;
+                DrawUI(camera, canvas);
+            }
+            GL.Enable(EnableCap.DepthTest);
+        }
+
+        internal void DrawScreenUI(Camera camera)
+        {
+            foreach (var canvas in activeCanvases)
+            {
+                if (canvas.Mode != Canvas.RenderMode.Overlay)
+                    continue;
+                DrawUI(camera, canvas);
+            }
+        }
+
+        void DrawUI(Camera camera, Canvas canvas)
+        {
+            GL.Clear(ClearBufferMask.StencilBufferBit);
             var projection = Matrix4.CreateOrthographicOffCenter(0, CoreEngine.GetCamera.Width, 0,  CoreEngine.GetCamera.Height, -1, 1);
             var projectionWorld = camera.GetLook * camera.Projection;
             int currMask = 0;
             GL.StencilFunc(StencilFunction.Always, currMask, 0xFF);
             GL.StencilMask(0x00);
-            foreach (var component in activeComponents)
+            foreach (var component in canvas.activeComponents)
             {
 
                 //draw mask to stencil
                 if (component.Node.IsMask)
                 {
-                    foreach (var elem in masks)
+                    foreach (var elem in canvas.masks)
                     {
                         if (elem.Node == component.Node)
                         {
@@ -132,7 +159,7 @@ namespace Toys
                         else
                             GL.StencilFunc(StencilFunction.Equal, currMask, 0xFF);
                     }
-                    if (component.Node.ParentCanvas.Mode == Canvas.RenderMode.WorldSpace)
+                    if (canvas.Mode == Canvas.RenderMode.WorldSpace)
                         component.Draw(Matrix4.CreateScale(component.Node.ParentCanvas.Canvas2WorldScale) * component.Node.ParentCanvas.Node.GetTransform.GlobalTransform * projectionWorld);
                     //else if (component.Node.ParentCanvas.Mode == Canvas.RenderMode.ScreenSpace)
                     else
@@ -141,7 +168,7 @@ namespace Toys
             }
         }
 
-        internal void CheckMouse()
+        internal void CheckMouse(Canvas canvas)
         {
             
             if (!GLWindow.gLWindow.IsFocused)
@@ -189,11 +216,11 @@ namespace Toys
             else
             {
                 
-                for (int i = activeButtons.Count - 1; i >= 0; i--)
+                for (int i = canvas.activeButtons.Count - 1; i >= 0; i--)
                 {
-                    var button = activeButtons[i];
+                    var button = canvas.activeButtons[i];
                     if ((button.IsAllowDrag || !dragEnabled)
-                        && InMask(button, cursorWindowPosition)
+                        && InMask(button, cursorWindowPosition, canvas)
                         && button.Node.GetTransform.GlobalRect.Contains(cursorWindowPosition.X, cursorWindowPosition.Y))
                     {
 
@@ -222,10 +249,10 @@ namespace Toys
             clicked = ms.IsButtonDown(MouseButton.Left);
         }
 
-        bool InMask(InteractableComponent component,Vector2 cursorPos)
+        bool InMask(InteractiveComponent component,Vector2 cursorPos, Canvas canvas)
         {
             if (component.Node.MaskCheck != 0 
-                && !masks[component.Node.MaskCheck - 1].Node.GetTransform.GlobalRect.Contains(cursorPos.X, cursorPos.Y))
+                && !canvas.masks[component.Node.MaskCheck - 1].Node.GetTransform.GlobalRect.Contains(cursorPos.X, cursorPos.Y))
                 return false;
             return true;
         }

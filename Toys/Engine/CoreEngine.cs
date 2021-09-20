@@ -108,7 +108,6 @@ namespace Toys
 			MainScene.Update();
             animEngine.Upadate(frameTimer.FrameTime);
             gEngine.UIEngine.UpdateUI();
-            gEngine.UIEngine.CheckMouse();
             //physics
 #if PHYS
             pEngine.Update(frameTimer.FrameTime);
