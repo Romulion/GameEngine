@@ -20,7 +20,7 @@ namespace Toys
         private InteractiveComponent clickContext;
         private bool clicked;
         Vector2 clickStartPosition;
-        Vector2 dragThresold = new Vector2(5);
+        Vector2 dragThresold = new Vector2(10);
         bool dragEnabled = false;
 
         public bool Busy
@@ -92,9 +92,10 @@ namespace Toys
                                 canvas.activeButtons.Add(component);
                         }
                     }
-                    CheckMouse(canvas);
+                    
                 }
             }
+            CheckMouse();
         }
 
         internal void DrawWorldUI(Camera camera)
@@ -168,7 +169,7 @@ namespace Toys
             }
         }
 
-        internal void CheckMouse(Canvas canvas)
+        internal void CheckMouse()
         {
             
             if (!GLWindow.gLWindow.IsFocused)
@@ -215,32 +216,34 @@ namespace Toys
             }
             else
             {
-                
-                for (int i = canvas.activeButtons.Count - 1; i >= 0; i--)
+                foreach (var canvas in activeCanvases)
                 {
-                    var button = canvas.activeButtons[i];
-                    if ((button.IsAllowDrag || !dragEnabled)
-                        && InMask(button, cursorWindowPosition, canvas)
-                        && button.Node.GetTransform.GlobalRect.Contains(cursorWindowPosition.X, cursorWindowPosition.Y))
+                    for (int i = canvas.activeButtons.Count - 1; i >= 0; i--)
                     {
-
-                        //fill context on click
-                        if (!clicked && ms.IsButtonDown(MouseButton.Left))
+                        var button = canvas.activeButtons[i];
+                        if ((button.IsAllowDrag || !dragEnabled)
+                            && InMask(button, cursorWindowPosition, canvas)
+                            && button.Node.GetTransform.GlobalRect.Contains(cursorWindowPosition.X, cursorWindowPosition.Y))
                         {
-                            dragEnabled = button.IsAllowDrag;
-                            button.ClickDownState();
-                            clickContext = button;
-                            clickStartPosition = cursorWindowPosition;
+                            //fill context on click
+                            if (!clicked && ms.IsButtonDown(MouseButton.Left))
+                            {
+                                dragEnabled = button.IsAllowDrag;
+                                button.ClickDownState();
+                                clickContext = button;
+                                clickStartPosition = cursorWindowPosition;
+                            }
+                            else if (clickContext != button)
+                            {
+                                //Console.WriteLine(button);
+                                button.Hover();
+                            }
+                            break;
                         }
-                        else if (clickContext != button)
+                        else if (button != clickContext)
                         {
-                            button.Hover();
+                            button.Normal();
                         }
-                        break;
-                    }
-                    else if (button != clickContext)
-                    {
-                        button.Normal();
                     }
                 }
 
