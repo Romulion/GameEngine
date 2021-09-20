@@ -9,12 +9,11 @@ namespace Toys.Physics
 {
     public class RigitBodyBox : RigidBodyComponent
     {
-        OpenTK.Mathematics.Vector3 size = OpenTK.Mathematics.Vector3.One;
+        OpenTK.Mathematics.Vector3 size;
 
-        public RigitBodyBox()
+        public RigitBodyBox(OpenTK.Mathematics.Vector3 size)
         { 
-            Resize(Vector3.One);
-
+            Size = size;
         }
 
         public OpenTK.Mathematics.Vector3 Size

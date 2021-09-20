@@ -14,6 +14,35 @@ namespace Toys
         protected RigidBodyConstructionInfo rbInfo;
         public OpenTK.Mathematics.Vector3 Center { get; set; }
 
+        CollisionCallback callBack = (c) => { };
+        int callBackCount = 0;
+        public event CollisionCallback OnHit
+        {
+            add
+            {
+                if (callBackCount == 0)
+                {
+                    body.CollisionFlags |= CollisionFlags.CustomMaterialCallback;
+                    ManifoldPoint.ContactAdded += CollisionCallbackParser;
+                }
+
+                callBack += value;
+                callBackCount++;
+            }
+            remove
+            {
+                callBack -= value;
+                callBackCount--;
+                if (callBackCount == 0)
+                {
+                    body.CollisionFlags -= body.CollisionFlags & CollisionFlags.CustomMaterialCallback;
+                    ManifoldPoint.ContactAdded -= CollisionCallbackParser;
+                }
+            }
+        }
+
+
+
         public RigidBodyComponent() : base(typeof(RigidBodyComponent)) 
         {
             GroupFlags = -1;
@@ -45,9 +74,7 @@ namespace Toys
                 if (value)
                     body.CollisionFlags |= CollisionFlags.KinematicObject;
                 else
-                {
                     body.CollisionFlags -= body.CollisionFlags & CollisionFlags.KinematicObject;
-                }
             }
         }
 
@@ -72,6 +99,29 @@ namespace Toys
             if (Node)
                 CoreEngine.pEngine.World.AddRigidBody(body,  GroupFlags, CollisionGroupFlags);
         }
+
+
+
+        private void CollisionCallbackParser(ManifoldPoint cp, CollisionObjectWrapper colObj0Wrap, int partId0, int index0, CollisionObjectWrapper colObj1Wrap, int partId1, int index1)
+        {
+            if (colObj0Wrap.CollisionObject == body)
+            {
+                CollisionCallback(cp, colObj1Wrap);
+            }
+            else if (colObj1Wrap.CollisionObject == body)
+            {
+                CollisionCallback(cp, colObj0Wrap);
+            }
+
+            void CollisionCallback(ManifoldPoint cp, CollisionObjectWrapper colObjWrap)
+            {
+                var data = new CollisionData(colObjWrap.CollisionObject, cp.AppliedImpulse);
+                callBack?.Invoke(data);
+            }
+        }
+
+
+
 
         private void UpdateBody()
         {

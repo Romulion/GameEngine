@@ -13,7 +13,10 @@ namespace Toys
         static double resolution = (double)1000 / Stopwatch.Frequency;
         public long FrameCount { get; internal set; }
 
-        public double TimeFromStart { get { return resolution * stopwatch.ElapsedTicks; } }
+        /// <summary>
+        /// Time from Program start in ms
+        /// </summary>
+        public double TimeFromStart { get { return resolution * programStarted.ElapsedTicks; } }
 
         public Time()
         {

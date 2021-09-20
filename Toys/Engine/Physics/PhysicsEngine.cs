@@ -21,6 +21,7 @@ namespace Toys
         Player = 64,
         Look = 128,
         Projectile  = 256,
+        MMDAll = ushort.MaxValue << 16,
     }
 	public class PhysicsEngine : IDisposable
 	{
@@ -140,7 +141,7 @@ namespace Toys
             RigidBody Body = new RigidBody(rbInfo);
             Body.CollisionFlags = CollisionFlags.StaticObject;
             Body.UserObject = "Ground";
-
+            Body.UserIndex = 10;
             World.AddRigidBody(Body, CollisionFilterGroups.StaticFilter, CollisionFilterGroups.CharacterFilter);
             /*
             const float staticMass = 0;

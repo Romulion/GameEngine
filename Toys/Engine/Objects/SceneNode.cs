@@ -150,6 +150,15 @@ namespace Toys
         }
 
         /// <summary>
+        /// Return all attached components
+        /// </summary>
+        /// <returns></returns>
+        public Component[] GetAllComponents()
+        {
+            return components.ToArray();
+        }
+
+        /// <summary>
         /// Search component of selected type.
         /// Returns first found.
         /// </summary>

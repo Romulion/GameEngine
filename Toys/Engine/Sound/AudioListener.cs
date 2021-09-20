@@ -30,9 +30,9 @@ namespace Toys
 
         internal void Update()
         {
-            var pos = Node.GetTransform.Position;
-            var up = Vector3.UnitY;
-            direction = new Vector3(Node.GetTransform.GlobalTransform.M31, Node.GetTransform.GlobalTransform.M32, Node.GetTransform.GlobalTransform.M33);
+            var pos = Node.GetTransform.GlobalPosition;
+            var up = Node.GetTransform.Up;
+            direction = Node.GetTransform.Forward;
             AL.Listener(ALListener3f.Position, ref pos);
             AL.Listener(ALListenerfv.Orientation, ref direction, ref up);
         }

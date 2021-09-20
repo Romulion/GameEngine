@@ -64,6 +64,7 @@ namespace Toys
                     if (rigits[i].Phys == PhysType.GravityBone)
                         postPhysics += rigitBodies[i].SyncBody2BoneRot;
 
+                    rigitBodies[i].Body.UserIndex2 = i;
                 }
                 World.AddRigidBody(rigitBodies[i].Body, (int)Math.Pow(2, rigits[i].GroupId), rigits[i].NonCollisionGroup);
 

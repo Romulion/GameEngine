@@ -108,9 +108,12 @@ namespace Toys
 
         internal void Update()
         {
-            var pos = Node.GetTransform.Position;
+            var pos = Node.GetTransform.GlobalPosition;
             AL.Source(sourceID, ALSource3f.Position, ref pos);
-
+            /*
+            var fwd = Node.GetTransform.Forward;
+            AL.Source(sourceID, ALSource3f.Direction, ref fwd);
+            */
             int play;
             AL.GetSource(sourceID, ALGetSourcei.SourceState, out play);
             if (play == (int)ALSourceState.Stopped)
