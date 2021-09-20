@@ -19,6 +19,7 @@ namespace Toys
 
 	public abstract class Morph
 	{
+		protected float degree = 0f;
 		public string Name;
 		public string NameEng;
 		public MorphType Type;

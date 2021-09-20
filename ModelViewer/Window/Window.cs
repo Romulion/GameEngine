@@ -34,7 +34,7 @@ namespace ModelViewer
             foreach (var morph in morphs)
             {
 
-                if (!(morph is MorphVertex) && !(morph is MorphMaterial) && !(morph is MorphUV))
+                if (!(morph is MorphVertex) && !(morph is MorphMaterial) && !(morph is MorphUV) && !(morph is MorphSkeleton) && !(morph is MorphGroup))
                     continue;
 
                 //display morph type
@@ -45,7 +45,10 @@ namespace ModelViewer
                     prefix = "(M)";
                 else if (morph is MorphUV)
                     prefix = "(UV)";
-
+                else if (morph is MorphSkeleton)
+                    prefix = "(B)";
+                else if (morph is MorphGroup)
+                    prefix = "(G)";
                 Label lbl = new Label();
                 lbl.Name = "lbl";
                 lbl.Text = prefix + morph.Name;

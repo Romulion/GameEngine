@@ -14,7 +14,7 @@ namespace Toys
 		Texture2D[] textures;
 		Texture2D empty;
 		Material[] mats;
-		Bone[] bones;
+		BoneController boneController;
 		public Morph[] morphs;
 		float multipler = 0.1f;
 		RigidContainer[] rigitBodies;
@@ -193,6 +193,7 @@ namespace Toys
 			int materiaCount = reader.ReadInt32();
 			int offset = 0;
 			mats = new Material[materiaCount];
+
 			for (int i = 0; i < materiaCount; i++)
 			{
 				ShaderSettings shdrs = new ShaderSettings();
@@ -327,7 +328,7 @@ namespace Toys
 		void ReadBones(Reader reader)
 		{
 			int bonesCount = reader.ReadInt32();
-			bones = new Bone[bonesCount];
+			var bones = new Bone[bonesCount];
             int maxLevel = 0;
 			for (int i = 0; i < bonesCount; i++)
 			{                
@@ -443,7 +444,10 @@ namespace Toys
                     }
                 }
             }
-        }
+
+			boneController = new BoneController(bones, boneOrder);
+
+		}
 
 		void ReadMorhps(Reader reader)
 		{
@@ -459,23 +463,25 @@ namespace Toys
 				int size = reader.ReadInt32();
 
 				if (type == (int)MorphType.Vertex)
-				{
 					morphs[i] = new MorphVertex(name, nameEng, size, meshRigged.GetMorpher);
-				}
 				else if (type == (int)MorphType.Material)
 					morphs[i] = new MorphMaterial(name, nameEng, size);
 				else if (type == (int)MorphType.Uv)
-				{
 					morphs[i] = new MorphUV(name, nameEng, size, meshRigged.GetMorpher);
-				}
+				else if (type == (int)MorphType.Bone)
+					morphs[i] = new MorphSkeleton(name, nameEng, size, boneController);
+				else if (type == (int)MorphType.Group)
+					morphs[i] = new MorphGroup(name, nameEng, size, morphs);
 
-                for (int n = 0; n < size; n++)
+
+				for (int n = 0; n < size; n++)
 				{
 					switch (type)
 					{
 						case 0: //group
-							reader.readVal(header.GetMorphIndexSize);
-                            reader.ReadSingle();
+							var gId = reader.readVal(header.GetMorphIndexSize);
+                            var gval = reader.ReadSingle();
+							((MorphGroup)morphs[i]).AddMorph(gId, gval);
 							break;
 						case 1: //vertex
 							int index = reader.readVal(header.GetVertexIndexSize);
@@ -484,9 +490,11 @@ namespace Toys
 							((MorphVertex)morphs[i]).AddVertex(pos, index);
                             break;
 						case 2:  //bone morph
-							reader.readVal(header.GetBoneIndexSize);
-							reader.readVector3();
-							reader.readVector4();
+							var id = reader.readVal(header.GetBoneIndexSize);
+							var posB = reader.readVector3();
+							posB.Z = -posB.Z;
+							var rotB =  reader.readVector4();
+							((MorphSkeleton)morphs[i]).AddBone(id, posB, new Quaternion(rotB.X, rotB.Y, -rotB.Z, -rotB.W));
 							break;
 						case 3:  //uv
 							int vIndex = reader.readVal(header.GetVertexIndexSize);
@@ -652,7 +660,7 @@ namespace Toys
 				node.AddComponent(md);
 				*/
 				List<Component> comps = new List<Component>();
-				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs);
+				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, boneController, morphs);
 				md.OutlineDrawing = true;
 				comps.Add(md);
 				comps.Add(new Animator(md.skeleton));
@@ -677,7 +685,7 @@ namespace Toys
 				mats1[mats1.Length - 1].Count = 3;
 				*/
 				List<Component> comps = new List<Component>();
-				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs);
+				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, boneController, morphs);
 				md.OutlineDrawing = true;
 				comps.Add(md);
 				comps.Add(new Animator(md.skeleton));

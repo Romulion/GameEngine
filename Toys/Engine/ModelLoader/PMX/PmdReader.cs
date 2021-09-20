@@ -86,6 +86,7 @@ namespace Toys
             {
                 var vertex = new VertexRigged3D();
                 vertex.Position = reader.readVector3() * multipler;
+                vertex.Position.Z = -vertex.Position.Z;
                 vertex.Normal = reader.readVector3();
                 vertex.UV = reader.readVector2();
                 vertex.BoneIndices.bone1 = reader.ReadInt16();
@@ -336,6 +337,7 @@ namespace Toys
                 {
                     var index = reader.ReadInt32();
                     var pos = reader.readVector3() * multipler;
+                    pos.Z = -pos.Z;
                     morph.AddVertex(pos, index);
                 }
                 morphs[i] = morph;

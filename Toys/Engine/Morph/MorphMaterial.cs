@@ -6,7 +6,6 @@ namespace Toys
 {
     public class MorphMaterial : Morph
     {
-        float degree = 0f;
         public List<MaterialMorpher> MaterialMorphers;
 
         public MorphMaterial(string name, string nameEng, int count)
