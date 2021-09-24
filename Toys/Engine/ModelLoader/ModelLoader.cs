@@ -16,7 +16,7 @@ namespace Toys
 	{
         static Logger logger = new Logger("Model Loading");
 
-		public static IModelLoader Load(string filename)
+		public static IModelLoader Load(Stream stream, string filename)
 		{
 			string fileExtension = filename.Substring( filename.LastIndexOf('.') + 1);
             fileExtension = fileExtension.ToLower();
@@ -41,10 +41,10 @@ namespace Toys
                     break;
 			}
 
-			return Load(filename, format);
+			return Load(stream, filename, format);
 		}
 
-		public static IModelLoader Load(string filename, ModelFormat type)
+		public static IModelLoader Load(Stream stream, string filename, ModelFormat type)
 		{
 			IModelLoader modelLoader = null;
 
@@ -53,16 +53,16 @@ namespace Toys
                 switch (type)
                 {
                     case ModelFormat.PMX:
-                        modelLoader = new PmxReader(filename);
+                        modelLoader = new PmxReader(stream, filename);
                         break;
                     case ModelFormat.DAE:
-                        modelLoader = new ReaderDAE(filename);
+                        modelLoader = new ReaderDAE(stream, filename);
                         break;
                     case ModelFormat.LMD:
-                        modelLoader = new ReaderLMD(filename);
+                        modelLoader = new ReaderLMD(stream, filename);
                         break;
                     case ModelFormat.PMD:
-                        modelLoader = new PmdReader(filename);
+                        modelLoader = new PmdReader(stream, filename);
                         break;
                 }
             }

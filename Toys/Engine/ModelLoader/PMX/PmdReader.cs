@@ -41,7 +41,7 @@ namespace Toys
 
         string dir;
 
-        public PmdReader(string path)
+        public PmdReader(Stream fs, string path)
         {
             int indx = path.LastIndexOf('\\');
             if (indx >= 0)
@@ -49,7 +49,6 @@ namespace Toys
             else
                 dir = "";
             empty = Texture2D.LoadEmpty();
-            Stream fs = File.OpenRead(path);
             var reader = new Reader(fs);
             //JIS encoding
             reader.EncodingType = 200;

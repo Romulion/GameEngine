@@ -6,6 +6,9 @@ using OpenTK.Audio.OpenAL;
 
 namespace Toys
 {
+    /// <summary>
+    /// Store audion data (File only)
+    /// </summary>
     public class AudioClip : Resource
     {
         AudioFileReader audioData;
@@ -16,7 +19,8 @@ namespace Toys
 
         internal byte[] ByteBuffer { get; private set; }
 
-        public AudioClip(string file) : base(typeof(AudioClip))
+
+        public AudioClip(System.IO.Stream stream, string file) : base(typeof(AudioClip))
         {
             audioData = new AudioFileReader(file);
             IWaveProvider sampler;

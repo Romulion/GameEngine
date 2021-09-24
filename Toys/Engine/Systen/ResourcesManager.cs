@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Toys
 {
@@ -18,6 +19,7 @@ namespace Toys
 
         public static T LoadAsset<T>(string path) where T : Resource
         {
+
             Type tp = typeof(T);
             if (resources.ContainsKey(path))
             {
@@ -29,33 +31,32 @@ namespace Toys
                 else
                     resources.Remove(path);
             }
+
+            var stream = File.OpenRead(path);
             Resource asset = null;
-            if (tp == typeof(MeshDrawer))
+            if (tp == typeof(Texture2D))
             {
-                //IModelLoader model = ModelLoader.Load(path);
-                //asset = model.model;
-                //resources.Add(path, asset);
-            }
-            else if (tp == typeof(Texture2D))
-            {
-                asset = new Texture2D(path);
+
+                asset = new Texture2D(stream, path);
             }
             else if (tp == typeof(ModelPrefab))
             {
-                IModelLoader model = ModelLoader.Load(path);
+                IModelLoader model = ModelLoader.Load(stream, path);
                 asset = model?.GetModel;
             }
             else if (tp == typeof(AudioClip))
             {
-                asset = new AudioClip(path);
+                asset = new AudioClip(stream, path);
             }
             else if (tp == typeof(Animation))
             {
-                asset = AnimationLoader.Load(path);
+                asset = AnimationLoader.Load(stream, path);
             }
             else {
                 Console.WriteLine("Type not supported");
             }
+
+            stream.Dispose();
             if (asset)
 			{
 				asset.Id = path;
@@ -118,6 +119,11 @@ namespace Toys
             var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
             var stream = assembly.GetManifestResourceStream(defPath + path);
             return stream;
+        }
+
+        public static Stream GetResourceStream(string path)
+        {
+            return File.OpenRead(path); ;
         }
 
         public static bool DeleteResource(Resource resource)

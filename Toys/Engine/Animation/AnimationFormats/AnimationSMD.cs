@@ -14,18 +14,20 @@ namespace Toys
     internal class AnimationSMD : IAnimationLoader
     {
         string _path;
+        Stream _stream;
         Dictionary<string, int> _bones = new Dictionary<string, int>();
         List<AnimationFrame> _frames = new List<AnimationFrame>();
 
-        internal AnimationSMD(string path)
+        internal AnimationSMD(Stream stream, string path)
         {
             _path = path;
+            _stream = stream;
         }
         
         public Animation Load()
         {
             string line;
-            var file = new StreamReader(_path);
+            var file = new StreamReader(_stream);
 
             file.ReadLine();
 

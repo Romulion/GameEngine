@@ -27,7 +27,7 @@ namespace Toys
 		string dir;
 
 
-		public PmxReader(string path)
+		public PmxReader(Stream fs, string path)
 		{
 			int indx = path.LastIndexOf('\\');
             if (indx >= 0)
@@ -35,7 +35,6 @@ namespace Toys
             else
                 dir = "";
             empty = Texture2D.LoadEmpty();
-			Stream fs = File.OpenRead(path);
 			var reader = new Reader(fs);
 
 			ReadHeader(reader);

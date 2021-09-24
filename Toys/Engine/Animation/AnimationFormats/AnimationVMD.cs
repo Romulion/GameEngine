@@ -27,21 +27,23 @@ namespace Toys
 
         string _path;
         Reader _reader;
+        Stream _stream;
 
         Dictionary<string, int> _bones = new Dictionary<string, int>();
         AnimationFrame[] _frames;
 
-        public AnimationVMD(string path)
+        public AnimationVMD(Stream stream, string path)
         {
             _path = path;
+            _stream = stream;
         }
 
         public Animation Load()
         {
-            using (Stream fileStream = File.OpenRead(_path))
+            using (_stream)
             {
 
-                _reader = new Reader(fileStream);
+                _reader = new Reader(_stream);
 
                 string header = new string(_reader.ReadChars(30));
 

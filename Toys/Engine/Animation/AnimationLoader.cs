@@ -17,7 +17,7 @@ namespace Toys
     public class AnimationLoader
     {
 
-        public static Animation Load(string path)
+        public static Animation Load(Stream stream, string path)
         {
             string extension = path.Substring(path.LastIndexOf('.') + 1);
             extension = extension.ToLower();
@@ -37,23 +37,23 @@ namespace Toys
                 default:
                     throw new Exception("cant recognize file format");
             }
-            return Load(path, format);
+            return Load(stream, path, format);
 
         }
 
-        public static Animation Load(string filename, AnimationFormat type)
+        public static Animation Load(Stream stream, string filename, AnimationFormat type)
         {
             IAnimationLoader modelLoader = null;
             switch (type)
             {
                 case AnimationFormat.SMD:
-                    modelLoader = new AnimationSMD(filename);
+                    modelLoader = new AnimationSMD(stream, filename);
                     break;
                 case AnimationFormat.VMD:
-                    modelLoader = new AnimationVMD(filename);
+                    modelLoader = new AnimationVMD(stream, filename);
                     break;
                 case AnimationFormat.LMD:
-                    modelLoader = new AnimationLMD(filename);
+                    modelLoader = new AnimationLMD(stream, filename);
                     break;
             }
             return modelLoader.Load();

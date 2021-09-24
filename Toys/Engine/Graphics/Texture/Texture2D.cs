@@ -80,8 +80,59 @@ namespace Toys
             }
 		}
 
-		//for framebuffer
-		Texture2D(int texture, string name)
+        internal Texture2D(Stream stream, string path)
+        {
+            textureType = TextureTarget.Texture2D;
+            GenerateTextureID();
+
+            Bitmap tex1;
+            //check texture
+            try
+            {
+
+                if (path.EndsWith("ktx", StringComparison.OrdinalIgnoreCase))
+                {
+                    KtxStructure ktxStructure = null;
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        stream.CopyTo(ms);
+                        ktxStructure = KtxLoader.LoadInput(ms);
+                        LoadTexture(ktxStructure);
+                    }
+                    return;
+                }
+
+                ///cause .NET cant read tga natievly
+                ///png , jpg, bmp is ok
+                if (path.EndsWith("tga", StringComparison.OrdinalIgnoreCase))
+                    tex1 = Paloma.TargaImage.LoadTargaImage(stream);
+                /// .spa| .sph textures is png bmp or jpg textures
+                else if (path.EndsWith("spa", StringComparison.OrdinalIgnoreCase)
+                    || path.EndsWith("sph", StringComparison.OrdinalIgnoreCase))
+                {
+                    tex1 = new Bitmap(stream);
+                }
+                //process alpha channel on bmp
+                else if (path.EndsWith("bmp", StringComparison.OrdinalIgnoreCase))
+                {
+                    tex1 = CustomBMPLoader.Load(stream);
+                }
+                else
+                    tex1 = new Bitmap(stream);
+                LoadTexture(tex1);
+                tex1.Dispose();
+            }
+            catch (Exception)
+            {
+                logger.Error("cant load texture " + path, "");
+                Texture2D empty = LoadEmpty();
+                textureID = empty.textureID;
+                Name = empty.Name;
+            }
+        }
+
+        //for framebuffer
+        Texture2D(int texture, string name)
 		{
             textureType = TextureTarget.Texture2D;
             textureID = texture;

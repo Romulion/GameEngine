@@ -16,7 +16,7 @@ namespace Toys
         const float multiplier = 0.01f;
         DAEMeshLoader meshreader;
 
-        public ReaderDAE(string filename)
+        public ReaderDAE(System.IO.Stream stream, string filename)
         {
             file = filename;
             int indx = filename.LastIndexOf('\\');
@@ -25,7 +25,7 @@ namespace Toys
             else
                 dir = "";
             xDoc = new XmlDocument();
-            xDoc.Load(filename);
+            xDoc.Load(stream);
             LoadLibraries();
         }
 

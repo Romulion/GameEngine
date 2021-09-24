@@ -25,12 +25,12 @@ namespace Toys
         Dictionary<string, int> bones = new Dictionary<string, int>();
         AnimationFrame[] frames;
 
-        public AnimationLMD(string path)
+        public AnimationLMD(Stream stream, string path)
         {
             _path = path;
-            using (Stream fs = File.OpenRead(_path))
+            using (stream)
             {
-                _reader = new Reader(fs);
+                _reader = new Reader(stream);
                 _reader.EncodingType = 1;
                 ReadBones();
 

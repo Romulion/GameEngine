@@ -19,7 +19,7 @@ namespace Toys
         Dictionary<string, Texture2D> texturesDict = new Dictionary<string, Texture2D>();
 
         string dir;
-        public ReaderLMD(string path)
+        public ReaderLMD(Stream fs, string path)
         {
             int indx = path.LastIndexOf('\\');
             if (indx >= 0)
@@ -27,7 +27,6 @@ namespace Toys
             else
                 dir = "";
 
-            Stream fs = File.OpenRead(path);
             reader = new Reader(fs);
             reader.EncodingType = 1;
             StartRead();
