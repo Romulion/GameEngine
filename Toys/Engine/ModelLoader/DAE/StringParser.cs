@@ -3,6 +3,7 @@ namespace Toys
 {
 	public static class StringParser
 	{
+		static System.Globalization.CultureInfo cultureInfo = System.Globalization.CultureInfo.CreateSpecificCulture("en-GB");
 		public static int[] readIntArray(string array)
 		{
 			string[] arr = array.Split(' ');
@@ -20,11 +21,10 @@ namespace Toys
 		{
 			string[] arr = array.Split(' ');
 			float[] res = new float[arr.Length];
-
 			for (int n = 0; n < arr.Length; n++)
 			{
 				float num = 0;
-				Single.TryParse(arr[n], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.CreateSpecificCulture("en-GB"), out num);
+				Single.TryParse(arr[n], System.Globalization.NumberStyles.Float, cultureInfo, out num);
 				res[n] = num * multiplier;
 			}
 			return res;
