@@ -45,25 +45,26 @@ namespace Toys
 
 
 			var jointSpace = Matrix.RotationYawPitchRoll(JointParameters.Rotation.Y, JointParameters.Rotation.X, JointParameters.Rotation.Z) * Matrix.Translation(GetVec3(JointParameters.Position));
-			
 			//Convert left to right coordinates
 			var reverce = Matrix.Scaling(new Vector3(1, 1, -1));
 			jointSpace = reverce * jointSpace * reverce;
-
 			var temp1 = body1.WorldTransform;
 			temp1.Invert();
 			var conn1 = jointSpace * temp1;
-            //var Conn1 = Matrix.Translation(GetVec3(rbodies[jcon.RigitBody1].rigCon.Position - jcon.Position));
-
 			Matrix conn2 = Matrix.Identity;
 			if (body2 != null)
 			{
 				//calculating joint arms space
 				var temp2 = body2.WorldTransform;
+				//temp2.M43 += 0.1f;
+				//body2.WorldTransform = temp2;
 				temp2.Invert();
-				conn2 = jointSpace* temp2;
+				conn2 = jointSpace * temp2;
+
 			}
-            switch (JointParameters.Type)
+			//conn2 = CleanLowValues(conn2);
+			//conn1 = CleanLowValues(conn1);
+			switch (JointParameters.Type)
 			{
 				case JointType.ConeTwist:
 					ConeTwistConstraint jointCone = null;
@@ -74,33 +75,56 @@ namespace Toys
 					
 					break;
 				case JointType.SpringSixDOF: //the only one used
+
+					//Jitter to hight
+					/*
+					Generic6DofSpringConstraint jointSpring6 = null;
+					if (body2 != null)
+						jointSpring6 = new Generic6DofSpringConstraint(body1, body2, conn1, conn2,true);
+					else 
+						jointSpring6 = new Generic6DofSpringConstraint(body1, conn1,true);
+					*/
+					//Has low stiffness limit, disabling explode bodys TODO: increse limit
 					Generic6DofSpring2Constraint jointSpring6 = null;
 					if (body2 != null)
 						jointSpring6 = new Generic6DofSpring2Constraint(body1, body2, conn1, conn2);
-					else 
+					else
 						jointSpring6 = new Generic6DofSpring2Constraint(body1, conn1);
 					
-                    jointSpring6.AngularLowerLimit = GetVec3(JointParameters.RotMin);
+					jointSpring6.AngularLowerLimit = GetVec3(JointParameters.RotMin);
 					jointSpring6.AngularUpperLimit = GetVec3(JointParameters.RotMax);
-                    
-                    jointSpring6.LinearLowerLimit = GetVec3(JointParameters.PosMin);
+					jointSpring6.LinearLowerLimit = GetVec3(JointParameters.PosMin);
 					jointSpring6.LinearUpperLimit = GetVec3(JointParameters.PosMax);
-                    
-					
-                    jointSpring6.EnableSpring(0,true);
-                    jointSpring6.EnableSpring(1,true);
-                    jointSpring6.EnableSpring(2,true);
-					jointSpring6.EnableSpring(4, true);
-					jointSpring6.EnableSpring(5, true);
-					jointSpring6.EnableSpring(6, true);
-					
-					jointSpring6.SetStiffness(0, JointParameters.PosSpring.X);
-					jointSpring6.SetStiffness(1, JointParameters.PosSpring.Y);
-					jointSpring6.SetStiffness(2, JointParameters.PosSpring.Z);
-					jointSpring6.SetStiffness(3, JointParameters.RotSpring.X);
-					jointSpring6.SetStiffness(4, JointParameters.RotSpring.Y);
-					jointSpring6.SetStiffness(5, JointParameters.RotSpring.Z);
 
+					for (int i = 0; i < 3; i++)
+					{
+						if (JointParameters.PosSpring[i] != 0)
+						{
+							jointSpring6.EnableSpring(i, true);
+							jointSpring6.SetStiffness(i, JointParameters.PosSpring[i]);
+						}
+					}
+
+					for (int i = 0; i < 3; i++)
+					{
+						if (JointParameters.RotSpring[i] != 0)
+						{
+							jointSpring6.EnableSpring(i + 3, true);
+							jointSpring6.SetStiffness(i + 3, JointParameters.RotSpring[i]);
+						}
+					}
+
+					/*
+					jointSpring6.SetDamping(0, 0.1f);
+					jointSpring6.SetDamping(1, 0.1f);
+					jointSpring6.SetDamping(2, 0.1f);
+					jointSpring6.SetDamping(3, 0.1f);
+					jointSpring6.SetDamping(4, 0.1f);
+					jointSpring6.SetDamping(5, 0.1f);
+					*/
+
+					jointSpring6.SetParam(ConstraintParam.Erp, 0.6f);
+					jointSpring6.SetParam(ConstraintParam.Cfm, 0.6f);
 					jointSpring6.SetEquilibriumPoint();
                     Constraint = jointSpring6;
                     break;
@@ -114,6 +138,27 @@ namespace Toys
 		private Vector3 GetVec3(OpenTK.Mathematics.Vector3 vec3)
 		{
 			return new Vector3(vec3.X, vec3.Y, vec3.Z);
+		}
+
+
+		
+		float dec2rad(int grad)
+		{
+			return ((float)grad / 180 * (float)Math.PI);
+		}
+
+
+		/// <summary>
+		/// Clean matrix elements lower than 10e-3
+		/// To prevent bugs
+		/// </summary>
+		/// <param name="mat"></param>
+		Matrix CleanLowValues(Matrix mat)
+        {
+			for (int i = 0; i < 16; i++)
+				if (MathF.Abs(mat[i]) < 0.001)
+					mat[i] = 0;
+			return mat;
 		}
 	}
 }

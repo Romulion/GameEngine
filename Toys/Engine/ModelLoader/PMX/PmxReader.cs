@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Toys
 {
@@ -659,37 +660,12 @@ namespace Toys
 				node.AddComponent(md);
 				*/
 				List<Component> comps = new List<Component>();
-				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, boneController, morphs);
+				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, boneController, morphs.ToList());
 				md.OutlineDrawing = true;
 				comps.Add(md);
 				comps.Add(new Animator(md.skeleton));
 				comps.Add(new PhysicsManager(rigitBodies, joints, md.skeleton));
 				return new ModelPrefab(comps); 
-			}
-		}
-
-		public ModelPrefab GetRiggedModel
-		{
-			get
-			{
-
-				/*
-				//debug faces
-				var mats1 = new Material[mats.Length + 1];
-				Array.Copy(mats, mats1, mats.Length);
-				ShaderSettings sdrs = new ShaderSettings();
-				RenderDirectives rndd = new RenderDirectives();
-				mats1[mats1.Length-1] = new MaterialPM(sdrs, rndd);
-				mats1[mats1.Length - 1].Offset = 51424 * 3;
-				mats1[mats1.Length - 1].Count = 3;
-				*/
-				List<Component> comps = new List<Component>();
-				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, boneController, morphs);
-				md.OutlineDrawing = true;
-				comps.Add(md);
-				comps.Add(new Animator(md.skeleton));
-				comps.Add(new PhysicsManager(rigitBodies, joints, md.skeleton));
-				return new ModelPrefab(comps);
 			}
 		}
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Toys
 {
@@ -8,7 +9,7 @@ namespace Toys
 		UniformBufferSkeleton uniformBufferSkeleton;
         ModelSkinning modelSkinner;
 
-		public MeshDrawerRigged(Mesh mesh, Material[] mats, BoneController skelet, Morph[] mor = null) : base(mesh, mats, mor)
+		public MeshDrawerRigged(Mesh mesh, Material[] mats, BoneController skelet, List<Morph> mor = null) : base(mesh, mats, mor)
 		{
 			skeleton = skelet;
 			UniformBufferManager ubm = UniformBufferManager.GetInstance;
@@ -16,7 +17,7 @@ namespace Toys
             modelSkinner = new ModelSkinning(mesh);
 		}
 
-        public MeshDrawerRigged(Mesh mesh, BoneController skelet, Morph[] mor = null) : base(mesh, null, mor)
+        public MeshDrawerRigged(Mesh mesh, BoneController skelet, List<Morph> mor = null) : base(mesh, null, mor)
         {
             skeleton = skelet;
             UniformBufferManager ubm = UniformBufferManager.GetInstance;

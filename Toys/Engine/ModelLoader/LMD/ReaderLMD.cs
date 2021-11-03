@@ -295,22 +295,9 @@ namespace Toys
             get
             {
                 List<Component> comps = new List<Component>();
-                foreach (Mesh mesh in meshRigged)
-                {
-                    MeshDrawer md = new MeshDrawer(new Mesh(mesh.Vertices, mesh.Indices));
-                    comps.Add(md);
-                }
-                return new ModelPrefab(comps);
-            }
-        }
-
-        public ModelPrefab GetRiggedModel
-        {
-            get
-            {
-                List<Component> comps = new List<Component>();
                 foreach (MeshDrawerRigged mesh in mesDrawlers)
                 {
+
                     comps.Add(mesh);
                 }
                 comps.Add(new Animator(boneControll));

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Toys
 {
@@ -6,13 +7,13 @@ namespace Toys
 	{
 		public Mesh Mesh { get; private set; }
 		public Material[] Materials { get; private set; }
-		public Morph[] Morphes { get; private set; }
+		public List<Morph> Morphes { get; private set; }
         public int RenderMask { get; set; }
 
         public bool OutlineDrawing;
 		public bool CastShadow;
 
-		public MeshDrawer(Mesh mesh, Material[] materials = null,Morph[] morphes = null) : base (typeof(MeshDrawer))
+		public MeshDrawer(Mesh mesh, Material[] materials = null, List<Morph> morphes = null) : base (typeof(MeshDrawer))
 		{
 			Mesh = mesh;
             if (materials != null)

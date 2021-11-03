@@ -10,7 +10,7 @@ namespace Toys
         public delegate void BoneBodySyncer(OpenTK.Mathematics.Matrix4 world);
         RigidBodyBone[] rigitBodies;
         BoneController bones;
-        Joint[] joints;
+        public Joint[] joints { get; private set; }
         BoneBodySyncer prePhysics;
         BoneBodySyncer postPhysics;
         Transform worldTrans;
@@ -78,7 +78,7 @@ namespace Toys
             {
                 joints[i] = new Joint(jcons[i], rigitBodies);
 				if (joints[i].Constraint != null)
-                World.AddConstraint(joints[i].Constraint, true);
+                    World.AddConstraint(joints[i].Constraint, true);
             }
         }
 

@@ -525,22 +525,7 @@ namespace Toys
             {
                 List<Component> comps = new List<Component>();
 
-                MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs);
-                md.OutlineDrawing = true;
-                comps.Add(md);
-                comps.Add(new Animator(md.skeleton));
-                comps.Add(new PhysicsManager(rigitBodies, joints, md.skeleton));
-                return new ModelPrefab(comps);
-            }
-        }
-
-        public ModelPrefab GetRiggedModel
-        {
-            get
-            {
-                List<Component> comps = new List<Component>();
-
-                MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs);
+                MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs.ToList<Morph>());
                 md.OutlineDrawing = true;
                 comps.Add(md);
                 comps.Add(new Animator(md.skeleton));

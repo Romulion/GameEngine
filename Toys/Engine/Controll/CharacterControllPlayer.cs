@@ -68,11 +68,19 @@ namespace Toys
 
             var keyState = GLWindow.gLWindow.KeyboardState;
             if (game.IsFocused && keyState.IsKeyDown(Keys.Up)){
-                Walk(CoreEngine.frameTimer.FrameTime);
+                Walk(-Vector3.UnitZ);
             }
             else if (game.IsFocused && keyState.IsKeyDown(Keys.Down))
             {
-                Walk(-CoreEngine.frameTimer.FrameTime);
+                Walk(Vector3.UnitZ);
+            }
+            else if (game.IsFocused && keyState.IsKeyDown(Keys.Left))
+            {
+                Walk(-Vector3.UnitX);
+            }
+            else if (game.IsFocused && keyState.IsKeyDown(Keys.Right))
+            {
+                Walk(Vector3.UnitX);
             }
             else if (game.IsFocused && keyState.IsKeyDown(Keys.Space))
             {
@@ -85,6 +93,11 @@ namespace Toys
             
             base.Update();
             
+        }
+
+        public void Walk(Vector3 dir)
+        {
+            Walk(dir, CoreEngine.frameTimer.FrameTime);
         }
 
         public void LoadPos(Vector3 pos)

@@ -19,7 +19,7 @@ namespace Toys
         public static CoreEngine ActiveCore { get; private set; }
         internal static SoundEngine aEngine { get; private set; }
         internal static AnimationEngine animEngine { get; private set; }
-        internal static VR.VRSystem vrSystem { get; private set; }
+        public static VR.VRSystem vrSystem { get; private set; }
         public static Time time { get; private set; }
         public static Time frameTimer { get; private set; }
         Action task;

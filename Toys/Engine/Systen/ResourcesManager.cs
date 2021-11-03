@@ -31,8 +31,13 @@ namespace Toys
                 else
                     resources.Remove(path);
             }
+            Stream stream = null;
+            try
+            {
+                stream = File.OpenRead(path);
+            }
+            catch (Exception e) { }
 
-            var stream = File.OpenRead(path);
             Resource asset = null;
             if (tp == typeof(Texture2D))
             {
@@ -56,10 +61,12 @@ namespace Toys
                 Console.WriteLine("Type not supported");
             }
 
-            stream.Dispose();
+            if (stream != null)
+                stream.Dispose();
             if (asset)
 			{
-				asset.Id = path;
+                
+                asset.Id = path;
 				asset.Type = tp;
                 resources.Add(path, new WeakReference(asset));
             }

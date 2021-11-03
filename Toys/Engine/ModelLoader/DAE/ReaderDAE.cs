@@ -219,24 +219,6 @@ namespace Toys
             }
 		}
 
-
-		public ModelPrefab GetRiggedModel
-		{
-			get
-			{
-                List<Component> comps = new List<Component>();
-                for (int i = 0; i < mesh.Length; i++)
-                {
-                    MeshDrawerRigged md = new MeshDrawerRigged(mesh[i], mats[i], new BoneController(bones.ToArray(), true));
-                    md.OutlineDrawing = true;
-                    comps.Add(md);
-                    comps.Add(new Animator(md.skeleton));
-                }
-				return new ModelPrefab(comps);
-
-            }
-		}
-
         //no morphes support
         public Morph[] GetMorphes
         {

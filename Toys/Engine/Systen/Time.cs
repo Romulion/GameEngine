@@ -5,8 +5,17 @@ namespace Toys
 {
     public class Time
     {
+        /// <summary>
+        /// Render Time in ms
+        /// </summary>
         public double RenderTime { get; internal set; }
+        /// <summary>
+        /// Update Time in ms
+        /// </summary>
         public double UpdateTime { get; internal set; }
+        /// <summary>
+        /// Frame Time in ms
+        /// </summary>
         public float FrameTime { get; internal set; }
         Stopwatch stopwatch;
         Stopwatch programStarted;

@@ -8,7 +8,7 @@ namespace Toys
 {
     public class RigidBodyComponent : Component
     {
-        protected RigidBody body;
+        public RigidBody body;
         protected CollisionShape shape;
         protected float mass = 0;
         protected RigidBodyConstructionInfo rbInfo;
@@ -148,7 +148,7 @@ namespace Toys
             Node = nod;
             CoreEngine.pEngine.World.AddRigidBody(body, GroupFlags, CollisionGroupFlags);
             CoreEngine.pEngine.Scene2Body += UpdateBody;
-            //CoreEngine.pEngine.Body2Scene += UpdateNode;
+            CoreEngine.pEngine.Body2Scene += UpdateNode;
         }
 
         internal override void RemoveComponent()

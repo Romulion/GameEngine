@@ -32,7 +32,8 @@ namespace Toys
             {
                 CollisionShape = shape,
                 CollisionFlags = CollisionFlags.CharacterObject,
-                WorldTransform = Matrix.Translation(Node.GetTransform.Position.Convert() + Vector3.UnitY)
+                WorldTransform = Matrix.Translation(Node.GetTransform.Position.Convert() + Vector3.UnitY),
+                Friction = 0.7f
             };
             //world.AddCollisionObject(_ghostObject, CollisionFilterGroups.CharacterFilter, CollisionFilterGroups.StaticFilter | CollisionFilterGroups.DefaultFilter);
             world.AddCollisionObject(_ghostObject, CollisionFilterGroups.CharacterFilter, CollisionFilterGroups.StaticFilter | CollisionFilterGroups.DefaultFilter);
@@ -40,13 +41,15 @@ namespace Toys
             world.AddAction(_charController);
         }
 
-        protected void Walk(float frameDelta)
+        protected void Walk(OpenTK.Mathematics.Vector3 dir, float frameDelta)
         {
             if (_charController.OnGround)
             {
                 var mat = Node.GetTransform.GlobalTransform;
-                var direction = new Vector3(mat.M31, 0, mat.M33);
-                direction.Normalize();
+                mat.ClearTranslation();
+                var direction = (new OpenTK.Mathematics.Vector4(-dir) * mat).Xyz.Convert();
+                //var direction = new Vector3(mat.M31, 0, mat.M33);
+                //direction.Normalize();
                 _charController.SetWalkDirection(-direction * frameDelta * WalkSpeed);
             }
         }
@@ -72,7 +75,7 @@ namespace Toys
         protected void Teleport(OpenTK.Mathematics.Vector3 position)
         {
             var pos = position.Convert();
-            pos.Y += 0.3f;
+            pos.Y += 0.4f;
             _charController.Warp(ref pos);
         }
     }
