@@ -10,16 +10,15 @@ namespace Toys
 	public class ResourcesManager
 	{
 		static Dictionary<string, WeakReference> resources = new Dictionary<string, WeakReference>();
-		CoreEngine ce;
+        static Logger logger;
 
-		public ResourcesManager(CoreEngine core)
+		static ResourcesManager()
 		{
-			ce = core;
-		}
+            logger = new Logger("ResourcesManager");
+        }
 
         public static T LoadAsset<T>(string path) where T : Resource
         {
-
             Type tp = typeof(T);
             if (resources.ContainsKey(path))
             {
@@ -36,7 +35,10 @@ namespace Toys
             {
                 stream = File.OpenRead(path);
             }
-            catch (Exception e) { }
+            catch (Exception e)
+            {
+                //logger.Error(e.Message, e.StackTrace);
+            }
 
             Resource asset = null;
             if (tp == typeof(Texture2D))

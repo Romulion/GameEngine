@@ -68,7 +68,7 @@ namespace Toys
             }
             catch (Exception e)
             {
-                logger.Error(e.Message, e.TargetSite.Name);
+                logger.Error(e.Message, e.StackTrace);
             }
 			return modelLoader;
 		}

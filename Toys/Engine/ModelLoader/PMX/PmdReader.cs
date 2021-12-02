@@ -52,6 +52,8 @@ namespace Toys
             var reader = new Reader(fs);
             //JIS encoding
             reader.EncodingType = 200;
+            //registed all availible encodings
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             ReadHeader(reader);
             ReadMesh(reader);
             ReadMaterial(reader);
@@ -85,11 +87,13 @@ namespace Toys
             {
                 var vertex = new VertexRigged3D();
                 vertex.Position = reader.readVector3() * multipler;
-                vertex.Position.Z = -vertex.Position.Z;
                 vertex.Normal = reader.readVector3();
                 vertex.UV = reader.readVector2();
                 vertex.BoneIndices.bone1 = reader.ReadInt16();
                 vertex.BoneIndices.bone2 = reader.ReadInt16();
+                //Convert left to right coordinate system
+                vertex.Position.Z = -vertex.Position.Z;
+                vertex.Normal.Z = -vertex.Normal.Z;
 
                 var weight = reader.ReadByte();
                 if (weight > 100)
@@ -103,11 +107,24 @@ namespace Toys
 
             int faceCount = reader.ReadInt32();
             var indexes = new int[faceCount];
+            /*
             for (int i = 0; i < faceCount; i++)
             {
                 indexes[i] = reader.ReadUInt16();
             }
-
+            */
+            //invert triangles to convert left to right coordinates
+            for (int i = 0; i < faceCount; i++)
+            {
+                var vertIndex = reader.ReadUInt16();
+                int res = i % 3;
+                if (res == 0)
+                    indexes[i + 1] = vertIndex;
+                else if (res == 1)
+                    indexes[i - 1] = vertIndex;
+                else
+                    indexes[i] = vertIndex;
+            }
             meshRigged = new Mesh(vertices, indexes);
         }
 
@@ -408,12 +425,16 @@ namespace Toys
                 if (toonName.StartsWith("toon"))
                 {
                     var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
-                    using (var pic = new System.Drawing.Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.PMX." + toonName)))
-                    {
-                        toonData[i] = new Texture2D(pic, TextureType.Toon, toonName);
-                    }
+                    var pictureStream = assembly.GetManifestResourceStream("Toys.Resourses.textures.PMX." + toonName);
+                    //check if exists in standart toon library
+                    if (pictureStream != null)
+                        using (var pic = new System.Drawing.Bitmap(pictureStream))
+                        {
+                            toonData[i] = new Texture2D(pic, TextureType.Toon, toonName);
+                        }
                 }
-                else
+
+                if (toonData[i] == null)
                 {
                     toonData[i] = ResourcesManager.LoadAsset<Texture2D>(toonName);
                 }

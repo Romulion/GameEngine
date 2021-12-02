@@ -142,19 +142,20 @@ namespace Toys
 				float outline = reader.ReadSingle();
 
 			}
-			int indexSize = reader.ReadInt32();
-			int[] indexes = new int[indexSize];
-			for (int i = 0; i < indexSize; i++)
+			int faceCount = reader.ReadInt32();
+			int[] indexes = new int[faceCount];
+			for (int i = 0; i < faceCount; i++)
 			{
 				//indexes[i] = reader.readVal(header.GetVertexIndexSize);
 				//invert triangles to convert left to right coordinates
+				var index = reader.readVal(header.GetVertexIndexSize);
 				int res = i % 3;
 				if (res == 0)
-					indexes[i + 1] = reader.readVal(header.GetVertexIndexSize);
+					indexes[i + 1] = index;
 				else if (res == 1)
-					indexes[i - 1] = reader.readVal(header.GetVertexIndexSize);
-				else 
-					indexes[i] = reader.readVal(header.GetVertexIndexSize);
+					indexes[i - 1] = index;
+				else
+					indexes[i] = index;
             }
 			//mesh = new Mesh(vertices, indexes);
 			/*
@@ -491,7 +492,7 @@ namespace Toys
                             break;
 						case 2:  //bone morph
 							var id = reader.readVal(header.GetBoneIndexSize);
-							var posB = reader.readVector3();
+							var posB = reader.readVector3() * multipler;
 							posB.Z = -posB.Z;
 							var rotB =  reader.readVector4();
 							((MorphSkeleton)morphs[i]).AddBone(id, posB, new Quaternion(rotB.X, rotB.Y, -rotB.Z, -rotB.W));
@@ -621,8 +622,34 @@ namespace Toys
 				joint.RotMin = reader.readVector3();
 				joint.RotMax = reader.readVector3();
 				joint.PosSpring = reader.readVector3() * multipler;
-				joint.RotSpring = reader.readVector3();
+				joint.RotSpring = reader.readVector3() * MathF.Pow(multipler, 2f);
 
+				
+				//Convert Left to Right coordinate system
+				joint.RotMin.X = -joint.RotMin.X;
+				joint.RotMin.Y = -joint.RotMin.Y;
+				joint.RotMax.X = -joint.RotMax.X;
+				joint.RotMax.Y = -joint.RotMax.Y;
+				joint.PosMin.Z = -joint.PosMin.Z;
+				joint.PosMax.Z = -joint.PosMax.Z;
+				//fix min max
+				for(int x = 0; x < 3; x++)
+                {
+					if (joint.RotMin[x] > joint.RotMax[x])
+                    {
+						var temp = joint.RotMax[x];
+						joint.RotMax[x] = joint.RotMin[x];
+						joint.RotMin[x] = temp;
+					}
+
+					if (joint.PosMin[x] > joint.PosMax[x])
+					{
+						var temp = joint.PosMax[x];
+						joint.PosMax[x] = joint.PosMin[x];
+						joint.PosMin[x] = temp;
+					}
+				}
+				
 				joints[i] = joint;
 			}
 
