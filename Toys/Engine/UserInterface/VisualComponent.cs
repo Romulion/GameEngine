@@ -13,7 +13,6 @@ namespace Toys
     public abstract class VisualComponent : Resource
     {
         internal Mesh Mesh { get; private set; }
-        Logger logger = new Logger("VisualComponent");
         static Mesh defaultMesh;
         static Material defaultMaterial;
         internal static Texture2D defaultTexture { get; private set; }
@@ -83,7 +82,7 @@ namespace Toys
         {
             if (Node != null)
             {
-                logger.Error($"Component {Type} already assigned to node {Node.Name}", "");
+                Logger.Error($"Component {Type} already assigned to node {Node.Name}", "");
             }
             else
             {

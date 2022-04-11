@@ -51,7 +51,7 @@ namespace Toys.VR
             rightTexture = new Texture_t();
             rightTexture.eType = ETextureType.OpenGL;
             rightTexture.eColorSpace = EColorSpace.Gamma;
-            vrContext.GetRecommendedRenderTargetSize(ref height, ref width);
+            vrContext.GetRecommendedRenderTargetSize(ref width , ref height);
 
             bound = new VRTextureBounds_t();
             bound.uMin = 0;

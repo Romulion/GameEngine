@@ -14,7 +14,6 @@ namespace Toys
 
 	public class ModelLoader
 	{
-        static Logger logger = new Logger("Model Loading");
 
 		public static IModelLoader Load(Stream stream, string filename)
 		{
@@ -37,7 +36,7 @@ namespace Toys
                     format = ModelFormat.PMD;
                     break;
                 default :
-                    logger.Error("cant recognize file format", "");
+                    Logger.Error("cant recognize file format", "");
                     break;
 			}
 
@@ -68,7 +67,7 @@ namespace Toys
             }
             catch (Exception e)
             {
-                logger.Error(e.Message, e.StackTrace);
+                Logger.Error(e.Message, e.StackTrace);
             }
 			return modelLoader;
 		}

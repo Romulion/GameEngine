@@ -8,7 +8,6 @@ namespace Toys
 {
     public class UIElement : Resource
     {
-        Logger logger = new Logger("SceneNode");
         public List<UIElement> Childs { get; private set; }
         public UIElement Parent;
         RectTransform transform;
@@ -94,7 +93,7 @@ namespace Toys
             }
             catch (Exception e)
             {
-                logger.Error(e.Message, e.StackTrace);
+                Logger.Error(e.Message, e.StackTrace);
             }
 
             return null;

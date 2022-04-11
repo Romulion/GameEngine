@@ -74,6 +74,15 @@ namespace Toys
                 return false;
         }
 
+        public void ResetBool()
+        {
+            foreach (var key in boolDict.Keys)
+            {
+                boolDict[key] = false;
+            }
+            changed = true;
+        }
+
         public float GetFloat(string key)
         {
             if (floatDict.ContainsKey(key))

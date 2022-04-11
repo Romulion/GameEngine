@@ -14,7 +14,6 @@ namespace Toys
 
 		static ResourcesManager()
 		{
-            logger = new Logger("ResourcesManager");
         }
 
         public static T LoadAsset<T>(string path) where T : Resource
@@ -74,6 +73,13 @@ namespace Toys
             }
             return asset as T;
 		}
+
+        public static Task<T> LoadAssetAsync<T>(string path) where T : Resource
+        {
+            var task = new Task<T>( () => LoadAsset<T>(path));
+            task.Start();
+            return task;
+        }
 
         internal static void AddAsset(Resource asset, string name)
         {

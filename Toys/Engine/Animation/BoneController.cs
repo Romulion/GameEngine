@@ -236,9 +236,8 @@ namespace Toys
         private void CheckBonesCount()
         {
             var settings = Settings.GetInstance();
-            var logger = new Logger("BoneController");
             if (settings.System.MaxBonesCount < _bones.Length)
-                logger.Error(String.Format("bone count {0} exceed maximum value  {1}", _bones.Length, settings.System.MaxBonesCount), "");
+                Logger.Error(String.Format("bone count {0} exceed maximum value  {1}", _bones.Length, settings.System.MaxBonesCount), "");
         }
     }
 }

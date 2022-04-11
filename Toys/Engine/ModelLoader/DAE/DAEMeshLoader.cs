@@ -19,7 +19,6 @@ namespace Toys
 
 		public DAEMeshLoader(XmlElement xRoot)
 		{
-            logger = new Logger("DAE mesh loader");
             foreach (XmlNode xnode in xRoot)
 			{
 				if (xnode.Name == nodeName)
@@ -48,7 +47,7 @@ namespace Toys
                 }
                 catch (Exception e)
                 {
-                    logger.Warning("Error Parsing Mesh" + e.StackTrace, e.StackTrace);
+                    Logger.Warning("Error Parsing Mesh" + e.StackTrace, e.StackTrace);
                 }
 			}
             //Read Bones
@@ -174,7 +173,7 @@ namespace Toys
                     }
                 }
                 else
-                    logger.Warning("wrong position semantic type: " + inpts[0].Attributes.GetNamedItem("semantic").Value, "DAEMeshLoader.ReadMesh");
+                    Logger.Warning("wrong position semantic type: " + inpts[0].Attributes.GetNamedItem("semantic").Value, "DAEMeshLoader.ReadMesh");
 
             }
             int i = 0;
@@ -246,7 +245,7 @@ namespace Toys
 
 
             if (srcs == null)
-                logger.Warning("weigth not found", "ReadWeigth");
+                Logger.Warning("weigth not found", "ReadWeigth");
 			
 			float[] weigths = StringParser.readFloatArray(srcs.FindNodes("float_array")[0].InnerText);
 

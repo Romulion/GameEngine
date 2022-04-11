@@ -6,8 +6,6 @@ namespace Toys
 {
     public class Animator : Component
     {
-        Logger logger = new Logger("Animator");
-
         /// <summary>
         /// Animation skeleton
         /// </summary>
@@ -135,7 +133,7 @@ namespace Toys
                 }
                 catch (Exception e)
                 {
-                    logger.Error(e.Message, e.StackTrace);
+                    Logger.Error(e.Message, e.StackTrace);
                     _animation = null;
                 }
             }

@@ -73,7 +73,7 @@ namespace Toys
             }
 			catch (Exception)
 			{
-                logger.Error("cant load texture " + path,"");
+                Logger.Error("cant load texture " + path,"");
                 Texture2D empty = LoadEmpty();
                 textureID = empty.textureID;
                 Name = empty.Name;
@@ -124,7 +124,7 @@ namespace Toys
             }
             catch (Exception)
             {
-                logger.Error("cant load texture " + path, "");
+                Logger.Error("cant load texture " + path, "");
                 Texture2D empty = LoadEmpty();
                 textureID = empty.textureID;
                 Name = empty.Name;

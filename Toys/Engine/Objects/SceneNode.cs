@@ -7,7 +7,6 @@ namespace Toys
 {
 	public class SceneNode : Resource, ISave
     {
-        Logger logger = new Logger("SceneNode");
         readonly Transform transform;
         List<Component> components;
 
@@ -133,7 +132,7 @@ namespace Toys
             }
             catch (Exception e)
             {
-                logger.Error(e.Message,e.StackTrace);
+                Logger.Error(e.Message,e.StackTrace);
             }
                 
             return null;

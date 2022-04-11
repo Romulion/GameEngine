@@ -22,43 +22,46 @@ namespace Toys
 
 		static List<LogEntry> loggs = new List<LogEntry>();
 		static Output type;
-		string sender;
+		//string sender;
 
-		
+		/*
 		public Logger(string sender)
 		{
 			this.sender = sender;
 		}
+		*/
 
 		static Logger()
 		{
 			var settings = Settings.GetInstance().System;
 			type = settings.LogOutput;
-
 		}
 
-		public void Warning(string Message, string path = "")
+		public static void Warning(string Message, string path = "")
 		{
 			ProceedEntry(Level.Warning, Message, path);
 		}
 
-		public void Critical(string Message, string path = "")
+		public static void Critical(string Message, string path = "")
 		{
 			ProceedEntry(Level.Critical, Message, path);
 		}
 
-		public void Error(string Message, string path = "")
+		public static void Error(string Message, string path = "")
 		{
 			ProceedEntry(Level.Error, Message, path);
 		}
 
-		public void Info(string Message, string path = "")
+		public static void Info(string Message, string path = "")
 		{
 			ProceedEntry(Level.Info, Message, path);
 		}
 
-		void ProceedEntry(Level severenety, string message, string path)
+		static void ProceedEntry(Level severenety, string message, string path)
 		{
+			var senderStack = new System.Diagnostics.StackTrace();
+			var method = senderStack.GetFrame(2).GetMethod();
+			var sender = String.Format("{0}.{1}", method.DeclaringType.Name, method.Name);
 			var entry = new LogEntry(sender, severenety, message, path);
 			if (type == Output.Internal)
 				loggs.Add(entry);

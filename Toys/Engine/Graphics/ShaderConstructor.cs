@@ -7,7 +7,6 @@ namespace Toys
 		ShaderSettings setting;
 		string rawVertex = "";
 		string rawFragment = "";
-        Logger logger = new Logger("ShaderConstructor");
 
 		ShaderConstructor(ShaderSettings stng)
 		{
@@ -43,7 +42,7 @@ namespace Toys
 			}
 			catch (Exception e)
 			{
-                logger.Error(e.Message, e.Source);
+				Logger.Error(e.Message, e.Source);
             }
 
 			//binding buffers

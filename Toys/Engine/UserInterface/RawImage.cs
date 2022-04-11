@@ -15,7 +15,7 @@ namespace Toys
         /// </summary>
         public Texture2D Texture;
         ShaderUniform colorMask;
-        Vector4 color;
+        public Vector4 color;
 
         static RawImage()
         {

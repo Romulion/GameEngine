@@ -45,7 +45,8 @@ namespace Toys
 
         public float GetCurrentVolume()
         {
-            int sampleCount = (int)(clip.SampleRate * 0.016f);
+
+            int sampleCount = (int)(clip.SampleRate * 0.02f);
             int position;
             AL.GetSource(sourceID, ALGetSourcei.ByteOffset, out position);
             float result = 0;
@@ -61,20 +62,25 @@ namespace Toys
                     var pos = position + i * 2;
                     if (pos < 0)
                         continue;
-                    if (pos > clip.ByteBuffer.Length)
+                    if (pos >= clip.ByteBuffer.Length)
                         break;
                     result += BitConverter.ToUInt16(clip.ByteBuffer, pos);
                     n++;
                 }
 
                 if (n > 0)
-                    result /= ((float)ushort.MaxValue * n);
+                    result /= (ushort.MaxValue * n);
 
-                Console.WriteLine((float)ushort.MaxValue * n);
+                //Console.WriteLine((float)ushort.MaxValue * n);
             }
             else if (clip.Bps == 32)
                 result = BitConverter.ToUInt32(clip.ByteBuffer, position) / (float)uint.MaxValue;
-            return -(float)Math.Log10(result);
+
+            //Console.WriteLine(result);
+            //if (result > 0)
+            //    result = MathF.Log10(result) / MathF.Log10(ushort.MaxValue);
+            //Console.WriteLine(result);
+            return result;
         }
 
         public bool IsLooping
