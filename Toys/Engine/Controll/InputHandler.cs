@@ -9,7 +9,7 @@ using OpenTK.Windowing.Common;
 namespace Toys
 {
     /// <summary>
-    /// proceen input ascii only
+    /// proceen keyboard text input
     /// </summary>
     class InputHandler
     {

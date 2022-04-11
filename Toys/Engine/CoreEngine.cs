@@ -60,6 +60,8 @@ namespace Toys
                 time = new Time();
                 frameTimer = new Time();
                 frameTimer.FrameTime = 0.01f;
+
+                InputSystem.CurrentContext = InputContext.Main;
             }
 			catch (Exception e)
 			{

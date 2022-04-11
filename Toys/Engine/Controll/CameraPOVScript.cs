@@ -29,7 +29,8 @@ namespace Toys
         }
         void Update()
         {
-            MouseControll();
+            if (InputSystem.CurrentContext == InputContext.Main)
+                MouseControll();
         }
         void MouseControll()
         {

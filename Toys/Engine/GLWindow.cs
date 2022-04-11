@@ -10,6 +10,7 @@ namespace Toys
     {
         public CoreEngine Engine { get; private set; }
         internal static GLWindow gLWindow;
+        public static KeyboardState Keyboard;
         bool pause = false;
         bool pauseKey = false;
         bool visibleKey = false;
@@ -17,6 +18,7 @@ namespace Toys
         {
             base.Size = new OpenTK.Mathematics.Vector2i(640,480);
             gLWindow = this;
+            Keyboard = gLWindow.KeyboardState;
             Initialize();
         }
 
@@ -97,6 +99,7 @@ namespace Toys
             if (!pause)
                 Engine.Render();
             SwapBuffers();
+
         }
     }
 }

@@ -34,6 +34,9 @@ namespace Toys
 
         new void Update()
         {
+            if (InputSystem.CurrentContext != InputContext.Main)
+                return;
+
             var rayCalback = new KinematicClosestNotMeRayResultCallback(_ghostObject);
             rayCalback.CollisionFilterMask = (int)CollisionFilleters.Look;
             rayCalback.CollisionFilterGroup = (int)CollisionFilleters.Look;
