@@ -15,8 +15,8 @@ namespace Toys
         public static Vector2 ConvertVector2SphereAngles(Vector3 vector)
         {
             var result = Vector2.Zero;
-            result.X = MathF.Atan2(vector.Z, vector.X);
-            result.Y = MathF.Acos(vector.Y / vector.Xzy.Length);
+            result.X = MathF.Atan2(vector.Z, vector.X) - MathF.PI/2;
+            result.Y = MathF.Asin(vector.Y / vector.Xzy.Length);
             //           result.Z = vector.LengthFast;
             return result;
         }

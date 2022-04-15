@@ -549,7 +549,7 @@ namespace Toys
                 MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs.ToList<Morph>());
                 md.OutlineDrawing = true;
                 comps.Add(md);
-                comps.Add(new Animator(md.skeleton));
+                comps.Add(new Animator(md.skeleton, md.Morphes));
                 comps.Add(new PhysicsManager(rigitBodies, joints, md.skeleton));
                 return new ModelPrefab(comps);
             }

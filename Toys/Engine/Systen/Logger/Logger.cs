@@ -37,32 +37,32 @@ namespace Toys
 			type = settings.LogOutput;
 		}
 
-		public static void Warning(string Message, string path = "")
+		public static void Warning(object Message, string path = "")
 		{
 			ProceedEntry(Level.Warning, Message, path);
 		}
 
-		public static void Critical(string Message, string path = "")
+		public static void Critical(object Message, string path = "")
 		{
 			ProceedEntry(Level.Critical, Message, path);
 		}
 
-		public static void Error(string Message, string path = "")
+		public static void Error(object Message, string path = "")
 		{
 			ProceedEntry(Level.Error, Message, path);
 		}
 
-		public static void Info(string Message, string path = "")
+		public static void Info(object Message, string path = "")
 		{
 			ProceedEntry(Level.Info, Message, path);
 		}
 
-		static void ProceedEntry(Level severenety, string message, string path)
+		static void ProceedEntry(Level severenety, object message, string path)
 		{
 			var senderStack = new System.Diagnostics.StackTrace();
 			var method = senderStack.GetFrame(2).GetMethod();
 			var sender = String.Format("{0}.{1}", method.DeclaringType.Name, method.Name);
-			var entry = new LogEntry(sender, severenety, message, path);
+			var entry = new LogEntry(sender, severenety, message.ToString(), path);
 			if (type == Output.Internal)
 				loggs.Add(entry);
 			else if (type == Output.Console)

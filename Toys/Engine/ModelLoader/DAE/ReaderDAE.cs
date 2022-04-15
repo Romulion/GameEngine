@@ -208,7 +208,7 @@ namespace Toys
                         MeshDrawerRigged md = new MeshDrawerRigged(mesh[i], mats[i], new BoneController(bones.ToArray(), true));
                         md.OutlineDrawing = true;
                         comps.Add(md);
-                        comps.Add(new Animator(md.skeleton));
+                        comps.Add(new Animator(md.skeleton, md.Morphes));
                     }
                     else
                     {

@@ -12,8 +12,10 @@ namespace Toys
         public BoneController BoneController { get; private set; }
         Animation _animation;
         AnimationController animController;
+        List<Morph> morphs;
         bool _isPlaing = false;
         float _time = 0f;
+        float _prevTime = 0f;
         float _length = 0;
         float _frameLength = 0;
         bool _isEnded = false;
@@ -35,72 +37,75 @@ namespace Toys
         }
 
         //model bone => anim bone reference
-        Dictionary<int, int> boneReference = new Dictionary<int, int>();
+        Dictionary<string, int> boneReference = new Dictionary<string, int>();
+        Dictionary<string, int> morphReference = new Dictionary<string, int>();
+
 
         public Animator(BoneController bc) : base(typeof(Animator))
         {
             BoneController = bc;
+            morphs = new List<Morph>();
         }
 
-		internal void Update(float delta)
+        public Animator(BoneController bc, List<Morph> md) : base(typeof(Animator))
+        {
+            morphs = md;
+            BoneController = bc;
+        }
+
+        internal void Update(float delta)
         {
             animController?.Update();
             if (!_isPlaing)
 				return;
             _isEnded = false;
-
+            
+            _prevTime = _time;
             _time += delta;
 
-			_time = (_time >= _length + _frameLength) ? _time % _length : _time;
-
-			int prevFrame = (int)(_time / _frameLength);
-			int curFrame = (prevFrame == _animation.frames.Length - 1) ? 0 : prevFrame + 1;
-
-			float frameDelta = _time / _frameLength;
-			frameDelta = frameDelta - (int)frameDelta;
-
-			AnimationFrame frame1 = _animation.frames[prevFrame], frame2 = _animation.frames[curFrame];
-
-            foreach (var pair in boneReference)
-            {
-                Quaternion rotation = Quaternion.Identity;
-
-                Vector3 pos = frame1.BonePoritions[pair.Value].Position + (frame2.BonePoritions[pair.Value].Position - frame1.BonePoritions[pair.Value].Position) * frameDelta;
-                if (_animation.GetRotationType == Animation.RotationType.Quaternion)
-                {
-                    Quaternion prevQuat = new Quaternion(frame1.BonePoritions[pair.Value].Rotation.Xyz, frame1.BonePoritions[pair.Value].Rotation.W);
-                    Quaternion nextQuat = new Quaternion(frame2.BonePoritions[pair.Value].Rotation.Xyz, frame2.BonePoritions[pair.Value].Rotation.W);
-                    rotation = Quaternion.Slerp(prevQuat, nextQuat, frameDelta);
-                }
-                else
-                {
-                    var deltaRot = frame2.BonePoritions[pair.Value].Rotation - frame1.BonePoritions[pair.Value].Rotation;
-                    CycleDeltaCheck(ref deltaRot.X);
-                    CycleDeltaCheck(ref deltaRot.Y);
-                    CycleDeltaCheck(ref deltaRot.Z);
-                    Vector4 rot = frame1.BonePoritions[pair.Value].Rotation + deltaRot * frameDelta;
-                    rotation = Quaternion.FromAxisAngle(Vector3.UnitZ, rot.Z) * Quaternion.FromAxisAngle(Vector3.UnitY, rot.Y) * Quaternion.FromAxisAngle(Vector3.UnitX, rot.X);
-                }
-
-                //skip masked out bone
-                if (!BoneController.GetBone(pair.Key).FollowAnimation)
-                    continue;
-
-                if (_animation.TransType == Animation.TransformType.LocalRelative)
-                    BoneController.GetBone(pair.Key).SetTransform(rotation, pos);
-                else if (_animation.TransType == Animation.TransformType.LocalAbsolute)
-                    BoneController.GetBone(pair.Key).InitialLocalTransform = Matrix4.CreateFromQuaternion(rotation) * Matrix4.CreateTranslation(pos);
-            }
-
-            if (curFrame == _animation.frames.Length - 1)
+            if (_time >= _length)
             {
                 if (!IsRepeat)
                 {
-                    //Pause();
                     _isPlaing = false;
                     _isEnded = true;
                 }
+                else
+                 _time %= _length;
             }
+		    //_time = (_time >= _length ) ? _time % _length : _time;
+
+            float frame = _time;
+            foreach (var pair in boneReference)
+            {
+                //skip masked out bone
+                if (!BoneController.GetBone(pair.Value).FollowAnimation)
+                    continue;
+                var boneData = _animation.GetInterpolatedFrameBone(pair.Key, frame);
+                if (boneData == null)
+                    continue;
+
+                if (_animation.TransType == Animation.TransformType.LocalRelative)
+                    BoneController.GetBone(pair.Value).SetTransform(boneData.Rotation, boneData.Position);
+                else if (_animation.TransType == Animation.TransformType.LocalAbsolute)
+                    BoneController.GetBone(pair.Value).InitialLocalTransform = Matrix4.CreateFromQuaternion(boneData.Rotation) * Matrix4.CreateTranslation(boneData.Position);
+            }
+
+            
+            foreach (var morphData in morphReference)
+            {
+                var start = _animation.GetInterpolatedFrameMorph(morphData.Key, frame);
+                //skip empty frame
+                if (start < 0)
+                    continue;
+
+                morphs[morphReference[morphData.Key]].MorphDegree = start;
+            }
+
+            var triggerList = _animation.GetPassedFrameTrigger(_prevTime, _time);
+            foreach (var trigger in triggerList)
+                trigger.Trigger.Invoke();
+
         }
 
         public AnimationController Controller 
@@ -123,12 +128,12 @@ namespace Toys
             set
             {
                 _animation = value;
-                UpdateBoneReference();
+                UpdateReferences();
                 try
                 {
-                    _length = (_animation.frames.Length - 1) / (float)_animation.Framerate;
-                    _frameLength = 1 / (float)_animation.Framerate;
-                    Instalize(_animation.frames[0]);
+                    _length = _animation.Length;
+                    //_frameLength = 1;
+                    Instalize();
                     _time = 0;
                 }
                 catch (Exception e)
@@ -143,7 +148,7 @@ namespace Toys
         {
             if (_animation == null)
                 return;
-            if (_animation.frames.Length > 1)
+            if (_animation.Length > 0)
                 _isPlaing = true;
         }
 
@@ -154,7 +159,7 @@ namespace Toys
 
             _isPlaing = false;
 			_time = 0;
-            Instalize(_animation.frames[0]);
+            Instalize();
         }
 
         public void Pause()
@@ -173,57 +178,72 @@ namespace Toys
             _isPlaing = true;
         }
 
-        void UpdateBoneReference()
+        void UpdateReferences()
         {
             boneReference.Clear();
-            var boneRefNew = _animation.bones;
-            foreach (var bone in BoneController.GetBones)
+            foreach (var bone in _animation.bonesData)
             {
-                
-                if (boneRefNew.ContainsKey(bone.Bone.Name))
+                var bn = BoneController.GetBone(bone.Key);
+                if (bn != null)
+                {
+                    boneReference.Add(bone.Key, bn.Bone.Index);
+                }
+            }
+            
+            morphReference.Clear();
+            if (_animation.morphData.Count > 0)
+            {
+                foreach (var morph in _animation.morphData)
                 {
                     
-                    boneReference.Add(bone.Bone.Index, boneRefNew[bone.Bone.Name]);
+                    var id = morphs.FindIndex(x => x.Name == morph.Key);
+                    //Console.WriteLine("'{0}' {1}", morph.Key, id);
+                    if (id >= 0)
+                        morphReference.Add(morph.Key, id);
                 }
-                
             }
+            
         }
 
-		void Instalize(AnimationFrame start)
+		void Instalize()
 		{
-			foreach (var pair in boneReference)
-			{
-                Vector4 rot = start.BonePoritions[pair.Value].Rotation;
-                Vector3 pos = start.BonePoritions[pair.Value].Position;
-                
-                Matrix4 localInv = Matrix4.Identity;
+            foreach (var boneData in boneReference)
+            {
+                //skip busy bones
+                if (!BoneController.GetBone(boneReference[boneData.Key]).FollowAnimation)
+                    continue;
+                var start = _animation.GetInterpolatedFrameBone(boneData.Key,0);
+                //skip empty frame
+                if (start == null)
+                    continue;
+                Vector3 pos = start.Position;
+                //Matrix4 localInv = Matrix4.Identity;
 
-                Quaternion rotation = Quaternion.Identity;
+
+                Quaternion rotation;
                 if (_animation.GetRotationType == Animation.RotationType.Quaternion)
-                    rotation = new Quaternion(rot.Xyz,rot.W);
+                    rotation = start.Rotation;
                 else
-                    rotation = Quaternion.FromAxisAngle(Vector3.UnitZ, rot.Z) * Quaternion.FromAxisAngle(Vector3.UnitY, rot.Y) * Quaternion.FromAxisAngle(Vector3.UnitX, rot.X);
+                    rotation = Quaternion.FromAxisAngle(Vector3.UnitZ, start.RotationVec.Z) * Quaternion.FromAxisAngle(Vector3.UnitY, start.RotationVec.Y) * Quaternion.FromAxisAngle(Vector3.UnitX, start.RotationVec.X);
 
                 if (_animation.TransType == Animation.TransformType.LocalRelative)
-                    BoneController.GetBone(pair.Key).SetTransform(rotation, pos);
+                    BoneController.GetBone(boneReference[boneData.Key]).SetTransform(rotation, pos);
                 else if (_animation.TransType == Animation.TransformType.LocalAbsolute)
-                    BoneController.GetBone(pair.Key).InitialLocalTransform = Matrix4.CreateFromQuaternion(rotation) * Matrix4.CreateTranslation(pos);
+                    BoneController.GetBone(boneReference[boneData.Key]).InitialLocalTransform = Matrix4.CreateFromQuaternion(rotation) * Matrix4.CreateTranslation(pos);
             }
-		}
+            
+            /*
+            foreach (var morphData in morphReference)
+            {
+                var start = _animation.GetInterpolatedFrameMorph(morphData.Key, 0);
 
-        void CycleDeltaCheck(ref float delta)
-        {
-            //prevent unnessesery rotation
-            //4PI == -4PI
-            float pi2 = (float)Math.PI * 2;
-            //remove 2PI cycle
-            delta %= pi2;
+                //skip empty frame
+                if (start < 0)
+                    continue;
 
-            //find closest rotation
-            if (delta < 0)
-                delta = ((delta + pi2) < -delta) ? delta + pi2 : delta;
-            else
-                delta = ((delta - pi2) > -delta) ? delta - pi2 : delta;
+                morphs[morphReference[morphData.Key]].MorphDegree = start;
+            }
+            */
         }
 
         internal override void Unload()
@@ -243,7 +263,7 @@ namespace Toys
 
         internal override Component Clone()
         {
-            return new Animator(BoneController);
+            return new Animator(BoneController, morphs);
         }
     }
 }

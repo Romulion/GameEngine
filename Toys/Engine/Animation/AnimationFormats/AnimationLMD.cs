@@ -24,6 +24,7 @@ namespace Toys
 
         Dictionary<string, int> bones = new Dictionary<string, int>();
         AnimationFrame[] frames;
+        Animation _animation = new Animation();
 
         public AnimationLMD(Stream stream, string path)
         {
@@ -41,11 +42,12 @@ namespace Toys
 
         public Animation Load()
         {
-            var animation = new Animation(frames.ToArray(), bones);
-            animation.GetRotationType = Animation.RotationType.Quaternion;
-            animation.TransType = Animation.TransformType.LocalAbsolute;
-            animation.Framerate = (int)(frames.Length / _speed);
-            return animation;
+            //var animation = new Animation(frames.ToArray(), bones);
+            _animation.bones = bones;
+            _animation.GetRotationType = Animation.RotationType.Quaternion;
+            _animation.TransType = Animation.TransformType.LocalAbsolute;
+            _animation.Framerate = 30;
+            return _animation;
         }
 
         bool CheckHeader()
@@ -78,8 +80,7 @@ namespace Toys
                 _reader.BaseStream.Position = ReadPointer();
                 //4 bytes id; 4 *2 bytes unknown anim strucs pointers
                 _reader.BaseStream.Position += 12;
-
-                var bu = new BoneUnsorted();     
+                var bu = new BoneUnsorted();
                 int rotTransfOffset = ReadPointer();
                 int tranTransfOffset = ReadPointer();
                 //reading rotations | skipping id
@@ -90,7 +91,7 @@ namespace Toys
                 transformElCount /= 4;
                 bu.rotations = new Quaternion[transformElCount];
                 for (int i = 0; i < transformElCount; i++)
-                    bu.rotations[i] = new Quaternion(_reader.readVector3(), _reader.ReadSingle());
+                    bu.rotations[i] = new Quaternion(_reader.readVector3(), _reader.ReadSingle());         
                 //rotation transform time table
                 _reader.BaseStream.Position = rotTransfTimeOffset;
                 int timeElCount = _reader.ReadInt32();
@@ -128,12 +129,66 @@ namespace Toys
         void NormalizeFrames(BoneUnsorted[] bonesRaw)
         {
             int maxFrames = bonesRaw.Max((BoneUnsorted b) => { return Math.Max(b.positions.Length, b.rotations.Length); });
-            frames = new AnimationFrame[maxFrames];
+            //frames = new AnimationFrame[maxFrames];
 
-            List<BonePosition>[] bonePosesInterpretated = new List<BonePosition>[maxFrames];
-            for (int i = 0; i < maxFrames; i++)
-                bonePosesInterpretated[i] = new List<BonePosition>();
+            
+            List<BonePosition>[] bonePosesInterpretated = new List<BonePosition>[maxFrames];            
 
+
+            for (int i = 0; i < bonesRaw.Length; i++)
+            {
+
+                var boneName = bones.FirstOrDefault(x => x.Value == i).Key;
+                var data = bonesRaw[i];
+                var frames = GetFrames(data);
+                
+                for (int n = 0; n < frames.Length; n++)
+                {
+                    var pos = Vector3.Zero;
+                    var rot = Quaternion.Identity;
+                    float time = frames[n];
+                    for (int b = 0; b < data.positionsTimestamps.Length; b++) {
+                        if (data.positionsTimestamps[b] == time)
+                        {
+                            pos = data.positions[b];
+                            break;
+                        }
+                        else if (data.positionsTimestamps[b] >= time)
+                        {
+                            float delta = (time - data.positionsTimestamps[b - 1]) / (data.positionsTimestamps[b] - data.positionsTimestamps[b - 1]);
+                            pos = data.positions[b - 1] + (data.positions[b] - data.positions[b - 1]) * delta;
+                            break;
+                        }
+                        
+                    }
+                    
+                    for (int b = 0; b < data.rotationsTimestamps.Length; b++)
+                    {
+
+
+                        if (data.rotationsTimestamps[b] == time)
+                        {
+                            rot = data.rotations[b];
+                            break;
+                        }
+                        else if (data.rotationsTimestamps[b] > time)
+                        {
+
+                            float delta = (time - data.rotationsTimestamps[b - 1]) / (data.rotationsTimestamps[b] - data.rotationsTimestamps[b - 1]);
+                            rot = Quaternion.Slerp(data.rotations[b - 1], data.rotations[b], delta);
+                            break;
+                        }
+                    }
+
+
+                    var bonePos = new KeyFrameBone(frames[n] * _speed * 2, new BonePosition(pos, rot, i));
+                    _animation.AddBoneKey(boneName, bonePos);
+                    
+                }
+                
+            }
+            //bonePosesInterpretated[i] = new List<BonePosition>();
+            /*
             float framePart = 1f / maxFrames;
             for (int n = 0; n < bones.Count; n++)
             {
@@ -164,11 +219,25 @@ namespace Toys
 
             }
 
+            
+
             for (int i = 0; i < frames.Length; i++)
             {
                 frames[i] = new AnimationFrame(bonePosesInterpretated[i].ToArray());
             }
-            
+            */
+        }
+
+        float[] GetFrames(BoneUnsorted data)
+        {
+            List<float> frames = new List<float>();
+            for (int i = 0; i < data.positionsTimestamps.Length; i++)
+                frames.Add(data.positionsTimestamps[i]);
+
+            for (int i = 0; i < data.rotationsTimestamps.Length; i++)
+                frames.Add(data.rotationsTimestamps[i]);
+
+            return frames.Distinct().OrderBy(x => x).ToArray();
         }
 
         int ReadPointer()
