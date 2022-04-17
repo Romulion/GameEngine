@@ -124,7 +124,11 @@ namespace Toys
             if (!CurrentAnimation.Repeat && CurrentAnimation.NextAnimation != null)
             {
                 if (TargetAnimator.IsEnded)
+                {
                     UpdateContext(CurrentAnimation.NextAnimation);
+                    //check next transition
+                    changed = true;
+                }
             }
         }
 

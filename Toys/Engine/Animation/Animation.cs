@@ -61,7 +61,7 @@ namespace Toys
                 {
                     index =  frames.FindLastIndex(x => x.FrameId < keyFrame.FrameId);
                     if (index < 0)
-                        frames.Add(keyFrame);
+                        frames.Insert(0, keyFrame);
                     else
                         frames.Insert(index + 1, keyFrame);
                 }
@@ -72,27 +72,29 @@ namespace Toys
                 bonesData.Add(boneName, new List<KeyFrameBone> { keyFrame });
         }
 
-        public void AddMophKey(string boneName, KeyFrameMorph keyFrame)
+        public void AddMophKey(string morphName, KeyFrameMorph keyFrame)
         {
             UpdateFrameCount(keyFrame.FrameId);
-            if (morphData.ContainsKey(boneName))
+            if (morphData.ContainsKey(morphName))
             {
-                var frames = morphData[boneName];
+                var frames = morphData[morphName];
                 //Check if key already exists
                 var index = frames.FindIndex((a) => a.FrameId == keyFrame.FrameId);
+
                 if (index < 0)
                 {
                     index = frames.FindLastIndex(x => x.FrameId < keyFrame.FrameId);
                     if (index < 0)
-                        frames.Add(keyFrame);
+                        frames.Insert(0, keyFrame);
                     else
                         frames.Insert(index + 1, keyFrame);
                 }
                 else
                     frames[index] = keyFrame;
+
             }
             else
-                morphData.Add(boneName, new List<KeyFrameMorph> { keyFrame });
+                morphData.Add(morphName, new List<KeyFrameMorph> { keyFrame });
         }
 
         public void AddTriggerKey(KeyFrameTrigger keyFrame)
@@ -122,12 +124,6 @@ namespace Toys
                 }
             }
 
-            /*
-            for (int i = 0; i < boneSequence.Count; i++)
-            {
-                Console.WriteLine("{0} {1}", boneSequence[i].FrameId, boneSequence[i].BonePosition.Position);
-            }
-            */
             //No animation data
             if (prevFrame < -1)
                 return null;
@@ -183,7 +179,6 @@ namespace Toys
                     break;
                 }
             }
-
             //No animation data
             if (prevFrame < 0)
                 return -1;
@@ -191,7 +186,6 @@ namespace Toys
             //Single Frame
             if (morphSequence.Count == 1)
                 return morphSequence[0].Value;
-
 
             int nextFrame = (morphSequence.Count > (prevFrame + 1)) ? prevFrame + 1 : 0;
             
@@ -211,6 +205,7 @@ namespace Toys
             {
                 value += valDelta * frameDelta;
             }
+
             return value;
         }
 
