@@ -167,6 +167,8 @@ namespace Toys
             if (!ScrollBox)
                 return;
 
+            y *= Node.ParentCanvas.CanvasScale;
+
             var oldValue = Value;
             var trans = Node.GetTransform.GlobalRect; 
             var button = ButtonSize / 2;

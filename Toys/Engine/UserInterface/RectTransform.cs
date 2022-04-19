@@ -86,12 +86,12 @@ namespace Toys
         }
         */
 
-        internal void UpdateGlobalPosition()
+        internal void UpdateGlobalPosition(float scale)
         {
             Vector2 screenSize = new Vector2(CoreEngine.gEngine.Width,CoreEngine.gEngine.Height);
 
-            Max = CalcAbsAnchor(anchorMax, screenSize) + offsetMax;
-            Min = CalcAbsAnchor(anchorMin, screenSize) + offsetMin;
+            Max = CalcAbsAnchor(anchorMax, screenSize) + offsetMax * scale;
+            Min = CalcAbsAnchor(anchorMin, screenSize) + offsetMin * scale;
 
             GlobalRect = new RectangleF(Min.X, Min.Y, (Max - Min).X, (Max - Min).Y);
             
@@ -126,7 +126,7 @@ namespace Toys
             trans.offsetMax = offsetMax;
             trans.anchorMin = anchorMin;
             trans.offsetMin = offsetMin;
-            trans.UpdateGlobalPosition();
+            trans.UpdateGlobalPosition(1);
             return trans;
         }
     }

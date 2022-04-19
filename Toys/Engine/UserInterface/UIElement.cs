@@ -45,18 +45,18 @@ namespace Toys
             //UpdateTransform();
         }
 
-        public void UpdateTransform()
+        public void UpdateTransform(float scale)
         {
             //transform.UpdateGlobalPosition();
-            transform.UpdateGlobalPosition();
+            transform.UpdateGlobalPosition(scale);
         }
-        public void UpdateTransformRecursive()
+        public void UpdateTransformRecursive(float scale)
         {
             //transform.UpdateGlobalPosition();
-            transform.UpdateGlobalPosition();
+            transform.UpdateGlobalPosition(scale);
             foreach (var child in Childs)
             {
-                child.UpdateTransformRecursive();
+                child.UpdateTransformRecursive(scale);
             }
         }
 

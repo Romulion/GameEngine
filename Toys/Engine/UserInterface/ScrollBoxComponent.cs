@@ -214,8 +214,12 @@ namespace Toys
             //delta
             Vector2 top = new Vector2();
             top.X = size.X;
+
             Node.GetTransform.offsetMax = top + delta * move;
             Node.GetTransform.offsetMin = Node.GetTransform.offsetMax - size;
+
+            Node.GetTransform.offsetMax /= Node.ParentCanvas.CanvasScale;
+            Node.GetTransform.offsetMin /= Node.ParentCanvas.CanvasScale;
         }
 
         public override VisualComponent Clone()

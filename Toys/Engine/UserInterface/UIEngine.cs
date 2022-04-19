@@ -54,7 +54,7 @@ namespace Toys
                     
                 }
                 elements.Add(root);
-                root.UpdateTransform();
+                root.UpdateTransform(canvas.CanvasScale);
                 foreach (var child in root.Childs)
                 {
                     elements.AddRange(SortCanvas(child, canvas, maskID));
@@ -202,8 +202,12 @@ namespace Toys
             }
             else if (dragEnabled && clicked)
             {
-                //inform active component about mouse position
-                clickContext?.PositionUpdate(cursorWindowPosition.X, cursorWindowPosition.Y);
+                if (clickContext != null)
+                {
+                    //inform active component about mouse position
+                    var drag = cursorWindowPosition / clickContext.Node.ParentCanvas.CanvasScale;
+                    clickContext.PositionUpdate(drag.X, drag.Y);
+                }
             }
 
 

@@ -21,8 +21,10 @@ namespace Toys
         public RenderMode Mode { get; set; }
         public bool IsActive = true;
         public float Canvas2WorldScale { get; set; }
+        public float CanvasScale { get; set; }
         public Canvas() : base(typeof(Canvas)) { 
-            Canvas2WorldScale = 1; 
+            Canvas2WorldScale = 1;
+            CanvasScale = 1;
         }
 
         public enum RenderMode
