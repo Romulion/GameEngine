@@ -65,7 +65,6 @@ namespace Toys
                 ReadRigit(reader);
                 ReadJoints(reader);
             }
-
             reader.Close();
         }
 
@@ -443,8 +442,11 @@ namespace Toys
             //assign toon textures to materials
             for (int i = 0; i < mats.Length; i++)
             {
-                mats[i].SetTexture(toonData[materialToonTable[i]], TextureType.Toon);
+                int toonID = materialToonTable[i];
+                if (toonID < toonData.Length)
+                    mats[i].SetTexture(toonData[materialToonTable[i]], TextureType.Toon);
             }
+
         }
 
         void ReadRigit(Reader reader)
