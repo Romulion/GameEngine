@@ -123,7 +123,7 @@ namespace Toys
             }
         }
 
-        public Texture() : base(typeof(Texture2D)) {}
+        public Texture() {}
 
 
         public void GetImage(System.Drawing.Bitmap image)

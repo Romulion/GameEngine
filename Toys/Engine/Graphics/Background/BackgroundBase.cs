@@ -11,7 +11,7 @@ namespace Toys
     {
         protected static Shader backgroundShader;
         protected Texture2D texture;
-        public BackgroundBase() : base(typeof(BackgroundBase)) { }
+        public BackgroundBase() { }
         public abstract void DrawBackground(Camera cam);
     }
 }

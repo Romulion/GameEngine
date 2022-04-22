@@ -15,7 +15,7 @@ namespace Toys
     {
         static AudioListener listener;
         public Vector3 direction;
-        private AudioListener() : base(typeof(AudioListener))
+        private AudioListener()
         {
             
         }

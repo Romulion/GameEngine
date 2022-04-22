@@ -168,6 +168,7 @@ namespace Toys
                 return;
 
             y *= Node.ParentCanvas.CanvasScale;
+            x *= Node.ParentCanvas.CanvasScale;
 
             var oldValue = Value;
             var trans = Node.GetTransform.GlobalRect; 

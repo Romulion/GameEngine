@@ -26,7 +26,7 @@ namespace Toys
         /// Allow assigning multiple components of same type to one object
         /// </summary>
         public bool AllowMultiple { get; protected internal set; }
-        protected VisualComponent(Type t) : base(t)
+        protected VisualComponent(Type t)
         {
 
             Mesh = defaultMesh;
@@ -82,7 +82,7 @@ namespace Toys
         {
             if (Node != null)
             {
-                Logger.Error($"Component {Type} already assigned to node {Node.Name}", "");
+                Logger.Error($"Component {GetType()} already assigned to node {Node.Name}", "");
             }
             else
             {

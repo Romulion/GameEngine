@@ -18,7 +18,7 @@ namespace Toys
         Vector3 dir = Vector3.UnitZ;
         bool looping;
         public bool IsPlaing { get; private set; }
-        public AudioSource() : base(typeof(AudioSource))
+        public AudioSource()
         {
             bufferID = AL.GenBuffer();
             sourceID = AL.GenSource();

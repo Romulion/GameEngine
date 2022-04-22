@@ -89,16 +89,17 @@ namespace Toys.VR
             OpenVR.Input.UpdateActionState(setList, setSize);
             for (int i = 0; i < 2; i++)
             {
+                Array.Copy(controllers[i].triggerState, controllers[i].triggerPrevState, controllers[i].triggerPrevState.Length);
                 OpenVR.Input.GetDigitalActionData(controllers[i].button1PressId, ref digitalData, digitalDataSize, controllers[i].sourceId);
-                controllers[i].button1 = digitalData.bState;
+                controllers[i].SetBoolValue(ControllerButton.Button1,digitalData.bState);
                 OpenVR.Input.GetDigitalActionData(controllers[i].button2PressId, ref digitalData, digitalDataSize, controllers[i].sourceId);
-                controllers[i].button2 = digitalData.bState;
+                controllers[i].SetBoolValue(ControllerButton.Button2, digitalData.bState);
                 OpenVR.Input.GetDigitalActionData(controllers[i].triggerPressId, ref digitalData, digitalDataSize, controllers[i].sourceId);
-                controllers[i].trigPress = digitalData.bState;
+                controllers[i].SetBoolValue(ControllerButton.Trigger, digitalData.bState);
                 OpenVR.Input.GetDigitalActionData(controllers[i].grabPressId, ref digitalData, digitalDataSize, controllers[i].sourceId);
-                controllers[i].grabress = digitalData.bState;
+                controllers[i].SetBoolValue(ControllerButton.Grab, digitalData.bState);
                 OpenVR.Input.GetDigitalActionData(controllers[i].stickerPressId, ref digitalData, digitalDataSize, controllers[i].sourceId);
-                controllers[i].stickPress = digitalData.bState;
+                controllers[i].SetBoolValue(ControllerButton.Stick, digitalData.bState);
                 OpenVR.Input.GetAnalogActionData(controllers[i].stickerPosId, ref analogData, analogDataSize, controllers[i].sourceId);
                 controllers[i].stick.X = analogData.x;
                 controllers[i].stick.Y = analogData.y;

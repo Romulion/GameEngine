@@ -38,13 +38,13 @@ namespace Toys
         public RotationType GetRotationType { get; internal set; }
         public TransformType TransType { get; internal set; }
 
-        public Animation (AnimationFrame[] frams, Dictionary<string, int> boneReference): base(typeof(Animation))
+        public Animation (AnimationFrame[] frams, Dictionary<string, int> boneReference)
         {
             frames = frams;
 			bones = boneReference;
         }
 
-        public Animation() : base(typeof(Animation))
+        public Animation()
         {
             Length = 0;
         }

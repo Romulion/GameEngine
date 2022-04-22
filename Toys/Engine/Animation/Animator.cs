@@ -41,13 +41,13 @@ namespace Toys
         Dictionary<string, int> morphReference = new Dictionary<string, int>();
 
 
-        public Animator(BoneController bc) : base(typeof(Animator))
+        public Animator(BoneController bc)
         {
             BoneController = bc;
             morphs = new List<Morph>();
         }
 
-        public Animator(BoneController bc, List<Morph> md) : base(typeof(Animator))
+        public Animator(BoneController bc, List<Morph> md)
         {
             morphs = md;
             BoneController = bc;

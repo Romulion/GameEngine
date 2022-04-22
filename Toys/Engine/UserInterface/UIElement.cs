@@ -19,7 +19,7 @@ namespace Toys
         internal int MaskCheck;
         internal bool IsMask { get; set; }
 
-        public UIElement() : base(typeof(UIElement))
+        public UIElement()
         {
             Childs = new List<UIElement>();
             components = new List<VisualComponent>();
@@ -73,7 +73,7 @@ namespace Toys
         public void AddComponent(VisualComponent comp)
         {
             //dissalow multiple components
-            if (!comp.AllowMultiple || !GetComponent(comp.Type))
+            if (!comp.AllowMultiple || !GetComponent(comp.GetType()))
             {
                 comp.AddComponent(this);
                 components.Add(comp);
@@ -86,7 +86,6 @@ namespace Toys
             try
             {
                 VisualComponent comp = (VisualComponent)(t.GetConstructors()[0]).Invoke(new object[] { });
-                comp.Type = t;
                 comp.AddComponent(this);
                 components.Add(comp);
                 return comp;
@@ -108,7 +107,7 @@ namespace Toys
         public VisualComponent GetComponent(Type ctype)
         {
             var result = from comp in components
-                         where comp.Type == ctype
+                         where comp.GetType() == ctype
                          select comp;
 
             if (result.Count() == 0)
@@ -120,7 +119,7 @@ namespace Toys
         public VisualComponent[] GetComponents(Type ctype)
         {
             var result = from comp in components
-                         where comp.Type == ctype
+                         where comp.GetType() == ctype
                          select comp;
 
             return result.ToArray();

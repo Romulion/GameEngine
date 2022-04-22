@@ -21,7 +21,7 @@ namespace Toys
             get; private set;
         } 
 
-        internal Transform() : base (typeof(Transform))
+        internal Transform()
         {
             localT = Matrix4.Identity;
             GlobalTransform = Matrix4.Identity;

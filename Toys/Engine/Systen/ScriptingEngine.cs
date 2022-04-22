@@ -77,7 +77,7 @@ namespace Toys
 
         Action GetMessage(ScriptingComponent sc, string name)
         {
-            MethodInfo method = sc.Type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method = sc.GetType().GetMethod(name, BindingFlags.NonPublic | BindingFlags.Instance);
             Action message = null;
             if (method != null && method.GetGenericArguments().Length == 0)
             {

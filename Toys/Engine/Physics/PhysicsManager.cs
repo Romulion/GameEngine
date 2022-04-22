@@ -30,7 +30,6 @@ namespace Toys
             Rigits = rigits;
             Jcons = jcons;
             //CreateGeneric6DofSpringConstraint();
-            Type = typeof(PhysicsManager);
         }
 
         void Awake()

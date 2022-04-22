@@ -13,7 +13,7 @@ namespace Toys
         public bool OutlineDrawing;
 		public bool CastShadow;
 
-		public MeshDrawer(Mesh mesh, Material[] materials = null, List<Morph> morphes = null) : base (typeof(MeshDrawer))
+		public MeshDrawer(Mesh mesh, Material[] materials = null, List<Morph> morphes = null)
 		{
 			Mesh = mesh;
             if (materials != null)

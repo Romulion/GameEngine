@@ -7,7 +7,7 @@ namespace Toys
     public class ModelPrefab : Resource
     {
         List<Component> components;
-        public ModelPrefab(List<Component> list) : base(typeof(ModelPrefab))
+        public ModelPrefab(List<Component> list)
         {
             components = list;
         }

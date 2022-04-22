@@ -5,7 +5,7 @@ namespace Toys
 	{
 		//internal Component(Type t, string id) : base (t,id){ }
 
-		protected Component(Type t) : base(t) { }
+		protected Component() { }
 
         public SceneNode Node { get; protected set; }
 

@@ -9,7 +9,7 @@ namespace Toys.Physics
     public class ConstraintBase : Resource
     {
         internal TypedConstraint Constraint;
-        protected ConstraintBase(): base(typeof(ConstraintBase)) { }
+        protected ConstraintBase() { }
         internal override void Unload()
         {
            

@@ -7,13 +7,11 @@ namespace Toys
 
 		string Name { get; }
 		internal string Id { get; set;}
-		public Type Type { get; internal set; }
 		internal abstract void Unload();
 
 
-		protected Resource(Type type)
+		protected Resource()
 		{
-			Type = type;
 		}
 
 		/*

@@ -43,7 +43,7 @@ namespace Toys
 
 
 
-        public RigidBodyComponent() : base(typeof(RigidBodyComponent)) 
+        public RigidBodyComponent()
         {
             GroupFlags = -1;
             CollisionGroupFlags = -1;
@@ -148,16 +148,16 @@ namespace Toys
             Node = nod;
             CoreEngine.pEngine.World.AddRigidBody(body, GroupFlags, CollisionGroupFlags);
             CoreEngine.pEngine.Scene2Body += UpdateBody;
-            CoreEngine.pEngine.Body2Scene += UpdateNode;
+            //CoreEngine.pEngine.Body2Scene += UpdateNode;
         }
 
         internal override void RemoveComponent()
         {
             Node = null;
-            /*
+            
             CoreEngine.pEngine.Scene2Body -= UpdateBody;
-            CoreEngine.pEngine.Body2Scene -= UpdateNode;
-            */
+            //CoreEngine.pEngine.Body2Scene -= UpdateNode;
+            
             CoreEngine.pEngine.World.RemoveCollisionObject(body);
             body.MotionState.Dispose();
             body.Dispose();

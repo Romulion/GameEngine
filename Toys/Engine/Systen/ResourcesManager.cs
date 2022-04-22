@@ -66,9 +66,7 @@ namespace Toys
                 stream.Dispose();
             if (asset)
 			{
-                
                 asset.Id = path;
-				asset.Type = tp;
                 resources.Add(path, new WeakReference(asset));
             }
             return asset as T;

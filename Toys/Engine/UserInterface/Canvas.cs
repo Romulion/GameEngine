@@ -22,7 +22,7 @@ namespace Toys
         public bool IsActive = true;
         public float Canvas2WorldScale { get; set; }
         public float CanvasScale { get; set; }
-        public Canvas() : base(typeof(Canvas)) { 
+        public Canvas() { 
             Canvas2WorldScale = 1;
             CanvasScale = 1;
         }

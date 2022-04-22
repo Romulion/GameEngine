@@ -18,10 +18,10 @@ namespace Toys
                 var componets = node.GetComponents();
                 foreach (var component in componets)
                 {
-                    var attrs = component.Type.GetCustomAttributes();
+                    var attrs = component.GetType().GetCustomAttributes();
                     foreach (var attr in attrs)
                         if (attr.GetType() == typeof(SerializableAttribute))
-                            Console.WriteLine(component.Type);
+                            Console.WriteLine(component.GetType());
 
                 }
             }

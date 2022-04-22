@@ -55,7 +55,7 @@ namespace Toys
         public int Height { get; internal set; }
 
         int cameraHeigth = 2;
-        public Camera() : base(typeof(Camera))
+        public Camera()
 		{
             NearPlane = 0.1f;
             FarPlane = 100.0f;

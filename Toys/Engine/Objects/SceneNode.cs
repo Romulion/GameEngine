@@ -32,7 +32,7 @@ namespace Toys
 
         public Scene ParentScene { get; internal set; }
 
-		public SceneNode() : base (typeof(SceneNode))
+		public SceneNode()
         {
             childs = new List<SceneNode>();
 			components = new List<Component>();
@@ -125,7 +125,6 @@ namespace Toys
             try
             {
                 Component comp = (Component)(t.GetConstructors()[0]).Invoke(new object[] { });
-                comp.Type = t;
                 comp.AddComponent(this);
                 components.Add(comp);
                 return (T)comp;
@@ -165,7 +164,7 @@ namespace Toys
 		{
             Component result = null;
             for (int i = 0; i < components.Count; i++) {
-                if (components[i].Type == ctype)
+                if (components[i].GetType() == ctype)
                 {
                     result = components[i];
                     break;
@@ -189,7 +188,7 @@ namespace Toys
         public Component[] GetComponents(Type ctype)
 		{
 			var result = from comp in components
-						 where comp.Type == ctype
+						 where comp.GetType() == ctype
 						 select comp;
 
 			return result.ToArray();
@@ -224,7 +223,7 @@ namespace Toys
 
             foreach (var cpmnt in GetComponents())
             {
-                if (cpmnt.Type != typeof(Transform))
+                if (cpmnt.GetType() != typeof(Transform))
                     result.AddComponent(cpmnt.Clone());
             }
             return result;
@@ -240,7 +239,7 @@ namespace Toys
             foreach (var component in components)
             {
                 //check if class is saveble
-                if (typeof(ISave).IsAssignableFrom(component.Type))
+                if (typeof(ISave).IsAssignableFrom(component.GetType()))
                 {
                     //var forSave = (ISave)component;
                     //if (forSave.IsInSave)

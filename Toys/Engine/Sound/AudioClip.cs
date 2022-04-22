@@ -20,7 +20,7 @@ namespace Toys
         internal byte[] ByteBuffer { get; private set; }
 
 
-        public AudioClip(System.IO.Stream stream, string file) : base(typeof(AudioClip))
+        public AudioClip(System.IO.Stream stream, string file)
         {
             audioData = new AudioFileReader(file);
             IWaveProvider sampler;
