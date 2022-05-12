@@ -358,7 +358,15 @@ namespace Toys
                             mat.SetTexture(texturesDict[textPath], type);
                         else
                         {
-                            var text = ResourcesManager.LoadAsset<Texture2D>(dir+textPath);
+                            var fullPath = dir + textPath;
+                            Texture2D text = null;
+                            
+                            if (File.Exists(fullPath))
+                                text = ResourcesManager.LoadAsset<Texture2D>(fullPath);
+                            else if (File.Exists(fullPath + ".png"))
+                                text = ResourcesManager.LoadAsset<Texture2D>(fullPath + ".png");
+                            else
+                                text = Texture2D.LoadEmpty();
                             texturesDict.Add(textPath, text);
                             mat.SetTexture(text, type);
                         }
