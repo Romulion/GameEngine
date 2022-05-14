@@ -5,7 +5,7 @@ namespace Toys
 	{
 		//internal Component(Type t, string id) : base (t,id){ }
 
-		protected Component() { }
+		protected Component(bool threadSafe = true) : base(threadSafe) { }
 
         public SceneNode Node { get; protected set; }
 

@@ -163,7 +163,7 @@ namespace Toys
             body.Dispose();
         }
 
-        internal override void Unload()
+        protected override void Unload()
         {
             body.Dispose();
         }

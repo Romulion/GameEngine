@@ -359,7 +359,7 @@ namespace Toys
                         else
                         {
                             var fullPath = dir + textPath;
-                            Texture2D text = null;
+                            Texture2D text;
                             
                             if (File.Exists(fullPath))
                                 text = ResourcesManager.LoadAsset<Texture2D>(fullPath);

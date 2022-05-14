@@ -10,7 +10,7 @@ namespace Toys.Physics
     {
         internal TypedConstraint Constraint;
         protected ConstraintBase() { }
-        internal override void Unload()
+        protected override void Unload()
         {
            
         }

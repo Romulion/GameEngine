@@ -46,13 +46,14 @@ namespace Toys
 #if VertexSkin
             ubs.SetBones(skeleton.GetSkeleton);
 #endif
+            
             Mesh.BindVAO();
-			foreach (var mat in Materials)
+            foreach (var mat in Materials)
 			{
 				if (!mat.RenderDirrectives.IsRendered)
 					continue;
-				Mesh.Draw(mat.Offset, mat.Count);
-			}
+                Mesh.Draw(mat.Offset, mat.Count);
+            }
 
 			Mesh.ReleaseVAO();
 		}

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Toys
 {
-	public abstract class Material
+	public abstract class Material : Resource
 	{
 		internal ShaderSettings ShaderSettings { get; set; }
         public RenderDirectives RenderDirrectives { get; set; }
@@ -19,7 +19,7 @@ namespace Toys
         protected Dictionary<TextureType, Texture2D> textures;
 		protected Shader shaderProgram;
 		
-		public Material()
+		public Material() : base(false)
 		{
 			textures = new Dictionary<TextureType, Texture2D>();
             Outline = new Outline();
@@ -70,10 +70,12 @@ namespace Toys
 			}
 		}
 
-		internal virtual void UpdateMaterial()
+		
+		protected override void Unload()
 		{
 			shaderProgram.DeleteShader();
 		}
+		
 
 		internal virtual void ApplyMaterial()
 		{

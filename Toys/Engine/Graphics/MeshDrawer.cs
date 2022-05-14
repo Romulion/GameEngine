@@ -13,7 +13,7 @@ namespace Toys
         public bool OutlineDrawing;
 		public bool CastShadow;
 
-		public MeshDrawer(Mesh mesh, Material[] materials = null, List<Morph> morphes = null)
+		public MeshDrawer(Mesh mesh, Material[] materials = null, List<Morph> morphes = null) : base(false)
 		{
 			Mesh = mesh;
             if (materials != null)
@@ -115,13 +115,13 @@ namespace Toys
 
 		}
 
-		internal override void Unload()
+        protected override void Unload()
 		{
-			Mesh.Delete();
         }
 
         internal override void AddComponent(SceneNode nod)
         {
+            
             if (Node != null)
                 throw new Exception("");
             else

@@ -5,7 +5,7 @@ using OpenTK;
 
 namespace Toys
 {
-	public class Mesh
+	public class Mesh : Resource
 	{
 
 		public int[] Indices;
@@ -23,7 +23,7 @@ namespace Toys
 		public Vertex3D[] Vertices { get; private set; }
         public VertexRigged3D[] vertRig { get; private set; }
         public BoundingBox BoundingBox { get; private set; }
-        public Mesh(Vertex3D[] vertices, int[] indices)
+        public Mesh(Vertex3D[] vertices, int[] indices) : base(false)
 		{
             Indices = indices;
 			VertexSize = Marshal.SizeOf(typeof(Vertex3D));
@@ -45,7 +45,7 @@ namespace Toys
             }
 		}
 
-		public Mesh(VertexRigged3D[] vertices, int[] indexes)
+		public Mesh(VertexRigged3D[] vertices, int[] indexes) : base(false)
 		{
             vertRig = vertices;
 
@@ -80,7 +80,7 @@ namespace Toys
         }
 
 		//clearing resources
-		internal void Delete()
+		protected override void Unload()
 		{
 			GL.DeleteVertexArray(VAO);
 			GL.DeleteBuffer(EBO);

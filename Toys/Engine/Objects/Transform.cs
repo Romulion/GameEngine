@@ -230,7 +230,7 @@ namespace Toys
         {
             Node = null;
         }
-        internal override void Unload()
+        protected override void Unload()
         {
         }
     }

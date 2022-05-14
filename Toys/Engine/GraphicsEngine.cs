@@ -163,9 +163,8 @@ namespace Toys
             //GL.Enable(EnableCap.Multisample);
             if (MainCamera != null)
             {
-                MainRender.Render(meshes.ToArray(), MainCamera, UIEngine);
+                MainRender.Render(meshes, MainCamera, UIEngine);
             }
-
             //render ui
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, outputBuffer);
             GL.Disable(EnableCap.DepthTest);

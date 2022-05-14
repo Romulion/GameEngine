@@ -19,6 +19,7 @@ namespace Toys
         public static CoreEngine ActiveCore { get; private set; }
         internal static SoundEngine aEngine { get; private set; }
         internal static AnimationEngine animEngine { get; private set; }
+        public static InputSystem iSystem { get; private set; }
         public static VR.VRSystem vrSystem { get; private set; }
         public static Time time { get; private set; }
         public static Time frameTimer { get; private set; }
@@ -52,6 +53,7 @@ namespace Toys
                 sEngine = new ScriptingEngine();
                 iHandler = new InputHandler();
                 aEngine = new SoundEngine();
+                iSystem = new InputSystem();
 #if VR
                 vrSystem = new VR.VRSystem();
                 GLWindow.gLWindow.RenderFrequency = 80;
@@ -61,8 +63,7 @@ namespace Toys
                 frameTimer = new Time();
                 frameTimer.FrameTime = 0.01f;
 
-                InputSystem.CurrentContext = InputContext.Main;
-            }
+                }
 			catch (Exception e)
 			{
 				Console.WriteLine(e.Message);
@@ -96,6 +97,8 @@ namespace Toys
             frameTimer.Start();
             time.Start();
             vrSystem?.Update();
+            iSystem.Update();
+            sEngine.Destroy();
             sEngine.Awake();
             sEngine.Start();
             pEngine.Scene2Body?.Invoke();

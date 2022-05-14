@@ -73,7 +73,7 @@ namespace Toys
             Mesh.ReleaseVAO();
         }
 
-        internal override void Unload()
+        protected override void Unload()
         {
             //Mesh.Delete();
         }

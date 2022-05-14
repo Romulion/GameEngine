@@ -101,7 +101,7 @@ namespace Toys
 
         internal void Destroy()
         {
-            RenderTexture.Unload();
+            Resource.Destroy(RenderTexture);
         }
     }
 }

@@ -106,8 +106,11 @@ namespace Toys
             
 		}
 
-        internal override void Unload()
+        protected override void Unload()
         {
+            if (!IsInstalized)
+                return;
+
             foreach (var joint in joints)
             {
                 World.RemoveConstraint(joint.Constraint);

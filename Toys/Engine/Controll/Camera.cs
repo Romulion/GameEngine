@@ -112,7 +112,7 @@ namespace Toys
             Node = null;
             CoreEngine.gEngine.MainCamera = null;
         }
-        internal override void Unload()
+        protected override void Unload()
         {
         }
     }

@@ -15,12 +15,11 @@ namespace Toys
 
         public ScriptingComponent()
         {
-            IsInstalized = true;
+            IsInstalized = false;
         }
 
-        internal override void Unload()
+        protected override void Unload()
         {
-
         }
 
         internal override void AddComponent(SceneNode nod)
@@ -33,7 +32,6 @@ namespace Toys
         {
             Node = null;
             CoreEngine.sEngine.RemoveScript(this);
-            Destroy();
         }
 
         /// <summary>

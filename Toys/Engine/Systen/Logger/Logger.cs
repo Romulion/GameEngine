@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+
 namespace Toys
 {
 	public class Logger
@@ -57,6 +59,7 @@ namespace Toys
 			ProceedEntry(Level.Info, Message, path);
 		}
 
+		//[MethodImpl(MethodImplOptions.NoInlining)]
 		static void ProceedEntry(Level severenety, object message, string path)
 		{
 			var senderStack = new System.Diagnostics.StackTrace();

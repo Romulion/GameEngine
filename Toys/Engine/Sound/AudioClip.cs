@@ -64,7 +64,7 @@ namespace Toys
             return result;
         }
 
-        internal override void Unload()
+        protected override void Unload()
         {
             audioData.Dispose();
         }

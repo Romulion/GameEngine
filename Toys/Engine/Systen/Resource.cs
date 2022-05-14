@@ -7,11 +7,14 @@ namespace Toys
 
 		string Name { get; }
 		internal string Id { get; set;}
-		internal abstract void Unload();
+		protected abstract void Unload();
+		public bool isDestroyed;
+		
+		protected bool IsThreadSafe { get; private set; }
 
-
-		protected Resource()
+		protected Resource(bool threadSafe = true)
 		{
+			IsThreadSafe = threadSafe;
 		}
 
 		/*
@@ -25,6 +28,23 @@ namespace Toys
 			return res1.Id != res2.Id;
 		}
 */
+		public static void Destroy(Resource res)
+        {
+			if (!res.isDestroyed)
+			{
+				if (GLWindow.gLWindow.CheckContext || res.IsThreadSafe)
+					res.Destroy();
+				else
+					CoreEngine.ActiveCore.AddTask = res.Destroy;
+			}
+        }
+
+		private void Destroy()
+        {
+			Unload();
+			isDestroyed = true;
+		}
+
 		public static bool operator true(Resource res)
 		{
 			return res != null;
@@ -45,9 +65,10 @@ namespace Toys
 			return base.Equals(obj);
 		}
 
-		public override int GetHashCode()
-		{
-			return base.GetHashCode();
+		//Clean "Lost" resources. Slow
+        ~Resource()
+        {			
+			Destroy(this);
 		}
 	}
 }

@@ -123,7 +123,7 @@ namespace Toys
             }
         }
 
-        public Texture() {}
+        public Texture() : base(false) {}
 
 
         public void GetImage(System.Drawing.Bitmap image)
@@ -149,8 +149,9 @@ namespace Toys
             GL.BindTexture(textureType, textureID);
         }
 
-        internal override void Unload()
+        protected override void Unload()
         {
+            Console.WriteLine("unload texture {0}",textureID.ToString());
             GL.DeleteTexture(textureID);
         }
     }

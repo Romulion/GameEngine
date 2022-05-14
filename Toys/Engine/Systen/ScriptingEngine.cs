@@ -53,10 +53,7 @@ namespace Toys
             {
                 ScriptingComponent sc = startQueue.Dequeue();
                 var act = GetMessage(sc, "Start");
-                if (act != null)
-                {
-                    act.Invoke();
-                }
+                act?.Invoke();
 
                 var mess = GetMessage(sc,"Update");
                 if (mess != null)
@@ -68,10 +65,12 @@ namespace Toys
                 mess = GetMessage(sc, "PostRender");
                 if (mess != null)
                     postRender.Add(new Message(sc, mess));
-
+                
+                /*
                 mess = GetMessage(sc, "OnDestroy");
                 if (mess != null)
                     onDestroy.Add(new Message(sc, mess));
+                */
             }
         }
 
@@ -87,35 +86,47 @@ namespace Toys
             return message;
         }
 
-        internal void RemoveScript(ScriptingComponent sc)
+        internal void RemoveScript(ScriptingComponent sc) 
         {
             scripts.Remove(sc);
-            updates.RemoveAll((m) => m.ScriptingObject == sc);
-            preRender.RemoveAll((m) => m.ScriptingObject == sc);
+
+            //Enum safe script removal
+            onDestroy.Add(new Message(sc, () =>
+           {
+               updates.RemoveAll((m) => m.ScriptingObject == sc);
+               preRender.RemoveAll((m) => m.ScriptingObject == sc);
+               postRender.RemoveAll((m) => m.ScriptingObject == sc);
+           }));
         }
 
+        //Main update method
         internal void Update()
         {
             foreach (var upd in updates)
                 upd.Method();
         }
 
+        //For processing directly before render sequence started
         internal void PreRender()
         {
             foreach (var prr in preRender)
                 prr.Method();
         }
 
+        //For processing directly after render sequence ended
         internal void PostRender()
         {
             foreach (var prr in postRender)
                 prr.Method();
         }
 
+        //For enum safe script removing
         internal void Destroy()
         {
             foreach (var prr in onDestroy)
                 prr.Method();
+
+            onDestroy.Clear();
         }
     }
 }

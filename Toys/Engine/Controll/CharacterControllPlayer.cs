@@ -34,7 +34,7 @@ namespace Toys
 
         new void Update()
         {
-            if (InputSystem.CurrentContext != InputContext.Main)
+            if (CoreEngine.iSystem.CurrentContext != InputContext.Main)
                 return;
 
             var rayCalback = new KinematicClosestNotMeRayResultCallback(_ghostObject);

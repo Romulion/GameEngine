@@ -16,17 +16,16 @@ namespace Toys
         public SceneNode CreateNode()
         {
             var result = new SceneNode();
-
             foreach (var cpmnt in components)
             {
                 result.AddComponent(cpmnt.Clone());
             }
             return result;
         }
-        internal override void Unload()
+        protected override void Unload()
         {
             foreach(var comp in components)
-                comp.Unload();
+                Destroy(comp);
         }
     }
 }

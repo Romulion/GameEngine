@@ -100,7 +100,7 @@ namespace Toys
             }
         }
 
-        internal override void Unload()
+        protected override void Unload()
         {
             base.Unload();
         }

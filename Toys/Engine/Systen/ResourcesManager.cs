@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Toys
 {
-	public class ResourcesManager
+	public static class ResourcesManager
 	{
 		static Dictionary<string, WeakReference> resources = new Dictionary<string, WeakReference>();
         static Logger logger;
@@ -89,8 +89,8 @@ namespace Toys
 		{
 			List<T> result = new List<T>();
 			foreach (var val in resources.Values)
-				if (val is T)
-					result.Add(val.Target as T);
+                if (val is T)
+                    result.Add(val.Target as T);
 
 			return result.ToArray();
 		}
@@ -146,7 +146,7 @@ namespace Toys
                 return DeleteResource(name);
             else
             {
-                CoreEngine.ActiveCore.AddTask = () => resource.Unload();
+                CoreEngine.ActiveCore.AddTask = () => Resource.Destroy(resource);
                 return true;
             }
         }
@@ -165,7 +165,7 @@ namespace Toys
             WeakReference resource;
             if (resources.TryGetValue(res, out resource))
             {
-                CoreEngine.ActiveCore.AddTask = () => ((Resource)resource.Target).Unload();
+                CoreEngine.ActiveCore.AddTask = () => Resource.Destroy((Resource)resource.Target);
                 resources.Remove(res);
                 return true;
             }

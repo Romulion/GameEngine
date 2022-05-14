@@ -130,12 +130,12 @@ namespace Toys
             return components.ToArray();
         }
 
-        internal override void Unload()
+        protected override void Unload()
         {
             foreach (var comp in components)
             {
                 comp.RemoveComponent();
-                comp.Unload();
+                Destroy(comp);
             }
         }
 

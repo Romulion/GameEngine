@@ -56,7 +56,7 @@ namespace Toys
             CoreEngine.gEngine.UIEngine.canvases.Remove(this);
         }
 
-        internal override void Unload()
+        protected override void Unload()
         {
             foreach (var root in rootNodes)
                 UnloadTree(root);
@@ -69,7 +69,7 @@ namespace Toys
             {
                 UnloadTree(child);
             }
-            uie.Unload();
+            Destroy(uie);
         }
         
     }

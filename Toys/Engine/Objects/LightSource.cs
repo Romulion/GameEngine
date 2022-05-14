@@ -83,6 +83,7 @@ namespace Toys
 			GL.Viewport(0, 0, width, heigth);
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, shadowBuffer);
 			GL.Clear(ClearBufferMask.DepthBufferBit);
+			
 			shdr.ApplyShader();
 
 			foreach (var mesh in meshes)

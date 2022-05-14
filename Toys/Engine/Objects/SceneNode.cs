@@ -104,6 +104,16 @@ namespace Toys
 		}
 
         /// <summary>
+        /// Add initialized component
+        /// </summary>
+        /// <param name="comp"></param>
+        public void RemoveComponent(Component comp)
+        {
+            comp.RemoveComponent();
+            components.Remove(comp);
+        }
+
+        /// <summary>
         /// get copy list of node childs
         /// </summary>
         /// <returns></returns>
@@ -121,13 +131,13 @@ namespace Toys
         /// <returns>new component</returns>
         public T AddComponent<T>() where T : Component
         {
-            Type t = typeof(T);
             try
             {
-                Component comp = (Component)(t.GetConstructors()[0]).Invoke(new object[] { });
+                
+                var comp = Activator.CreateInstance<T>();
                 comp.AddComponent(this);
                 components.Add(comp);
-                return (T)comp;
+                return comp;
             }
             catch (Exception e)
             {
@@ -176,10 +186,11 @@ namespace Toys
         /// <summary>
         /// Search components of selected type.
         /// </summary>
-        public Component[] GetComponents<T>() where T : Component
+        public T[] GetComponents<T>() where T : Component
         {
             Type t = typeof(T);
-            return GetComponents(t);
+            var array = GetComponents(t);
+            return Array.ConvertAll(array, item => (T)item); ;
         }
 
         /// <summary>
@@ -190,9 +201,9 @@ namespace Toys
 			var result = from comp in components
 						 where comp.GetType() == ctype
 						 select comp;
+            return result.ToArray();
 
-			return result.ToArray();
-		}
+        }
 
         /// <summary>
         /// Get all components
@@ -203,12 +214,13 @@ namespace Toys
             return components.ToArray();
         }
 
-        internal override void Unload()
+        protected override void Unload()
 		{
+            
             foreach (var comp in components)
             {
                 comp.RemoveComponent();
-                comp.Unload();
+                Destroy(comp);
             }
             components.Clear();
 

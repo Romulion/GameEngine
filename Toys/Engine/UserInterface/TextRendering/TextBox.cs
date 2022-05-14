@@ -39,7 +39,7 @@ namespace Toys
                 textRenderer.UpdateText(textCanvas);
         }
 
-        internal override void Unload()
+        protected override void Unload()
         {
             textRenderer.UpdateText(textCanvas);
         }

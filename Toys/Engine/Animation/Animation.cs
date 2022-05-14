@@ -253,7 +253,7 @@ namespace Toys
             Length = Math.Max(Length, frameNumber);
         }
 
-        internal override void Unload()
+        protected override void Unload()
         {
         }
     }

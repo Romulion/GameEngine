@@ -49,7 +49,7 @@ namespace Toys
             if (CoreEngine.aEngine.Listner == this)
                 CoreEngine.aEngine.Listner = null;
         }
-        internal override void Unload()
+        protected override void Unload()
         {
         }
     }

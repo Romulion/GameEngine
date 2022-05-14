@@ -111,7 +111,7 @@ namespace Toys
             GL.VertexAttribPointer(0, 3,VertexAttribPointerType.Float, false, 3 * sizeof(float), IntPtr.Zero);
         }
 
-        internal override void Unload()
+        protected override void Unload()
         {
             GL.DeleteVertexArray(skyboxVAO);
             GL.DeleteBuffer(skyboxVBO);

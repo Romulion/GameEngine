@@ -139,7 +139,7 @@ namespace Toys
                 Stop();
         }
 
-        internal override void Unload()
+        protected override void Unload()
         {
             AL.DeleteSource(sourceID);
             AL.DeleteBuffer(bufferID);
