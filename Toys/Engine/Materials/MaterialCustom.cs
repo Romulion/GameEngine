@@ -22,9 +22,7 @@ namespace Toys
 
         private void CreateShader()
         {
-            shaderProgram = ShaderConstructor.CreateShader(vs, fs);
-            shaderProgram.ApplyShader();
-            CreateShader(shaderProgram);
+            CreateShader(vs, fs);
         }
 
         internal override void ApplyMaterial()

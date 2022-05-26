@@ -128,13 +128,13 @@ namespace Toys
         internal override void AddComponent(SceneNode nod)
         {
             Node = nod;
-            CoreEngine.aEngine.AddSource(this);
+            CoreEngine.AudioEngine.AddSource(this);
         }
 
         internal override void RemoveComponent()
         {
             Node = null;
-            CoreEngine.aEngine.RemoveSource(this);
+            CoreEngine.AudioEngine.RemoveSource(this);
             if (IsPlaing)
                 Stop();
         }

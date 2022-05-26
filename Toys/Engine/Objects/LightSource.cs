@@ -50,31 +50,6 @@ namespace Toys
             ubl = (UniformBufferLight)ubm.GetBuffer("light");
 		}
 
-		//shadow rendering
-		public void RenderShadow(List<SceneNode> nodes)
-		{
-			SetLightVars();
-
-			direction = Matrix4.LookAt(pos, look, new Vector3(0f, 1f, 0f));
-			GL.Viewport(0, 0, width, heigth);
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, shadowBuffer);
-			GL.Clear(ClearBufferMask.DepthBufferBit);
-			shdr.ApplyShader();
-
-			foreach (var node in nodes)
-			{
-				if (!node.Active)
-					continue;
-				MeshDrawer md = (MeshDrawer)node.GetComponent(typeof(MeshDrawer));
-				if (md == null)
-					continue;
-				
-				Matrix4 pvm = node.GetTransform.GlobalTransform * direction * projection;
-				shdr.SetUniform(pvm, "pvm");
-				md.DrawSimple();
-			}
-		}
-
 		public void RenderShadow(MeshDrawer[] meshes)
 		{
 			SetLightVars();

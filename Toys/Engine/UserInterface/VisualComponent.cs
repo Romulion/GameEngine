@@ -86,7 +86,7 @@ namespace Toys
             }
             else
             {
-                CoreEngine.gEngine.UIEngine.visualComponents.Add(this);
+                CoreEngine.GfxEngine.UIEngine.visualComponents.Add(this);
                 Node = nod;
             }
         }
@@ -96,7 +96,7 @@ namespace Toys
             if (Node != null)
             {
                 Node = null;
-                CoreEngine.gEngine.UIEngine.visualComponents.Remove(this);
+                CoreEngine.GfxEngine.UIEngine.visualComponents.Remove(this);
             }
 
         }

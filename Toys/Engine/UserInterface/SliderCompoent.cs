@@ -70,13 +70,13 @@ namespace Toys
 
         internal override void AddComponent(UIElement nod)
         {
-            CoreEngine.gEngine.UIEngine.buttons.Add(this);
+            CoreEngine.GfxEngine.UIEngine.buttons.Add(this);
             base.AddComponent(nod);
         }
 
         internal override void RemoveComponent()
         {
-            CoreEngine.gEngine.UIEngine.buttons.Remove(this);
+            CoreEngine.GfxEngine.UIEngine.buttons.Remove(this);
             base.RemoveComponent();
         }
 

@@ -40,14 +40,14 @@ namespace Toys
         internal override void AddComponent(SceneNode nod)
         {
             Node = nod;
-            CoreEngine.aEngine.Listner = this;
+            CoreEngine.AudioEngine.Listner = this;
         }
 
         internal override void RemoveComponent()
         {
             Node = null;
-            if (CoreEngine.aEngine.Listner == this)
-                CoreEngine.aEngine.Listner = null;
+            if (CoreEngine.AudioEngine.Listner == this)
+                CoreEngine.AudioEngine.Listner = null;
         }
         protected override void Unload()
         {

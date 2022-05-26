@@ -33,7 +33,7 @@ namespace Toys
         void Awake()
         {
             ImageStream = new MemoryStream();
-            camera = CoreEngine.gEngine.MainCamera;
+            camera = CoreEngine.GfxEngine.MainCamera;
             width = camera.Width;
             height = camera.Height;
 

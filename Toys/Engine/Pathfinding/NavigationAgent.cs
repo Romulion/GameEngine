@@ -274,24 +274,18 @@ namespace Toys
                     leftVec = leftNodeLast - start;
 
             var referenceVector = Vector3.Cross(leftVec, rightVec);
-            //Console.WriteLine(referenceVector);
             for (int i = startPoint + 1; i < path.Length - 1; i++)
             {
-                //Console.WriteLine("index {0}", i);
                 
                 int[] pairSet = vertexPairs[notBindedEdges[i]];
                 var node = path[i];
-                //Console.WriteLine("Node {0} {1}", node.NodeVertex[pairSet[0]], node.NodeVertex[pairSet[1]]) ;
                 
-                //Console.WriteLine("Path r:");
-
                 //left side
                 if (node.NodeVertex[pairSet[0]] == rightNodeLast || node.NodeVertex[pairSet[1]] == rightNodeLast)
                 {
                     
                     rightNodeLast = nextBorderNode[rightNodeLast];
                     //move to next point
-                    //Console.WriteLine("Right {0}", rightNodeLast);
                     //resolve single node
                     if (rightBorder.Count < 2)
                     {
@@ -304,14 +298,7 @@ namespace Toys
                     if (result < 0)
                     {
                         rightBorder.Add(rightNodeLast);
-                        //Console.WriteLine("right block {0}", i);
                         //rightBlock = true;
-                        /*
-                        Console.WriteLine("Path r:");
-                        foreach (var val in rightBorder)
-                            Console.WriteLine(val);
-                        Console.WriteLine("Path end");
-                        */
                     }
                     else
                     {
@@ -326,7 +313,6 @@ namespace Toys
                         {
                             rightBorder[rightBorder.Count - 2] = leftBorder[n];
                             pathOptimized.Add(leftBorder[n]);
-                            //Console.WriteLine("Path r add: {0}", leftBorder[n]);
                             leftBorder.RemoveRange(0, n);
                             break;
                         }
@@ -337,7 +323,6 @@ namespace Toys
                 {
                     //move to next point
                     leftNodeLast = nextBorderNode[leftNodeLast];
-                    //Console.WriteLine("Left {0}", leftNodeLast);
                     //resolve single node
                     if (leftBorder.Count < 2)
                     {
@@ -351,7 +336,6 @@ namespace Toys
                     if (result < 0)
                     {
                         leftBorder.Add(leftNodeLast);
-                        //Console.WriteLine("left block {0}", i);
                     }
                     else
                     {
@@ -365,14 +349,6 @@ namespace Toys
                     {
                         if (Vector3.Dot(referenceVector, Vector3.Cross(leftNodeLast - leftBorder[leftBorder.Count - 2], rightBorder[n] - rightBorder[n-1])) < 0)
                         {
-                            /*
-                            Console.WriteLine(referenceVector);
-                            Console.WriteLine(leftNodeLast - leftBorder[leftBorder.Count - 2]);
-                            Console.WriteLine(rightBorder[n] - rightBorder[n - 1]);
-                            Console.WriteLine("Path l {0} {1}", leftNodeLast, leftBorder[leftBorder.Count - 2]);
-                            Console.WriteLine("Path l2 {0} {1}", rightBorder[n], rightBorder[n - 1]);
-                            */
-                           // Console.WriteLine("Path l add: {0}", rightBorder[n]);
                             leftBorder[leftBorder.Count - 2] = rightBorder[n];
                             pathOptimized.Add(rightBorder[n]);
                             rightBorder.RemoveRange(0, n);

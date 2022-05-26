@@ -47,13 +47,13 @@ namespace Toys
         internal override void AddComponent(SceneNode nod)
         {
             Node = nod;
-            CoreEngine.gEngine.UIEngine.canvases.Add(this);
+            CoreEngine.GfxEngine.UIEngine.canvases.Add(this);
         }
 
         internal override void RemoveComponent()
         {
             Node = null;
-            CoreEngine.gEngine.UIEngine.canvases.Remove(this);
+            CoreEngine.GfxEngine.UIEngine.canvases.Remove(this);
         }
 
         protected override void Unload()

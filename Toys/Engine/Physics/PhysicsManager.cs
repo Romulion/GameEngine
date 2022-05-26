@@ -35,7 +35,7 @@ namespace Toys
         void Awake()
         {
             worldTrans = Node.GetTransform;
-            World = CoreEngine.pEngine.World;
+            World = CoreEngine.PhysEngine.World;
             
             InstalizeRigitBody(Rigits);
             InstalizeJoints(Jcons);

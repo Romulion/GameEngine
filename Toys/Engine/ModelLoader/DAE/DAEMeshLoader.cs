@@ -13,8 +13,7 @@ namespace Toys
 		const string nodeName = "library_geometries";
         const string sceneNodeName = "library_visual_scenes";
         const string visualscene = "visual_scene";
-        Logger logger;
-		float max = 0f;
+
         Dictionary<string, string> controllerMaterialRef = new Dictionary<string, string>();
 
 		public DAEMeshLoader(XmlElement xRoot)

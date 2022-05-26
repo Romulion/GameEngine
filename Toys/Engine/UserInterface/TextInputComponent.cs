@@ -49,17 +49,17 @@ namespace Toys
 
         internal override void AddComponent(UIElement nod)
         {
-            CoreEngine.gEngine.UIEngine.buttons.Add(this);
+            CoreEngine.GfxEngine.UIEngine.buttons.Add(this);
             base.AddComponent(nod);
             Text.AddComponent(nod);
         }
 
         internal override void RemoveComponent()
         {
-            if (CoreEngine.iHandler.SetTextInputContext == this)
-                CoreEngine.iHandler.SetTextInputContext = null;
+            if (CoreEngine.InptHandler.SetTextInputContext == this)
+                CoreEngine.InptHandler.SetTextInputContext = null;
 
-            CoreEngine.gEngine.UIEngine.buttons.Remove(this);
+            CoreEngine.GfxEngine.UIEngine.buttons.Remove(this);
             base.RemoveComponent();
             Text.RemoveComponent();
         }
@@ -76,8 +76,8 @@ namespace Toys
         internal override void ClickUpState()
         {
             IsFocused = true;
-            if (CoreEngine.iHandler.SetTextInputContext != this)
-                CoreEngine.iHandler.SetTextInputContext = this;
+            if (CoreEngine.InptHandler.SetTextInputContext != this)
+                CoreEngine.InptHandler.SetTextInputContext = this;
             Normal();
         }
 

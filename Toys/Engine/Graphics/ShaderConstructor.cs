@@ -8,7 +8,7 @@ namespace Toys
 		string rawVertex = "";
 		string rawFragment = "";
 
-		ShaderConstructor(ShaderSettings stng)
+		internal ShaderConstructor(ShaderSettings stng)
 		{
 			setting = stng;
 		}
@@ -28,8 +28,8 @@ namespace Toys
         public static Shader CreateShader(ShaderSettings settings)
 		{
 			var constructor = new ShaderConstructor(settings);
-            constructor.GenerateVertex();
-            constructor.GenerateFragment();
+			constructor.rawVertex = constructor.GenerateVertex();
+			constructor.rawFragment = constructor.GenerateFragment();
             return constructor.Creator();
 		}
 
@@ -69,8 +69,10 @@ namespace Toys
             return shdr;
 		}
 
-		void GenerateVertex()
+		public string GenerateVertex()
 		{
+
+			string rawVertex = "";
 			rawVertex += "#version 330 core\n";
 
 			rawVertex += "layout (location = 0) in vec3 aPos;\n"
@@ -113,11 +115,13 @@ namespace Toys
 				rawVertex += "vs_out.NormalLocal = mat3(vm"+ applySkeleton +") * aNormal;\n";
 
 			rawVertex += "}\n";
-            //MessageBox.Show(rawVertex);
-        }
 
-        void GenerateFragment()
+			return rawVertex;
+		}
+
+        public string GenerateFragment()
 		{
+			string rawFragment = "";
 			rawFragment += "";
 			rawFragment += "#version 330 core\n";
 			rawFragment += "out vec4 FragColor;\n";
@@ -269,9 +273,10 @@ namespace Toys
             rawFragment += "FragColor = (" + output + ") " + mul  + ";\n";         
             rawFragment += "}\n";
 			//MessageBox.Show(rawFragment);
-            //Console.ReadKey();
-            //Console.WriteLine(rawFragment);
+			//Console.ReadKey();
+			//Console.WriteLine(rawFragment);
 
+			return rawFragment;
         }
 
 	}

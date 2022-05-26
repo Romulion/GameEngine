@@ -81,7 +81,7 @@ namespace Toys
         protected void RecalculateInertia(bool set = false)
         {
             if (Node)
-                CoreEngine.pEngine.World.RemoveCollisionObject(body);
+                CoreEngine.PhysEngine.World.RemoveCollisionObject(body);
             if (set)
             {
                 body.MotionState.Dispose();
@@ -97,7 +97,7 @@ namespace Toys
             body = new RigidBody(rbInfo);
 
             if (Node)
-                CoreEngine.pEngine.World.AddRigidBody(body,  GroupFlags, CollisionGroupFlags);
+                CoreEngine.PhysEngine.World.AddRigidBody(body,  GroupFlags, CollisionGroupFlags);
         }
 
 
@@ -137,17 +137,17 @@ namespace Toys
 
         public void SetFlags(int groupFlags, int collisionGroupFlags)
         {
-            CoreEngine.pEngine.World.RemoveRigidBody(body);
+            CoreEngine.PhysEngine.World.RemoveRigidBody(body);
             GroupFlags = groupFlags;
             CollisionGroupFlags = collisionGroupFlags;
-            CoreEngine.pEngine.World.AddRigidBody(body, GroupFlags, CollisionGroupFlags);
+            CoreEngine.PhysEngine.World.AddRigidBody(body, GroupFlags, CollisionGroupFlags);
         }
 
         internal override void AddComponent(SceneNode nod)
         {
             Node = nod;
-            CoreEngine.pEngine.World.AddRigidBody(body, GroupFlags, CollisionGroupFlags);
-            CoreEngine.pEngine.Scene2Body += UpdateBody;
+            CoreEngine.PhysEngine.World.AddRigidBody(body, GroupFlags, CollisionGroupFlags);
+            CoreEngine.PhysEngine.Scene2Body += UpdateBody;
             //CoreEngine.pEngine.Body2Scene += UpdateNode;
         }
 
@@ -155,10 +155,10 @@ namespace Toys
         {
             Node = null;
             
-            CoreEngine.pEngine.Scene2Body -= UpdateBody;
+            CoreEngine.PhysEngine.Scene2Body -= UpdateBody;
             //CoreEngine.pEngine.Body2Scene -= UpdateNode;
             
-            CoreEngine.pEngine.World.RemoveCollisionObject(body);
+            CoreEngine.PhysEngine.World.RemoveCollisionObject(body);
             body.MotionState.Dispose();
             body.Dispose();
         }

@@ -19,7 +19,7 @@ namespace Toys
             ShaderSettings = shdrsett;
             RenderDirrectives = rdir;
             shaderProgram = shader;
-            CreateShader(shaderProgram);
+            //CreateShader(shaderProgram);
         }
 
         private void CreateShader()
@@ -27,8 +27,8 @@ namespace Toys
             string path = "Toys.Resourses.shaders.";
             string vs = ShaderManager.ReadFromAssetStream(path + "PM.vsh");
             string fs = ShaderManager.ReadFromAssetStream(path + "PM.fsh");
-            shaderProgram = ShaderConstructor.CreateShader(vs, fs);
-            CreateShader(shaderProgram);
+            //shaderProgram = ShaderConstructor.CreateShader(vs, fs);
+            CreateShader(vs, fs);
         }
 
         internal override void ApplyMaterial()

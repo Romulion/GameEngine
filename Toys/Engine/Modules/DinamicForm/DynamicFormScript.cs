@@ -33,7 +33,7 @@ namespace Toys
 
         void Awake()
         {
-            camera = CoreEngine.gEngine.MainCamera;
+            camera = CoreEngine.GfxEngine.MainCamera;
             width = camera.Width;
             height = camera.Height;
 
@@ -117,7 +117,7 @@ namespace Toys
                 //renderTex.GetImage(imageBitmap);
                 //imageBitmap.RotateFlip(RotateFlipType.Rotate180FlipX);
                 form.UpdateFormDisplay(imageBitmap);
-                n++;
+                //n++;
             }
             
 
@@ -141,14 +141,14 @@ namespace Toys
             form.Dispose();
         }
 
-        private void LeftMouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void LeftMouseDown(object sender, MouseEventArgs e)
         {
             offsetX = form.Left - Cursor.Position.X;
             offsetY = form.Top - Cursor.Position.Y;
             isLeftButtonMouseDown = true;
         }
 
-        private void LeftMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void LeftMouseUp(object sender, MouseEventArgs e)
         {
             isLeftButtonMouseDown = false;
         }

@@ -14,8 +14,8 @@ namespace Toys.VR
 
         internal VRRenderer(): base()
         {
-            vrSystem = CoreEngine.vrSystem;
-            CoreEngine.gEngine.Resize((int)vrSystem.width, (int)vrSystem.height);
+            vrSystem = CoreEngine.VRSystem;
+            CoreEngine.GfxEngine.Resize((int)vrSystem.width, (int)vrSystem.height);
             leftBuffer = new RenderBuffer(CoreEngine.GetCamera, 4, true);
             rightBuffer = new RenderBuffer(CoreEngine.GetCamera, 4, true);
 

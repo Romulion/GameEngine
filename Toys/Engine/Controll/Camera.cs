@@ -104,13 +104,13 @@ namespace Toys
         internal override void AddComponent(SceneNode nod)
         {
             Node = nod;
-            CoreEngine.gEngine.MainCamera = this;
+            CoreEngine.GfxEngine.MainCamera = this;
         }
 
         internal override void RemoveComponent()
         {
             Node = null;
-            CoreEngine.gEngine.MainCamera = null;
+            CoreEngine.GfxEngine.MainCamera = null;
         }
         protected override void Unload()
         {

@@ -5,14 +5,14 @@ using OpenTK;
 
 namespace Toys
 {
-	public class Mesh : Resource
+	public sealed class Mesh : Resource
 	{
 
 		public int[] Indices;
 
 		private MeshMorper morpher = null;
 
-		protected int VAO, VBO, EBO;
+		int VAO, VBO, EBO;
 		internal int VertexCount;
 		int SSB0;
         internal bool IsReady { get; private set; }
@@ -21,7 +21,7 @@ namespace Toys
 		internal int VertexSize;
 		//elements array
 		public Vertex3D[] Vertices { get; private set; }
-        public VertexRigged3D[] vertRig { get; private set; }
+        public VertexRigged3D[] VertexRigged { get; private set; }
         public BoundingBox BoundingBox { get; private set; }
         public Mesh(Vertex3D[] vertices, int[] indices) : base(false)
 		{
@@ -47,7 +47,7 @@ namespace Toys
 
 		public Mesh(VertexRigged3D[] vertices, int[] indexes) : base(false)
 		{
-            vertRig = vertices;
+            VertexRigged = vertices;
 
             Indices = indexes;
 			
@@ -80,7 +80,7 @@ namespace Toys
         }
 
 		//clearing resources
-		protected override void Unload()
+		protected sealed override void Unload()
 		{
 			GL.DeleteVertexArray(VAO);
 			GL.DeleteBuffer(EBO);

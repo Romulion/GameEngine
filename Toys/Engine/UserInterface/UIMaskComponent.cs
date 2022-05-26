@@ -52,13 +52,13 @@ namespace Toys
         internal override void AddComponent(UIElement nod)
         {
             nod.IsMask = true;
-            CoreEngine.gEngine.UIEngine.visualComponents.Add(this);
+            CoreEngine.GfxEngine.UIEngine.visualComponents.Add(this);
             base.AddComponent(nod);
         }
 
         internal override void RemoveComponent()
         {
-            CoreEngine.gEngine.UIEngine.visualComponents.Remove(this);
+            CoreEngine.GfxEngine.UIEngine.visualComponents.Remove(this);
             base.RemoveComponent();
         }
 

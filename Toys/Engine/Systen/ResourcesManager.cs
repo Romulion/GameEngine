@@ -10,10 +10,11 @@ namespace Toys
 	public static class ResourcesManager
 	{
 		static Dictionary<string, WeakReference> resources = new Dictionary<string, WeakReference>();
-        static Logger logger;
+        static readonly Assembly assembly;
 
 		static ResourcesManager()
 		{
+            assembly = Assembly.GetExecutingAssembly();
         }
 
         public static T LoadAsset<T>(string path) where T : Resource
@@ -129,7 +130,7 @@ namespace Toys
         public static Stream ReadFromInternalResourceStream(string path)
         {
             string defPath = "Toys.Resourses.";
-            var assembly = IntrospectionExtensions.GetTypeInfo(typeof(ShaderManager)).Assembly;
+            
             var stream = assembly.GetManifestResourceStream(defPath + path);
             return stream;
         }

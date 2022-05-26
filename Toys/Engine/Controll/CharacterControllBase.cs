@@ -20,7 +20,7 @@ namespace Toys
         {
             WalkSpeed = 1.1f * 4.0f;
             RunSpeed = WalkSpeed * 2;
-            world = CoreEngine.pEngine.World;
+            world = CoreEngine.PhysEngine.World;
             CreatePlayerBox();
         }
 

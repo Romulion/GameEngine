@@ -6,30 +6,32 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using OpenTK.Graphics;
 using System.Diagnostics;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Toys
 {
 	public class CoreEngine 
 	{
-        internal static InputHandler iHandler { get; private set; }
-		internal static GraphicsEngine gEngine { get; private set; }
-        public static PhysicsEngine pEngine { get; private set; }
-        internal static ScriptingEngine sEngine { get; private set; }
+        internal static InputHandler InptHandler { get; private set; }
+		internal static GraphicsEngine GfxEngine { get; private set; }
+        public static PhysicsEngine PhysEngine { get; private set; }
+        internal static ScriptingEngine ScriptingEngine { get; private set; }
         public static CoreEngine ActiveCore { get; private set; }
-        internal static SoundEngine aEngine { get; private set; }
-        internal static AnimationEngine animEngine { get; private set; }
-        public static InputSystem iSystem { get; private set; }
-        public static VR.VRSystem vrSystem { get; private set; }
-        public static Time time { get; private set; }
-        public static Time frameTimer { get; private set; }
-        Action task;
+        internal static SoundEngine AudioEngine { get; private set; }
+        internal static AnimationEngine AnimEngine { get; private set; }
+        public static InputSystem ISystem { get; private set; }
+        public static VR.VRSystem VRSystem { get; private set; }
+        public static Time Time { get; private set; }
+        public static Time FrameTimer { get; private set; }
+        List<Action> tasks;
+        List<Action> tasksProcessing;
 
         public static Camera GetCamera
         {
             get
             {
-                return gEngine.MainCamera;
+                return GfxEngine.MainCamera;
             }
         }
 
@@ -48,91 +50,103 @@ namespace Toys
 			{
 				MainScene = new Scene();
                 Shared = new ShareData();
-                gEngine = new GraphicsEngine();
-				pEngine = new PhysicsEngine();
-                sEngine = new ScriptingEngine();
-                iHandler = new InputHandler();
-                aEngine = new SoundEngine();
-                iSystem = new InputSystem();
+                GfxEngine = new GraphicsEngine();
+				PhysEngine = new PhysicsEngine();
+                ScriptingEngine = new ScriptingEngine();
+                InptHandler = new InputHandler();
+                AudioEngine = new SoundEngine();
+                ISystem = new InputSystem();
 #if VR
                 vrSystem = new VR.VRSystem();
                 GLWindow.gLWindow.RenderFrequency = 80;
 #endif
-                animEngine = new AnimationEngine();
-                time = new Time();
-                frameTimer = new Time();
-                frameTimer.FrameTime = 0.01f;
+                AnimEngine = new AnimationEngine();
+                Time = new Time();
+                FrameTimer = new Time();
+                FrameTimer.FrameTime = 0.01f;
 
+                tasks = new List<Action>(20);
+                tasksProcessing = new List<Action>(20);
                 }
 			catch (Exception e)
 			{
-				Console.WriteLine(e.Message);
-				Console.ReadKey();
+				Logger.Critical(e.Message);
+                throw;
 			}
 		}
 
         internal void Close()
         {
-            pEngine.Dispose();
-            sEngine.Destroy();
-            vrSystem?.Exit();
+            PhysEngine.Dispose();
+            ScriptingEngine.Destroy();
+            VRSystem?.Exit();
         }
 
         //for Load event
         //
         internal void OnLoad()
 		{
-			gEngine.OnLoad();
+			GfxEngine.OnLoad();
 		}
 
         internal void Resize(int width, int height)
         {
-            gEngine.Resize(width, height);
+            GfxEngine.Resize(width, height);
         }
 
 		internal void Update()
 		{
-            time.FrameCount++;
-            frameTimer.FrameTime = (float)frameTimer.Stop() * .001f;
-            frameTimer.Start();
-            time.Start();
-            vrSystem?.Update();
-            iSystem.Update();
-            sEngine.Destroy();
-            sEngine.Awake();
-            sEngine.Start();
-            pEngine.Scene2Body?.Invoke();
-            sEngine.Update();
-            iHandler.Update();
-            //mesh morpher
-            if (task != null)
+            Time.FrameCount++;
+            FrameTimer.FrameTime = (float)FrameTimer.Stop() * .001f;
+            FrameTimer.Start();
+            Time.Start();
+            VRSystem?.Update();
+            ISystem.Update();
+            ScriptingEngine.Destroy();
+            ScriptingEngine.Awake();
+            ScriptingEngine.Start();
+            PhysEngine.Scene2Body?.Invoke();
+            ScriptingEngine.Update();
+            InptHandler.Update();
+
+            //thread unsafe methods
+            if (tasks.Count > 0)
 			{
-				task();
-				task = null;
-			}
+                lock (tasks){
+                    tasksProcessing.AddRange(tasks);
+                    tasks.Clear();
+                }
+
+                for (int n = 0; n < tasksProcessing.Count; n++)
+                {
+                    tasksProcessing[n].Invoke();
+                    tasksProcessing.Clear();
+                }
+            }
+
 			MainScene.Update();
-            animEngine.Upadate(frameTimer.FrameTime);
-            gEngine.UIEngine.UpdateUI();
+            AnimEngine.Upadate(FrameTimer.FrameTime);
+            GfxEngine.UIEngine.UpdateUI();
             //physics
 #if PHYS
-            pEngine.Update(frameTimer.FrameTime);
+            PhysEngine.Update(FrameTimer.FrameTime);
 #endif
-            aEngine.Update();
-            sEngine.PreRender();
-            pEngine?.Body2Scene?.Invoke();
-            time.UpdateTime = time.Stop();
+            AudioEngine.Update();
+            ScriptingEngine.PreRender();
+            PhysEngine?.Body2Scene?.Invoke();
+            Time.UpdateTime = Time.Stop();
         }
 
         internal void Render ()
         {
-            time.Start();
+            Time.Start();
             //render main scene
-            gEngine.Render();
+            GfxEngine.Render();
             //render physics
             //(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
-            time.RenderTime = time.Stop();
+            Time.RenderTime = Time.Stop();
 
-            sEngine.PostRender();
+            ScriptingEngine.PostRender();
         }
 
         /// <summary>
@@ -142,10 +156,10 @@ namespace Toys
 		{
 			set
 			{
-				if (task == null)
-					task = value;
-				else
-					task += value;
+                lock (tasks)
+                {
+                    tasks.Add(value);
+                }
 			}
 		}
 
@@ -160,10 +174,27 @@ namespace Toys
             ManualResetEvent mre = new ManualResetEvent(false);
             AddTask = () =>
             {
-                task();
-                mre.Set();
+                try
+                {
+                    task();
+                }
+                finally
+                {
+                    mre.Set();
+                }
             };
             return mre;
+        }
+
+
+        /// <summary>
+        /// Add syncronous task to graphics thread
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        public void AddSyncTask(Action task)
+        {
+            AddNotyfyTask(task).WaitOne();
         }
     }
 }

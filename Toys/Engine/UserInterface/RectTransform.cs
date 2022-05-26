@@ -88,7 +88,7 @@ namespace Toys
 
         internal void UpdateGlobalPosition(float scale)
         {
-            Vector2 screenSize = new Vector2(CoreEngine.gEngine.Width,CoreEngine.gEngine.Height);
+            Vector2 screenSize = new Vector2(CoreEngine.GfxEngine.Width,CoreEngine.GfxEngine.Height);
 
             Max = CalcAbsAnchor(anchorMax, screenSize) + offsetMax * scale;
             Min = CalcAbsAnchor(anchorMin, screenSize) + offsetMin * scale;

@@ -36,7 +36,7 @@ namespace Toys
         JointContainer[] joints;
         int[] boneOrder;
 
-        Mesh mesh;
+        //Mesh mesh;
         Mesh meshRigged;
 
         string dir;

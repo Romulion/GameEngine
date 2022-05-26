@@ -124,7 +124,7 @@ namespace Toys
                 //Console.WriteLine(BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(point, offset - 4)), 0));
                 Console.WriteLine(BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(point, offset)), 0));
                 
-                Console.WriteLine("{0} {1}", _mesh.vertRig[n].BoneIndices, _mesh.vertRig[n].BoneWeigths);
+                Console.WriteLine("{0} {1}", _mesh.VertexRigged[n].BoneIndices, _mesh.VertexRigged[n].BoneWeigths);
                 Console.WriteLine("{0} {1} {2}", _mesh.Vertices[n].Position, _mesh.Vertices[n].Normal, _mesh.Vertices[n].UV);
             }
             else

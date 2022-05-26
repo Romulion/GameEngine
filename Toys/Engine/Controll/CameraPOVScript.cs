@@ -29,13 +29,13 @@ namespace Toys
         }
         void Update()
         {
-            if (CoreEngine.iSystem.CurrentContext == InputContext.Main)
+            if (CoreEngine.ISystem.CurrentContext == InputContext.Main)
                 MouseControll();
         }
         void MouseControll()
         {
             var mouseState = GLWindow.gLWindow.MouseState;
-            if (game.IsFocused && !CoreEngine.gEngine.UIEngine.Busy && mousePressed && mouseState.IsButtonDown(MouseButton.Button1))
+            if (game.IsFocused && !CoreEngine.GfxEngine.UIEngine.Busy && mousePressed && mouseState.IsButtonDown(MouseButton.Button1))
             {
                 if (mouseState.X - lastX > angleThresold)
                 {

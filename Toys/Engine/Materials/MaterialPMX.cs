@@ -52,8 +52,8 @@ namespace Toys
 
         private void CreateShader()
         {
-            shaderProgram = ShaderConstructor.CreateShader(ShaderSettings);
-            CreateShader(shaderProgram);
+            var shaderProgram = new ShaderConstructor(ShaderSettings);
+			CreateShader(shaderProgram.GenerateVertex(), shaderProgram.GenerateFragment()) ;
         }
 
         public override Material Clone()

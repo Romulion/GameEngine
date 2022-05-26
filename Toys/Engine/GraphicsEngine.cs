@@ -42,7 +42,7 @@ namespace Toys
 		public void OnLoad()
 		{
 			CoreEngine.MainScene.OnLoad();
-            if (CoreEngine.vrSystem != null)
+            if (CoreEngine.VRSystem != null)
                 MainRender = new VR.VRRenderer();
             else
                 MainRender = new MainRenderer();
@@ -52,6 +52,9 @@ namespace Toys
 
             UniformBufferManager ubm = UniformBufferManager.GetInstance;
             system = (UniformBufferSystem)ubm.GetBuffer("system");
+
+            //Initialize default texture
+            Texture2D.LoadEmpty();
             //TestTriangle();
         }
 
@@ -223,19 +226,5 @@ namespace Toys
                 }
             }
         }
-
-		MeshDrawer[] GetRenderObjects()
-		{
-			List<MeshDrawer> meshes = new List<MeshDrawer>();
-			foreach (var node in CoreEngine.MainScene.GetNodes())
-			{
-				if (!node.Active)
-					continue;
-				
-				meshes.Add((MeshDrawer) node.GetComponent(typeof(MeshDrawer)));
-			}
-
-			return meshes.ToArray();
-		}
     }
 }

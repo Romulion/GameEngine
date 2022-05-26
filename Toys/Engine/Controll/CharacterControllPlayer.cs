@@ -22,7 +22,7 @@ namespace Toys
         {
             base.Awake();
             game = GLWindow.gLWindow;
-            world = CoreEngine.pEngine.World;
+            world = CoreEngine.PhysEngine.World;
             camera = CoreEngine.GetCamera;
             
             /*
@@ -34,7 +34,7 @@ namespace Toys
 
         new void Update()
         {
-            if (CoreEngine.iSystem.CurrentContext != InputContext.Main)
+            if (CoreEngine.ISystem.CurrentContext != InputContext.Main)
                 return;
 
             var rayCalback = new KinematicClosestNotMeRayResultCallback(_ghostObject);
@@ -100,7 +100,7 @@ namespace Toys
 
         public void Walk(Vector3 dir)
         {
-            Walk(dir, CoreEngine.frameTimer.FrameTime);
+            Walk(dir, CoreEngine.FrameTimer.FrameTime);
         }
 
         public void LoadPos(Vector3 pos)

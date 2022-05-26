@@ -35,12 +35,12 @@ namespace Toys
 
 			if (msrd.OutlineDrawing)
 			{
-                CoreEngine.gEngine.SetCullMode(FaceCullMode.Front);
+                CoreEngine.GfxEngine.SetCullMode(FaceCullMode.Front);
 				outline.ApplyShader();
 				outline.SetUniform(pvm, "pvm");
 				outline.SetUniform(0.03f, "outline_scale");
 				msrd.DrawOutline();
-                CoreEngine.gEngine.SetCullMode(FaceCullMode.Disable);
+                CoreEngine.GfxEngine.SetCullMode(FaceCullMode.Disable);
             }
 		}
 	}

@@ -41,7 +41,7 @@ namespace Toys
         void MouseOrbit()
         {
             var mouseState = GLWindow.gLWindow.MouseState;
-            if (game.IsFocused && !CoreEngine.gEngine.UIEngine.Busy && mousePressed && mouseState.IsButtonDown(MouseButton.Left))
+            if (game.IsFocused && !CoreEngine.GfxEngine.UIEngine.Busy && mousePressed && mouseState.IsButtonDown(MouseButton.Left))
             {
                 
                 if (mouseState.X - lastX > angleThresold)

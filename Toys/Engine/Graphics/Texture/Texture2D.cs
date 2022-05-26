@@ -23,7 +23,9 @@ namespace Toys
         //default texture
         static Texture2D defaultTexture;
 
-        public Texture2D(string path, TextureType type) : this(path)
+        //obsolette loading
+        /*
+        internal Texture2D(string path, TextureType type) : this(path)
 		{
             this.type = type;
         }
@@ -68,7 +70,8 @@ namespace Toys
                 }
 				else
 					tex1 = new Bitmap(path);
-				LoadTexture(tex1);
+
+                LoadTexture(tex1);
                 tex1.Dispose();
             }
 			catch (Exception)
@@ -79,6 +82,7 @@ namespace Toys
                 Name = empty.Name;
             }
 		}
+        */
 
         internal Texture2D(Stream stream, string path)
         {
@@ -170,32 +174,43 @@ namespace Toys
 				}
 				texture = clone;
 			}
-			BindTexture();
-            SetDefault();
             //load to static memory
             System.Drawing.Imaging.BitmapData data =
-				texture.LockBits(new Rectangle(0, 0, texture.Width, texture.Height),
-					  System.Drawing.Imaging.ImageLockMode.ReadOnly, texture.PixelFormat);
+                texture.LockBits(new Rectangle(0, 0, texture.Width, texture.Height),
+                      System.Drawing.Imaging.ImageLockMode.ReadOnly, texture.PixelFormat);
 
-			//recognithing pixel format type
-			PixelFormat format;
+            if (GLWindow.gLWindow.CheckContext)
+                LoadTextureThreadUnsafe(data, texture);
+            else
+            {
+                CoreEngine.ActiveCore.AddSyncTask(() => LoadTextureThreadUnsafe(data, texture));
+            }
+        }
+
+        void LoadTextureThreadUnsafe(System.Drawing.Imaging.BitmapData data, Bitmap texture)
+        {
+            BindTexture();
+            SetDefault();
+
+            //recognithing pixel format type
+            PixelFormat format;
             if (Image.IsAlphaPixelFormat(texture.PixelFormat))
-				format = PixelFormat.Bgra;
-			else
-				format = PixelFormat.Bgr;
+                format = PixelFormat.Bgra;
+            else
+                format = PixelFormat.Bgr;
 
             //BitmapData has 4 bytes row aligment ?
             GL.PixelStore(PixelStoreParameter.UnpackAlignment, 4);
             //loading to video memory
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
-						  texture.Width, texture.Height, 0, format, PixelType.UnsignedByte, data.Scan0);
+                          texture.Width, texture.Height, 0, format, PixelType.UnsignedByte, data.Scan0);
 
             Width = texture.Width;
             Height = texture.Height;
             //clear resources
             texture.UnlockBits(data);
-			texture.Dispose();
-		}
+            texture.Dispose();
+        }
 
         void LoadTexture(KtxStructure texture)
         {
@@ -255,7 +270,7 @@ namespace Toys
 
 
 		//Shadow texture
-		public static Texture2D CreateShadowMap(int width, int height)
+		internal static Texture2D CreateShadowMap(int width, int height)
 		{
             var texture = new Texture2D();
             texture.BindTexture();
@@ -272,7 +287,7 @@ namespace Toys
             return texture;
 		}
 
-        public static Texture2D CreateCharMap(int width, int heigth)
+        internal static Texture2D CreateCharMap(int width, int heigth)
         {
             var texture = new Texture2D();
             

@@ -60,9 +60,9 @@ namespace Toys
 				if (!renderDirectives.IsRendered)
 					continue;
                 if (renderDirectives.NoCull)
-                    CoreEngine.gEngine.SetCullMode(FaceCullMode.Disable);
+                    CoreEngine.GfxEngine.SetCullMode(FaceCullMode.Disable);
                 else
-                    CoreEngine.gEngine.SetCullMode(FaceCullMode.Back);
+                    CoreEngine.GfxEngine.SetCullMode(FaceCullMode.Back);
                 material.ApplyMaterial();
                 if (material.Count != 0)
                     Mesh.Draw(material.Offset, material.Count);
@@ -126,7 +126,7 @@ namespace Toys
                 throw new Exception("");
             else
             {
-                CoreEngine.gEngine.meshes.Add(this);
+                CoreEngine.GfxEngine.meshes.Add(this);
                 Node = nod;  
             }
         }
@@ -136,7 +136,7 @@ namespace Toys
             if (Node != null)
             {
                 Node = null;
-                CoreEngine.gEngine.meshes.Remove(this);
+                CoreEngine.GfxEngine.meshes.Remove(this);
             }
 
         }

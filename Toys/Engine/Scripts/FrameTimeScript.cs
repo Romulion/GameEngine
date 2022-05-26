@@ -47,8 +47,8 @@ namespace Toys
                 update = 0;
                 render = 0;
             }
-            update += CoreEngine.time.UpdateTime;
-            render += CoreEngine.time.RenderTime;
+            update += CoreEngine.Time.UpdateTime;
+            render += CoreEngine.Time.RenderTime;
             frames++;
         }
     }

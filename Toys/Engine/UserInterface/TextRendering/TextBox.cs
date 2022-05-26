@@ -19,7 +19,7 @@ namespace Toys
     
         public TextBox() : base (typeof(TextBox))
         {
-            textRenderer = CoreEngine.gEngine.TextRender;
+            textRenderer = CoreEngine.GfxEngine.TextRender;
             textCanvas = textRenderer.CreateCanvas();
             textCanvas.alignHorizontal = TextAlignHorizontal.Left;
             textCanvas.alignVertical = TextAlignVertical.Center;
@@ -48,19 +48,19 @@ namespace Toys
         internal override void AddComponent(UIElement node)
         {
             
-            CoreEngine.gEngine.TextRender.textBoxes.Add(this);
+            CoreEngine.GfxEngine.TextRender.textBoxes.Add(this);
             base.AddComponent(node);
         }
 
         internal override void RemoveComponent()
         {
-            CoreEngine.gEngine.TextRender.textBoxes.Remove(this);
+            CoreEngine.GfxEngine.TextRender.textBoxes.Remove(this);
             base.RemoveComponent();
         }
 
         internal override void Draw(Matrix4 worldTransform)
         {
-            CoreEngine.gEngine.TextRender.Render(this, worldTransform);
+            CoreEngine.GfxEngine.TextRender.Render(this, worldTransform);
         }
 
         public override VisualComponent Clone()

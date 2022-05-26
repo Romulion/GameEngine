@@ -1,11 +1,10 @@
 using System;
 using System.IO;
 using OpenTK.Mathematics;
-using System.Diagnostics;
 using System.Drawing;
-using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Toys
 {
@@ -22,7 +21,7 @@ namespace Toys
 		JointContainer[] joints;
         int[] boneOrder;
 
-		Mesh mesh;
+		//Mesh mesh;
 		Mesh meshRigged;
 
 		string dir;
@@ -146,7 +145,6 @@ namespace Toys
 			int[] indexes = new int[faceCount];
 			for (int i = 0; i < faceCount; i++)
 			{
-				//indexes[i] = reader.readVal(header.GetVertexIndexSize);
 				//invert triangles to convert left to right coordinates
 				var index = reader.readVal(header.GetVertexIndexSize);
 				int res = i % 3;
@@ -158,13 +156,6 @@ namespace Toys
 					indexes[i] = index;
             }
 			//mesh = new Mesh(vertices, indexes);
-			/*
-			var ofst =  3 * 51424;
-			Console.WriteLine("{0} {1} {2}", indexes[ofst], indexes[ofst + 1], indexes[ofst+ 2]);
-			Console.WriteLine(verticesR[indexes[ofst]].Position);
-			Console.WriteLine(verticesR[indexes[ofst+1]].Position);
-			Console.WriteLine(verticesR[indexes[ofst+2]].Position);
-			*/
 			meshRigged = new Mesh(verticesR, indexes);
 		}
 
@@ -172,21 +163,29 @@ namespace Toys
 		{
 			int texCount = reader.ReadInt32();
 			textures = new Texture2D[texCount];
+			//var tasks = new Task<Texture2D>[texCount];
 			for (int i = 0; i < texCount; i++)
 			{
 				string texture = reader.readString();
                 Texture2D tex = ResourcesManager.LoadAsset<Texture2D>(dir+texture);
+				//tasks[i] = ResourcesManager.LoadAssetAsync<Texture2D>(dir + texture);
 
-				if (texture.Contains("toon"))
-					tex.ChangeType(TextureType.Toon);
-				else
-				{
-					tex.ChangeType(TextureType.Diffuse);
-					tex.WrapMode =TextureWrapMode.Repeat;
-				}
+				//tasks[i].ContinueWith((texT) =>
+			   //{
+				//   var tex = texT.Result;
+				   if (texture.Contains("toon"))
+					   tex.ChangeType(TextureType.Toon);
+				   else
+				   {
+					   tex.ChangeType(TextureType.Diffuse);
+						//tex.WrapMode =TextureWrapMode.Repeat;
+					}
 
-				textures[i] = tex;
+				   textures[i] = tex;
+			   //});
             }
+
+			//Task.WaitAll(tasks);
 		}
 
 		void ReadMaterial(Reader reader)
@@ -276,12 +275,11 @@ namespace Toys
 				{
 					byte toontex = reader.ReadByte();
                     toontex++;
-                    string texturePath = String.Format("Toys.Resourses.textures.PMX.toon{0}.bmp", toontex.ToString().PadLeft(2,'0'));
+                    string texturePath = String.Format("textures.PMX.toon{0}.bmp", toontex.ToString().PadLeft(2,'0'));
                     Texture2D toonTex = ResourcesManager.GetResourse<Texture2D>(texturePath);
                     if (toonTex == null)
                     {
-                        var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
-                        using (Bitmap pic = new Bitmap(assembly.GetManifestResourceStream(texturePath)))
+						using (Bitmap pic = new Bitmap(ResourcesManager.ReadFromInternalResourceStream(texturePath)))
                         {
                             toonTex = new Texture2D(pic, TextureType.Toon, texturePath);
                         }
@@ -297,6 +295,7 @@ namespace Toys
 				{
                     tex = textures[difTexIndex];
 				}
+
 				var mat = new MaterialPMX(shdrs, rndr);
 				mat.Name = name;
 				mat.Outline = outln;
@@ -534,7 +533,7 @@ namespace Toys
 							reader.readVector3();
 							break;
 						default:
-							Console.WriteLine(type);
+							Logger.Warning(String.Format("Unknown morph type:{0}", type.ToString()), "PMX Loader");
 							break;
 					}
 				}
@@ -656,10 +655,11 @@ namespace Toys
 		}
 
 		//properties
-		//
+		/*
 		public Mesh GetMesh{
 			get {return mesh; }
 		}
+		*/
 
 		public Mesh GetMeshRigged
 		{

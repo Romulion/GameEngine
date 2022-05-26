@@ -31,28 +31,27 @@ namespace Toys
         TextureWrapMode wrapW;
         TextureFillterMode filter;
 
+        private bool requireUpdate = false;
+
         public int Height { get; protected set; }
         public int Width { get; protected set; }
 
-        public TextureFillterMode FillterMode
+        internal TextureFillterMode FillterMode
         {
             get { return filter; }
             set
             {
-                BindTexture();
                 filter = value;
-                GL.TexParameter(textureType, TextureParameterName.TextureMinFilter, (int)filter);
-                GL.TexParameter(textureType, TextureParameterName.TextureMagFilter, (int)filter);
+                requireUpdate = true;
             }
         }
-        public TextureWrapMode WrapModeU
+        internal TextureWrapMode WrapModeU
         {
             get { return wrapU; }
             set
             {
-                BindTexture();
                 wrapU = value;
-                GL.TexParameter(textureType, TextureParameterName.TextureWrapS, (int)wrapU);
+                requireUpdate = true;
             }
         }
 
@@ -61,9 +60,8 @@ namespace Toys
             get { return wrapV; }
             set
             {
-                BindTexture();
                 wrapV = value;
-                GL.TexParameter(textureType, TextureParameterName.TextureWrapT, (int)wrapV);
+                requireUpdate = true;
             }
         }
 
@@ -72,40 +70,22 @@ namespace Toys
             get { return wrapW; } 
             set
             {
-                BindTexture();
                 wrapW = value;
-                GL.TexParameter(textureType, TextureParameterName.TextureWrapR, (int)wrapW);
-            }
-        }
-        /// <summary>
-        /// For Inside changes
-        /// </summary>
-        protected TextureWrapMode wrapModeU
-        {
-            set
-            {
-                wrapU = value;
-                GL.TexParameter(textureType, TextureParameterName.TextureWrapS, (int)wrapU);
+                requireUpdate = true;
             }
         }
 
-        protected TextureWrapMode wrapModeV
-        {
-            set
-            {
-                wrapV = value;
-                GL.TexParameter(textureType, TextureParameterName.TextureWrapT, (int)wrapV);
-            }
-        }
 
-        protected TextureWrapMode wrapModeW
+        public Texture() : base(false) { }
+
+        void UpdateTextureSettings()
         {
-            set
-            {
-                BindTexture();
-                wrapW = value;
-                GL.TexParameter(textureType, TextureParameterName.TextureWrapR, (int)wrapW);
-            }
+            GL.TexParameter(textureType, TextureParameterName.TextureMinFilter, (int)filter);
+            GL.TexParameter(textureType, TextureParameterName.TextureMagFilter, (int)filter);
+
+            GL.TexParameter(textureType, TextureParameterName.TextureWrapS, (int)wrapU);
+            GL.TexParameter(textureType, TextureParameterName.TextureWrapT, (int)wrapV);
+            GL.TexParameter(textureType, TextureParameterName.TextureWrapR, (int)wrapW);
         }
 
         /// <summary>
@@ -116,15 +96,11 @@ namespace Toys
             get { return WrapModeU; }
             set
             {
-                BindTexture();
-                wrapModeU = value;
-                wrapModeV = value;
-                wrapModeW = value;
+                WrapModeU = value;
+                WrapModeV = value;
+                WrapModeW = value;
             }
         }
-
-        public Texture() : base(false) {}
-
 
         public void GetImage(System.Drawing.Bitmap image)
         {
@@ -147,6 +123,11 @@ namespace Toys
         internal virtual void BindTexture()
         {
             GL.BindTexture(textureType, textureID);
+            if (requireUpdate)
+            {
+                UpdateTextureSettings();
+                requireUpdate = false;
+            }
         }
 
         protected override void Unload()

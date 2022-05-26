@@ -17,8 +17,8 @@ namespace Toys
             BindTexture();
             GL.TexImage2D(textureType, 0, PixelInternalFormat.Rgba,
                           width, height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
-            wrapModeU = TextureWrapMode.ClampToEdge;
-            wrapModeV = TextureWrapMode.ClampToEdge;
+            WrapModeU = TextureWrapMode.ClampToEdge;
+            WrapModeV = TextureWrapMode.ClampToEdge;
             FillterMode = TextureFillterMode.Bilinear;
 
             imageRectanglel = new Rectangle(0, 0, Width, Height);
@@ -31,7 +31,7 @@ namespace Toys
         }
 
 
-        public void GetImage(Bitmap image)
+        public new void GetImage(Bitmap image)
         {
             BindTexture();
             var imageBits = image.LockBits(imageRectanglel, System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -39,7 +39,7 @@ namespace Toys
             image.UnlockBits(imageBits);
         }
 
-        public void GetImage(IntPtr imagePointer)
+        public new void GetImage(IntPtr imagePointer)
         {
             GL.GetTexImage(textureType, 0, PixelFormat.Bgra, PixelType.UnsignedByte, imagePointer);
         }
