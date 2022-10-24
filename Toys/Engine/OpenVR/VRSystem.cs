@@ -8,10 +8,10 @@ namespace Toys.VR
 {
     public class VRSystem
     {
-        CVRSystem vrContext;
+        internal CVRSystem VRContext;
         public VRControllerSystem controllerSystem { get; private set; }
         IntPtr RenderModel = IntPtr.Zero;
-        CVRCompositor compositor; 
+        readonly CVRCompositor compositor; 
         Texture_t leftTexture;
         Texture_t rightTexture;
         public uint height, width;
@@ -22,7 +22,6 @@ namespace Toys.VR
         /// IPD in mm
         /// </summary>
         public int IPD = 68;
-        Transform rHandpos;
 
         internal VRSystem()
         {
@@ -31,18 +30,20 @@ namespace Toys.VR
             if (!OpenVR.IsHmdPresent())
                 throw new Exception("HMD not found");
             EVRInitError error = EVRInitError.None;
-            vrContext = OpenVR.Init(ref error);
+            VRContext = OpenVR.Init(ref error);
             if (error != EVRInitError.None)
-                Console.WriteLine(error);
-            
+            {
+                Logger.Error(error);
+                throw new Exception(error.ToString());
+            }
+
             compositor = OpenVR.Compositor;
             RenderModel = OpenVR.GetGenericInterface(OpenVR.IVRRenderModels_Version, ref error);
-            if (RenderModel == IntPtr.Zero);
-            {
-                Console.WriteLine(error);
-            }
+            if (RenderModel == IntPtr.Zero)
+                Logger.Error(error);
+
             
-            controllerSystem = new VRControllerSystem(vrContext);
+            controllerSystem = new VRControllerSystem(VRContext);
 
             leftTexture = new Texture_t();
             leftTexture.eType = ETextureType.OpenGL;
@@ -51,13 +52,17 @@ namespace Toys.VR
             rightTexture = new Texture_t();
             rightTexture.eType = ETextureType.OpenGL;
             rightTexture.eColorSpace = EColorSpace.Gamma;
-            vrContext.GetRecommendedRenderTargetSize(ref width , ref height);
+            VRContext.GetRecommendedRenderTargetSize(ref width , ref height);
 
             bound = new VRTextureBounds_t();
             bound.uMin = 0;
             bound.vMin = 0;
-            bound.vMax = 1;
             bound.uMax = 1;
+            bound.vMax = 1;
+
+            //ETrackedPropertyError err = ETrackedPropertyError.TrackedProp_Success;
+            //Console.WriteLine(vrContext.GetFloatTrackedDeviceProperty(0, ETrackedDeviceProperty.Prop_DisplayFrequency_Float, ref err));
+
 
             /*
             var errProp = new ETrackedPropertyError();
@@ -76,9 +81,8 @@ namespace Toys.VR
             
 
             var vrEvent =  new VREvent_t();
-            while (vrContext.PollNextEvent(ref vrEvent, 64))
+            while (VRContext.PollNextEvent(ref vrEvent, 64))
                 ProcessEvent(vrEvent);
-
             compositor.WaitGetPoses(render, game);
             controllerSystem.Update(render);
 
@@ -87,9 +91,7 @@ namespace Toys.VR
             pos.Y +=  0.4f;
             ctrans.Position = pos;
             ctrans.RotationQuaternion = controllerSystem.HMD.Rotation;
-
-            //Console.WriteLine(controllerSystem.HMD.Position);
-            //Console.WriteLine(controllerSystem.HMD.Rotation.ToEulerAngles());
+        
         }
 
         void ProcessEvent(VREvent_t vrEvent)
@@ -102,40 +104,13 @@ namespace Toys.VR
                     break;
             }
 
-            ETrackedDeviceClass trackedDeviceClass = vrContext.GetTrackedDeviceClass(vrEvent.trackedDeviceIndex);
+            ETrackedDeviceClass trackedDeviceClass = VRContext.GetTrackedDeviceClass(vrEvent.trackedDeviceIndex);
             if(trackedDeviceClass != ETrackedDeviceClass.Controller) {
 	            return;
             }
 
 
-            controllerSystem.ProcessInputEvent(vrEvent);
-            /*
-            if (vrEvent.eventType == (uint)EVREventType.VREvent_ButtonPress)
-            {
-
-            }
-            else if (vrEvent.eventType == (uint)EVREventType.VREvent_ButtonTouch)
-            {
-
-            }
-            else if (vrEvent.eventType == (uint)EVREventType.VREvent_ButtonUnpress)
-            {
-
-            }
-            else if (vrEvent.eventType == (uint)EVREventType.VREvent_ButtonUntouch)
-            {
-
-            }
-            else if (vrEvent.eventType == (uint)EVREventType.VREvent_TouchPadMove)
-            {
-                //Console.WriteLine((EVRButtonId)vrEvent.data.touchPadMove.fValueXFirst);
-                //Console.WriteLine((EVRButtonId)vrEvent.data.touchPadMove.fValueYFirst);
-            }
-            */
-            //Console.WriteLine(compositor.GetLastFrameRenderer());
-
-
-            
+            controllerSystem.ProcessInputEvent(vrEvent);            
         }
 
         internal void SetLeftEye(int textureID)

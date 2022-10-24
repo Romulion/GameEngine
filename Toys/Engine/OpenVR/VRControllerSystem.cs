@@ -27,6 +27,8 @@ namespace Toys.VR
         uint posDataSize;
         uint setSize;
 
+        double lastframe = 0;
+
         public HMDData HMD { get; private set; }
 
         public VRControllerSystem(CVRSystem context)
@@ -37,6 +39,9 @@ namespace Toys.VR
             vrContext = context;
             HMD = new HMDData();
             HMD.Id = 0;
+            HMD.Prejections[0] = ConvertMatrix(vrContext.GetProjectionMatrix(EVREye.Eye_Left, .01f, 100f));
+            HMD.Prejections[1] = ConvertMatrix(vrContext.GetProjectionMatrix(EVREye.Eye_Right, .01f, 100f));
+
             controllers = new ControllerData[2] { new ControllerData(), new ControllerData() };
             //ParseTrackingFrame();
             ResetHMDLocation();
@@ -49,7 +54,6 @@ namespace Toys.VR
 
         void SetBindingsFromManifest()
         {
-            
             OpenVR.Input.SetActionManifestPath(ResourcesManager.GetAbsoluteAssetDirectory() + @"Other\actions.json");
 
             setList = new VRActiveActionSet_t[] { new VRActiveActionSet_t() };
@@ -266,14 +270,16 @@ namespace Toys.VR
 
             //TrackedDevicePose_t struct is a OpenVR struct. See line 180 in the openvr.h header.
             TrackedDevicePose_t[] trackedDevicePose = new TrackedDevicePose_t[1];
-            //if (vrContext.IsInputFocusCapturedByAnotherProcess())
-            //    printf("\nINFO--Input Focus by Another Process");
-            vrContext.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, 0f, trackedDevicePose);
+
+            double passed = (CoreEngine.Time.TimeFromStart - lastframe) / 1000;
+            lastframe = CoreEngine.Time.TimeFromStart;
+            //vrContext.GetTimeSinceLastVsync(ref sflvs, ref pfcntr);
+            vrContext.GetDeviceToAbsoluteTrackingPose(ETrackingUniverseOrigin.TrackingUniverseStanding, (float)passed, trackedDevicePose);
+
             var mat = ConvertMatrix(trackedDevicePose[0].mDeviceToAbsoluteTracking);
             HMD.Position = GetPosition(mat);
             HMD.Rotation = GetRotation(mat);
-            //Console.WriteLine(111111);
-            //Console.WriteLine(mat);
+
         }
 
         void ControllerCoords()
@@ -405,7 +411,7 @@ namespace Toys.VR
             return matrix.ExtractTranslation();
         }
 
-        internal Matrix4 ConvertMatrix (HmdMatrix34_t matrix)
+        internal static Matrix4 ConvertMatrix (HmdMatrix34_t matrix)
         {
             
             var mat4 = new Matrix4
@@ -416,6 +422,20 @@ namespace Toys.VR
                 matrix.m3, matrix.m7, matrix.m11, 0
             );
             
+            return mat4;
+        }
+
+        internal static Matrix4 ConvertMatrix(HmdMatrix44_t matrix)
+        {
+
+            var mat4 = new Matrix4
+            (
+                matrix.m0, matrix.m4, matrix.m8, matrix.m12,
+                matrix.m1, matrix.m5, matrix.m9, matrix.m13,
+                matrix.m2, matrix.m6, matrix.m10, matrix.m14,
+                matrix.m3, matrix.m7, matrix.m11, matrix.m15
+            );
+
             return mat4;
         }
 

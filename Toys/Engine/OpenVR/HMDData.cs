@@ -12,6 +12,7 @@ namespace Toys.VR
         public Quaternion StartRotation;
         public Vector3 StartPosition;
         public int Id;
+        public Matrix4[] Prejections = new Matrix4[2];
 
         public Vector3 GetPosition
         {

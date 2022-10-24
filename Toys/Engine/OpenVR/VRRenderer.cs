@@ -12,6 +12,8 @@ namespace Toys.VR
         readonly RenderBuffer rightBuffer;
         readonly VRSystem vrSystem;
 
+        Matrix4[] projections = new Matrix4[2];
+
         internal VRRenderer(): base()
         {
             vrSystem = CoreEngine.VRSystem;
@@ -19,24 +21,25 @@ namespace Toys.VR
             leftBuffer = new RenderBuffer(CoreEngine.GetCamera, 4, true);
             rightBuffer = new RenderBuffer(CoreEngine.GetCamera, 4, true);
 
-            //leftBuffer.OnResize((int)vrSystem.width, (int)vrSystem.height);
-            //rightBuffer.OnResize((int)vrSystem.width, (int)vrSystem.height);
-
-            //Console.WriteLine("{0} {1}", CoreEngine.GetCamera.Width, CoreEngine.GetCamera.Height);
+            projections[0] = VRControllerSystem.ConvertMatrix(vrSystem.VRContext.GetEyeToHeadTransform(Valve.VR.EVREye.Eye_Left));
+            projections[1] = VRControllerSystem.ConvertMatrix(vrSystem.VRContext.GetEyeToHeadTransform(Valve.VR.EVREye.Eye_Right));
         }
 
 
         internal override void Render(MeshDrawer[] meshes, Camera camera, UIEngine ui)
         {
+
             GL.Viewport(0, 0, camera.Width, camera.Height);
             var reye = CalcRightEyePosition(camera);
             camera.Node.GetTransform.Position -= reye;
             //render scene to left eye
             camera.CalcLook();
-            
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, leftBuffer.RenderBufferDraw);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            //set up left eye projection
+            camera.Projection = vrSystem.controllerSystem.HMD.Prejections[0];
 
             //render background first due to model transperancy
             if (camera.Background != null)
@@ -57,6 +60,10 @@ namespace Toys.VR
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, rightBuffer.RenderBufferDraw);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+
+            //set up right eye projection
+            camera.Projection = vrSystem.controllerSystem.HMD.Prejections[1];
+
             //render background first due to model transperancy
             if (camera.Background != null)
                 camera.Background.DrawBackground(camera);
@@ -68,7 +75,8 @@ namespace Toys.VR
             vrSystem.SetRightEye(rightBuffer.RenderTexture.textureID);
 
             //return camera back
-            camera.Node.GetTransform.Position -= reye;
+            camera.Node.GetTransform.Position -= reye;            
+            camera.CalcLook();
         }
 
         Vector3 CalcRightEyePosition(Camera camera)
