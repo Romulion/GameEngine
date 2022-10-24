@@ -30,7 +30,7 @@ namespace Toys
 			var constructor = new ShaderConstructor(settings);
 			constructor.rawVertex = constructor.GenerateVertex();
 			constructor.rawFragment = constructor.GenerateFragment();
-            return constructor.Creator();
+			return constructor.Creator();
 		}
 
 		Shader Creator()
@@ -242,7 +242,7 @@ namespace Toys
 			{
 				rawFragment += "vec4 envLight = texture(material.texture_spere,vec2(0.5) -normalize(fs_in.NormalLocal).xy * 0.5);\n";
 				if (setting.EnvType == EnvironmentMode.Additive || setting.EnvType == EnvironmentMode.Subtract)
-					rawFragment += "envLight.w = 0f;\n";
+					rawFragment += "envLight.w = 0;\n";
 			}
 
 

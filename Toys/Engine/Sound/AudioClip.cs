@@ -16,12 +16,10 @@ namespace Toys
         internal int Bps { get; private set; }
         internal int SampleRate { get; private set; }
         internal int Channels { get; private set; }
-
         internal byte[] ByteBuffer { get; private set; }
-
-
+        public ALFormat SampleFormat { get; private set; }
         public AudioClip(System.IO.Stream stream, string file)
-        {
+        {           
             audioData = new AudioFileReader(file);
             IWaveProvider sampler;
             Bps = audioData.WaveFormat.BitsPerSample;
@@ -40,10 +38,28 @@ namespace Toys
                 ByteBuffer = new byte[audioData.Length];
                 audioData.Read(ByteBuffer, 0, ByteBuffer.Length);
             }
+
+            //Console.WriteLine(audioData.Length);
+            //Console.WriteLine(audioData.WaveFormat.Encoding);
+
+            GetFormat(Channels, Bps);
+
+
+            audioData.Dispose();
         }
 
+        public AudioClip(byte[] data, int bps, int sampleRate)
+        {
+            Bps = bps;
+            ByteBuffer = data;
+            SampleRate = sampleRate;
+            Channels = 1;
 
-        public ALFormat GetFormat(int channels, int bps)
+            //SampleFormat = ALFormat.MonoFloat32Ext;
+            SampleFormat = ALFormat.Mono16;
+        }
+
+        public void GetFormat(int channels, int bps)
         {
             ALFormat result = ALFormat.Mono16;
             if (channels == 2)
@@ -61,12 +77,12 @@ namespace Toys
                     result = ALFormat.Mono16;
             }
 
-            return result;
+            SampleFormat = result;
         }
 
         protected override void Unload()
         {
-            audioData.Dispose();
+            
         }
     }
 }

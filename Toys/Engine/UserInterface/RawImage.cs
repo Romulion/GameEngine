@@ -13,7 +13,7 @@ namespace Toys
         /// <summary>
         /// Draw texture
         /// </summary>
-        public Texture2D Texture;
+        public Texture Texture;
         ShaderUniform colorMask;
         public Vector4 color;
 

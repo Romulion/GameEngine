@@ -29,5 +29,10 @@ namespace Toys
         {
             return  degrees * 180.0f / MathF.PI;
         }
+
+        public static bool IsInsideCylinder(Vector3 position, float radius, float heighth)
+        {
+            return position.X * position.X + position.Z * position.Z < radius && position.Y < 0 && position.Y > heighth;
+        }
     }
 }

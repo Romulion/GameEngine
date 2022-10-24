@@ -22,6 +22,9 @@ namespace Toys
             FillterMode = TextureFillterMode.Bilinear;
 
             imageRectanglel = new Rectangle(0, 0, Width, Height);
+
+            //update settings
+            BindTexture();
         }
 
 

@@ -37,11 +37,13 @@ namespace Toys
             UpdateFrame += Update;
             RenderFrame += Render;
             Closed += () => Engine.Close();
+
         }
 
         void OnStart()
         {
             VSync = VSyncMode.On;
+
             Engine.OnLoad();
             Resize += (ev) =>
             {
@@ -54,10 +56,6 @@ namespace Toys
         {
             if (IsFocused)
             {
-                if (KeyboardState.IsKeyDown(Keys.Escape))
-                {
-                    Close();
-                }
                 if (KeyboardState.IsKeyDown(Keys.F))
                 {
                     GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);

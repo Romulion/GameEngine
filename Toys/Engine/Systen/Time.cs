@@ -20,6 +20,10 @@ namespace Toys
         Stopwatch stopwatch;
         Stopwatch programStarted;
         static double resolution = (double)1000 / Stopwatch.Frequency;
+
+        /// <summary>
+        /// Frames passed from game start
+        /// </summary>
         public long FrameCount { get; internal set; }
 
         /// <summary>

@@ -48,7 +48,7 @@ namespace Toys
         [SaveScene]
         public float FOV { get; set; }
         
-        internal Matrix4 Projection { get; private set; }
+        public Matrix4 Projection { get; internal set; }
         [SaveScene]
         public int Width { get; internal set; }
         [SaveScene]
@@ -60,7 +60,7 @@ namespace Toys
             NearPlane = 0.1f;
             FarPlane = 100.0f;
 #if VR
-            FOV = 86;
+            FOV = 115;
 #else
             FOV = 60;
 #endif
@@ -82,11 +82,11 @@ namespace Toys
 		{
 			get { return Node.GetTransform.GlobalTransform.ExtractTranslation(); }
 		}
-        internal Matrix4 GetLook
+        public Matrix4 GetLook
 		{
 			get { return look; }
 		}
-		internal Vector3 GetUp
+		public Vector3 GetUp
 		{
 			get { return Node.GetTransform.Up; }
 		}

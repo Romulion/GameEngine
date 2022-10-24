@@ -132,7 +132,7 @@ namespace Toys
 
         protected override void Unload()
         {
-            Console.WriteLine("unload texture {0}",textureID.ToString());
+            Logger.Info(String.Format("unload texture {0}",textureID.ToString()));
             GL.DeleteTexture(textureID);
         }
     }

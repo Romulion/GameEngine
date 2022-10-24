@@ -139,6 +139,7 @@
     <PackageReference Include="BulletSharp">
       <Version>0.11.1</Version>
     </PackageReference>
+    <PackageReference Include="FFMediaToolkit" Version="4.4.1" />
     <PackageReference Include="ini-parser">
       <Version>2.5.2</Version>
     </PackageReference>
@@ -149,6 +150,7 @@
       <Version>4.6.7</Version>
     </PackageReference>
     <PackageReference Include="SharpFont" Version="4.0.1" />
+    <PackageReference Include="SharpFont.Dependencies" Version="2.6.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +166,30 @@
     <Compile Remove="Engine\Objects\ShadowRenderer.cs" />
     <Compile Remove="MainProcess.cs" />
     <Compile Remove="test.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="WMPLib">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>1</VersionMajor>
+      <Guid>6bf52a50-394a-11d3-b153-00c04f79faa6</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Update="Resourses\openvr_api.dll">

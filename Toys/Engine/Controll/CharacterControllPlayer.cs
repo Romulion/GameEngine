@@ -37,11 +37,10 @@ namespace Toys
             if (CoreEngine.ISystem.CurrentContext != InputContext.Main)
                 return;
 
+            //in look
             var rayCalback = new KinematicClosestNotMeRayResultCallback(_ghostObject);
             rayCalback.CollisionFilterMask = (int)CollisionFilleters.Look;
             rayCalback.CollisionFilterGroup = (int)CollisionFilleters.Look;
-            //var test1 = Vector3.Cross(new Vector3(-6.84475f, 1.5930859f, 11.550375f) -  camera.GetPos, (camera.GetLook * 10 * -Vector4.UnitZ).Xyz);
-            //Console.WriteLine("{0} {1} {2}", camera.GetPos.Convert(), (camera.GetLook * 10 * -Vector4.UnitZ).Xyz.Convert(), test1.Length / (camera.GetLook * 10 * -Vector4.UnitZ).Xyz.Length);
             world.RayTest(camera.GetPos.Convert(),(camera.GetLook * 10 * new Vector4(0,0,-1,1)).Xyz.Convert(), rayCalback);
             if (rayCalback.HasHit)
             {

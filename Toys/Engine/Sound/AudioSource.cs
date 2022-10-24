@@ -32,7 +32,7 @@ namespace Toys
             clip = audio;
             
             //read data to pointer
-            var format = clip.GetFormat(clip.Channels, clip.Bps);
+            var format = clip.SampleFormat;
             IntPtr unmanagedPointer = Marshal.AllocHGlobal(clip.ByteBuffer.Length);
             Marshal.Copy(clip.ByteBuffer, 0, unmanagedPointer, clip.ByteBuffer.Length);
             AL.BufferData(bufferID, format, unmanagedPointer, clip.ByteBuffer.Length, clip.SampleRate);
@@ -71,15 +71,10 @@ namespace Toys
                 if (n > 0)
                     result /= (ushort.MaxValue * n);
 
-                //Console.WriteLine((float)ushort.MaxValue * n);
             }
             else if (clip.Bps == 32)
                 result = BitConverter.ToUInt32(clip.ByteBuffer, position) / (float)uint.MaxValue;
 
-            //Console.WriteLine(result);
-            //if (result > 0)
-            //    result = MathF.Log10(result) / MathF.Log10(ushort.MaxValue);
-            //Console.WriteLine(result);
             return result;
         }
 

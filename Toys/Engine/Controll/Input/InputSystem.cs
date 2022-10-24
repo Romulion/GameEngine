@@ -18,10 +18,12 @@ namespace Toys
     {
         public InputContext CurrentContext { get; private set; }
         InputScheme currentScheme = null;
+        GLWindow gameWindow;
 
         public InputSystem()
         {
             CurrentContext = InputContext.Main;
+            gameWindow = GLWindow.gLWindow;
         }
 
         public void SetInputScheme(InputScheme scheme)
@@ -35,7 +37,8 @@ namespace Toys
 
         public void Update()
         {
-            currentScheme?.UpdateTriggers();
+            if (gameWindow.IsFocused)
+                currentScheme?.UpdateTriggers();
         }
     }
 }

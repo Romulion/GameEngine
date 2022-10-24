@@ -9,8 +9,7 @@ namespace Toys
 		internal string Id { get; set;}
 		protected abstract void Unload();
 		public bool isDestroyed;
-		
-		protected bool IsThreadSafe { get; private set; }
+		protected readonly bool IsThreadSafe;
 
 		protected Resource(bool threadSafe = true)
 		{
@@ -60,10 +59,12 @@ namespace Toys
             return res == null;
         }
 
+		/*
         public override bool Equals(object obj)
 		{
 			return base.Equals(obj);
 		}
+		*/
 
 		//Clean "Lost" resources. Slow
         ~Resource()

@@ -258,8 +258,7 @@ namespace Toys
 		{
 			if (defaultTexture == null)
 			{
-				var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Texture2D)).Assembly;
-                using (Bitmap pic = new Bitmap(assembly.GetManifestResourceStream("Toys.Resourses.textures.empty.png")))
+                using (Bitmap pic = new Bitmap(ResourcesManager.ReadFromInternalResourceStream("textures.empty.png")))
                 {
                     defaultTexture = new Texture2D(pic, TextureType.Toon, "def");
                 }
