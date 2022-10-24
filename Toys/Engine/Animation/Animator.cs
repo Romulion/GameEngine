@@ -88,7 +88,7 @@ namespace Toys
                 if (_animation.TransType == Animation.TransformType.LocalRelative)
                     BoneController.GetBone(pair.Value).SetTransform(boneData.Rotation, boneData.Position);
                 else if (_animation.TransType == Animation.TransformType.LocalAbsolute)
-                    BoneController.GetBone(pair.Value).InitialLocalTransform = Matrix4.CreateFromQuaternion(boneData.Rotation) * Matrix4.CreateTranslation(boneData.Position);
+                    BoneController.GetBone(pair.Value).InitialLocalTransform = Matrix4.CreateScale(boneData.Scale) * Matrix4.CreateFromQuaternion(boneData.Rotation) * Matrix4.CreateTranslation(boneData.Position);
             }
 
             
@@ -229,7 +229,7 @@ namespace Toys
                 if (_animation.TransType == Animation.TransformType.LocalRelative)
                     BoneController.GetBone(boneReference[boneData.Key]).SetTransform(rotation, pos);
                 else if (_animation.TransType == Animation.TransformType.LocalAbsolute)
-                    BoneController.GetBone(boneReference[boneData.Key]).InitialLocalTransform = Matrix4.CreateFromQuaternion(rotation) * Matrix4.CreateTranslation(pos);
+                    BoneController.GetBone(boneReference[boneData.Key]).InitialLocalTransform = Matrix4.CreateScale(start.Scale) * Matrix4.CreateFromQuaternion(rotation) * Matrix4.CreateTranslation(pos);
             }
             
             /*

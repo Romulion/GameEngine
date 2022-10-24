@@ -48,7 +48,8 @@ namespace Toys
 		{
 			try
 			{
-				MainScene = new Scene();
+                Time = new Time();
+                MainScene = new Scene();
                 Shared = new ShareData();
                 GfxEngine = new GraphicsEngine();
 				PhysEngine = new PhysicsEngine();
@@ -57,11 +58,11 @@ namespace Toys
                 AudioEngine = new SoundEngine();
                 ISystem = new InputSystem();
 #if VR
-                vrSystem = new VR.VRSystem();
+                VRSystem = new VR.VRSystem();
                 GLWindow.gLWindow.RenderFrequency = 80;
 #endif
                 AnimEngine = new AnimationEngine();
-                Time = new Time();
+
                 FrameTimer = new Time();
                 FrameTimer.FrameTime = 0.01f;
 

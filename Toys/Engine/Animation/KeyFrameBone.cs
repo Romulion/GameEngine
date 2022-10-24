@@ -33,6 +33,7 @@ namespace Toys
     }
     public class BonePosition
     {
+        public readonly Vector3 Scale;
         public readonly Vector3 Position;
         public readonly Quaternion Rotation;
         public readonly Vector4 RotationVec;
@@ -40,6 +41,15 @@ namespace Toys
 
         public BonePosition(Vector3 position, Quaternion rotation,int id)
         {
+            Scale = Vector3.One;
+            Position = position;
+            Rotation = rotation;
+            BoneId = id;
+        }
+
+        public BonePosition(Vector3 position, Quaternion rotation, Vector3 scale, int id)
+        {
+            Scale = scale;
             Position = position;
             Rotation = rotation;
             BoneId = id;
@@ -47,6 +57,7 @@ namespace Toys
 
         public BonePosition(Vector3 position, Vector4 rotation, int id)
         {
+            Scale = Vector3.One;
             Position = position;
             RotationVec = rotation;
             BoneId = id;

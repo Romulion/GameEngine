@@ -102,7 +102,7 @@ namespace Toys
 						{
 							jointSpring6.EnableSpring(i, true);
 							jointSpring6.SetStiffness(i, JointParameters.PosSpring[i],false);
-							jointSpring6.SetDamping(i, 0.5f);
+							jointSpring6.SetDamping(i, 0.9f);
 						}
 					}
 

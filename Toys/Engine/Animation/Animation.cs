@@ -140,6 +140,7 @@ namespace Toys
 
             Quaternion rotation = Quaternion.Identity;
             Vector3 pos = frame1.BonePosition.Position;
+            Vector3 scl = frame1.BonePosition.Scale;
             if (frame2.InterpolateCurve)
             {
                 var posDelta = frame2.BonePosition.Position - frame1.BonePosition.Position;
@@ -149,6 +150,7 @@ namespace Toys
             else
             {
                 pos += (frame2.BonePosition.Position - frame1.BonePosition.Position) * frameDelta;
+                scl += (frame2.BonePosition.Scale - frame1.BonePosition.Scale) * frameDelta;
                 if (GetRotationType == RotationType.Quaternion)
                 {
                     rotation = Quaternion.Slerp(frame1.BonePosition.Rotation, frame2.BonePosition.Rotation, frameDelta);
@@ -163,7 +165,7 @@ namespace Toys
                     rotation = Quaternion.FromAxisAngle(Vector3.UnitZ, rot.Z) * Quaternion.FromAxisAngle(Vector3.UnitY, rot.Y) * Quaternion.FromAxisAngle(Vector3.UnitX, rot.X);
                 }
             }
-            return new BonePosition(pos, rotation, 0);
+            return new BonePosition(pos, rotation, scl, 0);
         }
 
         internal float GetInterpolatedFrameMorph(string morphName, float frame)
