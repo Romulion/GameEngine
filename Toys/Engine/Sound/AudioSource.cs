@@ -40,6 +40,8 @@ namespace Toys
             AL.Source(sourceID, ALSourcei.Buffer, bufferID);
             AL.Source(sourceID, ALSourceb.Looping, looping);
             AL.Source(sourceID, ALSource3f.Direction, ref dir);
+
+            AL.Source(sourceID, ALSourcef.MaxDistance, 50);
         }
 
 

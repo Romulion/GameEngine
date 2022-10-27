@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
+using OpenTK.Mathematics;
 
 namespace Toys
 {
@@ -26,6 +27,9 @@ namespace Toys
             WrapModeU = TextureWrapMode.ClampToEdge;
             WrapModeV = TextureWrapMode.ClampToEdge;
             FillterMode = TextureFillterMode.Bilinear;
+            //Start with black color
+            var color = new Vector4( 0, 0, 0, 1 );
+            GL.ClearTexImage(textureID, 0, PixelFormat.Rgba, PixelType.Float,ref color);
 
             imageRectanglel = new Rectangle(0, 0, Width, Height);
 

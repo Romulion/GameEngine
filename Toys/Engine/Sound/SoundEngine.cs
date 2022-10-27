@@ -38,6 +38,8 @@ namespace Toys
             version = AL.Get(ALGetString.Version);
             vendor = AL.Get(ALGetString.Vendor);
             renderer = AL.Get(ALGetString.Extensions);
+
+            AL.DistanceModel(ALDistanceModel.ExponentDistance);
         }
 
         internal void AddSource(AudioSource source)

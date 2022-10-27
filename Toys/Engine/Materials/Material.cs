@@ -16,12 +16,12 @@ namespace Toys
 		public int Count { get; set; }
         public ShaderUniformManager UniformManager { get; protected set; }
 
-        protected Dictionary<TextureType, Texture2D> textures;
+        protected Dictionary<TextureType, Texture> textures;
 		protected Shader shaderProgram;
 		
 		public Material() : base(false)
 		{
-			textures = new Dictionary<TextureType, Texture2D>();
+			textures = new Dictionary<TextureType, Texture>();
             Outline = new Outline();
 		}
 
@@ -72,7 +72,7 @@ namespace Toys
 			}
 		}
 
-		public virtual void SetTexture(Texture2D txtr, TextureType type)
+		public virtual void SetTexture(Texture txtr, TextureType type)
 		{
 			if (textures.ContainsKey(type) && txtr != null)
 			{

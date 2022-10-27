@@ -5,33 +5,45 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Timers;
+using System.Threading.Tasks;
 
 
 namespace Toys
 {
-    public class VideoDecoder : Resource
+    public class VideoClip : Resource
     {
         IntPtr frameBufferFront;
         IntPtr frameBufferBack;
-        public AudioClip channel1 { get; private set; }
-        public AudioClip channel2 { get; private set; }
+
+        AudioClip[] channels;
+
         bool isFrameUpdated;
         MediaFile videoFile;
-        public int Height;
-        public int Width;
-        Timer timer;
-        Time time;
+        public readonly int Height;
+        public readonly int Width;
+        public bool HasAudio { get; private set; }
+        public bool HasVideo { get; private set; }
+
+        public float FrameRate { get; private set; }
+
+        readonly Timer timer;
+        //Time time;
         int channelCount;
+        volatile bool isDecoderBusy;
         public TextureDynamic TargetTexture { get; private set; }
 
-        public VideoDecoder(string path) : base(false)
+        
+        internal VideoClip(System.IO.Stream stream, string path) : base(false)
         {
-            var options = new MediaOptions();
-            videoFile = MediaFile.Open(path);
+            //var options = new MediaOptions();
+            //MediaFile.Open cant run on other theads
+            videoFile = MediaFile.Open(stream);
             var metadata = videoFile.Video.Info;
             Height = metadata.FrameSize.Height;
             Width = metadata.FrameSize.Width;
-
+            HasAudio = videoFile.HasAudio;
+            HasVideo = videoFile.HasVideo;
+            FrameRate = (float)metadata.AvgFrameRate;
             //Logger.Info(metadata.IsVariableFrameRate);
             //Logger.Info(metadata.PixelFormat);
             //Logger.Info(metadata.Duration);
@@ -40,34 +52,36 @@ namespace Toys
             frameBufferBack = Marshal.AllocHGlobal(Height * Width * 3);
 
             //prepase timer sync
-            timer = new Timer(1000 / metadata.AvgFrameRate);
+            timer = new Timer(1000 / FrameRate);
             timer.Elapsed += SwapFrames;
             timer.AutoReset = true;
 
             TargetTexture = new TextureDynamic(Width, Height);
 
             SetupInitialData();
-
-            time = new Time();
+            //time = new Time();
         }
 
         public void Play()
         {
             timer.Start();
             timer.AutoReset = true;
-            time.Start();
         }
 
         public void Stop()
         {
             timer.Stop();
             timer.AutoReset = false;
-            
-            Logger.Info(time.Stop());
         }
 
         void SwapFrames(object sender, ElapsedEventArgs e)
         {
+            //time.Stop();
+            //skip swap if previous frame not processed
+            if (isDecoderBusy)
+                return;
+
+            isDecoderBusy = true;
             //swap buffers
             var tempBuffer = frameBufferFront;
             frameBufferFront = frameBufferBack;
@@ -79,19 +93,18 @@ namespace Toys
             {
                 Stop();
             }
+            isDecoderBusy = false;
         }
 
         void SetupInitialData()
         {
             //get first 2 frames
-            videoFile.Video.TryGetNextFrame(frameBufferFront, Width * 3);
-            videoFile.Video.TryGetNextFrame(frameBufferBack, Width * 3);
-            isFrameUpdated = true;
+            Reset();
 
             //Audio
             channelCount = videoFile.Audio.Info.NumChannels;
             byte[][] samples = new byte[channelCount][];
-
+            channels = new AudioClip[channelCount];
             //Read full audio track
             AudioData data;
             for (int i = 0; i < channelCount; i++)
@@ -99,44 +112,45 @@ namespace Toys
                 samples[i] = new byte[videoFile.Audio.Info.SamplesPerFrame * (int)videoFile.Audio.Info.NumberOfFrames * 2];
             }
 
-            Logger.Info(videoFile.Audio.Info.SampleRate);
             var tempBuffer = new short[videoFile.Audio.Info.SamplesPerFrame];
             int offset = 0;
             while (videoFile.Audio.TryGetNextFrame(out data))
             {
                 var temp = data.GetSampleData();
-                //foreach (var sample in temp[0])
-                //    Console.WriteLine(sample);
                 for (int i = 0; i < channelCount; i++)
                 {
-                    //Buffer.BlockCopy(temp[i], 0, samples[i], offset, videoFile.Audio.Info.SamplesPerFrame * 4);
                     //convert to 16 bit unsigned
                     for (int n = 0; n < temp[i].Length; n++)
-                    {
                         tempBuffer[n] = (short)(short.MaxValue * temp[i][n] + 1);
-                        //Console.WriteLine(temp[i][n]);
-                    }
 
                     Buffer.BlockCopy(tempBuffer, 0, samples[i], offset, videoFile.Audio.Info.SamplesPerFrame * 2);
                 }
 
-                /*
-                var bits = data.GetChannelData(0);
-                for (int n = 0; n < bits.Length; n++)
-                {
-                    var bytes = BitConverter.GetBytes(bits[n]);
-                    Array.Reverse(bytes, 0, bytes.Length);
-                    Console.WriteLine(BitConverter.ToSingle(bytes));
-                }
-                */
-
                 offset += videoFile.Audio.Info.SamplesPerFrame * 2;
                 
             }
-
-            channel1 = new AudioClip(samples[0], 16, videoFile.Audio.Info.SampleRate);
-            channel2 = new AudioClip(samples[1], 16, videoFile.Audio.Info.SampleRate);
+            for (int i = 0; i < channelCount; i++)
+            {
+                channels[i] = new AudioClip(samples[i], 16, videoFile.Audio.Info.SampleRate);
+            }
         }
+
+        public AudioClip GetAudionChannel(int channelId)
+        {
+            if (!HasAudio || channelId + 1 > channelCount)
+                return null;
+
+            return channels[channelId];
+        }
+
+        public void Reset()
+        {
+            videoFile.Video.TryGetFrame(TimeSpan.Zero, frameBufferFront, Width * 3);
+            videoFile.Video.TryGetNextFrame(frameBufferBack, Width * 3);
+            isFrameUpdated = true;
+        }
+
+
 
         public void Update()
         {

@@ -37,7 +37,8 @@ namespace Toys
             }
             catch (Exception e)
             {
-                //logger.Error(e.Message, e.StackTrace);
+                Logger.Error(e.Message, e.StackTrace);
+                return null;
             }
 
             Resource asset = null;
@@ -58,6 +59,10 @@ namespace Toys
             else if (tp == typeof(Animation))
             {
                 asset = AnimationLoader.Load(stream, path);
+            }
+            else if (tp == typeof(VideoClip))
+            {
+                asset = new VideoClip(stream, path);
             }
             else {
                 Console.WriteLine("Type not supported");

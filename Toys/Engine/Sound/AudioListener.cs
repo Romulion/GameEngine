@@ -24,7 +24,6 @@ namespace Toys
         {
             if (!listener)
                 listener = new AudioListener();
-
             return listener;
         }
 
