@@ -25,18 +25,20 @@ namespace Toys
         public bool HasVideo { get; private set; }
 
         public float FrameRate { get; private set; }
+        public bool IsPlaing { get; private set; }
 
         readonly Timer timer;
         //Time time;
         int channelCount;
         volatile bool isDecoderBusy;
+        int frameCount = 0;
         public TextureDynamic TargetTexture { get; private set; }
 
         
         internal VideoClip(System.IO.Stream stream, string path) : base(false)
         {
+            
             //var options = new MediaOptions();
-            //MediaFile.Open cant run on other theads
             videoFile = MediaFile.Open(stream);
             var metadata = videoFile.Video.Info;
             Height = metadata.FrameSize.Height;
@@ -47,31 +49,37 @@ namespace Toys
             //Logger.Info(metadata.IsVariableFrameRate);
             //Logger.Info(metadata.PixelFormat);
             //Logger.Info(metadata.Duration);
-
+            Logger.Error(444);
             frameBufferFront = Marshal.AllocHGlobal(Height * Width * 3);
             frameBufferBack = Marshal.AllocHGlobal(Height * Width * 3);
-
             //prepase timer sync
             timer = new Timer(1000 / FrameRate);
             timer.Elapsed += SwapFrames;
             timer.AutoReset = true;
 
-            TargetTexture = new TextureDynamic(Width, Height);
+            //TargetTexture = new TextureDynamic(Width, Height);
 
             SetupInitialData();
-            //time = new Time();
+
+
+            if (GLWindow.gLWindow.CheckContext)
+                TargetTexture = new TextureDynamic(Width, Height);
+            else 
+                CoreEngine.ActiveCore.AddNotyfyTask(() => TargetTexture = new TextureDynamic(Width, Height)).WaitOne(); ;
         }
 
         public void Play()
         {
             timer.Start();
             timer.AutoReset = true;
+            IsPlaing = true;
         }
 
         public void Stop()
         {
             timer.Stop();
             timer.AutoReset = false;
+            IsPlaing = false;
         }
 
         void SwapFrames(object sender, ElapsedEventArgs e)
@@ -80,30 +88,36 @@ namespace Toys
             //skip swap if previous frame not processed
             if (isDecoderBusy)
                 return;
-
             isDecoderBusy = true;
             //swap buffers
             var tempBuffer = frameBufferFront;
             frameBufferFront = frameBufferBack;
             frameBufferBack = tempBuffer;
             isFrameUpdated = true;
-
             //try get next frame to back buffer and stop if media file ends
+            //due to bug if videostream comes to last frame its imposible to reset position
             if (!videoFile.Video.TryGetNextFrame(frameBufferBack, Width * 3))
             {
+                //Reset();
                 Stop();
             }
+            else
+                frameCount++;
             isDecoderBusy = false;
         }
 
         void SetupInitialData()
         {
             //get first 2 frames
+            //videoFile.Video.TryGetFrame(TimeSpan.FromSeconds(0), frameBufferFront, Width * 3);
             Reset();
 
+            
             //Audio
             channelCount = videoFile.Audio.Info.NumChannels;
             byte[][] samples = new byte[channelCount][];
+
+            
             channels = new AudioClip[channelCount];
             //Read full audio track
             AudioData data;
@@ -114,8 +128,10 @@ namespace Toys
 
             var tempBuffer = new short[videoFile.Audio.Info.SamplesPerFrame];
             int offset = 0;
+            
             while (videoFile.Audio.TryGetNextFrame(out data))
             {
+                
                 var temp = data.GetSampleData();
                 for (int i = 0; i < channelCount; i++)
                 {
@@ -125,10 +141,12 @@ namespace Toys
 
                     Buffer.BlockCopy(tempBuffer, 0, samples[i], offset, videoFile.Audio.Info.SamplesPerFrame * 2);
                 }
-
+                
                 offset += videoFile.Audio.Info.SamplesPerFrame * 2;
                 
             }
+
+            
             for (int i = 0; i < channelCount; i++)
             {
                 channels[i] = new AudioClip(samples[i], 16, videoFile.Audio.Info.SampleRate);
@@ -148,13 +166,17 @@ namespace Toys
             videoFile.Video.TryGetFrame(TimeSpan.Zero, frameBufferFront, Width * 3);
             videoFile.Video.TryGetNextFrame(frameBufferBack, Width * 3);
             isFrameUpdated = true;
+            frameCount = 2;
         }
 
 
-
+        /// <summary>
+        /// Add this to update video output texture
+        /// * main thread only
+        /// </summary>
         public void Update()
         {
-            if (isFrameUpdated && !isDestroyed)
+            if (isFrameUpdated && !isDestroyed && GLWindow.gLWindow.CheckContext)
             {
                 TargetTexture.UpdateTexture(frameBufferFront);
                 isFrameUpdated = false;

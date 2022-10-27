@@ -121,8 +121,9 @@ namespace Toys
                 for (int n = 0; n < tasksProcessing.Count; n++)
                 {
                     tasksProcessing[n].Invoke();
-                    tasksProcessing.Clear();
+                    
                 }
+                tasksProcessing.Clear();
             }
 
 			MainScene.Update();
@@ -172,11 +173,13 @@ namespace Toys
         /// <returns></returns>
         public ManualResetEvent AddNotyfyTask(Action task)
         {
+            Logger.Info(999);
             ManualResetEvent mre = new ManualResetEvent(false);
             AddTask = () =>
             {
                 try
                 {
+                    Logger.Info(777);
                     task();
                 }
                 finally

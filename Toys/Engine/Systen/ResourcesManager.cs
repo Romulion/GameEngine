@@ -68,8 +68,9 @@ namespace Toys
                 Console.WriteLine("Type not supported");
             }
 
-            if (stream != null)
-                stream.Dispose();
+            //Let GC dispose stream. Some classes require active stream
+            //if (stream != null)
+            //    stream.Dispose();
             if (asset)
 			{
                 asset.Id = path;
