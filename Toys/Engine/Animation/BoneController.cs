@@ -41,13 +41,13 @@ namespace Toys
 
             Initialize(bones);
 
-            _bonesOrdered = new BoneTransform[bones.Length];
+            _bonesOrdered = new BoneTransform[_bones.Length];
             for (int i = 0; i < bonesOrder.Length; i++)
                 _bonesOrdered[i] = _bones[bonesOrder[i]];
 
             SetWorldTransform();
 
-            _skeleton = new Matrix4[bones.Length];
+            _skeleton = new Matrix4[_bones.Length];
 
             CheckBonesCount();
             DefaultPos();
@@ -115,19 +115,11 @@ namespace Toys
         {
             for (int i = 0; i < _bones.Length; i++)
             {
+
+                _bonesOrdered[i].World2BoneInitial = _bonesOrdered[i].InitialLocalTransform;
+
                 if (_bonesOrdered[i].Parent != null)
-                {
-                    /*
-                    if (i == 67 || i == 10 || i ==66 || i == 127 | i == 0)
-                    {
-                        Console.WriteLine(i);
-                        Console.WriteLine(_bonesOrdered[i].Parent.Bone.Index);
-                        Console.WriteLine(_bonesOrdered[i].Parent.World2BoneInitial);
-                        Console.WriteLine(_bonesOrdered[i].InitialLocalTransform);
-                    }
-                    */
-                    _bonesOrdered[i].World2BoneInitial = _bonesOrdered[i].InitialLocalTransform * _bonesOrdered[i].Parent.World2BoneInitial;
-                }
+                    _bonesOrdered[i].World2BoneInitial *=  _bonesOrdered[i].Parent.World2BoneInitial;
             }
         }
 
@@ -161,9 +153,9 @@ namespace Toys
                 {
                     boneTransform.Parent = _bones[boneData.ParentIndex];
                 }
-                else
+                else  
                     boneTransform.Parent = null;
-                    
+
                 boneTransform.IsAddLocal = boneData.IsAddLocal;
                 boneTransform.IsRotateAdd = boneData.InheritRotation;
                 boneTransform.IsTranslateAdd = boneData.InheritTranslation;

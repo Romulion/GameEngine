@@ -417,17 +417,19 @@ namespace Toys
                 bones[i] = bone;
 			}
 
-			var reverce = Matrix4.CreateScale(new Vector3(1, 1, -1));
+			var reverse = Matrix4.CreateScale(new Vector3(1, 1, -1));
 			//convert position from model to parent bone
 			for (int i = bones.Length - 1; i > -1; i--)
             {
                 Bone bone = bones[i];
-                if (bone.ParentIndex >= 0 && bone.ParentIndex < bones.Length){
-                    bone.Parent2Local =  Matrix4.CreateTranslation(bone.Position - bones[bone.ParentIndex].Position);
-                }
-
+				if (bone.ParentIndex >= 0 && bone.ParentIndex < bones.Length)
+				{
+					bone.Parent2Local = Matrix4.CreateTranslation(bone.Position - bones[bone.ParentIndex].Position);
+				}
+				else if (bone.ParentIndex < 0)
+					bone.Parent2Local = Matrix4.CreateTranslation(bone.Position);
 				//Convert left to right coordinates
-				bone.Parent2Local = reverce * bone.Parent2Local * reverce;
+				bone.Parent2Local = reverse * bone.Parent2Local * reverse;
 			}
 
 

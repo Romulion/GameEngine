@@ -322,10 +322,9 @@ namespace Toys
             {
                 Bone bone = bones[i];
                 if (bone.ParentIndex >= 0 && bone.ParentIndex < bones.Length)
-                {
                     bone.Parent2Local = Matrix4.CreateTranslation(bone.Position - bones[bone.ParentIndex].Position);
-                    //Console.WriteLine("{0} {1}", i, bone.Position - bones[bone.ParentIndex].Position);
-                }
+                else if (bone.ParentIndex == -1)
+                    bone.Parent2Local = Matrix4.CreateTranslation(bone.Position);
             }
             boneOrder = new int[bones.Length];
             int m = 0;
