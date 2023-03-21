@@ -49,7 +49,6 @@ namespace Toys
             //Logger.Info(metadata.IsVariableFrameRate);
             //Logger.Info(metadata.PixelFormat);
             //Logger.Info(metadata.Duration);
-            Logger.Error(444);
             frameBufferFront = Marshal.AllocHGlobal(Height * Width * 3);
             frameBufferBack = Marshal.AllocHGlobal(Height * Width * 3);
             //prepase timer sync

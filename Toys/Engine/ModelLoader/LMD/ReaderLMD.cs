@@ -34,12 +34,57 @@ namespace Toys
 
         void StartRead()
         {
-            ReadBones();
-            ReadMaterials();
+            //Header
+            reader.BaseStream.Position = 0x18;
+            var typeTablePointer = reader.ReadInt32();
+            var tmpOffset = reader.BaseStream.Position = typeTablePointer+ 0x1c;
+            var versionPointer = reader.ReadInt32();
+            reader.BaseStream.Position = tmpOffset + versionPointer;
+            reader.readString(); //version
+            reader.BaseStream.Position = tmpOffset + 8;
+            var typeCount = reader.ReadInt32();
+            var startTable = reader.BaseStream.Position;
+            var typeTable = new string[typeCount];
+            for (int n = 0; n < typeCount; n++)
+            {
+                reader.BaseStream.Position = startTable + n * 4;
+                var offset = reader.ReadInt32();
+                reader.BaseStream.Position += offset - 4;
+                typeTable[n] = reader.readString();
+            }
 
-            reader.BaseStream.Position = 0x48;
+            for (int n = 0; n < typeCount; n++)
+            {
+                reader.BaseStream.Position = 0x34 + n * 4;
+                var offset = (int)reader.BaseStream.Position + reader.ReadInt32();
+                if (typeTable[n] == "mesh")
+                    ReadMesh(offset);
+                else if (typeTable[n] == "bone")
+                    ReadBones(offset);
+                else if (typeTable[n] == "material")
+                    ReadMaterials(offset);
+            }
+            /*
+            StringLength = int.from_bytes(CurFile.read(4), byteorder = 'little')
+
+            TypeName = CurFile.read(StringLength).decode('utf-8')
+
+            TypeTable.append(TypeName)
+            */
+            
+
+            
+
+
+        }
+
+        void ReadMesh(int offset)
+        {
+            Console.WriteLine("Mesh");
+            //reader.BaseStream.Position = 0x48;
+            reader.BaseStream.Position = offset + 8;
             int meshCount = reader.ReadInt32();
-
+            
             int[] meshPos = new int[meshCount];
             for (int i = 0; i < meshCount; i++)
             {
@@ -54,12 +99,13 @@ namespace Toys
             }
         }
 
-        void ReadMaterials()
+        void ReadMaterials(int offset)
         {
-            reader.BaseStream.Position = 0x38;
-            int matOffset = (int)reader.BaseStream.Position + reader.ReadInt32();
-
-            reader.BaseStream.Position = matOffset + 4;
+            Console.WriteLine("Material");
+            //reader.BaseStream.Position = 0x38;
+            //int matOffset = (int)reader.BaseStream.Position + reader.ReadInt32();
+            //reader.BaseStream.Position = matOffset + 4;
+            reader.BaseStream.Position = offset + 4;            
 
             reader.BaseStream.Position += reader.ReadInt32();
             int materialCount = reader.ReadInt32();
@@ -97,7 +143,7 @@ namespace Toys
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    Logger.Warning(e.Message);
                 }
             }
 
@@ -133,6 +179,8 @@ namespace Toys
                 size = 1;
             else if (SizeTest < 0x10000)
                 size = 2;
+            else
+                size = 4;
 
             reader.BaseStream.Position += 8;
             int vertSize = reader.readVal(size);
@@ -236,12 +284,13 @@ namespace Toys
             else
                 return new MeshDrawerRigged(mesh, boneControll);
         }
-        void ReadBones()
+        void ReadBones(int offset)
         {
-            reader.BaseStream.Position = 0x34;
-            int boneOffset = (int)reader.BaseStream.Position + reader.ReadInt32();
+            //reader.BaseStream.Position = 0x34;
+            //int boneOffset = (int)reader.BaseStream.Position + reader.ReadInt32();
+            //reader.BaseStream.Position = boneOffset + 0x8;
+            reader.BaseStream.Position = offset + 8;
 
-            reader.BaseStream.Position = boneOffset + 0x8;
             int boneCount = reader.ReadInt32();
 
             int[] boneOffsets = new int[boneCount];

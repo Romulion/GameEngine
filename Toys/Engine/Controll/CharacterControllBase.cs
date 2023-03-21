@@ -18,7 +18,7 @@ namespace Toys
         public float RunSpeed { get; set; }
         protected void Awake()
         {
-            WalkSpeed = 1.1f * 4.0f;
+            WalkSpeed = 1.1f;
             RunSpeed = WalkSpeed * 2;
             world = CoreEngine.PhysEngine.World;
             CreatePlayerBox();

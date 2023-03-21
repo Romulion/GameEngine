@@ -9,6 +9,8 @@ namespace Toys
     public class AnimationController
     {
         public AnimationNode CurrentAnimation { get; private set; }
+        //Method triggered on animation change
+        public Action<AnimationNode> AnimationChangeCalback;
         List<AnimationNode> animationList;
         Animator animator;
         public Animator TargetAnimator
@@ -167,6 +169,8 @@ namespace Toys
             TargetAnimator.AnimationData = CurrentAnimation.MainAnimation;
             TargetAnimator.Play();
             TargetAnimator.IsRepeat = CurrentAnimation.Repeat;
+
+            AnimationChangeCalback?.Invoke(CurrentAnimation);
         }
     }
 }

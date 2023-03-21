@@ -32,6 +32,11 @@ namespace Toys
 			GL.UseProgram(shaderProgram);
 		}
 
+		internal void SetName(string name)
+        {
+			GL.ObjectLabel(ObjectLabelIdentifier.Program, shaderProgram, name.Length, name);
+		}
+
 		//by string
 		public void SetUniform(float value, string name)
 		{

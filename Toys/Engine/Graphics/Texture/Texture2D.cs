@@ -12,6 +12,7 @@ namespace Toys
 		Toon = 1,
 		Specular = 2,
 		Sphere = 5,
+        Extra = 6,
 		ShadowMap = 10,
 	};
 
@@ -88,7 +89,6 @@ namespace Toys
         {
             textureType = TextureTarget.Texture2D;
             GenerateTextureID();
-
             Bitmap tex1;
             //check texture
             try

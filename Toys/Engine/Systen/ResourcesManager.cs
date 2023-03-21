@@ -38,13 +38,15 @@ namespace Toys
             catch (Exception e)
             {
                 Logger.Error(e.Message, e.StackTrace);
+
+                if (tp == typeof(Texture2D))
+                    return Texture2D.LoadEmpty() as T;
                 return null;
             }
 
             Resource asset = null;
             if (tp == typeof(Texture2D))
             {
-
                 asset = new Texture2D(stream, path);
             }
             else if (tp == typeof(ModelPrefab))
@@ -65,7 +67,7 @@ namespace Toys
                 asset = new VideoClip(stream, path);
             }
             else {
-                Console.WriteLine("Type not supported");
+                Logger.Error("Type not supported " + tp + " for " + path, "Loader");
             }
 
             //Let GC dispose stream. Some classes require active stream

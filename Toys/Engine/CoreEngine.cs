@@ -173,13 +173,11 @@ namespace Toys
         /// <returns></returns>
         public ManualResetEvent AddNotyfyTask(Action task)
         {
-            Logger.Info(999);
             ManualResetEvent mre = new ManualResetEvent(false);
             AddTask = () =>
             {
                 try
                 {
-                    Logger.Info(777);
                     task();
                 }
                 finally

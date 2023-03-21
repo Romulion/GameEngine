@@ -43,6 +43,7 @@ namespace Toys
 			catch (Exception e)
 			{
 				Logger.Error(e.Message, e.Source);
+				return null;
             }
 
 			//binding buffers
@@ -65,8 +66,9 @@ namespace Toys
 			shdr.SetUniform((int)TextureType.Toon, "material.texture_toon");
 			shdr.SetUniform((int)TextureType.Specular, "material.texture_specular");
 			shdr.SetUniform((int)TextureType.Sphere, "material.texture_spere");
+			shdr.SetUniform((int)TextureType.Extra, "material.texture_extra");
 
-            return shdr;
+			return shdr;
 		}
 
 		public string GenerateVertex()
@@ -136,7 +138,8 @@ namespace Toys
                         +"\tsampler2D texture_specular;\n"
                         +"\tsampler2D texture_toon;\n"
                         +"\tsampler2D texture_spere;\n"
-                        +"\tvec4 diffuse_color;\n"
+						+ "\tsampler2D texture_extra;\n"
+						+ "\tvec4 diffuse_color;\n"
                         + "\tvec3 specular_color;\n"
                         + "\tfloat specular_power;\n"
                         + "\tvec3 ambient_color;\n"
@@ -191,7 +194,7 @@ namespace Toys
             {
                 rawFragment += "vec3 viewDir = normalize(viewPos - fs_in.FragPos);\n";
                 rawFragment += "vec3 reflectDir = reflect(-lightDir, normal);\n";
-                rawFragment += "float spec = pow(max(dot(viewDir, reflectDir), 0), material.specular_power);\n";
+                rawFragment += "float spec = pow(max(dot(viewDir, reflectDir), 0.00001), material.specular_power);\n";
             }
 
 
@@ -268,7 +271,7 @@ namespace Toys
                 output += " - envLight";            
             else if (setting.EnvType == EnvironmentMode.Multiply)
                 mul += " * envLight";
-            output += ") * shadowcolor";
+            output += ") * texture(material.texture_extra, fs_in.Texcord) * shadowcolor";
 
             rawFragment += "FragColor = (" + output + ") " + mul  + ";\n";         
             rawFragment += "}\n";

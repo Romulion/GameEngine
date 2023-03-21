@@ -37,6 +37,8 @@ namespace Toys
         public Vector3[] SearchPath(Vector3 start, Vector3 goal)
         {
             nextBorderNode.Clear();
+            if ((start - goal).LengthSquared < 0.0001f)
+                return new Vector3[] { };
             pathMesh = aStar.CalculatePath(start, goal);
             if (pathMesh == null)
                 return new Vector3[] { };

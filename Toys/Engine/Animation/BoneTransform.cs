@@ -24,13 +24,18 @@ namespace Toys
                 Bone2WorldInitial = boneSpaceTranstorm.Inverted();
             }
         }
-        //inverted initial bone space coordinetes for calculating tranform
+        /// <summary>
+        /// inverted initial bone space coordinetes for calculating tranform
+        /// </summary>
         public Matrix4 Bone2WorldInitial { get; private set; }
 
         //fully transformed matrix
         public Matrix4 LocalMatrix;
         //current bone transform matrix
         internal Matrix4 BoneMatrix;
+        /// <summary>
+        /// Parent 2 current bone transform
+        /// </summary>
         public Matrix4 InitialLocalTransform { get; internal set; }
         //public Vector3 InitialOffset;
 

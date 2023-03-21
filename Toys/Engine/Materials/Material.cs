@@ -10,7 +10,7 @@ namespace Toys
 		internal ShaderSettings ShaderSettings { get; set; }
         public RenderDirectives RenderDirrectives { get; set; }
 		public Outline Outline;
-
+		
 		public string Name { get; set; }
 		public int Offset { get; set; }
 		public int Count { get; set; }
@@ -53,6 +53,10 @@ namespace Toys
 				GL.ActiveTexture(unit + (int)TextureType.Toon);
 				txtr.BindTexture();
 			}
+
+			textures.Add(TextureType.Extra, txtr);
+			GL.ActiveTexture(unit + (int)TextureType.Extra);
+			txtr.BindTexture();
 
 			if (ShaderSettings.EnvType > 0)
 			{

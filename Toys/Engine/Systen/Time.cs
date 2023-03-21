@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Security.AccessControl;
 
 namespace Toys
 {
@@ -14,7 +15,7 @@ namespace Toys
         /// </summary>
         public double UpdateTime { get; internal set; }
         /// <summary>
-        /// Frame Time in ms
+        /// Frame Time in s
         /// </summary>
         public float FrameTime { get; internal set; }
         Stopwatch stopwatch;
@@ -31,7 +32,7 @@ namespace Toys
         /// </summary>
         public double TimeFromStart { get { return resolution * programStarted.ElapsedTicks; } }
 
-        public Time()
+        internal Time()
         {
             FrameCount = 0;
             stopwatch = new Stopwatch();
@@ -39,12 +40,12 @@ namespace Toys
             programStarted.Start();
         }
 
-        public void Start()
+        internal void Start()
         {
             stopwatch.Start();
         }
 
-        public double Stop()
+        internal double Stop()
         {
             double elapsed;
             stopwatch.Stop();

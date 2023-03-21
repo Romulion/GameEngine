@@ -45,6 +45,5 @@ namespace Toys
             GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0,
                           Width, Height, PixelFormat.Bgr, PixelType.UnsignedByte, ptr);
         }
-
     }
 }

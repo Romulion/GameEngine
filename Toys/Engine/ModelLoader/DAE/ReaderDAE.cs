@@ -53,7 +53,6 @@ namespace Toys
                         //mats[i][n] = Material("default");
                         continue;
                     }
-                        
 
                     var matname = daemats.materialIDReference[materials[n].Name];
                     var matTemplate = matsList.Find((obj) => obj.Name == matname);

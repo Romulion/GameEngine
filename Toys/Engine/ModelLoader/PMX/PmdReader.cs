@@ -154,7 +154,7 @@ namespace Toys
 
                     for (int n = 0; n < texturePath.Length; n++)
                     {
-                        string path = texturePath[n];
+                        string path = dir + texturePath[n];
 
                         EnvironmentMode sphereMode = GetEnvType(path);
                         if (sphereMode != 0)
@@ -168,6 +168,11 @@ namespace Toys
                         }
                     }
                 }
+                else if (pathList.Length > 0)
+                {
+                    diffuseTexture = GetTexture(dir + pathList);
+                }
+
 
                 var outln = new Outline();
                 outln.EdgeScaler = 0.1f;
@@ -552,7 +557,8 @@ namespace Toys
                 md.OutlineDrawing = true;
                 comps.Add(md);
                 comps.Add(new Animator(md.skeleton, md.Morphes));
-                comps.Add(new PhysicsManager(rigitBodies, joints, md.skeleton));
+                if (rigitBodies != null)
+                    comps.Add(new PhysicsManager(rigitBodies, joints, md.skeleton));
                 return new ModelPrefab(comps);
             }
         }
