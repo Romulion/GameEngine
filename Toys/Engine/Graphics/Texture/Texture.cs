@@ -26,10 +26,10 @@ namespace Toys
     {
         protected TextureTarget textureType;
         internal int textureID { get; protected private set; }
-        TextureWrapMode wrapU;
-        TextureWrapMode wrapV;
-        TextureWrapMode wrapW;
-        TextureFillterMode filter;
+        TextureWrapMode wrapU = TextureWrapMode.ClampToEdge;
+        TextureWrapMode wrapV = TextureWrapMode.ClampToEdge;
+        TextureWrapMode wrapW = TextureWrapMode.ClampToEdge;
+        TextureFillterMode filter = TextureFillterMode.Bilinear;
 
         private bool requireUpdate = false;
 
@@ -132,7 +132,6 @@ namespace Toys
 
         protected override void Unload()
         {
-            Logger.Info(String.Format("unload texture {0}",textureID.ToString()));
             GL.DeleteTexture(textureID);
         }
     }

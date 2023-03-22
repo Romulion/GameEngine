@@ -101,7 +101,7 @@ namespace Toys
 						if (JointParameters.PosSpring[i] != 0)
 						{
 							jointSpring6.EnableSpring(i, true);
-							jointSpring6.SetStiffness(i, JointParameters.PosSpring[i],false);
+							jointSpring6.SetStiffness(i, JointParameters.PosSpring[i], false);
 							jointSpring6.SetDamping(i, 0.9f);
 						}
 					}
@@ -111,7 +111,7 @@ namespace Toys
 						if (JointParameters.RotSpring[i] != 0)
 						{
 							jointSpring6.EnableSpring(i + 3, true);
-							jointSpring6.SetStiffness(i + 3, JointParameters.RotSpring[i], false);
+							jointSpring6.SetStiffness(i + 3, JointParameters.RotSpring[i],false);
 							jointSpring6.SetDamping(i, 0.1f);
 						}
 					}

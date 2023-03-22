@@ -145,7 +145,7 @@ namespace Toys
             //render main scene
             GfxEngine.Render();
             //render physics
-            //(pEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
+            //(PhysEngine.World.DebugDrawer as PhysicsDebugDraw).DrawDebugWorld();
             Time.RenderTime = Time.Stop();
 
             ScriptingEngine.PostRender();

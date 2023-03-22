@@ -178,7 +178,7 @@ namespace Toys
 				   else
 				   {
 					   tex.ChangeType(TextureType.Diffuse);
-						//tex.WrapMode =TextureWrapMode.Repeat;
+					   tex.WrapMode =TextureWrapMode.Repeat;
 					}
 
 				   textures[i] = tex;
@@ -295,7 +295,6 @@ namespace Toys
 				{
                     tex = textures[difTexIndex];
 				}
-
 				var mat = new MaterialPMX(shdrs, rndr);
 				mat.Name = name;
 				mat.Outline = outln;
@@ -338,12 +337,12 @@ namespace Toys
 				Vector3 Position = reader.readVector3() * multipler;
 
 				int parentIndex = 0;
-                if (header.GetBoneIndexSize == 2)
-                {
-                    parentIndex = unchecked((short)reader.readVal(header.GetBoneIndexSize));
-                }
-                else
-                    parentIndex = reader.readVal(header.GetBoneIndexSize);
+				if (header.GetBoneIndexSize > 1)
+				{
+					parentIndex = unchecked((short)reader.readVal(header.GetBoneIndexSize));
+				}
+				else
+					parentIndex = reader.ReadSByte();
 
                 int Level = reader.ReadInt32();
 				byte[] flags = reader.ReadBytes(2);
@@ -446,8 +445,44 @@ namespace Toys
                     }
                 }
             }
+			//extra reorder bones
+			var boneOrderDeep = new int[bones.Length];
+			var waitList = new List<Bone>();
+			int stride = 0;
+			var toRemove = new List<int>();
+			for (int n = 0; n < boneOrder.Length; n++)
+			{
+				for (int i = 0; i < bones.Length; i++)
+				{
+					//find bad position
+					if (bones[i].ParentIndex == boneOrder[n] && i < n)
+					{
+						stride--;
+						waitList.Add(bones[i]);
+					}
 
-			boneController = new BoneController(bones, boneOrder);
+					boneOrderDeep[n + stride] = bones[i].Index;
+
+					//check if rgtime to replace
+					toRemove.Clear();
+					for (int k = 0; k < waitList.Count; k++)
+					{
+
+						if (waitList[k].ParentIndex == boneOrder[n])
+						{
+							stride++;
+							boneOrderDeep[n] = waitList[k].Index;
+							toRemove.Add(k);
+						}
+					}
+
+					//clear replaced
+					foreach (var num in toRemove)
+						waitList.RemoveAt(num);
+				}
+			}
+			
+			boneController = new BoneController(bones, boneOrderDeep);
 
 		}
 

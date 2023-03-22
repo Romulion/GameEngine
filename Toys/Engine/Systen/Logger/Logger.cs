@@ -69,7 +69,7 @@ namespace Toys
 			if (type == Output.Internal)
 				loggs.Add(entry);
 			else if (type == Output.Console)
-				Console.WriteLine("{0}:{1}--{2}",entry.Sender,entry.Severenety,entry.Message);
+				Console.WriteLine("{0}:{1}--{2}\n{3}",entry.Sender,entry.Severenety,entry.Message,entry.Location);
 			//else if (type == Output.File)
 		}
 

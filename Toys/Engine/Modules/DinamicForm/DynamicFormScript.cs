@@ -36,7 +36,6 @@ namespace Toys
             camera = CoreEngine.GfxEngine.MainCamera;
             width = camera.Width;
             height = camera.Height;
-
             renderBuffer = new RenderBuffer(camera,4,false);
             renderBufferId = renderBuffer.RenderBufferDraw;
             renderTex = renderBuffer.RenderTexture;

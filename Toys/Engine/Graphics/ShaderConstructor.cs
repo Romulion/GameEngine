@@ -209,16 +209,16 @@ namespace Toys
                 if (setting.ToonShadow)
 				{
 					if (setting.RecieveShadow)
-						rawFragment += "vec4 shadowcolor  = texture(material.texture_toon,vec2(max(diffuse,shadow))) * 0.6 + vec4(0.4);\n";
+						rawFragment += "vec3 shadowcolor  = texture(material.texture_toon,vec2(max(diffuse,shadow))).xyz * 0.6 + vec3(0.4);\n";
 					else
-						rawFragment += "vec4 shadowcolor  = texture(material.texture_toon,vec2(diffuse)) * 0.6 + vec4(0.4);\n";
+						rawFragment += "vec3 shadowcolor  = texture(material.texture_toon,vec2(diffuse)).xyz * 0.6 + vec3(0.4);\n";
 				}
 				else
 				{
 					if (setting.RecieveShadow)
-						rawFragment += "vec4 shadowcolor  = vec4(vec3(max(diffuse,shadow) * 0.2 + 0.8),1.0);\n";
+						rawFragment += "vec3 shadowcolor  = vec3(max(diffuse,shadow) * 0.2 + 0.8);\n";
 					else
-						rawFragment += "vec4 shadowcolor  = vec4(vec3(diffuse * 0.2 + 0.8),1.0);\n";
+						rawFragment += "vec3 shadowcolor  = vec3(diffuse * 0.2 + 0.8);\n";
 				}
 			}
 			else
@@ -228,15 +228,15 @@ namespace Toys
                 {
                     if (setting.ToonShadow)
                     {
-                        rawFragment += "vec4 shadowcolor  = texture(material.texture_toon,vec2(shadow)));\n";
+                        rawFragment += "vec3 shadowcolor  = texture(material.texture_toon,vec2(shadow))).xyz;\n";
                     }
 						
 					else
-                        rawFragment += "vec4 shadowcolor  = vec4(vec3(1 - shadow* 0.2),1.0);\n";
+                        rawFragment += "vec3 shadowcolor  = vec3(1 - shadow* 0.2);\n";
 				}
 				else
 				{
-					rawFragment += "vec4 shadowcolor  = vec4(1.0);\n";
+					rawFragment += "vec3 shadowcolor  = vec3(1.0);\n";
 				}
 
 			}
@@ -246,6 +246,8 @@ namespace Toys
 				rawFragment += "vec4 envLight = texture(material.texture_spere,vec2(0.5) -normalize(fs_in.NormalLocal).xy * 0.5);\n";
 				if (setting.EnvType == EnvironmentMode.Additive || setting.EnvType == EnvironmentMode.Subtract)
 					rawFragment += "envLight.w = 0;\n";
+				else
+					rawFragment += "envLight.w = 1;\n";
 			}
 
 
@@ -256,7 +258,11 @@ namespace Toys
                 output += "+ material.ambient_color";
             if (setting.SpecularColor)
                 output += "+ abs(material.specular_color * spec)";
-            output += ",0.0,1.0),1)";
+
+			if (setting.DifuseColor)
+				output += ",0.0,1.0),material.diffuse_color.w)";
+			else
+				output += ",0.0,1.0),1)";
 
             output += " * (";
             if (setting.TextureDiffuse)
@@ -271,7 +277,7 @@ namespace Toys
                 output += " - envLight";            
             else if (setting.EnvType == EnvironmentMode.Multiply)
                 mul += " * envLight";
-            output += ") * texture(material.texture_extra, fs_in.Texcord) * shadowcolor";
+            output += ") * texture(material.texture_extra, fs_in.Texcord) * vec4(shadowcolor,1)";
 
             rawFragment += "FragColor = (" + output + ") " + mul  + ";\n";         
             rawFragment += "}\n";

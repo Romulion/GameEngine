@@ -10,8 +10,10 @@ namespace Toys
 		internal ShaderSettings ShaderSettings { get; set; }
         public RenderDirectives RenderDirrectives { get; set; }
 		public Outline Outline;
-		
-		public string Name { get; set; }
+
+		string _name;
+		public string Name { get { return _name; }
+			set { _name = value; SetName(value); } }
 		public int Offset { get; set; }
 		public int Count { get; set; }
         public ShaderUniformManager UniformManager { get; protected set; }
@@ -74,6 +76,13 @@ namespace Toys
 			{
 				CoreEngine.ActiveCore.AddTask = () => CreateShaderThreadUnsafe(vs, fs);
 			}
+			
+		}
+
+		void SetName(string name)
+        {
+			if (name != null)
+			shaderProgram.SetName(name);
 		}
 
 		public virtual void SetTexture(Texture txtr, TextureType type)

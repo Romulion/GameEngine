@@ -57,11 +57,11 @@ namespace Toys
             ReadHeader(reader);
             ReadMesh(reader);
             ReadMaterial(reader);
-            ReadBones(reader);
+            ReadBones(reader);                
             ReadMorhps(reader);
             ReadPanel(reader);
             if (reader.BaseStream.Position != reader.BaseStream.Length)
-            {
+            {            
                 ReadRigit(reader);
                 ReadJoints(reader);
             }
@@ -186,6 +186,7 @@ namespace Toys
                 shdrs.TextureDiffuse = true;
                 shdrs.RecieveShadow = true;
                 shdrs.EnvType = envMode;
+                shdrs.ToonShadow = true;
 
                 var rndr = new RenderDirectives();
                 rndr.HasEdges = hasEdge;
@@ -362,12 +363,15 @@ namespace Toys
                 morphs[i] = morph;
             }
 
-            MorphVertex baseMorph = morphs[0];
-            //local to global index
-            for (int i = 1; i < morphs.Length; i++)
+            if (morphCount > 0)
             {
-                for (int n = 0; n < morphs[i].morph.Length; n++)
-                    morphs[i].morph[n].W = baseMorph.morph[(int)morphs[i].morph[n].W].W;
+                MorphVertex baseMorph = morphs[0];
+                //local to global index
+                for (int i = 1; i < morphs.Length; i++)
+                {
+                    for (int n = 0; n < morphs[i].morph.Length; n++)
+                        morphs[i].morph[n].W = baseMorph.morph[(int)morphs[i].morph[n].W].W;
+                }
             }
         }
 
@@ -395,6 +399,9 @@ namespace Toys
                 //node id
                 reader.ReadByte();
             }
+
+            if (reader.BaseStream.Length == reader.BaseStream.Position)
+                return;
 
             //english names
             bool eng = reader.ReadByte() != 0;
@@ -439,7 +446,7 @@ namespace Toys
 
                 if (toonData[i] == null)
                 {
-                    toonData[i] = ResourcesManager.LoadAsset<Texture2D>(toonName);
+                    toonData[i] = ResourcesManager.LoadAsset<Texture2D>(dir + toonName);
                 }
             }
 
@@ -540,6 +547,7 @@ namespace Toys
             else
             {
                 result = ResourcesManager.LoadAsset<Texture2D>(path);
+                result.WrapMode = TextureWrapMode.Repeat;
                 textures.Add(path, result);
             }
 

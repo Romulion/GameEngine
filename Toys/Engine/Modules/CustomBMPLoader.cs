@@ -59,10 +59,13 @@ namespace Toys
             file.BaseStream.Position = 0x1C;
             int pixelSize = file.ReadInt16();
             Bitmap Bmp = null;
-
-            if (pixelSize == 32)
+            //Check header version (40 - old)
+            file.BaseStream.Position = 0x0E;
+            var headerSize = file.ReadInt32();
+            if (headerSize == 40 && pixelSize == 32)
             {
                 file.BaseStream.Position = 0x0A;
+                
                 var offset = file.ReadInt32();
                 file.BaseStream.Position = offset;
                 byte[] byteData = file.ReadBytes(4 * W * H);
