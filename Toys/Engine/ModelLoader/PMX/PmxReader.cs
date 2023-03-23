@@ -413,7 +413,7 @@ namespace Toys
                 if (maxLevel < bone.Level)
                     maxLevel = bone.Level;
 
-                bones[i] = bone;
+				bones[i] = bone;
 			}
 
 			var reverse = Matrix4.CreateScale(new Vector3(1, 1, -1));
@@ -421,6 +421,7 @@ namespace Toys
 			for (int i = bones.Length - 1; i > -1; i--)
             {
                 Bone bone = bones[i];
+				bone.Index = i;
 				if (bone.ParentIndex >= 0 && bone.ParentIndex < bones.Length)
 				{
 					bone.Parent2Local = Matrix4.CreateTranslation(bone.Position - bones[bone.ParentIndex].Position);
@@ -449,39 +450,42 @@ namespace Toys
 			var boneOrderDeep = new int[bones.Length];
 			var waitList = new List<Bone>();
 			int stride = 0;
-			var toRemove = new List<int>();
+			var toRemove = new List<Bone>();
 			for (int n = 0; n < boneOrder.Length; n++)
 			{
-				for (int i = 0; i < bones.Length; i++)
+				var isMove = false;
+				for (int i = 0; i < boneOrder.Length; i++)
 				{
 					//find bad position
-					if (bones[i].ParentIndex == boneOrder[n] && i < n)
+					if (bones[boneOrder[n]].ParentIndex == boneOrder[i] && i > n)
 					{
+						isMove = true;
 						stride--;
-						waitList.Add(bones[i]);
+						waitList.Add(bones[boneOrder[n]]);
 					}
 
-					boneOrderDeep[n + stride] = bones[i].Index;
-
-					//check if rgtime to replace
-					toRemove.Clear();
-					for (int k = 0; k < waitList.Count; k++)
-					{
-
-						if (waitList[k].ParentIndex == boneOrder[n])
-						{
-							stride++;
-							boneOrderDeep[n] = waitList[k].Index;
-							toRemove.Add(k);
-						}
-					}
-
-					//clear replaced
-					foreach (var num in toRemove)
-						waitList.RemoveAt(num);
 				}
+				if (!isMove)
+					boneOrderDeep[n + stride] = boneOrder[n];
+
+				//check if time to replace
+				for (int k = 0; k < waitList.Count; k++)
+				{
+					if (waitList[k].ParentIndex == boneOrder[n])
+					{
+						stride++;
+						boneOrderDeep[n + stride] = waitList[k].Index;
+						toRemove.Add(waitList[k]);
+					}
+				}
+
+				//clear replaced
+				foreach (var num in toRemove) {
+					waitList.Remove(num);
+				}
+				toRemove.Clear();
 			}
-			
+		
 			boneController = new BoneController(bones, boneOrderDeep);
 
 		}
