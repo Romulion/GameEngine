@@ -181,7 +181,7 @@ namespace Toys
                         move.Y = (delta - move.Y > 0) ? move.Y : delta;
                 }
             }
-
+            
             //update position
             Node.GetTransform.offsetMax += move;
             Node.GetTransform.offsetMin += move;
@@ -197,7 +197,8 @@ namespace Toys
             Vector2 delta = new Vector2();
             delta.X = Node.GetTransform.GlobalRect.Width - Mask.Node.GetTransform.GlobalRect.Width;
             delta.Y = Node.GetTransform.GlobalRect.Height - Mask.Node.GetTransform.GlobalRect.Height;
-            scrollBar.Value = 1 - Node.GetTransform.offsetMax.Y / delta.Y;
+            if (delta.Y > 0)
+                scrollBar.Value = 1 - Node.GetTransform.offsetMax.Y / delta.Y;
         }
 
         internal void UpdatePositionScrollbox(Vector2 move)
@@ -212,11 +213,15 @@ namespace Toys
             delta.X = Node.GetTransform.GlobalRect.Width - Mask.Node.GetTransform.GlobalRect.Width;
             delta.Y = Node.GetTransform.GlobalRect.Height - Mask.Node.GetTransform.GlobalRect.Height;
             //delta
-            Vector2 top = new Vector2();
-            top.X = size.X;
 
-            Node.GetTransform.offsetMax = top + delta * move;
-            Node.GetTransform.offsetMin = Node.GetTransform.offsetMax - size;
+            var deltaMax = Node.GetTransform.Max - Mask.Node.GetTransform.Max;
+            var val = delta * move - deltaMax;
+            if (!ScrollDirection.HasFlag(ScrollMode.Horizontal))
+                val.X = 0;
+            if (!ScrollDirection.HasFlag(ScrollMode.Vertical))
+                val.Y = 0;
+            Node.GetTransform.offsetMax += val;
+            Node.GetTransform.offsetMin += val;
 
             Node.GetTransform.offsetMax /= Node.ParentCanvas.CanvasScale;
             Node.GetTransform.offsetMin /= Node.ParentCanvas.CanvasScale;

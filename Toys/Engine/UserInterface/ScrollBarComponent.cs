@@ -166,7 +166,7 @@ namespace Toys
         {
             if (!ScrollBox)
                 return;
-
+            
             y *= Node.ParentCanvas.CanvasScale;
             x *= Node.ParentCanvas.CanvasScale;
 
