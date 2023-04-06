@@ -370,7 +370,7 @@ namespace Toys
                 for (int i = 1; i < morphs.Length; i++)
                 {
                     for (int n = 0; n < morphs[i].morph.Length; n++)
-                        morphs[i].morph[n].W = baseMorph.morph[(int)morphs[i].morph[n].W].W;
+                        morphs[i].morph[n].ID = baseMorph.morph[morphs[i].morph[n].ID].ID;
                 }
             }
         }

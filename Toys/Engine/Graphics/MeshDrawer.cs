@@ -43,11 +43,15 @@ namespace Toys
         internal virtual void Prepare()
         {
 
+            if (Morphes != null)
+            {
+                Mesh.GetMorpher.PerformMorph();
+            }
         }
-		/*
+        /*
 		 * main drawing
 		*/
-		internal virtual void Draw()
+        internal virtual void Draw()
 		{
             //skip not loaded models
             if (!Mesh.IsReady)

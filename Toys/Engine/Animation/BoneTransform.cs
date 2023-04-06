@@ -87,24 +87,25 @@ namespace Toys
             //additional parent bone
             if (IsRotateAdd && AddParent != null)
 	        {
-		        var addRotation = Quaternion.Identity;
+                AddRotation = Quaternion.Identity;
 		        if (!IsAddLocal)
 		        {
-			        addRotation = ((!AddParent.IsRotateAdd) ? AddParent.Rotation : AddParent.AddRotation);
+                    AddRotation = ((!AddParent.IsRotateAdd) ? AddParent.Rotation : AddParent.AddRotation);
 		        }
 		        else
 		        {
-                    addRotation = AddParent.LocalMatrix.ExtractRotation();
+                    AddRotation = AddParent.LocalMatrix.ExtractRotation();
 		        }
 		        if (AddParent.IsIKLink && !IsAddLocal)
 		        {
-                    addRotation = AddParent.IKRotation * addRotation;
+                    AddRotation = AddParent.IKRotation * AddRotation;
 		        }
 		        if (AddRatio != 1f)
 		        {
-                    addRotation = Quaternion.Slerp(Quaternion.Identity, AddRotation, AddRatio);
+                    AddRotation = Quaternion.Slerp(Quaternion.Identity, AddRotation, AddRatio);
 		        }
-		        rot = (AddRotation = rot * addRotation);
+
+		        rot  *= AddRotation;
 	        }
 	        if (IsTranslateAdd && AddParent != null)
 	        {

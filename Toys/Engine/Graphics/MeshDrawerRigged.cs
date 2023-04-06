@@ -34,6 +34,7 @@ namespace Toys
 
         internal override void Prepare()
         {
+            base.Prepare();
             skeleton.UpdateSkeleton();
 #if !VertexSkin
             uniformBufferSkeleton.SetBones(skeleton.GetSkeleton);

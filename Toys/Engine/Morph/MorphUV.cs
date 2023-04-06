@@ -7,14 +7,14 @@ namespace Toys
 	public class MorphUV : Morph
 	{
 
-		Vector3[] morph;
+		UVMorphData[] morph;
 		int offset = 0;
 		public MeshMorper MeshMorpher { private set; get; }
 
 		public MorphUV(string name, string nameEng, int count, MeshMorper meshMorper)
 		{
             MeshMorpher = meshMorper;
-            morph = new Vector3[count];
+            morph = new UVMorphData[count];
 			Name = name;
 			NameEng = nameEng;
 			Type = MorphType.Uv;
@@ -24,11 +24,11 @@ namespace Toys
 
 		public void AddVertex(Vector2 pos, int index)
 		{
-			morph[offset] = new Vector3(pos.X, pos.Y, index);
+			morph[offset] = new UVMorphData() {UV = pos, ID = index };
 			offset++;
 		}
 
-		public Vector3[] GetMorph
+		public UVMorphData[] GetMorph
 		{
 			get { return morph; }
 		}
