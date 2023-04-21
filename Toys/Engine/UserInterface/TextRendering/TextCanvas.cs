@@ -27,14 +27,17 @@ namespace Toys
         public TextAlignVertical alignVertical;
         internal int VAO;
         internal int VBO;
-        internal string Text = "";
+        internal string Text { get { return text; } set { text = value; IsTextUpdated = true; } }
         internal int StringLength;
         public Vector2 Position = Vector2.Zero;
-        public float Scale = 1;
+        public float Scale { get { return scale; }  set { scale = value; IsTextUpdated = true; } }
         public Vector3 colour = Vector3.One;
         internal int Length;
         internal float Width = 0;
         internal float Heigth = 0;
+        string text = "";
+        float scale = 1;
+        internal bool IsTextUpdated;
         internal TextCanvas (int vao, int vbo)
         {
             alignHorizontal = TextAlignHorizontal.Left;

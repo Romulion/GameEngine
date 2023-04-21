@@ -63,11 +63,11 @@ namespace Toys
                 }
                 else if (remove && inputContext.Text.Text.Length > 0)
                 {
-                    inputContext.Text.SetText(inputContext.Text.Text.Substring(0, inputContext.Text.Text.Length - 1));
+                    inputContext.Text.Text = inputContext.Text.Text.Substring(0, inputContext.Text.Text.Length - 1);
                     remove = false;
                 }
                 else if (textBuffer.Length > 0)
-                    inputContext.Text.SetText(inputContext.Text.Text + textBuffer.ToString());
+                    inputContext.Text.Text = inputContext.Text.Text + textBuffer.ToString();
             }
 
             textBuffer.Clear();

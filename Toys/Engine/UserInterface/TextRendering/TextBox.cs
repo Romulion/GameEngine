@@ -9,9 +9,21 @@ namespace Toys
 {
     public class TextBox : VisualComponent
     {
-        public string Text { get; private set; }
+        public string Text { get { return textCanvas.Text; }
+            set
+            {
+                textCanvas.Text = value;
+            }
+        }
         Vector2 pos = Vector2.Zero;
-        float scale = 1;
+        public float Scale
+        {
+            get { return textCanvas.Scale; }
+            set
+            {
+                textCanvas.Scale = value;
+            }
+        }
 
         public TextCanvas textCanvas { get; private set; }
 
@@ -25,25 +37,10 @@ namespace Toys
             textCanvas.alignVertical = TextAlignVertical.Center;
         }
 
-        public void SetText(string text)
-        {
-            Text = text;
-            textCanvas.Text = text;
-            textRenderer.UpdateText(textCanvas);
-        }
-
-        public void SetScale(float scale)
-        {
-            textCanvas.Scale = scale;
-            if (textCanvas.Text != "")
-                textRenderer.UpdateText(textCanvas);
-        }
-
         protected override void Unload()
         {
-            textRenderer.UpdateText(textCanvas);
+            textRenderer.UnloadText(textCanvas);
         }
-
 
         internal override void AddComponent(UIElement node)
         {
@@ -60,15 +57,20 @@ namespace Toys
 
         internal override void Draw(Matrix4 worldTransform)
         {
+            
+            if (textCanvas.IsTextUpdated)
+            {
+                textRenderer.UpdateText(textCanvas);
+                textCanvas.IsTextUpdated = false;
+            }
+            
             CoreEngine.GfxEngine.TextRender.Render(this, worldTransform);
         }
 
         public override VisualComponent Clone()
         {
             var text = new TextBox();
-            text.Text = Text;
             text.pos = pos;
-            text.scale = scale;
             textCanvas.CloneTo(text.textCanvas);
             textRenderer.UpdateText(text.textCanvas);
             return text;

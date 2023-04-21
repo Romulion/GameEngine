@@ -26,7 +26,7 @@ namespace Toys.UserInterface
             label.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
             label.textCanvas.alignVertical = TextAlignVertical.Center;
 
-            label.SetText(text);
+            label.Text = text;
             label.textCanvas.Scale = 0.5f;
         }
 
@@ -37,7 +37,7 @@ namespace Toys.UserInterface
         public string Text
         {
             get { return label.Text; }
-            set { label.SetText(value); }
+            set { label.Text = value; }
         }
 
 
