@@ -182,7 +182,7 @@ namespace Toys
 			GL.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
 
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, VBO);
-        }
+		}
 
 		public MeshMorper GetMorpher
 		{
@@ -192,7 +192,7 @@ namespace Toys
 #if VertexSkin
                     morpher = new MeshMorper(vert, VBO, vSize);
 #else
-                    morpher = new MeshMorper(Vertices, SSB0, VertexSize);
+                    morpher = new MeshMorper(VertexRigged, SSB0, VertexSize);
 #endif
                 return morpher; 
 			}
