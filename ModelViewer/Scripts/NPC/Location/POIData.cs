@@ -13,14 +13,12 @@ namespace ModelViewer
         public string Name { get; private set; }
         public Vector3 Direction { get; private set; }
         public Vector3 Position { get; private set; }
-        public SceneNode Object { get; private set; }
 
-        public POIData(string name, Vector3 dir, Vector3 pos, SceneNode obj)
+        public POIData(string name, Vector3 dir, Vector3 pos)
         {
             Name = name;
             Direction = dir;
             Position = pos;
-            Object = obj;
         }
     }
 }

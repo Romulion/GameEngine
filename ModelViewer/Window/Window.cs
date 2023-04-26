@@ -22,8 +22,7 @@ namespace ModelViewer
             Build();
             DeleteEvent += delegate { Application.Quit(); };
             var disable = new Gdk.Color(10, 200, 10);
-
-            DrawScene(scene);
+            //DrawScene(scene);
             //SetAnimator(anim);
             //CreateWindow();
         }
@@ -63,7 +62,7 @@ namespace ModelViewer
                 scale.Value = morph.MorphDegree;
                 scale.ValueChanged += (sender, e) =>
                 {
-                    core.AddTask = () => morph.MorphDegree = (float)scale.Value;
+                    morph.MorphDegree = (float)scale.Value;
                 };
 
                 fixed7.Put(scale, 100, y);
@@ -80,7 +79,7 @@ namespace ModelViewer
             fileChooserAdd.Name = "filechooserbutton3";
             fileChooserAdd.FileSet += (sender, e) =>
             {
-                var wait = core.AddNotyfyTask(() =>
+                var wait = new System.Threading.Tasks.Task(() =>
                 {
                     SceneNode modelNode = ResourcesManager.LoadAsset<ModelPrefab>(fileChooserAdd.Filename).CreateNode();
                     scene.AddNode2Root(modelNode);
@@ -88,12 +87,13 @@ namespace ModelViewer
                     var path = System.IO.Path.GetDirectoryName(fileChooserAdd.Filename);
                     modelNode.Name = path.Substring(path.LastIndexOf('\\') + 1) + "." + System.IO.Path.GetFileNameWithoutExtension(fileChooserAdd.Filename);
                 });
-                wait.WaitOne();
+                wait.Wait();
                 ClearChildrens(fixedScene);
                 DrawScene(scene);
             };
             fixedScene.Put(fileChooserAdd, 0, 0);
             fileChooserAdd.Show();
+            
             int y = 35;
             foreach (var node in scene.GetNodes())
             {
@@ -153,7 +153,7 @@ namespace ModelViewer
                 else
                 {
                     Button btn = new Button();
-                    btn.Label = component.Type.Name;
+                    btn.Label = component.GetType().Name;
                     btn.Clicked += (sender, e) => {DrawComponent(component); };
                     btn.Name = "btnComp";
                     fixedComponents.Put(btn, 0, y);
@@ -193,7 +193,7 @@ namespace ModelViewer
                 fixed4.Put(btn, 0, y);
                 btn.Show();
                 y += 35;
-                btn.Clicked += (s, e) => { SetMorphList(meshDrawer.Morphes); fixed6.Show(); notebook.Page = morphPanel; };
+                btn.Clicked += (s, e) => { SetMorphList(meshDrawer.Morphes.ToArray()); fixed6.Show(); notebook.Page = morphPanel; };
             }
             foreach (var mat in meshDrawer.Materials)
             {
@@ -231,18 +231,16 @@ namespace ModelViewer
         void DrawComponent(Component comp)
         {
             ClearChildrens(fixed4);
-            var fieds = comp.Type.GetProperties();
+            var fieds = comp.GetType().GetProperties();
             int offset = 0;
             foreach (var fied in fieds)
             {
-                PropertiesButtons.DrawField(comp, fied, fixed4, ref offset);
+               // PropertiesButtons.DrawField(comp, fied, fixed4, ref offset);
             }
         }
 
         void AnimatorWindow(Animator animator)
-        {
-            var timer = new Time();
-            
+        {            
             ClearChildrens(fixed4);
             fileChooser = new FileChooserButton("Select a File", FileChooserAction.Open);
             fileChooser.WidthRequest = 124;
@@ -277,7 +275,7 @@ namespace ModelViewer
             {
                 try
                 {
-                    var an = AnimationLoader.Load(fileChooser.Filename);
+                    var an = AnimationLoader.Load(System.IO.File.OpenRead(fileChooser.Filename), fileChooser.Filename);
                     if (an != null)
                         animator.AnimationData = an;
                 }

@@ -3,191 +3,130 @@ using Toys;
 using OpenTK.Mathematics;
 using BulletSharp;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace ModelViewer
 {
-    
-    class NpcAI : ScriptingComponent
+
+    class NpcAI
     {
         public bool Busy { get; private set; }
-        float headSpeed = (float)(1.7f * Math.PI / 180);
         BoneTransform head;
-        int i = 0;
         SphereShape headBox;
         public RigidBody headBody;
-        bool looked;
-        SceneNode lookTo;
-        Vector2 angle;
-        Vector2 targetAngle;
-        Vector2 angSpeed;
-        float thetaDef = 0;
-        float phiDef = 0;
-        float thetaMin = -60 * MathF.PI / 180;
-        float thetaMax = 60 * MathF.PI / 180;
-        float phiMin = -70 * MathF.PI / 180;
-        float phiMax = 70 * MathF.PI / 180;
         int timer = 180;
         AudioSource audio;
-        NPCFaceController faceController;
+        public NPCFaceController FaceController { get; private set; }
+        public NPCHeadController HeadController { get; private set; }
+        public NPCBreatheControll BreatheControll { get; private set; }
         Dictionary<int, NPCExpression> expressionDict = new Dictionary<int, NPCExpression>();
 
         SceneNode textBubbleCanvas;
+        Canvas textboxCanvas;
         TextBox textBubble;
-        Dictionary<int, Tuple<string, int, int>> dialogData = new Dictionary<int, Tuple<string, int, int>>();
-        AudioClip clip;
-        void Start()
-        {
-            var rigged = Node.GetComponent<Animator>();
-            if (rigged)
-            {
-                head = rigged.BoneController.GetBone("頭");
-                head.FollowAnimation = false;
-            }
-            //create head ray collision object
-            headBox = new SphereShape(0.35f);
-            var rbInfo = new RigidBodyConstructionInfo(0, new DefaultMotionState(Matrix4.Identity.Convert()), headBox, BulletSharp.Math.Vector3.Zero);
-            headBody = new RigidBody(rbInfo);
-            CoreEngine.pEngine.World.AddRigidBody(headBody, (int)CollisionFilleters.Look, (int)CollisionFilleters.Look);
-            //headBody.CollisionFlags |= CollisionFlags.KinematicObject;
-            headBody.UserObject = new Action<SceneNode>(triggerSwitch);
-            headBody.UserIndex = 1;
-            targetAngle = new Vector2(thetaDef,phiDef);
-            angle = targetAngle;
-            angSpeed = Vector2.Zero;
-            audio = Node.AddComponent<AudioSource>();
+        readonly Dictionary<int, Tuple<string, int, int>> dialogData = new Dictionary<int, Tuple<string, int, int>>();
+        //AudioClip clip;
+        Action onClipLoad;
 
+        SceneNode CharNode;
+        public NpcAI(SceneNode charNode)
+        {
+            CharNode = charNode;
+            var rigged = CharNode.GetComponent<Animator>();
+            audio = CharNode.AddComponent<AudioSource>();
+
+            HeadController = new NPCHeadController(charNode);
+            BreatheControll = new NPCBreatheControll(rigged) {IsBreathing = true };
+            //collider
+            SetupHeadCollider(rigged);
             PrepareExpressions(rigged);
-            PrepareSpeech();
+            PrepareSpeechBubble();
         }
 
 
-        void Update()
+        internal void Update()
         {
-            textBubbleCanvas.GetTransform.LookAt(CoreEngine.GetCamera.GetPos);
-
-            faceController.Update();
-            var transform = head.World2BoneInitial * head.TransformMatrix * Node.GetTransform.GlobalTransform;
-            headBody.WorldTransform = transform.Convert();
-            i++;
-            if (looked && timer-- == 0)
-                triggerSwitch(null);
-            if (CoreEngine.time.FrameCount % 10 == 0 && looked)
-                HeadTrack();
-
-            if (targetAngle != angle)
+            if (onClipLoad != null)
             {
-                var angleStep = targetAngle - angle;
-
-                if (MathF.Abs(angleStep.X) > MathF.Abs(angSpeed.X))
-                    angleStep.X = angSpeed.X;
-                if (MathF.Abs(angleStep.Y) > MathF.Abs(angSpeed.Y))
-                    angleStep.Y = angSpeed.Y;
-                angle += angleStep;
-                head.SetTransform(Quaternion.FromAxisAngle(Vector3.UnitY, -angle.X) * Quaternion.FromAxisAngle(Vector3.UnitX, angle.Y));
+                textboxCanvas.IsActive = true;
+                onClipLoad.Invoke();
+                onClipLoad = null;
             }
 
+            if (textboxCanvas.IsActive)
+                textBubbleCanvas.GetTransform.LookAt(CoreEngine.GetCamera.GetPos);
+
+            FaceController.Update();
+            HeadController.Update();
+            BreatheControll.Update();
+            //collider
+            //Update head collider
+
+            var transform = head.World2BoneInitial * head.TransformMatrix * CharNode.GetTransform.GlobalTransform;
+            headBody.WorldTransform = transform.Convert();
+            if (HeadController.IsTrackTarget && timer-- == 0)
+                triggerSwitch(null);
+            
+
+            if (textboxCanvas.IsActive && !audio.IsPlaing)
+                textboxCanvas.IsActive = false;
         }
 
         void triggerSwitch(SceneNode looker)
         {
-
             //skip message if script detached
-            if (!Node)
+            if (!CharNode)
                 return;
-
-            if (looker == null && lookTo != null)
+            /*
+            if (looker == null && headController.LookTarget != null)
             {
-                looked = false;
-                targetAngle.Y = thetaDef;
-                targetAngle.X = phiDef;
-                CalcRotation();
-                lookTo = null;
-                faceController.SetDefaultEspression(0.3f);
+                headController.IsTrackTarget = false;
+                headController.Return2Base();
+                headController.LookTarget = null;
+                FaceController.SetDefaultEspression(0.3f);
             }
             else if (looker != null)
             {
-                looked = true;
+                headController.IsTrackTarget = true;
                 timer = 300;
 
-                if (lookTo == null)
+                if (headController.LookTarget == null)
                 {
                     if (!audio.IsPlaing)
                     {
-                        PlayRandomVoice();
+                        //PlayRandomVoice();
                     }
-                    faceController.ChangeEspression(expressionDict[1], 0.4f);
+                    FaceController.ChangeEspression(expressionDict[1], 0.4f);
                 }
 
-                if (looker != lookTo)
+                if (looker != headController.LookTarget)
                 {
-                    lookTo = looker;
-                    HeadTrack();
+                    headController.LookTarget = looker;
+                    headController.HeadTrack();
                 }
-
-                
             }
+            */
         }
 
-        void HeadTrack()
+        void SetupHeadCollider(Animator rigged)
         {
-            var transform = head.World2BoneInitial * Node.GetTransform.GlobalTransform;
-            var lookDest = lookTo.GetTransform.GlobalTransform.ExtractTranslation() - transform.ExtractTranslation();
-
-            var lookInit = (new Vector4(0, 0, 1, 1) * transform).Xyz - transform.ExtractTranslation();
-
-            var angleInit = Toys.MathHelper.ConvertVector2SphereAngles(lookInit);
-            //phi
-            targetAngle.X = MathF.Atan2(lookDest.Z, lookDest.X);
-            //theta
-            targetAngle.Y = MathF.Acos(lookDest.Y / lookDest.Xzy.Length);
-
-            targetAngle -= angleInit;
-
-
-
-            //limit rotation
-            if (targetAngle.X > MathF.PI)
-                targetAngle.X -= 2 * MathF.PI;
-            else if (targetAngle.X < -MathF.PI)
-                targetAngle.X += 2 * MathF.PI;
-
-            if (targetAngle.Y < thetaMin)
-                targetAngle.Y = thetaMin;
-            else if (targetAngle.Y > thetaMax)
-                targetAngle.Y = thetaMax;
-
-            if (targetAngle.X < phiMin)
-                targetAngle.X = phiMin;
-            else if (targetAngle.X > phiMax)
-                targetAngle.X = phiMax;
-
-            CalcRotation();
+            if (rigged)
+                head = rigged.BoneController.GetBone("頭");
+            //create head ray collision object
+            headBox = new SphereShape(0.35f);
+            var rbInfo = new RigidBodyConstructionInfo(0, new DefaultMotionState(Matrix4.Identity.Convert()), headBox, BulletSharp.Math.Vector3.Zero);
+            headBody = new RigidBody(rbInfo);
+            CoreEngine.PhysEngine.World.AddRigidBody(headBody, (int)CollisionFilleters.Look, (int)CollisionFilleters.Look);
+            //headBody.CollisionFlags |= CollisionFlags.KinematicObject;
+            headBody.UserObject = new Action<SceneNode>(triggerSwitch);
+            headBody.UserIndex = 1;
         }
-
-        void CalcRotation()
-        {
-            var angleDelta = targetAngle - angle;
-
-            //diagonal speed calculation
-            if (angleDelta.X == 0)
-            {
-                angSpeed.X = 0;
-                angSpeed.Y = Math.Sign(angleDelta.Y) * headSpeed;
-            }
-            else
-            {
-                angSpeed.X = (float)Math.Sqrt(Math.Pow(headSpeed, 2) * Math.Pow(angleDelta.X, 2) / (Math.Pow(angleDelta.X, 2) + Math.Pow(angleDelta.Y, 2)));
-                angSpeed.Y = angSpeed.X * Math.Abs(angleDelta.Y / angleDelta.X);
-
-                angSpeed.X = Math.Sign(angleDelta.X) * angSpeed.X;
-                angSpeed.Y = Math.Sign(angleDelta.Y) * angSpeed.Y;
-            }
-        }
-
         void PrepareExpressions(Animator rigged)
         {
-            var meshDrawer = Node.GetComponent<MeshDrawer>();
-            faceController = new NPCFaceController(meshDrawer, rigged);
+            var meshDrawer = CharNode.GetComponent<MeshDrawerRigged>();
+            FaceController = new NPCFaceController(meshDrawer, rigged, audio);
+            FaceController.IsLipSync = true;
 
             var expression = new NPCExpression("Default");
             expressionDict.Add(1, expression);
@@ -251,13 +190,26 @@ namespace ModelViewer
 
             expression = new NPCExpression("Exhausterd");
             expression.SetExpression("悲しい", 1);
-            expression.SetExpression("汗右", 1f);
             expression.SetExpression("汗", 1f);
             expression.SetExpression("半目", 1f);
             expression.SetExpression("無表情", 1f);
             //expression.SetExpression("照れ", 1);
             expressionDict.Add(10, expression);
 
+            expression = new NPCExpression("Smug");
+            expression.SetExpression("ω", 1);
+            expression.SetExpression("ジト目", 1);
+            expressionDict.Add(11, expression);
+
+            expression = new NPCExpression("Broken");
+            expression.SetExpression("HL無し", 1);
+            expression.SetExpression("無表情", 1f);
+            expressionDict.Add(12, expression);
+
+            expression = new NPCExpression("Terrified");
+            expression.SetExpression("瞳小", 1);
+            expression.SetExpression("無表情", 1f);
+            expressionDict.Add(13, expression);
         }
 
         public void PlayRandomVoice()
@@ -265,15 +217,42 @@ namespace ModelViewer
             var randomizer = new Random();
             var num = randomizer.Next(1, 198);
 
-            if (clip)
-                ResourcesManager.DeleteResource(clip);
-            clip = ResourcesManager.LoadAsset<AudioClip>(@"Assets\Sound\13\voice_" + num.ToString().PadLeft(3, '0') + ".mp3");
-            audio.SetAudioClip(clip);
-            audio.Play();
-            faceController.ChangeEspression(expressionDict[dialogData[num].Item2], 0.2f);
-            textBubble.SetText(dialogData[num].Item1);
+            PlayVoice(num);
         }
-        void PrepareSpeech()
+
+        public void PlayVoice(int ID)
+        {
+            /*
+            if (clip)
+            {
+                ResourcesManager.DeleteResource(clip);
+                clip = null;
+            }
+            */
+            var clipTask = ResourcesManager.LoadAssetAsync<AudioClip>(@"Assets\Sound\13\voice_" + ID.ToString().PadLeft(3, '0') + ".mp3");
+            clipTask.ContinueWith((clipT) =>
+           {
+               onClipLoad += () => {
+
+                   audio.SetAudioClip(clipT.Result);
+                   audio.Play();
+                   FaceController.ChangeEspression(expressionDict[dialogData[ID].Item2], 0.2f);
+                   textBubble.Text = dialogData[ID].Item1;
+               };
+           });
+        }
+
+        public NPCExpression[] GetExpressions()
+        {
+            return expressionDict.Values.ToArray();
+        }
+
+        public void SetExpression(NPCExpression expression)
+        {
+            FaceController.ChangeEspression(expression, 0.2f);
+        }
+
+        void PrepareSpeechBubble()
         {
             var reader = System.IO.File.ReadLines(@"Assets\Sound\13\voice_text_13.txt");
             foreach(var line in reader)
@@ -284,9 +263,10 @@ namespace ModelViewer
 
             
             textBubbleCanvas = new SceneNode();
+            textBubbleCanvas.Name = "TextBubble";
             textBubbleCanvas.GetTransform.Position = new Vector3(0, 1.8f, 0);
-            textBubbleCanvas.SetParent(Node);
-            var textboxCanvas = textBubbleCanvas.AddComponent<Canvas>();
+            textBubbleCanvas.SetParent(CharNode);
+            textboxCanvas = textBubbleCanvas.AddComponent<Canvas>();
             var root = new UIElement();
             textboxCanvas.Add2Root(root);
             root.AddComponent<RawImage>();
@@ -297,18 +277,19 @@ namespace ModelViewer
             rect.anchorMin = new Vector2(0, 0);
             rect.offsetMin = new Vector2(-100, -30);
             rect.offsetMax = new Vector2(100, 30);
-            textBubble.SetText("");
+            textBubble.Text = "";
             textBubble.textCanvas.colour = Vector3.Zero;
             textBubble.textCanvas.alignVertical = TextAlignVertical.Center;
             textBubble.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
             textBubble.textCanvas.Scale = 0.5f;
             textboxCanvas.Mode = Canvas.RenderMode.WorldSpace;
             textboxCanvas.Canvas2WorldScale = 0.0025f;
-            
+
+            textboxCanvas.IsActive = false;
         }
-        protected override void Destroy()
+        internal void Destroy()
         {
-            CoreEngine.pEngine.World.RemoveCollisionObject(headBody);
+            CoreEngine.PhysEngine.World.RemoveCollisionObject(headBody);
             headBody.Dispose();
         }
     }

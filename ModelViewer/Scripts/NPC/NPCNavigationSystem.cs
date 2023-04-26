@@ -8,27 +8,53 @@ using Toys;
 
 namespace ModelViewer
 {
-    class NPCNavigationSystem
+    class NPCNavigationSystem : ScriptingComponent
     {
-        List<POIData> POIs = new List<POIData>();
+        List<LocationState> locations = new List<LocationState>();
+        public LocationState Current;
 
-        void Start()
+        void Awake()
         {
-            InitializePOIList();
+            InitializeLocationsList();
         }
 
-        void InitializePOIList()
+        void InitializeLocationsList()
         {
-            POIs.Add(new POIData("Sofa2", Vector3.UnitZ, new Vector3(-0.375f, 0, 0.4f), GetNodeByName("Furniture.Sofa2")));
-            POIs.Add(new POIData("Toilet", Vector3.UnitZ, new Vector3(0f, 0, 0.35f), GetNodeByName("Furniture.Toilet")));
-            POIs.Add(new POIData("ChairLiving", Vector3.UnitZ, new Vector3(0, 0, 0.4f), GetNodeByName("Furniture.ChairLiving")));
-            POIs.Add(new POIData("ChairDining#1", Vector3.UnitX, new Vector3(-0.375f, 0, 0f), GetNodeByName("Furniture.ChairDining#1")));
+            AddLocation("Sofa2", GetNodeByName("Furniture.Sofa2"), new POIData[] { new POIData("Seat1", Vector3.UnitZ, new Vector3(-0.375f, 0, 0.4f)) });
+            AddLocation("Toilet", GetNodeByName("Furniture.Toilet"), new POIData[] { new POIData("Seat1", Vector3.UnitZ, new Vector3(0f, 0, 0.35f)) });
+            AddLocation("ChairLiving", GetNodeByName("Furniture.ChairLiving"), new POIData[] { new POIData("Seat1", Vector3.UnitZ, new Vector3(0, 0, 0.4f)) });
+            AddLocation("Bench", GetNodeByName("Furniture.Bench"), new POIData[] { new POIData("Seat1", Vector3.UnitZ, new Vector3(-0.375f, 0, 0.4f)) });
         }
 
 
-        public void AddPOI(string name, Vector3 dir, Vector3 pos, string obj)
+        public void AddLocation(string name, SceneNode node, POIData[] pois)
         {
-            POIs.Add(new POIData(name, dir, pos, GetNodeByName(obj)));
+            if (node != null)
+            {
+                locations.Add(new ChairSeatState(name, node, pois));
+            }
+        }
+
+        public LocationState GetLocationByName(string name)
+        {
+            return locations.Find((e) => e.Name == name);
+        }
+
+        public LocationState GetClosest(SceneNode npcNode, LocationState.StateType type)
+        {
+            LocationState loc = null;
+            float lastDistance = 0;            
+            foreach (var location in locations.FindAll((m) => (m.Type & type) > 0))
+            {
+                float distance = (npcNode.GetTransform.Position - location.SceneObject.GetTransform.Position).LengthSquared;
+                if (loc == null || distance < lastDistance)
+                {
+                    loc = location;
+                    lastDistance = distance;
+                }
+            }
+            
+            return loc;
         }
 
         SceneNode GetNodeByName(string name)

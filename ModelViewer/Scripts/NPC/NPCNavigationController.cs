@@ -9,22 +9,26 @@ using OpenTK.Mathematics;
 
 namespace ModelViewer
 {
-    class NPCNavigationController : ScriptingComponent
+    /// <summary>
+    /// Low level acess to character move data
+    /// </summary>
+    class NPCNavigationController
     {
-        public NavigationMesh navMesh;
-        public Material[] Materials;
+        public LocationState CurrentLocation;
+        NavigationMesh navMesh;
+        Material[] Materials;
         Task<Vector3[]> pathTask;
         Vector3[] path;
         NavigationAgent navAgent;
-        public bool isWalking { get; private set; }
-        int waipoint = 0;
+        public bool IsWalking { get; private set; }
+        int waypoint = 0;
         public float speed = 0.03f;
         Vector3 direction;
         float prevDist;
         Animator animator;
         public AnimationController AnimController { get; private set; }
-        float keepDistance = 0.7f;
-        bool IsRotating = false;
+        float keepDistance = 1.0f;
+        public bool IsRotating { get; private set; }
         float roteteSpeed = Toys.MathHelper.ConvertGrad2Radians(5);
         bool IsStartImmedeatly = false;
         bool isKeepDistance = false;
@@ -33,17 +37,21 @@ namespace ModelViewer
         Action OnComplete = null;
         //Debug
         List<SceneNode> pathPoints = new List<SceneNode>();
+        SceneNode Node;
 
-        void Start()
+        public NPCNavigationController(SceneNode node)
         {
+            Node = node;
             //CreateNavMesh();
             navMesh = NavigationMesh.GetInstance;
             navAgent = new NavigationAgent(navMesh);
             navAgent.AgentSize = .3f;
+            IsTaskCompleted = true;
+            var trans = Node.GetTransform.GlobalTransform;
+            direction = new Vector3(trans.M13, trans.M23, trans.M33);
             try
             {
                 CreateAnimationController();
-
             }
             catch (Exception e) { Console.WriteLine(e.Message); }
         }
@@ -59,9 +67,9 @@ namespace ModelViewer
 
         public void Go()
         {
-            if (path != null && path.Length > 0 && !isWalking)
+            if (path != null && path.Length > 0 && !IsWalking)
             {
-                isWalking = true;
+                IsWalking = true;
                 AnimController.SetFloat("speed", 1f);
             }
             else
@@ -75,10 +83,15 @@ namespace ModelViewer
             IsStartImmedeatly = true;
             path = null;
             isKeepDistance = keepDistance;
-            pathTask = navAgent.SearchPathAsync(Node.GetTransform.Position, dest);
+            //check if at position
+            if ((Node.GetTransform.Position - dest).LengthSquared > 0.0001f) //1cm
+            {
+                pathTask = navAgent.SearchPathAsync(Node.GetTransform.Position, dest);
+            }
             targetDirection = faceDirection;
             OnComplete = onComplete;
             IsTaskCompleted = false;
+
 #if DebugPath
             var point = CreatePoint(dest);
             pathPoints.Add(point);
@@ -86,9 +99,20 @@ namespace ModelViewer
 #endif
         }
 
-        void Update()
+        public void Stop()
         {
-            if (AnimController.CurrentAnimation.Name != "Idle" && !isWalking)
+            IsWalking = false;
+            IsRotating = false;
+            path = null;
+            IsStartImmedeatly = false;
+            OnComplete = null;
+            IsTaskCompleted = true;
+            AnimController.SetFloat("speed", 0f);
+        }
+
+        internal void Update()
+        {
+            if (AnimController.CurrentAnimation.Name != "Idle" && !IsWalking)
                 return;
             if (IsRotating)
                 RotateToDirection(direction);
@@ -108,7 +132,7 @@ namespace ModelViewer
                 if (path.Length > 0)
                 {
                     //UpdatePathColor();
-                    waipoint = 0;
+                    waypoint = 0;
                     direction = path[0] - Node.GetTransform.Position;
                     prevDist = direction.Length;
                     direction.Normalize();
@@ -122,7 +146,7 @@ namespace ModelViewer
                         dest = direction;
                     dest.Normalize();
                     if (isKeepDistance)
-                        path[path.Length - 1] -= dest * keepDistance;
+                        path[^1] -= dest * keepDistance;
 
                     if (IsStartImmedeatly)
                     {
@@ -133,22 +157,22 @@ namespace ModelViewer
                 }
                 else
                 {
-                    Console.WriteLine("path creation failed");
+                    Logger.Warning("path creation failed");
                 }
                 pathTask = null;
             }
-            else if (path != null && isWalking)
+            else if (path != null && IsWalking)
             {
                 var coord = Node.GetTransform.Position;
-                path[waipoint].Y = 0;
-                var distance = (coord - path[waipoint]).Length;
-                if (distance < 0.06f || prevDist < distance)
+                path[waypoint].Y = 0;
+                var distance = (coord - path[waypoint]).Length;
+                if (distance < 0.01f || prevDist < distance)
                 {
                     //New waipoint
-                    if (waipoint < path.Length - 1)
+                    if (waypoint < path.Length - 1)
                     {
-                        waipoint++;
-                        Vector3 dir = path[waipoint] - Node.GetTransform.Position;
+                        waypoint++;
+                        Vector3 dir = path[waypoint] - Node.GetTransform.Position;
                         prevDist = dir.Length;
                         dir.Normalize();
                         direction = dir;
@@ -159,11 +183,12 @@ namespace ModelViewer
                     {
                         AnimController.SetFloat("speed", 0f);
                         path = null;
-                        isWalking = false;
+                        IsWalking = false;
 
                         if (targetDirection != Vector3.Zero)
                         {
                             direction = targetDirection;
+                            targetDirection = Vector3.Zero;
                             IsRotating = true;
                         }
                         else
@@ -181,6 +206,19 @@ namespace ModelViewer
                     prevDist = distance;
                 }
 
+            }
+            //rotate bo desired direction
+            else if (path == null && pathTask == null && targetDirection != Vector3.Zero)
+            {
+                direction = targetDirection;
+                IsRotating = true;
+                targetDirection = Vector3.Zero;
+            }
+            //finish task
+            else if (!IsTaskCompleted && path == null && pathTask == null)
+            {
+                OnComplete?.Invoke();
+                Stop();
             }
 
         }
@@ -202,13 +240,14 @@ namespace ModelViewer
             if (MathF.Abs(angle) < roteteSpeed)
             {
                 IsRotating = false;
-                if (direction == targetDirection)
+                /*
+                if (path == null && Vector3.Dot(direction, targetDirection) > 0.99f)
                 {
                     targetDirection = Vector3.Zero;
                     IsTaskCompleted = true;
                     OnComplete?.Invoke();
                 }
-
+                */
             }
             else
                 angle = (angle < 0) ? -roteteSpeed : roteteSpeed;
@@ -265,16 +304,16 @@ namespace ModelViewer
 
             
 
-            var idle = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\02.vmd"));
-            var walk = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\walk001.vmd"));
-            var sitDown = new AnimationNode(ResourcesManager.LoadAsset <Animation>(@"Assets\Animations\SitDownMumi.vmd"));
-            var sitIdle = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\SitIdleMumi.vmd"));
-            var standUp = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\StandUpMumi.vmd"));
+            var idle = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\standIdle.vmd"));
+            var walk = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\walk.vmd"));
+            var sitDown = new AnimationNode(ResourcesManager.LoadAsset <Animation>(@"Assets\Animations\sitEnter.vmd"));
+            var sitIdle = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\sit.vmd"));
+            var standUp = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\sitExit.vmd"));
 
             idle.Name = "Idle";
             walk.Name = "Walk";
             sitDown.Name = "Sitdown";
-            sitIdle.Name = "Sit Idle";
+            sitIdle.Name = "Sit";
             standUp.Name = "Standup";
 
             sitDown.Repeat = false;
@@ -298,6 +337,56 @@ namespace ModelViewer
             AnimController.AddAnimation(standUp);
 
             animator.Controller = AnimController;
+
+            /*
+            var standPity = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\stand-pity.vmd"));
+            var pity = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\pity.vmd"));
+            var pityStand = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\pity-stand.vmd"));
+            standPity.NextAnimation = pity;
+            pityStand.NextAnimation = idle;
+            standPity.Repeat = false;
+            pityStand.Repeat = false;
+            idle.Transitions.Add(new AnimationTransition((anim) => anim.GetBool("pity"), standPity));
+            pity.Transitions.Add(new AnimationTransition((anim) => !anim.GetBool("pity"), pityStand));
+            */
+
+            AddAnim(@"stand-pity.vmd", @"pity.vmd", @"pity-stand.vmd", "pity",AnimController);
+
+            AddAnim(@"stand2crouch.vmd", @"crouch.vmd", @"crouch2stand.vmd", "crouch", AnimController);
+
+            AddAnim(@"handSideStandEnter.vmd", "handSideStand.vmd", "handSideStandExit.vmd", "handSideStand", AnimController);
+
+            AddAnim(@"standHandcrossEnter.vmd", "standHandcross.vmd", "standHandcrossExit.vmd", "standHandcross", AnimController);
+
+            AddAnim(@"standLeanEnter.vmd", "standLean.vmd", "standLeanExit.vmd", "standLean", AnimController);
+
+            AddAnim(@"sitLeanEnter.vmd", "sitLean.vmd", "sitLeanExit.vmd", "sitLean", AnimController, sitIdle);
+
+            AddAnim(@"standSkirtCoverEnter.vmd", "standSkirtCover.vmd", "standSkirtCoverExit.vmd", "standSkirtCover", AnimController);
+
+            AddAnim(@"standShockEnter.vmd", "standShock.vmd", "standShockExit.vmd", "standShock", AnimController);
+            
+            void AddAnim(string transit1, string main, string transit2, string trigger, AnimationController AController, AnimationNode parent = null)
+            {
+                if (parent == null)
+                    parent = idle;
+                var transTo = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\" + transit1));
+                var mainA = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\" + main));
+                var transBack = new AnimationNode(ResourcesManager.LoadAsset<Animation>(@"Assets\Animations\" + transit2));
+                transTo.NextAnimation = mainA;
+                transBack.NextAnimation = parent;
+                transTo.Repeat = false;
+                transBack.Repeat = false;
+                parent.Transitions.Add(new AnimationTransition((anim) => anim.GetBool(trigger), transTo));
+                mainA.Transitions.Add(new AnimationTransition((anim) => !anim.GetBool(trigger), transBack));
+                AnimController.AddAnimation(transTo);
+                AnimController.AddAnimation(mainA);
+                AnimController.AddAnimation(transBack);
+
+                transTo.Name = transit1;
+                mainA.Name = main;
+                transBack.Name = transit2;
+            }
         }
 
 
@@ -326,7 +415,7 @@ namespace ModelViewer
             rect.anchorMin = new Vector2(0, 0);
             rect.offsetMin = new Vector2(-50, -50);
             rect.offsetMax = new Vector2(50, 50);
-            text.SetText("T");
+            text.Text = "T";
             text.textCanvas.colour = Vector3.Zero;
             text.textCanvas.alignVertical = TextAlignVertical.Center;
             text.textCanvas.alignHorizontal = TextAlignHorizontal.Center;
