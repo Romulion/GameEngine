@@ -16,7 +16,7 @@ namespace Toys
 		Material[] mats;
 		BoneController boneController;
 		public Morph[] morphs;
-		float multipler = 0.1f;
+		float scale = .1f;
 		RigidContainer[] rigitBodies;
 		JointContainer[] joints;
         int[] boneOrder;
@@ -72,7 +72,7 @@ namespace Toys
 			//Vertex3D[] vertices = new Vertex3D[meshSize];
 			for (int i = 0; i < meshSize; i++)
 			{
-				Vector3 pos = reader.readVector3() * multipler;
+				Vector3 pos = reader.readVector3() * scale;
 				Vector3 normal = reader.readVector3().Normalized() ;
 				Vector2 uv = reader.readVector2();
 				int[] bonesIndexes = {0,0,0,0};
@@ -180,8 +180,7 @@ namespace Toys
 					   tex.ChangeType(TextureType.Diffuse);
 					   tex.WrapMode =TextureWrapMode.Repeat;
 					}
-
-				   textures[i] = tex;
+                textures[i] = tex;
 			   //});
             }
 
@@ -295,7 +294,8 @@ namespace Toys
 				{
                     tex = textures[difTexIndex];
 				}
-				var mat = new MaterialPMX(shdrs, rndr);
+
+                var mat = new MaterialPMX(shdrs, rndr);
 				mat.Name = name;
 				mat.Outline = outln;
                 mat.SetTexture(tex,TextureType.Diffuse);
@@ -305,13 +305,20 @@ namespace Toys
                 mat.Specular = specularPower;
                 mat.DiffuseColor = difColor;
                 mat.AmbientColour = ambientColour;
-                mat.UniformManager.Set("specular_color", specularColour);
-                mat.UniformManager.Set("ambient_color", ambientColour);
-                mat.UniformManager.Set("specular_power", specularPower);
-                mat.UniformManager.Set("diffuse_color", difColor);
 
                 if (mat.DiffuseColor.W < 0.001f)
+                {
                     mat.RenderDirrectives.IsRendered = false;
+                    mat.DiffuseColor.W = 1;
+                }
+
+                mat.UniformManager.Set("specular_color", mat.SpecularColour);
+                mat.UniformManager.Set("ambient_color", mat.AmbientColour);
+                mat.UniformManager.Set("specular_power", mat.Specular);
+                mat.UniformManager.Set("diffuse_color", mat.DiffuseColor);
+
+
+
 
                 //skip empty materials
                 if (count == 0)
@@ -334,7 +341,7 @@ namespace Toys
 				string name = reader.readString();
                 string nameEng = reader.readString();
 
-				Vector3 Position = reader.readVector3() * multipler;
+				Vector3 Position = reader.readVector3() * scale;
 
 				int parentIndex = 0;
 				if (header.GetBoneIndexSize > 1)
@@ -526,13 +533,13 @@ namespace Toys
 							break;
 						case 1: //vertex
 							int index = reader.readVal(header.GetVertexIndexSize);
-							Vector3 pos = reader.readVector3() * multipler;
+							Vector3 pos = reader.readVector3() * scale;
 							pos.Z = -pos.Z;
 							((MorphVertex)morphs[i]).AddVertex(pos, index);
                             break;
 						case 2:  //bone morph
 							var id = reader.readVal(header.GetBoneIndexSize);
-							var posB = reader.readVector3() * multipler;
+							var posB = reader.readVector3() * scale;
 							posB.Z = -posB.Z;
 							var rotB =  reader.readVector4();
 							((MorphSkeleton)morphs[i]).AddBone(id, posB, new Quaternion(rotB.X, rotB.Y, -rotB.Z, -rotB.W));
@@ -627,8 +634,8 @@ namespace Toys
 				rigit.GroupId = (byte)(16 + reader.ReadByte());
                 rigit.NonCollisionGroup =  (int)reader.ReadUInt16() << 16;
 				rigit.PrimitiveType = (PhysPrimitiveType)reader.ReadByte();
-				rigit.Size = reader.readVector3() * multipler;
-				rigit.Position = reader.readVector3() * multipler;
+				rigit.Size = reader.readVector3() * scale;
+				rigit.Position = reader.readVector3() * scale;
 				rigit.Rotation = reader.readVector3();
 				rigit.Mass = reader.ReadSingle();
 				rigit.MassAttenuation = reader.ReadSingle();
@@ -654,19 +661,18 @@ namespace Toys
 				joint.Type =  (JointType)reader.ReadByte();
 				joint.RigitBody1 =  reader.readVal(header.GetRigidBodyIndexSize);
 				joint.RigitBody2 =  reader.readVal(header.GetRigidBodyIndexSize);
-				joint.Position = reader.readVector3() * multipler;
+				joint.Position = reader.readVector3() * scale;
 				
 				joint.Rotation = reader.readVector3();
-				joint.PosMin = reader.readVector3() * multipler;
-				joint.PosMax = reader.readVector3() * multipler;
+				joint.PosMin = reader.readVector3() * scale;
+				joint.PosMax = reader.readVector3() * scale;
 				joint.RotMin = reader.readVector3();
 				joint.RotMax = reader.readVector3();
-				joint.PosSpring = reader.readVector3() * multipler;
-				joint.RotSpring = reader.readVector3() * MathF.Pow(multipler, 2f);
+                joint.PosSpring = reader.readVector3() * scale;
+                joint.RotSpring = reader.readVector3() * MathF.Pow(scale, 2f);
 
-				
-				//Convert Left to Right coordinate system
-				joint.RotMin.X = -joint.RotMin.X;
+                //Convert Left to Right coordinate system
+                joint.RotMin.X = -joint.RotMin.X;
 				joint.RotMin.Y = -joint.RotMin.Y;
 				joint.RotMax.X = -joint.RotMax.X;
 				joint.RotMax.Y = -joint.RotMax.Y;

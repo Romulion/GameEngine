@@ -70,7 +70,7 @@ namespace Toys {
 			if (isUpdated)
 			{
 				GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-				//fastest universal option
+				//fastest universal option 1.15ms vs 4.5ms
 				GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, verticeStride * vertices.Length, vertices);
 				//GL.BufferData(BufferTarget.ArrayBuffer, verticeStride * vertices.Length, vertices, BufferUsageHint.DynamicDraw);
 				/*
@@ -111,6 +111,7 @@ namespace Toys {
 			}
         }
 
+		/*
 		//find minmax
 		void UpdateMinMax(int index)
         {
@@ -124,5 +125,6 @@ namespace Toys {
 			else if (maxID < index)
 				maxID = index;
 		}
+		*/
 	}
 }

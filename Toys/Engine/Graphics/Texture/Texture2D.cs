@@ -163,8 +163,9 @@ namespace Toys
         void LoadTexture(Bitmap texture)
 		{
            
-            //for 8bpp formats 
-            if (texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format4bppIndexed || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppRgb)
+            //convert formats 
+            if (texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format4bppIndexed 
+                || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppRgb || texture.PixelFormat == System.Drawing.Imaging.PixelFormat.Format1bppIndexed)
 			{
                 Bitmap clone = new Bitmap(texture.Width, texture.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
                 

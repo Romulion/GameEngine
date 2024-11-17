@@ -141,7 +141,7 @@ namespace Toys
             }
             catch (Exception e)
             {
-                Logger.Error(e.Message,e.StackTrace);
+                Logger.Error(e.Message, "Failure component: " + typeof(T));
             }
                 
             return null;

@@ -73,6 +73,7 @@ namespace Toys
         void InstalizeJoints(JointContainer[] jcons)
         {
             joints = new Joint[jcons.Length];
+            
             for (int i = 0; i < jcons.Length; i++)
             {
                 joints[i] = new Joint(jcons[i], rigitBodies);
