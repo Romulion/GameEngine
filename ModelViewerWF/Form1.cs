@@ -63,7 +63,7 @@ namespace ModelViewerWF
                 try
                 {
                     string file = openFileDialog1.FileName;
-                    an = AnimationLoader.Load(file);
+                    an = ResourcesManager.LoadAsset<Animation>(file);
                     button2.Enabled = true;
                     button3.Enabled = true;
                     button4.Enabled = true;

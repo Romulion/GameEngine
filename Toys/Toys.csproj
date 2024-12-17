@@ -153,7 +153,7 @@
       <Version>4.9.3</Version>
     </PackageReference>
     <PackageReference Include="SharpFont" Version="4.0.1" />
-    <PackageReference Include="SharpFont.Dependencies" Version="2.6.0" />
+    <PackageReference Include="SharpFont.Dependencies.x64" Version="2.6.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
