@@ -85,12 +85,14 @@ namespace Toys
 						jointSpring6 = new Generic6DofSpringConstraint(body1, conn1,true);
 					*/				
 					//Has low stiffness limit, disabling explode bodys TODO: increse limit
+					
 					Generic6DofSpring2Constraint jointSpring6 = null;
 					if (body2 != null)
 						jointSpring6 = new Generic6DofSpring2Constraint(body1, body2, conn1, conn2);
 					else
 						jointSpring6 = new Generic6DofSpring2Constraint(body1, conn1);
 					
+
 					jointSpring6.AngularLowerLimit = GetVec3(JointParameters.RotMin);
 					jointSpring6.AngularUpperLimit = GetVec3(JointParameters.RotMax);
 					jointSpring6.LinearLowerLimit = GetVec3(JointParameters.PosMin);
@@ -101,7 +103,7 @@ namespace Toys
 						if (JointParameters.PosSpring[i] != 0)
 						{
 							jointSpring6.EnableSpring(i, true);
-							jointSpring6.SetStiffness(i, JointParameters.PosSpring[i], false);
+                            jointSpring6.SetStiffness(i, JointParameters.PosSpring[i], false);
 							jointSpring6.SetDamping(i, 0.9f);
 						}
 					}
@@ -111,13 +113,13 @@ namespace Toys
 						if (JointParameters.RotSpring[i] != 0)
 						{
 							jointSpring6.EnableSpring(i + 3, true);
-							jointSpring6.SetStiffness(i + 3, JointParameters.RotSpring[i],false);
-							jointSpring6.SetDamping(i, 0.1f);
+							jointSpring6.SetStiffness(i + 3, JointParameters.RotSpring[i], false);
+							jointSpring6.SetDamping(i, 0.4f);
 						}
 					}
 
-					//jointSpring6.SetParam(ConstraintParam.Erp, 0.7f);
-					//jointSpring6.SetParam(ConstraintParam.Cfm, 0.0f);
+					//jointSpring6.SetParam(ConstraintParam.Erp, 0.2f);
+					//jointSpring6.SetParam(ConstraintParam.Cfm, 0.2f);
 					jointSpring6.SetEquilibriumPoint();
                     Constraint = jointSpring6;
                     break;

@@ -36,8 +36,7 @@ namespace Toys
             
             UpdateFrame += Update;
             RenderFrame += Render;
-            Closed += () => Engine.Close();
-
+            Closing += (e) => Engine.Close();
         }
 
         void OnStart()

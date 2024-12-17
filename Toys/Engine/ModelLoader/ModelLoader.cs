@@ -10,6 +10,7 @@ namespace Toys
 		DAE = 2,
         LMD = 3,
         PMD = 4,
+        FBX = 5,
 	}
 
 	public class ModelLoader
@@ -34,6 +35,9 @@ namespace Toys
                     break;
                 case "pmd":
                     format = ModelFormat.PMD;
+                    break;
+                case "fbx":
+                    format = ModelFormat.FBX;
                     break;
                 default :
                     Logger.Error("cant recognize file format", "");
@@ -62,6 +66,9 @@ namespace Toys
                         break;
                     case ModelFormat.PMD:
                         modelLoader = new PmdReader(stream, filename);
+                        break;
+                    case ModelFormat.FBX:
+                        modelLoader = new ReaderFBX(stream, filename);
                         break;
                 }
             }

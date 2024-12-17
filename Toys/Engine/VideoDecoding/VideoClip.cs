@@ -37,7 +37,7 @@ namespace Toys
         
         internal VideoClip(System.IO.Stream stream, string path) : base(false)
         {
-            
+
             //var options = new MediaOptions();
             videoFile = MediaFile.Open(stream);
             var metadata = videoFile.Video.Info;
@@ -191,6 +191,10 @@ namespace Toys
             videoFile.Dispose();
         }
 
+        public void Test()
+        {
+            Unload();
+        }
         /*
         unsafe void ConvertYUV2RGB(IntPtr frameConvBuffer, byte[] YUVFrame)
         {

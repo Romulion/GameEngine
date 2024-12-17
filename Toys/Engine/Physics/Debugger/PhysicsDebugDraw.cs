@@ -18,8 +18,9 @@ namespace Toys
 		public void DrawDebugWorld()
 		{
 			GL.Clear(ClearBufferMask.DepthBufferBit);
-			GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-			pmp.InitInstancedRender();
+			//GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+            GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Line);
+            pmp.InitInstancedRender();
 			pmp.RenderInstanced();
 
 			/*
@@ -50,7 +51,8 @@ namespace Toys
 			GL.DisableClientState(ArrayCap.ColorArray);
 			GL.DisableClientState(ArrayCap.VertexArray);
 */
-			GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+			//GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+			GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
 		}
 	}
 }

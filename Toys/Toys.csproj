@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net7.0-windows7.0</TargetFramework>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>Library</OutputType>
     <RootNamespace>Toys</RootNamespace>
@@ -66,6 +66,8 @@
     <Folder Include="UtilityClient\" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resourses\shaders\genshin.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\genshin.vsh" />
     <EmbeddedResource Include="Resourses\shaders\PM.fsh" />
     <EmbeddedResource Include="Resourses\Fonts\reddelicious.ttf" />
     <EmbeddedResource Include="Resourses\shaders\Skybox.fsh" />
@@ -136,6 +138,7 @@
     <EmbeddedResource Include="Resourses\textures\checkmark-24-512.png" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AssimpNetter" Version="5.4.3" />
     <PackageReference Include="BulletSharp">
       <Version>0.11.1</Version>
     </PackageReference>
@@ -147,7 +150,7 @@
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="OpenTK">
-      <Version>4.6.7</Version>
+      <Version>4.9.3</Version>
     </PackageReference>
     <PackageReference Include="SharpFont" Version="4.0.1" />
     <PackageReference Include="SharpFont.Dependencies" Version="2.6.0" />
@@ -166,6 +169,10 @@
     <Compile Remove="Engine\Objects\ShadowRenderer.cs" />
     <Compile Remove="MainProcess.cs" />
     <Compile Remove="test.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Resourses\shaders\genshin.fsh" />
+    <None Remove="Resourses\shaders\genshin.vsh" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="WMPLib">

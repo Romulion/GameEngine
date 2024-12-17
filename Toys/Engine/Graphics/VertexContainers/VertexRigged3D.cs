@@ -77,6 +77,24 @@ namespace Toys
 
 				return 0;
 			}
+			set
+			{
+                switch (i)
+                {
+                    case 0:
+                        bone1 = value;
+						break;
+                    case 1:
+                        bone2 = value;
+                        break;
+                    case 2:
+                        bone3 = value;
+                        break;
+                    case 3:
+                        bone4 = value;
+                        break;
+                }
+            }
 		}
 	}
 

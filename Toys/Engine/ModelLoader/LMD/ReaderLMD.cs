@@ -204,8 +204,8 @@ namespace Toys
                     reader.BaseStream.Position += 0xc;
                 }
                 vertice.UV = new Vector2();
-                vertice.UV.X = Half.FromBytes(reader.ReadBytes(2), 0);
-                vertice.UV.Y = Half.FromBytes(reader.ReadBytes(2), 0);
+                vertice.UV.X = OpenTK.Mathematics.Half.FromBytes(reader.ReadBytes(2), 0);
+                vertice.UV.Y = OpenTK.Mathematics.Half.FromBytes(reader.ReadBytes(2), 0);
                 /*
                 if (chunkSize == 0x28)
                     file.BaseStream.Position += 4;
