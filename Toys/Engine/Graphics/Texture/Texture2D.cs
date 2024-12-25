@@ -3,6 +3,9 @@ using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using System.IO;
 using KtxSharp;
+using Pfim;
+using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace Toys
 {
@@ -90,11 +93,13 @@ namespace Toys
             textureType = TextureTarget.Texture2D;
             GenerateTextureID();
             Bitmap tex1;
-            //check texture
+            //Try to figure out texture extension
+            var extension = Path.GetExtension(path).ToLower().Remove(0,1);
             try
             {
 
-                if (path.EndsWith("ktx", StringComparison.OrdinalIgnoreCase))
+                
+                if (extension == "ktx")
                 {
                     KtxStructure ktxStructure = null;
                     using (MemoryStream ms = new MemoryStream())
@@ -105,22 +110,21 @@ namespace Toys
                     }
                     return;
                 }
+                
 
                 ///cause .NET cant read tga natievly
                 ///png , jpg, bmp is ok
-                if (path.EndsWith("tga", StringComparison.OrdinalIgnoreCase))
-                    tex1 = Paloma.TargaImage.LoadTargaImage(stream);
+                //var extension = 
+                //if (extension == "tga")
+                //    tex1 = Paloma.TargaImage.LoadTargaImage(stream);
+                if (extension == "dds" || extension == "tga")
+                    tex1 = PfimConverter(Pfimage.FromStream(stream), extension);
                 /// .spa| .sph textures is png bmp or jpg textures
-                else if (path.EndsWith("spa", StringComparison.OrdinalIgnoreCase)
-                    || path.EndsWith("sph", StringComparison.OrdinalIgnoreCase))
-                {
+                else if (extension == "spa" || extension == "sph")
                     tex1 = new Bitmap(stream);
-                }
                 //process alpha channel on bmp
-                else if (path.EndsWith("bmp", StringComparison.OrdinalIgnoreCase))
-                {
+                else if (extension == "bmp")
                     tex1 = CustomBMPLoader.Load(stream);
-                }
                 else
                     tex1 = new Bitmap(stream);
                 LoadTexture(tex1);
@@ -133,6 +137,40 @@ namespace Toys
                 textureID = empty.textureID;
                 Name = empty.Name;
             }
+        }
+
+        Bitmap PfimConverter(IImage image, string extension)
+        { 
+            Bitmap bitmap = null;
+            System.Drawing.Imaging.PixelFormat format;
+
+            // Convert from Pfim's backend agnostic image format into GDI+'s image format
+            var pixelFormatDict = new Dictionary<ImageFormat, System.Drawing.Imaging.PixelFormat>() {
+                { ImageFormat.Rgba32 , System.Drawing.Imaging.PixelFormat.Format32bppArgb },
+                { ImageFormat.Rgb24 , System.Drawing.Imaging.PixelFormat.Format24bppRgb },
+                { ImageFormat.Rgba16 , System.Drawing.Imaging.PixelFormat.Format16bppArgb1555 },
+                { ImageFormat.Rgb8 , System.Drawing.Imaging.PixelFormat.Format8bppIndexed },
+                
+            };
+
+            if (!pixelFormatDict.TryGetValue(image.Format,out format))
+                throw new NotImplementedException();
+
+
+            var handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+            try
+            {
+                var data = Marshal.UnsafeAddrOfPinnedArrayElement(image.Data, 0);
+                bitmap = new Bitmap(image.Width, image.Height, image.Stride, format, data);
+            }
+            finally
+            {
+                handle.Free();
+            }
+            //Since dds is DX texture format we need to flip Y axis
+            if (extension == "dds")
+                bitmap.RotateFlip(RotateFlipType.Rotate180FlipX);
+            return bitmap;
         }
 
         //for framebuffer
