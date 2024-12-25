@@ -36,7 +36,12 @@ namespace Toys
             
             UpdateFrame += Update;
             RenderFrame += Render;
-            Closing += (e) => Engine.Close();
+            Closing += (e) => {
+                Engine.Close();
+                UpdateFrame -= Update;
+                RenderFrame -= Render;
+            };
+            
         }
 
         void OnStart()
@@ -57,15 +62,15 @@ namespace Toys
             {
                 if (KeyboardState.IsKeyDown(Keys.F))
                 {
-                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+                    GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
                 }
                 if (KeyboardState.IsKeyDown(Keys.L))
                 {
-                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+                    GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Line);
                 }
                 if (KeyboardState.IsKeyDown(Keys.P))
                 {
-                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Point);
+                    GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Point);
                 }
 
                 if (KeyboardState.IsKeyDown(Keys.O) && !pauseKey)

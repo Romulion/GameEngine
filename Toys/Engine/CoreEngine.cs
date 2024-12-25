@@ -27,6 +27,8 @@ namespace Toys
         List<Action> tasks;
         List<Action> tasksProcessing;
 
+        static ManualResetEvent updateBusy = new ManualResetEvent(true);
+
         public static Camera GetCamera
         {
             get
@@ -78,6 +80,7 @@ namespace Toys
 
         internal void Close()
         {
+            updateBusy.WaitOne();
             PhysEngine.Dispose();
             ScriptingEngine.Destroy();
             VRSystem?.Exit();
@@ -97,6 +100,8 @@ namespace Toys
 
 		internal void Update()
 		{
+            
+            updateBusy.Reset();
             Time.FrameCount++;
             FrameTimer.FrameTime = (float)FrameTimer.Stop() * .001f;
             FrameTimer.Start();
@@ -137,6 +142,7 @@ namespace Toys
             ScriptingEngine.PreRender();
             PhysEngine?.Body2Scene?.Invoke();
             Time.UpdateTime = Time.Stop();
+            updateBusy.Set();
         }
 
         internal void Render ()

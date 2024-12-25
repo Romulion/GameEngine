@@ -168,25 +168,27 @@ namespace Toys
         {
             //remove/dispose constraints
             int i;
-            for (i = World.NumConstraints - 1; i >= 0; i--)
-            {
-                TypedConstraint constraint = World.GetConstraint(i);
-                World.RemoveConstraint(constraint);
-                constraint.Dispose();
-            }
+            if (World.NumConstraints > 0)
+                for (i = World.NumConstraints - 1; i >= 0; i--)
+                {
+                    TypedConstraint constraint = World.GetConstraint(i);
+                    World.RemoveConstraint(constraint);
+                    constraint.Dispose();
+                }
 
             //remove the rigidbodies from the dynamics world and delete them
-            for (i = World.NumCollisionObjects - 1; i >= 0; i--)
-            {
-                CollisionObject obj = World.CollisionObjectArray[i];
-                RigidBody body = obj as RigidBody;
-                if (body != null && body.MotionState != null)
+            if (World.NumCollisionObjects > 0)
+                for (i = World.NumCollisionObjects - 1; i >= 0; i--)
                 {
-                    body.MotionState.Dispose();
+                    CollisionObject obj = World.CollisionObjectArray[i];
+                    RigidBody body = obj as RigidBody;
+                    if (body != null && body.MotionState != null)
+                    {
+                        body.MotionState.Dispose();
+                    }
+                    World.RemoveCollisionObject(obj);
+                    obj.Dispose();
                 }
-                World.RemoveCollisionObject(obj);
-                obj.Dispose();
-            }
 
             //delete collision shapes
             foreach (var shape in World.CollisionObjectArray)
