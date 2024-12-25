@@ -19,6 +19,8 @@ namespace Toys
         List<Mesh> meshes = new List<Mesh>();
         List<Node> sceneNodes = new List<Node>();
         List<Bone> bones = new List<Bone>();
+        AssimpTools Tools = new AssimpTools();
+
         Material[] materials;
         MeshDrawerRigged[] MeshDrawer = null;
         BoneController boneControll;
@@ -29,7 +31,16 @@ namespace Toys
             AssimpContext importer = new AssimpContext();
             var scene = importer.ImportFile(path);
 
-            TraverseScene(scene.RootNode);
+            PrepareArmaure(scene);
+            LoadMaterial(scene);
+            LoadMeshes(scene.Meshes);
+        }
+
+        public ReaderFBX(Assimp.Scene scene)
+        {
+
+            PrepareArmaure(scene);
+            LoadMaterial(scene);
             LoadMeshes(scene.Meshes);
         }
 
@@ -43,42 +54,25 @@ namespace Toys
 
             AssimpContext importer = new AssimpContext();
             var scene = importer.ImportFileFromStream(fs, "fbx");
-            TraverseScene(scene.RootNode);
+            PrepareArmaure(scene);
             LoadMaterial(scene);
             LoadMeshes(scene.Meshes);
         }
 
-        void TraverseScene(Assimp.Node node)
+        void PrepareArmaure(Assimp.Scene scene)
         {
-            //Console.WriteLine(node.Name);
-            //foreach (var mesh in node.Metadata) 
-            //    Console.WriteLine("{0} {1}", mesh.Key, mesh.Value);
-            int parent = -1;
-            if (node.Parent != null)
-                parent = sceneNodes.IndexOf(node.Parent);
-
-            var bone = new Bone(node.Name, Convert(node.Transform), parent);
-            bones.Add(bone);
-            sceneNodes.Add(node);
-
-            //if (node.Name == "Bip001 Head")
-            //    Console.WriteLine(node.Transform);
-
-            if (node.HasChildren)
-            {
-                foreach (var child in node.Children)
-                {
-                    TraverseScene(child);
-                }   
-            }
-
+            //Get Armature Nodes
+            bones = Tools.GetArmaure(scene);
+            boneControll = new BoneController(bones.ToArray(), true);
         }
+        
 
         void LoadMaterial(Assimp.Scene scene)
         {
             materials = new Material[scene.MaterialCount];
             for (int i = 0; i < scene.MaterialCount; i++)
             {
+                
                 Texture2D textureDiffuse = Texture2D.LoadEmpty();
                 var mat = scene.Materials[i];
                 if (mat.HasTextureDiffuse)
@@ -91,7 +85,6 @@ namespace Toys
                         textureDiffuse.WrapModeV = Convert(mat.TextureDiffuse.WrapModeV);
                     }
                 }
-
                 var shdrst = new ShaderSettings();
                 var rddir = new RenderDirectives();
                 shdrst.HasSkeleton = true;
@@ -109,20 +102,17 @@ namespace Toys
                 string fs = ShaderManager.ReadFromAssetStream(path + "genshin.fsh");
 
                 var mater = new MaterialCustom(shdrst, rddir, vs, fs);
-                //var mater = new MaterialPMX(shdrst, rddir);
                 mater.Name = mat.Name;
-
                 
                 if (mat.HasColorAmbient)
-                    mater.UniformManager.Set("ambient_color", Convert(mat.ColorAmbient).Xyz);
+                    mater.UniformManager.Set("ambient_color", Tools.Convert(mat.ColorAmbient).Xyz);
                 if (mat.HasColorDiffuse)
-                    mater.UniformManager.Set("diffuse_color", Convert(mat.ColorDiffuse));
+                    mater.UniformManager.Set("diffuse_color", Tools.Convert(mat.ColorDiffuse));
                 if (mat.HasColorSpecular)
                 {
-                    mater.UniformManager.Set("specular_color", Convert(mat.ColorSpecular).Xyz);
-                    mater.UniformManager.Set("specular_power", Convert(mat.ColorSpecular).W);
-                }
-                
+                    mater.UniformManager.Set("specular_color", Tools.Convert(mat.ColorSpecular).Xyz);
+                    mater.UniformManager.Set("specular_power", Tools.Convert(mat.ColorSpecular).W);
+                }       
                 
                 mater.SetTexture(textureDiffuse, TextureType.Diffuse);
 
@@ -132,29 +122,24 @@ namespace Toys
 
         void LoadMeshes(List<Assimp.Mesh> meshes)
         {
-            boneControll = new BoneController(bones.ToArray(), true);
-            Console.WriteLine(boneControll.GetBone("Bip001 Head").World2BoneInitial);
 
             MeshDrawer = new MeshDrawerRigged[meshes.Count];
             int m = 0;
             foreach (var meshData in meshes)
             {
-
                 var vertexRigged3D = new VertexRigged3D[meshData.VertexCount];
                 var boneweight = new int[meshData.VertexCount];
-                //Console.WriteLine(meshData.Name);
                 var indexes = meshData.GetIndices().ToArray();
                 var vertexes = meshData.Vertices.ToArray();
 
-                //Console.WriteLine("{0} {1} {2}", indexes.Length, meshData.FaceCount,0);
                 for (int i = 0; i < meshData.VertexCount; i++)
-                    vertexRigged3D[i].Position = Convert(vertexes[i]) * sizeMultiplier;
+                    vertexRigged3D[i].Position = Tools.Convert(vertexes[i]) * sizeMultiplier;
 
                 if (meshData.HasNormals)
                 {
                     var normals = meshData.Normals;
                     for (int i = 0; i < meshData.VertexCount; i++)
-                        vertexRigged3D[i].Normal = Convert(normals[i]);
+                        vertexRigged3D[i].Normal = Tools.Convert(normals[i]);
                 }
 
                 if (meshData.HasTextureCoords(0))
@@ -162,17 +147,17 @@ namespace Toys
                     var uvs = meshData.TextureCoordinateChannels[0];
                     for (int i = 0; i < meshData.VertexCount; i++)
                     {
-                        vertexRigged3D[i].UV = Convert(uvs[i]).Xy;
+                        vertexRigged3D[i].UV = Tools.Convert(uvs[i]).Xy;
                         vertexRigged3D[i].UV.Y = 1 - vertexRigged3D[i].UV.Y;
                     }
                 }
-
 
                 foreach (var bone in meshData.Bones)
                 {
                     var index = bones.FindIndex((bon) => bon.Name == bone.Name);
                     foreach (var vertW in bone.VertexWeights)
                     {
+
                         if (boneweight[vertW.VertexID] >= 4)
                         {
                             Logger.Error("Vertex bone weigth overflow");
@@ -186,7 +171,6 @@ namespace Toys
                     }
 
                 }
-
                 //Normalizing bone weigth
                 for (int i = 0; i < meshData.VertexCount; i++)
                 {
@@ -209,7 +193,6 @@ namespace Toys
                 MeshDrawer[m] = new MeshDrawerRigged(mesh, new Material[] { materials[meshData.MaterialIndex] }, boneControll, morphs?.ToList());
                 m++;
             }
-
         }
 
         Morph[] ReadMorphs(Assimp.Mesh meshData, Mesh mesh)
@@ -220,13 +203,12 @@ namespace Toys
             {
                 int k = 0;
                 var anim = meshData.MeshAnimationAttachments[i];
-                Console.WriteLine("{0} {1} {2} {3}", anim.Name, anim.Vertices.Count, anim.Weight, anim.VertexCount);
                 morphs[i] = new MorphVertex(anim.Name, "", anim.VertexCount, mesh.GetMorpher);
 
                 //considering same vertex order
                 for (int j = 0; j < anim.Vertices.Count; j++)
                 {
-                    var vert = Convert(anim.Vertices[j]);
+                    var vert = Tools.Convert(anim.Vertices[j]);
                     var vertChange = vert - mesh.Vertices[j].Position;
                     //skip unchanged vertices
                     if (vertChange.LengthSquared < 0.000000001f)
@@ -259,23 +241,6 @@ namespace Toys
                     break;
             }
             return result;
-        }
-        public OpenTK.Mathematics.Vector3 Convert(System.Numerics.Vector3 vector)
-        {
-            return new OpenTK.Mathematics.Vector3(vector.X, vector.Y, vector.Z);
-        }
-
-        public OpenTK.Mathematics.Vector4 Convert(System.Numerics.Vector4 vector)
-        {
-            return new OpenTK.Mathematics.Vector4(vector.X, vector.Y, vector.Z, vector.W);
-        }
-
-        public OpenTK.Mathematics.Matrix4 Convert(System.Numerics.Matrix4x4 vector)
-        {
-            return new OpenTK.Mathematics.Matrix4(vector.M11, vector.M12, vector.M13, vector.M14,
-                vector.M21, vector.M22, vector.M23, vector.M24,
-                vector.M31, vector.M32, vector.M33, vector.M34,
-                vector.M41, vector.M42, vector.M43, vector.M44).Transposed();
         }
 
         public ModelPrefab GetModel
