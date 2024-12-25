@@ -34,10 +34,12 @@ namespace Toys
 
         public override Material Clone()
         {
-            var material = new MaterialPMX(ShaderSettings, RenderDirrectives);
+            var material = new MaterialCustom(ShaderSettings.Clone(), RenderDirrectives.Clone(),vs,fs);
             foreach (var texture in textures)
                 material.SetTexture(texture.Value, texture.Key);
 
+            material.UniformManager.uniforms = UniformManager.CopyUniforms();
+            
             return material;
         }
     }

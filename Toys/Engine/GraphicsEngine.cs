@@ -96,7 +96,7 @@ namespace Toys
             try
             {
 
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+                GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
                 //setting aditional buffer
                 FBO = GL.GenFramebuffer();
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, FBO);
@@ -203,7 +203,7 @@ namespace Toys
             {
                 if (faceCullFront)
                 { 
-                    GL.CullFace(CullFaceMode.Back);
+                    GL.CullFace(TriangleFace.Back);
                     faceCullFront = false;
                 }
                 if (!faceCullEnable)
@@ -216,7 +216,7 @@ namespace Toys
             {
                 if (!faceCullFront)
                 {
-                    GL.CullFace(CullFaceMode.Front);
+                    GL.CullFace(TriangleFace.Front);
                     faceCullFront = true;
                 }
                 if (!faceCullEnable)

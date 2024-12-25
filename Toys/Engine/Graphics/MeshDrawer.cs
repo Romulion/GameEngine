@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Toys
 {
 	public class MeshDrawer : Component
 	{
 		public Mesh Mesh { get; private set; }
-		public Material[] Materials { get; private set; }
+		public List<Material> Materials { get; private set; }
 		public List<Morph> Morphes { get; private set; }
         public int RenderMask { get; set; }
 
@@ -17,10 +18,10 @@ namespace Toys
 		{
 			Mesh = mesh;
             if (materials != null)
-                Materials = materials;
+                Materials = materials.ToList();
             else
             {
-                Materials = new Material[] { new MaterialPMX(new ShaderSettings(), new RenderDirectives()) };
+                Materials = new Material[] { new MaterialPMX(new ShaderSettings(), new RenderDirectives()) }.ToList();
             }
             Morphes = morphes;
             //set default mask
@@ -148,7 +149,7 @@ namespace Toys
 
         internal override Component Clone()
         {
-            var res = new MeshDrawer(Mesh, Materials,Morphes);
+            var res = new MeshDrawer(Mesh, Materials.ToArray(), Morphes);
             res.OutlineDrawing = OutlineDrawing;
             return res;
         }

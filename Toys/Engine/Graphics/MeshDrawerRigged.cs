@@ -62,7 +62,7 @@ namespace Toys
         internal override Component Clone()
         {
             //TODO: clone skeleton and morphes
-            var res = new MeshDrawerRigged(Mesh, Materials, skeleton, Morphes);
+            var res = new MeshDrawerRigged(Mesh, Materials.ToArray(), skeleton, Morphes);
             res.OutlineDrawing = OutlineDrawing;
             return res;
         }

@@ -21,5 +21,10 @@ namespace Toys
         public bool SpecularColor;
         public bool DiscardInvisible;
         public bool DifuseColor;
-	}
+
+        public ShaderSettings Clone()
+        {
+            return (ShaderSettings)this.MemberwiseClone();
+        }
+    }
 }

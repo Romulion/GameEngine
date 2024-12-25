@@ -27,5 +27,7 @@ namespace Toys
             foreach(var comp in components)
                 Destroy(comp);
         }
+
+        internal List<Component> GetComponents { get { return components; } }
     }
 }

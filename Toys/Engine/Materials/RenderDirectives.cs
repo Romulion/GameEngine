@@ -8,5 +8,9 @@ namespace Toys
 		public bool CastShadow = true;
 		public bool NoCull = false;
 
-	}
+        public RenderDirectives Clone()
+        {
+            return (RenderDirectives)this.MemberwiseClone();
+        }
+    }
 }
