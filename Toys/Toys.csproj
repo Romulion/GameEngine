@@ -66,6 +66,8 @@
     <Folder Include="UtilityClient\" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resourses\shaders\normals.fsh" />
+    <EmbeddedResource Include="Resourses\shaders\normals.vsh" />
     <EmbeddedResource Include="Resourses\shaders\genshin.fsh" />
     <EmbeddedResource Include="Resourses\shaders\genshin.vsh" />
     <EmbeddedResource Include="Resourses\shaders\PM.fsh" />
@@ -152,6 +154,7 @@
     <PackageReference Include="OpenTK">
       <Version>4.9.3</Version>
     </PackageReference>
+    <PackageReference Include="Pfim" Version="0.11.3" />
     <PackageReference Include="SharpFont" Version="4.0.1" />
     <PackageReference Include="SharpFont.Dependencies.x64" Version="2.6.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
@@ -167,6 +170,7 @@
     <Compile Remove="Engine\Objects\Model.cs" />
     <Compile Remove="Engine\Objects\ModelManager.cs" />
     <Compile Remove="Engine\Objects\ShadowRenderer.cs" />
+    <Compile Remove="ExternalCode\TargaImage.cs" />
     <Compile Remove="MainProcess.cs" />
     <Compile Remove="test.cs" />
   </ItemGroup>
