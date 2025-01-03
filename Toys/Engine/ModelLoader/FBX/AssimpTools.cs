@@ -20,7 +20,23 @@ namespace Toys
             int parent = -1;
             if (node.Parent != null)
                 parent = sceneNodes.IndexOf(node.Parent);
-
+            
+            //Check node names dublicate and rename in blender style
+            //Suggesting bone cant have dublicate names
+            if (sceneNodes.FindIndex(n => n.Name == node.Name) != -1)
+            {
+                var startId = 1;
+                for (int i = 0; i < 1000; i++) 
+                {
+                    var name = String.Format("{0}.{1}", node.Name, startId.ToString().PadLeft(3, '0'));
+                    if (sceneNodes.FindIndex(n => n.Name == name) == -1)
+                    {
+                        node.Name = name;
+                        break;
+                    }
+                }
+            }
+            
             sceneNodes.Add(node);
 
             //Find bone that has mash assigned with all childrens
@@ -28,7 +44,7 @@ namespace Toys
             {
                 isArmature = true;
             }
-
+            
             if (isArmature)
             {
                 var bone = new Bone(node.Name, Convert(node.Transform), parent);
@@ -55,14 +71,25 @@ namespace Toys
                         boneEntrys.Add(boneTemp.Name);
                 }
             }
-            
 
             //Get Armature Nodes
+            sceneNodes.Clear();
+            bones.Clear();
             TraverseScene(scene.RootNode);
-
+            
             //Sort bones to alphabet
             bones.Sort((a, b) => a.Name.CompareTo(b.Name));
-
+            //add skipped scene nodes
+            foreach (var node in sceneNodes)
+            {
+                if (!boneEntrys.Contains(node.Name))
+                {
+                    int parent = -1;
+                    if (node.Parent != null)
+                        parent = sceneNodes.IndexOf(node.Parent);
+                    bones.Add(new Bone(node.Name, Convert(node.Transform), parent));
+                }
+            }
 
             //Sorting bones according to their position in model data
             var bonesOrdered = new List<Bone>(bones.Count);
@@ -82,18 +109,17 @@ namespace Toys
                     bonesOrdered.Add(bone);
             }
 
-            
             //Remap bone parent indexes
             for (int i = 0; i < bonesOrdered.Count; i++)
             {
                 
                 var bone = bonesOrdered[i];
-                
                 if (bone.ParentIndex >= 0)
                 {
                     bone.ParentIndex = bonesOrdered.FindIndex(b =>  b.Name == sceneNodes[bone.ParentIndex].Name);
                 }
             }
+            
             return bonesOrdered;
         }
 
@@ -109,12 +135,23 @@ namespace Toys
 
         public OpenTK.Mathematics.Matrix4 Convert(System.Numerics.Matrix4x4 vector)
         {
-            return new OpenTK.Mathematics.Matrix4(vector.M11, vector.M12, vector.M13, vector.M14,
-                vector.M21, vector.M22, vector.M23, vector.M24,
-                vector.M31, vector.M32, vector.M33, vector.M34,
-                vector.M41, vector.M42, vector.M43, vector.M44).Transposed();
+            return new OpenTK.Mathematics.Matrix4(
+                vector.M11, vector.M21, vector.M31, vector.M41,
+                vector.M12, vector.M22, vector.M32, vector.M42,
+                vector.M13, vector.M23, vector.M33, vector.M43,
+                vector.M14, vector.M24, vector.M34, vector.M44
+                );
         }
 
+        public System.Numerics.Matrix4x4 Convert(OpenTK.Mathematics.Matrix4 vector)
+        {
+            return new System.Numerics.Matrix4x4(
+                vector.M11, vector.M21, vector.M31, vector.M41,
+                vector.M12, vector.M22, vector.M32, vector.M42,
+                vector.M13, vector.M23, vector.M33, vector.M43,
+                vector.M14, vector.M24, vector.M34, vector.M44
+                );
+        }
 
         public List<System.Numerics.Vector3> Convert43(List<Vector4> list)
         {

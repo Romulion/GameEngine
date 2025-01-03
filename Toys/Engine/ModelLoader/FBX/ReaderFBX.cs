@@ -36,9 +36,9 @@ namespace Toys
             LoadMeshes(scene.Meshes);
         }
 
-        public ReaderFBX(Assimp.Scene scene)
+        public ReaderFBX(Assimp.Scene scene, string path)
         {
-
+            dir = path;
             PrepareArmaure(scene);
             LoadMaterial(scene);
             LoadMeshes(scene.Meshes);
@@ -76,7 +76,7 @@ namespace Toys
                 Texture2D textureDiffuse = Texture2D.LoadEmpty();
                 var mat = scene.Materials[i];
                 if (mat.HasTextureDiffuse)
-                {
+                {          
                     var fullPath = dir + mat.TextureDiffuse.FilePath;
                     if (File.Exists(fullPath))
                     {
@@ -157,6 +157,10 @@ namespace Toys
                     var index = bones.FindIndex((bon) => bon.Name == bone.Name);
                     foreach (var vertW in bone.VertexWeights)
                     {
+                        if (boneweight.Length < vertW.VertexID) {
+                            //Console.WriteLine($"{materials[meshData.MaterialIndex].Name} {bone.Name} {vertW.VertexID}");
+                            continue; 
+                        }
 
                         if (boneweight[vertW.VertexID] >= 4)
                         {
