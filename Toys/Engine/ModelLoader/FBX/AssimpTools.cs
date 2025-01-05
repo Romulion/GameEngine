@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Mathematics;
 using Assimp;
+using NAudio.CoreAudioApi.Interfaces;
 
 namespace Toys
 {
@@ -13,13 +14,15 @@ namespace Toys
         List<Node> sceneNodes = new List<Node>();
         List<Bone> bones = new List<Bone>();
         List<string> boneEntrys = new List<string>();
-
+        List<Assimp.Bone> bonesBase = new List<Assimp.Bone>();
+        List<AssimpNodeTransform> node2BoneConvertedTransform = new List<AssimpNodeTransform>();
         void TraverseScene(Assimp.Node node, bool isArmature = false)
         {
 
             int parent = -1;
-            if (node.Parent != null)
+            if (node.Parent != null) { 
                 parent = sceneNodes.IndexOf(node.Parent);
+                }
             
             //Check node names dublicate and rename in blender style
             //Suggesting bone cant have dublicate names
@@ -39,6 +42,11 @@ namespace Toys
             
             sceneNodes.Add(node);
 
+            //Fill transfomr table
+            var transform = Convert(node.Transform);
+            if (parent > -1)
+                transform = transform * node2BoneConvertedTransform[parent].World2Bone;
+            node2BoneConvertedTransform.Add(new AssimpNodeTransform() { Name = node.Name, World2Bone = transform, Parent2Bone = Convert(node.Transform), IsBone = boneEntrys.Contains(node.Name) });
             //Find bone that has mash assigned with all childrens
             if (!isArmature && boneEntrys.Contains(node.Name))
             {
@@ -63,12 +71,18 @@ namespace Toys
 
         public List<Bone> GetArmaure(Assimp.Scene scene)
         {
+            bonesBase.Clear();
+            boneEntrys.Clear();
+            node2BoneConvertedTransform.Clear();
             foreach (var mesh in scene.Meshes)
             {
                 foreach (var boneTemp in mesh.Bones)
                 {
                     if (!boneEntrys.Contains(boneTemp.Name))
                         boneEntrys.Add(boneTemp.Name);
+
+                    if (bonesBase.FindIndex(b => b.Name == boneTemp.Name) == -1)
+                        bonesBase.Add(boneTemp);
                 }
             }
 
@@ -87,9 +101,13 @@ namespace Toys
                     int parent = -1;
                     if (node.Parent != null)
                         parent = sceneNodes.IndexOf(node.Parent);
-                    bones.Add(new Bone(node.Name, Convert(node.Transform), parent));
+
+                    var b = new Bone(node.Name, Convert(node.Transform), parent);
+                    bones.Add(b);
                 }
             }
+            int id = 0;
+            UpdateBonesData(scene.RootNode, Matrix4.Identity, ref id);
 
             //Sorting bones according to their position in model data
             var bonesOrdered = new List<Bone>(bones.Count);
@@ -99,7 +117,9 @@ namespace Toys
                 {
                     var bone = bones.Find(b => b.Name == boneTemp.Name);
                     if (!bonesOrdered.Contains(bone))
+                    {
                         bonesOrdered.Add(bone);
+                    }
                 }
             }
             //Add bones that dont attached to mesh
@@ -119,10 +139,47 @@ namespace Toys
                     bone.ParentIndex = bonesOrdered.FindIndex(b =>  b.Name == sceneNodes[bone.ParentIndex].Name);
                 }
             }
-            
+
             return bonesOrdered;
         }
 
+        //Since some models can be not in default "zero" pose,
+        //we get default pose from AssimpBone offsetMatrix and calculate bone transfome from node matrix
+        void UpdateBonesData(Assimp.Node node, Matrix4 world2Parent, ref int id)
+        {
+            var nodeData = node2BoneConvertedTransform[id];
+
+            if (nodeData.IsBone)
+            {
+                var boneOld = bonesBase.Find(b => b.Name == node.Name);
+                //try find parent
+                var parent = sceneNodes[id].Parent;
+                //if parent is a bone
+                if (boneEntrys.Contains(parent.Name))
+                {
+                    var pBone = bonesBase.Find(b => b.Name == parent.Name);
+                    nodeData.Parent2Bone = Convert(boneOld.OffsetMatrix).Inverted() * Convert(pBone.OffsetMatrix);
+                    //Calculate skeleton default pose
+                    nodeData.LocalTransform = nodeData.Parent2Bone * Convert(sceneNodes[id].Transform).Inverted();
+                }
+                //if parent is regular node
+                else
+                {
+                    nodeData.Parent2Bone = Convert(boneOld.OffsetMatrix).Inverted() * world2Parent.Inverted();
+                }
+                //Fix bone default transform
+                bones.Find(b => b.Name == node.Name).Parent2Local = nodeData.Parent2Bone;
+
+            }
+
+            //update own world to bone matrix
+            nodeData.World2Bone = nodeData.Parent2Bone * world2Parent;
+            id++;
+
+            //repeat for children
+            foreach (var child in node.Children)
+                UpdateBonesData(child, nodeData.World2Bone, ref id);
+        }
         public OpenTK.Mathematics.Vector3 Convert(System.Numerics.Vector3 vector)
         {
             return new OpenTK.Mathematics.Vector3(vector.X, vector.Y, vector.Z);
@@ -133,6 +190,19 @@ namespace Toys
             return new OpenTK.Mathematics.Vector4(vector.X, vector.Y, vector.Z, vector.W);
         }
 
+        bool IsMatrixIndentity(Matrix4 matrx)
+        {
+            bool result = true;
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    result &= ((i == j) && matrx[i, j] == 1) || Math.Abs(matrx[i, j]) < 0.00001f;
+                }
+            }
+            return result;
+        }
+        
         public OpenTK.Mathematics.Matrix4 Convert(System.Numerics.Matrix4x4 vector)
         {
             return new OpenTK.Mathematics.Matrix4(
