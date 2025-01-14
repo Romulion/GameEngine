@@ -51,8 +51,8 @@ namespace Toys
             Engine.OnLoad();
             Resize += (ev) =>
             {
-                if (Size.X != 0 && Size.Y != 0)
-                    Engine.Resize(Size.X, Size.Y);
+                if (ev.Size.X != 0 && ev.Size.Y != 0)
+                    Engine.Resize(ev.Size.X, ev.Size.Y);
             };
         }
 

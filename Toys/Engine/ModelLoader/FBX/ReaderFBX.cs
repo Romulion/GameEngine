@@ -31,6 +31,7 @@ namespace Toys
             AssimpContext importer = new AssimpContext();
             var scene = importer.ImportFile(path);
 
+            dir = Path.GetDirectoryName(path) + @"\";
             PrepareArmaure(scene);
             LoadMaterial(scene);
             LoadMeshes(scene.Meshes);

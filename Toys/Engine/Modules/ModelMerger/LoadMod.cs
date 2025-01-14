@@ -2,18 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IniParser;
-using OpenTK.Core.Native;
-using static System.Net.Mime.MediaTypeNames;
 using Assimp;
-using OpenTK.Mathematics;
-using IniParser.Model;
-using System.Numerics;
-using Assimp.Unmanaged;
-using NAudio.Midi;
-using System.Text.RegularExpressions;
 
 namespace Toys.Mod3DMigotoReconstructor
 {
@@ -25,7 +14,7 @@ namespace Toys.Mod3DMigotoReconstructor
                  { "Head", "Mat_Hair"},
                  { "Body", "Mat_Body" },
                  { "Face", "Mat_Face" },
-                 //{"Dress", "" }
+                 { "Dress","Mat_Dress" }
                  //{"Extra", "" }
             };
 
@@ -48,13 +37,12 @@ namespace Toys.Mod3DMigotoReconstructor
         ModelDataStruct _modModelData;
 
 
-        public LoadMod(string Inifile, string workDir)
+        public LoadMod(Assimp.Scene scene, string Inifile, string workDir)
         {
+            this.scene = scene;
             LoadIni(Inifile);
             _workDir = workDir;
 
-            AssimpContext importer = new AssimpContext();
-            scene = importer.ImportFile(@"D:\HomeShare\Tests\NPC_Avatar_Loli_Bow_Sigewinne\NPC_Avatar_Loli_Bow_Sigewinne.fbx", PostProcessSteps.ValidateDataStructure);
             UpdateTexturePath();
             LoadModModel();
             //mesh = new Mesh(verts, indexes.ToArray());
@@ -64,7 +52,7 @@ namespace Toys.Mod3DMigotoReconstructor
 
             //TestSaver();
             //var exporter = new AssimpContext();
-            // exporter.ExportFile(scene, @"D:\HomeShare\Tests\Output\Test.fbx", "fbx");
+            //exporter.ExportFile(scene, @"D:\HomeShare\Tests\Output\Test.fbx", "fbx");
         }
 
         void LoadIni(string iniFile)
@@ -214,8 +202,11 @@ namespace Toys.Mod3DMigotoReconstructor
                 {
                     MergeMeshMod(meshOld, scene);
                 }
+                else if (scene.Materials[meshOld.MaterialIndex].Name.EndsWith("Mat_Dress"))
+                {
+                    MergeMeshMod(meshOld, scene);
+                }
 
-            
         }
 
         void MergeMeshMod(Assimp.Mesh meshOld, Assimp.Scene scene)

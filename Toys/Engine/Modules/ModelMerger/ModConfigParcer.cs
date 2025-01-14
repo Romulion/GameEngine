@@ -32,7 +32,7 @@ namespace Toys.Mod3DMigotoReconstructor
             FindBuffers();
             FindMaterials();
 
-            //DebugParcedData();
+            DebugParcedData();
         }
 
         void FindBuffers()
@@ -155,6 +155,22 @@ namespace Toys.Mod3DMigotoReconstructor
                         material.MeshSubParts = TryParceMeshSubParts(_fileBlocks[block]);
                         _model.materials.Add(material);
                     }
+                    else if (block.EndsWith("Dress"))
+                    {
+                        var material = new MaterialData();
+                        material.Name = "Dress";
+
+                        if (blockData.ContainsKey("ib"))
+                            material.IndexBufferFile = GetIBFile(blockData["ib"]);
+
+                        if (blockData.ContainsKey("ps-t0"))
+                            material.TextureDiffuse = GetTextureFile(blockData["ps-t0"]);
+                        if (blockData.ContainsKey("ps-t1"))
+                            material.TextureLight = GetTextureFile(blockData["ps-t1"]);
+
+                        material.MeshSubParts = TryParceMeshSubParts(_fileBlocks[block]);
+                        _model.materials.Add(material);
+                    }
 
                 }
             }
@@ -220,7 +236,8 @@ namespace Toys.Mod3DMigotoReconstructor
                 {
                     //remove brackets
                     currnetContext = line.Substring(1, line.Length - 2);
-                    _fileBlocks.Add(currnetContext, new List<string>());
+                    if (!_fileBlocks.ContainsKey(currnetContext))
+                        _fileBlocks.Add(currnetContext, new List<string>());
                 }
                 else if (currnetContext != "" && line != "")
                 {

@@ -186,7 +186,7 @@ namespace Toys
                 return;
 
             //converting y coordinate
-            cursorWindowPosition.Y = GLWindow.gLWindow.Size.Y - cursorWindowPosition.Y;
+            cursorWindowPosition.Y = CoreEngine.GfxEngine.Height - cursorWindowPosition.Y;
 
             
             //detect drag for elements not supporting it
@@ -224,7 +224,10 @@ namespace Toys
                 {
                     for (int i = canvas.activeButtons.Count - 1; i >= 0; i--)
                     {
+                        
                         var button = canvas.activeButtons[i];
+                        Console.WriteLine(button.Node.GetTransform.GlobalRect.Location + "" + (button.Node.GetTransform.GlobalRect.Location + button.Node.GetTransform.GlobalRect.Size));
+                        Console.WriteLine(cursorWindowPosition);
                         if ((button.IsAllowDrag || !dragEnabled)
                             && InMask(button, cursorWindowPosition, canvas)
                             && button.Node.GetTransform.GlobalRect.Contains(cursorWindowPosition.X, cursorWindowPosition.Y))
