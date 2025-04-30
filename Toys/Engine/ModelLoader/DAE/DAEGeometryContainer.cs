@@ -13,7 +13,7 @@ namespace Toys
 		public Vector2[] UVs;
 		public Vector3[] Colors;
 		public Vector4[] BoneWeigths;
-		public IVector4[] BoneIndeces;
+		public Vector4i[] BoneIndeces;
         public List<DAEMaterialBinding> MaterialIndexTable;
 		public int[] Indeces;
 		//public string MaterialName;

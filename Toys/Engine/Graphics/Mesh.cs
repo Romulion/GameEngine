@@ -42,7 +42,7 @@ namespace Toys
                     SetupMesh(vertices);
                     IsReady = true;
                 };
-            }
+            }			
 		}
 
 		public Mesh(VertexRigged3D[] vertices, int[] indexes) : base(false)
@@ -184,7 +184,7 @@ namespace Toys
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, VBO);
 		}
 
-		public MeshMorper GetMorpher
+        public MeshMorper GetMorpher
 		{
 			get
 			{
@@ -192,7 +192,10 @@ namespace Toys
 #if VertexSkin
                     morpher = new MeshMorper(vert, VBO, vSize);
 #else
-                    morpher = new MeshMorper(VertexRigged, SSB0, VertexSize);
+					if (VertexRigged != null)
+						morpher = new MeshMorper(VertexRigged, SSB0, VertexSize);
+					else
+                        morpher = new MeshMorper(Vertices, VBO, VertexSize);
 #endif
                 return morpher; 
 			}
@@ -210,7 +213,6 @@ namespace Toys
 		{
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 		}
-
 
 		internal void BindVAO()
 		{

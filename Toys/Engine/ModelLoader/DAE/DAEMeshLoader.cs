@@ -135,7 +135,7 @@ namespace Toys
 
             gc.Colors = new Vector3[vertexCount];
             gc.BoneWeigths = new Vector4[vertexCount];
-            gc.BoneIndeces = new IVector4[vertexCount];
+            gc.BoneIndeces = new Vector4i[vertexCount];
             gc.Indeces = new int[vertexCount];
 
             //gc.Indeces = indexes.ToArray();
@@ -256,19 +256,19 @@ namespace Toys
 				switch (count)
 				{
 					case 1:
-						geometry.BoneIndeces[i] = new IVector4(new int[] { bindedBones[offset],0,0,0 });
+						geometry.BoneIndeces[i] = new Vector4i(bindedBones[offset], 0, 0, 0);
 						geometry.BoneWeigths[i] = new Vector4( weigths[bindedBones[offset + 1]], 0f, 0f, 0f);
 						break;
 					case 2:
-						geometry.BoneIndeces[i] = new IVector4(new int[] { bindedBones[offset],bindedBones[offset + 2],0,0 });
+						geometry.BoneIndeces[i] = new Vector4i(bindedBones[offset], bindedBones[offset + 2], 0, 0);
 						geometry.BoneWeigths[i] = new Vector4(weigths[bindedBones[offset + 1]], weigths[bindedBones[offset + 3]], 0f, 0f);
 						break;
 					case 3:
-						geometry.BoneIndeces[i] = new IVector4(new int[] { bindedBones[offset],bindedBones[offset + 2],bindedBones[offset + 4],0 });
+						geometry.BoneIndeces[i] = new Vector4i(bindedBones[offset],bindedBones[offset + 2],bindedBones[offset + 4],0 );
 						geometry.BoneWeigths[i] = new Vector4(weigths[bindedBones[offset + 1]], weigths[bindedBones[offset + 3]], weigths[bindedBones[offset + 5]], 0f);
 						break;
 					case 4:
-						geometry.BoneIndeces[i] = new IVector4(new int[] { bindedBones[offset],bindedBones[offset + 2],bindedBones[offset + 4],bindedBones[offset + 6]});
+						geometry.BoneIndeces[i] = new Vector4i(bindedBones[offset], bindedBones[offset + 2], bindedBones[offset + 4], bindedBones[offset + 6]);
 						geometry.BoneWeigths[i] = new Vector4(weigths[bindedBones[offset + 1]], weigths[bindedBones[offset + 3]],weigths[bindedBones[offset + 5]], weigths[bindedBones[offset + 7]]);
 						break;
 				}
@@ -371,7 +371,7 @@ namespace Toys
                         var mul = indx.Length / mat.Count;
                         verts[offset] = new VertexRigged3D(DAEGeometry[i].Positions[indx[n * mul + mat.OffsetPosition]], 
                             DAEGeometry[i].Normals[indx[n * mul + mat.OffsetNormal]], DAEGeometry[i].UVs[indx[n * mul + mat.OffsetUV]], 
-                            new IVector4(new int[4] { 0, 0, 0, 0 }), Vector4.Zero);
+                            new Vector4i( 0, 0, 0, 0 ), Vector4.Zero);
                         DAEGeometry[i].Indeces[offset] = offset++;
                     }
 

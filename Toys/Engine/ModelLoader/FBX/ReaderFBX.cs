@@ -203,24 +203,28 @@ namespace Toys
         Morph[] ReadMorphs(Assimp.Mesh meshData, Mesh mesh)
         {
             
+            
             var morphs = new Morph[meshData.MeshAnimationAttachmentCount];
             for (int i = 0; i < morphs.Length; i++)
             {
                 int k = 0;
                 var anim = meshData.MeshAnimationAttachments[i];
-                morphs[i] = new MorphVertex(anim.Name, "", anim.VertexCount, mesh.GetMorpher);
-
+                var morph = new MorphVertex(anim.Name, "", anim.VertexCount, mesh.GetMorpher);
+                morphs[i] = morph;
                 //considering same vertex order
                 for (int j = 0; j < anim.Vertices.Count; j++)
                 {
                     var vert = Tools.Convert(anim.Vertices[j]);
                     var vertChange = vert - mesh.Vertices[j].Position;
                     //skip unchanged vertices
-                    if (vertChange.LengthSquared < 0.000000001f)
+                    if (vertChange.LengthSquared < 0.0000001f)
                         continue;
-
+  
                     k++;
-                    ((MorphVertex)morphs[i]).AddVertex(vertChange, j);
+                    morph.AddVertex(vertChange, j);
+
+                    if (morph.Name == "Mouth_Open01.Mouth_Open01")
+                        Console.WriteLine($"{vert} {mesh.Vertices[j].Position} {k}");
                 }
 
                 //Console.WriteLine("skipped {0} from {1}", k, anim.Vertices.Count);

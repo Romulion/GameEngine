@@ -88,8 +88,8 @@ namespace Toys
                 vertex.Position = reader.readVector3() * multipler;
                 vertex.Normal = reader.readVector3();
                 vertex.UV = reader.readVector2();
-                vertex.BoneIndices.bone1 = reader.ReadInt16();
-                vertex.BoneIndices.bone2 = reader.ReadInt16();
+                vertex.BoneIndices[0] = reader.ReadInt16();
+                vertex.BoneIndices[1] = reader.ReadInt16();
                 //Convert left to right coordinate system
                 vertex.Position.Z = -vertex.Position.Z;
                 vertex.Normal.Z = -vertex.Normal.Z;

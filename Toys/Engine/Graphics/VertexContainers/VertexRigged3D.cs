@@ -17,12 +17,12 @@ namespace Toys
         [FieldOffset(32)]
         public Vector2 UV;
         [FieldOffset(48)]
-        public IVector4 BoneIndices;
+        public Vector4i BoneIndices;
         [FieldOffset(64)]
         public Vector4 BoneWeigths;
 
 
-		public VertexRigged3D(Vector3 postion, Vector3 normal, Vector2 uv, IVector4 boneIdices, Vector4 boneWeigth)
+		public VertexRigged3D(Vector3 postion, Vector3 normal, Vector2 uv, Vector4i boneIdices, Vector4 boneWeigth)
 		{
 			Position = postion;
 			Normal = normal;
@@ -38,6 +38,7 @@ namespace Toys
 	
 	}
 
+	/*
 	public struct IVector4
 	{
 		public int bone1;
@@ -95,7 +96,10 @@ namespace Toys
                         break;
                 }
             }
+	
 		}
+	
 	}
+	*/
 
 }

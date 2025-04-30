@@ -210,7 +210,7 @@ namespace Toys
                 if (chunkSize == 0x28)
                     file.BaseStream.Position += 4;
                     */
-                vertice.BoneIndices = new IVector4(new int[] { reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte() });
+                vertice.BoneIndices = new Vector4i( reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte() );
                 if (chunkSize == 0x28)
                 {
                     vertice.BoneWeigths = reader.readVector4();
@@ -266,11 +266,11 @@ namespace Toys
             //set bone id to global
             for (int i = 0; i < vv.Length; i++)
             {
-                IVector4 boneIndexes = vv[i].BoneIndices;
-                boneIndexes.bone1 = boneIdDict[boneIndexes.bone1];
-                boneIndexes.bone2 = boneIdDict[boneIndexes.bone2];
-                boneIndexes.bone3 = boneIdDict[boneIndexes.bone3];
-                boneIndexes.bone4 = boneIdDict[boneIndexes.bone4];
+                Vector4i boneIndexes = vv[i].BoneIndices;
+                boneIndexes[0] = boneIdDict[boneIndexes[0]];
+                boneIndexes[1] = boneIdDict[boneIndexes[1]];
+                boneIndexes[2] = boneIdDict[boneIndexes[2]];
+                boneIndexes[3] = boneIdDict[boneIndexes[3]];
                 vv[i].BoneIndices = boneIndexes;
             }
 

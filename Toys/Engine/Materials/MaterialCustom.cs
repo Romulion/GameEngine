@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Toys
 {
-    class MaterialCustom : Material
+    public class MaterialCustom : Material
     {
         string vs;
         string fs;

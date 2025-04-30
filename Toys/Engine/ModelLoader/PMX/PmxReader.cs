@@ -136,7 +136,7 @@ namespace Toys
 				pos.Z = -pos.Z;
 				normal.Z = -normal.Z;
 
-				verticesR[i] = new VertexRigged3D(pos, normal, uv,new IVector4(bonesIndexes),bonesWeigth);
+				verticesR[i] = new VertexRigged3D(pos, normal, uv,new Vector4i(bonesIndexes[0], bonesIndexes[1], bonesIndexes[2], bonesIndexes[3]),bonesWeigth);
 				//vertices[i] = new Vertex3D(pos, normal, uv);
 				float outline = reader.ReadSingle();
 

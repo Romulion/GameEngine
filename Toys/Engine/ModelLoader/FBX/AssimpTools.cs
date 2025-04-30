@@ -139,7 +139,11 @@ namespace Toys
                     bone.ParentIndex = bonesOrdered.FindIndex(b =>  b.Name == sceneNodes[bone.ParentIndex].Name);
                 }
             }
-
+            /*
+            int k = 0;
+            foreach (var bone in bonesOrdered)
+                Console.WriteLine($"{bone.Name} {k++}");
+            */
             return bonesOrdered;
         }
 
