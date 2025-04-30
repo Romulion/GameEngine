@@ -46,8 +46,9 @@ namespace Toys
                 MainRender = new VR.VRRenderer();
             else
                 MainRender = new MainRenderer();
-
-			TextRender = new TextRenderer();
+#if !LITE
+            TextRender = new TextRenderer();
+#endif
             CoreEngine.MainScene.GetLight.BindShadowMap();
 
             UniformBufferManager ubm = UniformBufferManager.GetInstance;

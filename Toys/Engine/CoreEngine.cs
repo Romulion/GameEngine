@@ -57,7 +57,9 @@ namespace Toys
 				PhysEngine = new PhysicsEngine();
                 ScriptingEngine = new ScriptingEngine();
                 InptHandler = new InputHandler();
-                AudioEngine = new SoundEngine();
+#if !LITE
+                //AudioEngine = new SoundEngine();
+#endif
                 ISystem = new InputSystem();
 #if VR
                 VRSystem = new VR.VRSystem();
@@ -138,7 +140,9 @@ namespace Toys
 #if PHYS
             PhysEngine.Update(FrameTimer.FrameTime);
 #endif
-            AudioEngine.Update();
+#if !LITE
+            //AudioEngine.Update();
+#endif
             ScriptingEngine.PreRender();
             PhysEngine?.Body2Scene?.Invoke();
             Time.UpdateTime = Time.Stop();

@@ -226,8 +226,6 @@ namespace Toys
                     {
                         
                         var button = canvas.activeButtons[i];
-                        Console.WriteLine(button.Node.GetTransform.GlobalRect.Location + "" + (button.Node.GetTransform.GlobalRect.Location + button.Node.GetTransform.GlobalRect.Size));
-                        Console.WriteLine(cursorWindowPosition);
                         if ((button.IsAllowDrag || !dragEnabled)
                             && InMask(button, cursorWindowPosition, canvas)
                             && button.Node.GetTransform.GlobalRect.Contains(cursorWindowPosition.X, cursorWindowPosition.Y))
