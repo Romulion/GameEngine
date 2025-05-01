@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-windows7.0</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>Library</OutputType>
     <RootNamespace>Toys</RootNamespace>
@@ -140,7 +140,7 @@
     <EmbeddedResource Include="Resourses\textures\checkmark-24-512.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AssimpNetter" Version="5.4.3" />
+    <PackageReference Include="AssimpNetter" Version="5.4.3.3" />
     <PackageReference Include="BulletSharp">
       <Version>0.11.1</Version>
     </PackageReference>
@@ -220,5 +220,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>$(DefineConstants);LITE</DefineConstants>
   </PropertyGroup>
 </Project>

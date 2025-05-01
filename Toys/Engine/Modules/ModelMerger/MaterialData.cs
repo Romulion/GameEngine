@@ -10,6 +10,7 @@ namespace Toys.Mod3DMigotoReconstructor
     {
         public string Name = "";
         public int Offset = 0;
+        public int Count = 0;
         public string TextureDiffuse = "";
         public string TextureNormal = "";
         public string TextureLight = "";

@@ -32,7 +32,7 @@ namespace Toys.Mod3DMigotoReconstructor
             FindBuffers();
             FindMaterials();
 
-            DebugParcedData();
+            //DebugParcedData();
         }
 
         void FindBuffers()

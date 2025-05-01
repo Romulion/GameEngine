@@ -222,9 +222,6 @@ namespace Toys
   
                     k++;
                     morph.AddVertex(vertChange, j);
-
-                    if (morph.Name == "Mouth_Open01.Mouth_Open01")
-                        Console.WriteLine($"{vert} {mesh.Vertices[j].Position} {k}");
                 }
 
                 //Console.WriteLine("skipped {0} from {1}", k, anim.Vertices.Count);

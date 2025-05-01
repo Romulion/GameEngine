@@ -22,7 +22,7 @@ namespace Toys
         public SoundEngine()
         {
             context = ALContext.Null;
-            Initialize();
+            //Initialize();
             sourceList = new List<AudioSource>();
         }
 
