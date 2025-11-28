@@ -3,11 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Assimp;
 using OpenTK.Mathematics;
 
 namespace FbxWrapper
@@ -31,22 +26,22 @@ namespace FbxWrapper
         public Vector3 LocalScale { get; set; }
         public FbxDataNode Parent { get; set; }
 
-        private List<FbxDataNode> children;
+        public List<FbxDataNode> Children { get; private set; }
 
-        public FbxDataNode this[int i] => children[i];
+        public FbxDataNode this[int i] => Children[i];
 
         public FbxDataNode GetFirstChild
         {
             get
             {
-                if (children.Count > 0)
-                    return children[0];
+                if (Children.Count > 0)
+                    return Children[0];
                 else
                     return null;
             }
         }
 
-        public int Count => children.Count;
+        public int Count => Children.Count;
 
         public string Path
         {
@@ -65,19 +60,19 @@ namespace FbxWrapper
 
         public FbxDataNode(int childrenCount = 0)
         {
-            children = new List<FbxDataNode>(childrenCount);
+            Children = new List<FbxDataNode>(childrenCount);
         }
 
         public void AddChild(FbxDataNode obj)
         {
-            children.Add(obj);
+            Children.Add(obj);
             obj.Parent?.Remove(obj);
             obj.Parent = this;            
         }
 
         public void Remove(FbxDataNode frame)
         {
-            children.Remove(frame);
+            Children.Remove(frame);
             frame.Parent = null;
         }
 
@@ -97,7 +92,7 @@ namespace FbxWrapper
         public FbxDataNode FindRelativeFrameWithPath(string path)
         {
             var subs = path.Split(new[] { '/' }, 2);
-            foreach (var child in children)
+            foreach (var child in Children)
             {
                 if (child.Name == subs[0])
                 {
@@ -122,7 +117,7 @@ namespace FbxWrapper
             {
                 return this;
             }
-            foreach (var child in children)
+            foreach (var child in Children)
             {
                 var frame = child.FindFrame(name);
                 if (frame != null)
@@ -135,7 +130,7 @@ namespace FbxWrapper
 
         public FbxDataNode FindChild(string name, bool recursive = true)
         {
-            foreach (var child in children)
+            foreach (var child in Children)
             {
                 if (recursive)
                 {
@@ -162,7 +157,7 @@ namespace FbxWrapper
             {
                 yield return this;
             }
-            foreach (var child in children)
+            foreach (var child in Children)
             {
                 foreach (var item in child.FindChilds(name))
                 {
@@ -205,8 +200,8 @@ namespace FbxWrapper
 
     public class FbxDataBone
     {
-        internal string Path { get; set; }
-        internal Matrix4 Matrix { get; set; }
+        public string Path { get; set; }
+        public Matrix4 Matrix { get; set; }
     }
 
     public class FbxDataMaterial

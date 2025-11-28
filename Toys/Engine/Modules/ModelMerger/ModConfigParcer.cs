@@ -178,6 +178,8 @@ namespace Toys.Mod3DMigotoReconstructor
 
         string GetIBFile(string blockName)
         {
+            if (blockName == "null")
+                return "";
             var block =  BlockParce(_fileBlocks[blockName]);
             if (block["format"] != "DXGI_FORMAT_R32_UINT")
                 throw new Exception("unknown IB format" + block["format"]);

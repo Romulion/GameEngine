@@ -10,6 +10,7 @@ using Toys;
 using FbxWrapper.FbxInterop;
 using OpenTK.Mathematics;
 using System.Drawing.Drawing2D;
+using OpenTK.Windowing.Common.Input;
 
 namespace FbxWrapper
 {
@@ -192,7 +193,7 @@ namespace FbxWrapper
         }
         
 
-        Material CreateMaterial(string Name, int offset, int count, string fileTexture) {
+        Material CreateMaterial(string Name, int offset, int count, string fileTexture, FbxDataMaterial mat = null) {
             Texture2D textureDiffuse = Texture2D.LoadEmpty();
 
             //fileTexture = WorkingDir + fileTexture;
@@ -223,7 +224,13 @@ namespace FbxWrapper
             var mater = new MaterialCustom(shdrst, rddir, vs, fs);
             mater.Name = Name;
 
-
+            if (mat != null)
+            {
+                mater.UniformManager.Set("ambient_color", ConvertColor(mat.Ambient));
+                mater.UniformManager.Set("diffuse_color", ConvertColor(mat.Diffuse));
+                mater.UniformManager.Set("specular_color", ConvertColor(mat.Specular));
+                mater.UniformManager.Set("specular_power", mat.Shininess);
+            }
             /*
             if (mat.HasColorAmbient)
                 mater.UniformManager.Set("ambient_color", Tools.Convert(mat.ColorAmbient).Xyz);
@@ -240,6 +247,12 @@ namespace FbxWrapper
             mater.Offset = offset;
             mater.Count = count;
             return mater;
+
+
+            Vector3 ConvertColor(Color4 color)
+            {
+                return new Vector3(color.R, color.G, color.B);
+            }
         }
 
         public void DrawSceneSimple()
@@ -279,7 +292,6 @@ namespace FbxWrapper
                 }
             }
 
-
             foreach (var node in scene.MeshList)
             {
                 var sNode = new SceneNode();
@@ -288,7 +300,6 @@ namespace FbxWrapper
                 sNode.AddComponent(mesh);
                 sNode.SetParent(root);
             }
-
         }
 
         MeshDrawer ConvertMesh(FbxDataMesh dataMesh, FbxDataScene scene)
@@ -322,7 +333,7 @@ namespace FbxWrapper
                     string texturePath = "";
                     if (tex != null)
                         texturePath = tex.Name;
-                    materials[n] = CreateMaterial(mat.Name, offset, subMesh.Indeces.Length, texturePath);
+                    materials[n] = CreateMaterial(mat.Name, offset, subMesh.Indeces.Length, texturePath, mat);
                     var material = (MaterialCustom)materials[n];
                     material.UniformManager.Set("ambient_color", Color2Vec3(mat.Ambient));
                     material.UniformManager.Set("diffuse_color", Color2Vec3(mat.Diffuse));
@@ -700,6 +711,8 @@ namespace FbxWrapper
             exportOptions.scaleFactor = 100;
             _exportOptions = exportOptions;
 
+            CopyTextures(dataScene, filePath);
+
             var meshFrames = new List<FbxDataNode>();
 
             ExportRootFrame(meshFrames, dataScene);
@@ -736,6 +749,21 @@ namespace FbxWrapper
 
             _exportOptions = exportBackup;
             _context = contextBackup;
+        }
+
+        void CopyTextures(FbxDataScene scene, string path)
+        {
+            var directory = Path.GetFullPath(path);
+            foreach (var texture in scene.TextureList)
+            {
+                var oldPath = texture.Name;
+                var newPath = directory + Path.GetFileName(oldPath);
+                if (!File.Exists(newPath) && File.Exists(oldPath))
+                {
+                    File.Copy(oldPath, newPath);
+                }
+                texture.Name = newPath;
+            }
         }
 
         /*

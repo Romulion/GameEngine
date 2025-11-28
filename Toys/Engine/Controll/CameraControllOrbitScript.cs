@@ -113,29 +113,31 @@ namespace Toys
                 Vector3 left = Vector3.Cross(front,cameraUp);
                 //movment
                 
+                /*
                 if (keyState.IsKeyDown(Keys.W))
                 {
                     camera.Target += speed * front;
                     transform.Position += speed * front;
                 }
-
+                
                 if (keyState.IsKeyDown(Keys.A))
                 {
                     camera.Target -= speed * left;
                     transform.Position -= speed * left;
                 }
-
+               
                 if (keyState.IsKeyDown(Keys.S))
                 {
                     camera.Target -= speed * front;
                     transform.Position -= speed * front;
                 }
-
+                
                 if (keyState.IsKeyDown(Keys.D))
                 {
                     camera.Target += speed * left;
                     transform.Position += speed * left;
                 }
+                */
                 
                 if (keyState.IsKeyDown(Keys.R))
                 {

@@ -119,20 +119,14 @@ namespace Toys.Mod3DMigotoReconstructor
             //change textures
             foreach (var matMod in _modModelData.materials)
             {
-                string matName;
-                if (matTable.TryGetValue(matMod.Name, out matName))
+                var material = FindFbxMaterial(matMod.Name, scene.MaterialList);
+                if (material != null)
                 {
-                    var material = scene.MaterialList.Find((mat) => mat.Name.EndsWith(matName));
-
                     var texture = material.Textures.Find(t => t.Type == FbxTextureType.Diffuse);
                     if (texture != null)
                     {
-                        texture.Name = _modDir + texture.Name;
+                        texture.Name = _modDir + matMod.TextureDiffuse;
                     }
-                }
-                else
-                {
-                    Logger.Info("Unknown material: " + matMod.Name);
                 }
             }
 
@@ -167,10 +161,10 @@ namespace Toys.Mod3DMigotoReconstructor
             meshData.SubmeshList = new List<FbxDataSubMesh>();
             foreach (var modMat in _modModelData.materials)
             {
-                if (modMat.MeshSubParts.Count > 0)
+                var matFbx = FindFbxMaterial(modMat.Name, scene.MaterialList);
+                if (matFbx != null)
                 {
-                    var matFbx = FindFbxMaterial(modMat.Name, scene.MaterialList);
-                    if (matFbx != null)
+                    if (modMat.MeshSubParts.Count > 0)
                     {
                         foreach (var subPart in modMat.MeshSubParts)
                         {
@@ -179,12 +173,21 @@ namespace Toys.Mod3DMigotoReconstructor
                             fdsm.Indeces = new int[subPart.Count];
                             indexes.CopyTo(subPart.Offset, fdsm.Indeces, 0, fdsm.Indeces.Length);
                             meshData.SubmeshList.Add(fdsm);
+
                         }
+                    }
+                    else
+                    {
+                        var fdsm = new FbxDataSubMesh();
+                        fdsm.Material = matFbx.Name;
+                        fdsm.Indeces = new int[modMat.Count];
+                        indexes.CopyTo(modMat.Offset, fdsm.Indeces, 0, modMat.Count);
+                        meshData.SubmeshList.Add(fdsm);
                     }
                 }
             }
             //add only used in skin bones
-            meshData.BoneList = new List<FbxDataBone>();
+            //meshData.BoneList = new List<FbxDataBone>();
             var bones = scene.BonesOrdered;
             var bonesIdxs = new List<int>();
             foreach (var boneidV4 in BoneIndices)
@@ -198,12 +201,18 @@ namespace Toys.Mod3DMigotoReconstructor
             foreach (var indx in bonesIdxs)
                 AddBone(indx);
 
+            
             void AddBone(int id)
             {
                 if (id >= bones.Count)
+                {
+                    Console.WriteLine($" {id}");
                     return;
+                }
 
+                return;
                 var bone = bones[id];
+                
                 var node = meshData.BoneList.Find(b => b.Path == bone);
                 if (node == null)
                 {

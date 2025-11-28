@@ -120,9 +120,11 @@ namespace Toys
 
             foreach (var rigid in rigitBodies)
             {
-                World.RemoveCollisionObject(rigid.Body);
                 rigid.Body.MotionState.Dispose();
+                rigid.Body.CollisionShape.Dispose();
                 rigid.Body.RemoveCustomDebugColor();
+                World.RemoveRigidBody(rigid.Body);
+                //World.RemoveCollisionObject(rigid.Body);     
                 rigid.Body.Dispose();
             }
             base.Unload();

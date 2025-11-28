@@ -29,7 +29,7 @@ namespace Toys
 */
 		public static void Destroy(Resource res)
         {
-			if (!res.isDestroyed)
+			if (res!= null && !res.isDestroyed)
 			{
 				if (GLWindow.gLWindow.CheckContext || res.IsThreadSafe)
 					res.Destroy();
@@ -68,7 +68,7 @@ namespace Toys
 
 		//Clean "Lost" resources. Slow
         ~Resource()
-        {			
+        {
 			Destroy(this);
 		}
 	}

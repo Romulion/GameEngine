@@ -15,69 +15,69 @@ namespace Toys
 		int VAO, VBO, EBO;
 		internal int VertexCount;
 		int SSB0;
-        internal bool IsReady { get; private set; }
+		internal bool IsReady { get; private set; }
 		//for vertex morphing
 		//stride 
 		internal int VertexSize;
 		//elements array
 		public Vertex3D[] Vertices { get; private set; }
-        public VertexRigged3D[] VertexRigged { get; private set; }
-        public BoundingBox BoundingBox { get; private set; }
-        public Mesh(Vertex3D[] vertices, int[] indices) : base(false)
+		public VertexRigged3D[] VertexRigged { get; private set; }
+		public BoundingBox BoundingBox { get; private set; }
+		public Mesh(Vertex3D[] vertices, int[] indices) : base(false)
 		{
-            Indices = indices;
+			Indices = indices;
 			VertexSize = Marshal.SizeOf(typeof(Vertex3D));
-            VertexCount = vertices.Length;
-            Vertices = vertices;
-            BoundingBox = BoundingBox.FromVertexes3d(Vertices);
-            //check if loading in current context
-            if (GLWindow.gLWindow.CheckContext)
-            {
-                SetupMesh(vertices);
-                IsReady = true;
-            }
-            else
-            {
-                CoreEngine.ActiveCore.AddTask = () => {
-                    SetupMesh(vertices);
-                    IsReady = true;
-                };
-            }			
+			VertexCount = vertices.Length;
+			Vertices = vertices;
+			BoundingBox = BoundingBox.FromVertexes3d(Vertices);
+			//check if loading in current context
+			if (GLWindow.gLWindow.CheckContext)
+			{
+				SetupMesh(vertices);
+				IsReady = true;
+			}
+			else
+			{
+				CoreEngine.ActiveCore.AddTask = () => {
+					SetupMesh(vertices);
+					IsReady = true;
+				};
+			}
 		}
 
 		public Mesh(VertexRigged3D[] vertices, int[] indexes) : base(false)
 		{
-            VertexRigged = vertices;
+			VertexRigged = vertices;
 
-            Indices = indexes;
-			
-            VertexCount = vertices.Length;
-            Vertices = new Vertex3D[vertices.Length];
+			Indices = indexes;
+
+			VertexCount = vertices.Length;
+			Vertices = new Vertex3D[vertices.Length];
 			for (int i = 0; i < Vertices.Length; i++)
 				Vertices[i] = (Vertex3D)vertices[i];
-            BoundingBox = BoundingBox.FromVertexes3d(Vertices);
-            VertexSize = Marshal.SizeOf(typeof(VertexRigged3D));
+			BoundingBox = BoundingBox.FromVertexes3d(Vertices);
+			VertexSize = Marshal.SizeOf(typeof(VertexRigged3D));
 #if !VertexSkin
-            if (GLWindow.gLWindow.CheckContext)
-            {
-                SetupMesh(Vertices);
-                MakeSSBO(0, vertices);
-                IsReady = true;
-            }
-            else
-            {
-                CoreEngine.ActiveCore.AddTask = () => {
-                    SetupMesh(Vertices);
-                    MakeSSBO(0, vertices);
-                    IsReady = true;
-                };
-            }
-            
-            
+			if (GLWindow.gLWindow.CheckContext)
+			{
+				SetupMesh(Vertices);
+				MakeSSBO(0, vertices);
+				IsReady = true;
+			}
+			else
+			{
+				CoreEngine.ActiveCore.AddTask = () => {
+					SetupMesh(Vertices);
+					MakeSSBO(0, vertices);
+					IsReady = true;
+				};
+			}
+
+
 #else
             SetupMeshRigged(vertices);
 #endif
-        }
+		}
 
 		//clearing resources
 		protected sealed override void Unload()
@@ -85,7 +85,7 @@ namespace Toys
 			GL.DeleteVertexArray(VAO);
 			GL.DeleteBuffer(EBO);
 			GL.DeleteBuffer(VBO);
-            GL.DeleteBuffer(SSB0);
+			GL.DeleteBuffer(SSB0);
 		}
 
 		/// <summary>
@@ -95,9 +95,9 @@ namespace Toys
 		/// <param name="vertices">Vertices.</param>
 		void SetupMesh(Vertex3D[] vertices)
 		{
-            var vertexSize = Marshal.SizeOf(typeof(Vertex3D));
-            //generate buffers
-            VAO = GL.GenVertexArray();
+			var vertexSize = Marshal.SizeOf(typeof(Vertex3D));
+			//generate buffers
+			VAO = GL.GenVertexArray();
 			VBO = GL.GenBuffer();
 			EBO = GL.GenBuffer();
 
@@ -125,8 +125,8 @@ namespace Toys
 
 			//unbind
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-			GL.BindVertexArray(0);   
-        }
+			GL.BindVertexArray(0);
+		}
 
 
 		/// <summary>
@@ -136,7 +136,7 @@ namespace Toys
 		void SetupMeshRigged(VertexRigged3D[] vertices)
 		{
 
-			
+
 			VAO = GL.GenVertexArray();
 			VBO = GL.GenBuffer();
 			EBO = GL.GenBuffer();
@@ -168,23 +168,23 @@ namespace Toys
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 			GL.BindVertexArray(0);
-            //generating shared storage buffer
-        }
+			//generating shared storage buffer
+		}
 
 		//create shader storage buffer for mesh
 		void MakeSSBO(int index, VertexRigged3D[] verticesRigged)
 		{
 			int verticeSize = Marshal.SizeOf(typeof(VertexRigged3D));
 			SSB0 = GL.GenBuffer();
-			GL.BindBuffer(BufferTarget.ShaderStorageBuffer,SSB0);
-			GL.BufferData(BufferTarget.ShaderStorageBuffer, verticeSize* VertexCount, verticesRigged, BufferUsageHint.DynamicDraw);
+			GL.BindBuffer(BufferTarget.ShaderStorageBuffer, SSB0);
+			GL.BufferData(BufferTarget.ShaderStorageBuffer, verticeSize * VertexCount, verticesRigged, BufferUsageHint.DynamicDraw);
 			GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, index, SSB0);
 			GL.BindBuffer(BufferTarget.ShaderStorageBuffer, 0);
 
-            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, VBO);
+			GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, VBO);
 		}
 
-        public MeshMorper GetMorpher
+		public MeshMorper GetMorpher
 		{
 			get
 			{
@@ -195,9 +195,9 @@ namespace Toys
 					if (VertexRigged != null)
 						morpher = new MeshMorper(VertexRigged, SSB0, VertexSize);
 					else
-                        morpher = new MeshMorper(Vertices, VBO, VertexSize);
+						morpher = new MeshMorper(Vertices, VBO, VertexSize);
 #endif
-                return morpher; 
+				return morpher;
 			}
 		}
 		//updating mesh for vertex morph and skinning
@@ -228,9 +228,9 @@ namespace Toys
 		//for compute shader morphs
 		internal void BindSSBO()
 		{
-            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, SSB0);
-            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, VBO);
-        }
+			GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, SSB0);
+			GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, VBO);
+		}
 
 		/// <summary>
 		/// Draw the part of mesh.

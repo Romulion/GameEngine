@@ -93,6 +93,12 @@ namespace Toys
 			}
 		}
 
+		public virtual Texture GetTexture(TextureType type)
+		{
+			Texture res;
+			textures.TryGetValue(type, out res);
+			return res;
+		}
 		
 		protected override void Unload()
 		{

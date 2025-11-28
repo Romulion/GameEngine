@@ -17,6 +17,15 @@ namespace Toys
             assembly = Assembly.GetExecutingAssembly();
         }
 
+        public static void DebugResourses()
+        {
+            foreach (var resource in CoreEngine.GfxEngine.meshes)
+            {
+                Console.WriteLine(resource);
+            }
+            
+        }
+
         public static T LoadAsset<T>(string path) where T : Resource
         {
             Type tp = typeof(T);

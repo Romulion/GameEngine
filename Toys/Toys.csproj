@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SharpFont">
-      <HintPath>bin\Debug\SharpFont.dll</HintPath>
+      <HintPath>..\bin\Debug\SharpFont.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
   </ItemGroup>

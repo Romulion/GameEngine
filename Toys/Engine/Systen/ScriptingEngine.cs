@@ -96,6 +96,19 @@ namespace Toys
                updates.RemoveAll((m) => m.ScriptingObject == sc);
                preRender.RemoveAll((m) => m.ScriptingObject == sc);
                postRender.RemoveAll((m) => m.ScriptingObject == sc);
+
+               //remove initialization script
+               if (!sc.IsInstalized)
+               {
+                   var queCount = awakeQueue.Count;
+                   while (queCount > 0)
+                   {
+                       var elem = awakeQueue.Dequeue();
+                       if (elem != sc)
+                           awakeQueue.Enqueue(elem);
+                       queCount--;
+                   }
+               }
            }));
         }
 

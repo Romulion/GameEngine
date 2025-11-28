@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Toys
 {
-    class DynamicForm : Form
+     class DynamicForm : Form
     {
         public event MouseEventHandler LeftMouseUp;
         public event MouseEventHandler LeftMouseDown;

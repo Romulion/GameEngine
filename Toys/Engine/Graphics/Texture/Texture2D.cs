@@ -22,7 +22,14 @@ namespace Toys
 	public class Texture2D : Texture
 	{
         TextureType type;
-		public string Name { private set; get; }
+        string _name;
+		public string Name { private set { _name = value; }
+            get { if (_name != null)
+                    return _name;
+                else
+                    return Id;
+            }
+        }
 
         //default texture
         static Texture2D defaultTexture;

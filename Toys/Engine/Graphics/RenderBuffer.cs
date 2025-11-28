@@ -7,7 +7,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Toys
 {
-    class RenderBuffer
+     class RenderBuffer
     {
         public RenderTexture RenderTexture { get; private set; }
         public int RenderBufferDraw { get; private set; }

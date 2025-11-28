@@ -24,8 +24,9 @@ namespace Toys
         }
         protected override void Unload()
         {
-            foreach(var comp in components)
-                Destroy(comp);
+           components.Clear();
+           // foreach(var comp in components)
+           //     Destroy(comp);
         }
 
         internal List<Component> GetComponents { get { return components; } }

@@ -101,7 +101,6 @@ namespace Toys
 
         void ReadMaterials(int offset)
         {
-            Console.WriteLine("Material");
             //reader.BaseStream.Position = 0x38;
             //int matOffset = (int)reader.BaseStream.Position + reader.ReadInt32();
             //reader.BaseStream.Position = matOffset + 4;

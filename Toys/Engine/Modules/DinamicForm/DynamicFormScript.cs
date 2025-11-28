@@ -126,8 +126,8 @@ namespace Toys
                 form.Top = Cursor.Position.Y + offsetY;
             }
             /*
-            KeyboardState keyState = Keyboard.GetState();
-            if (keyState[Key.S])
+            var keyState = GLWindow.Keyboard;
+            if (keyState[OpenTK.Windowing.GraphicsLibraryFramework.Keys.S])
             {
                 imageBitmap.Save("test.png");
             }
