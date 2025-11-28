@@ -9,6 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelViewer", "ModelViewer\
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelViewerWF", "ModelViewerWF\ModelViewerWF.csproj", "{77129547-EC16-4F67-BFC2-6DCAAFBA1A7A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{11EA25A3-ED68-40EE-A9D0-7FDE3B583027} = {11EA25A3-ED68-40EE-A9D0-7FDE3B583027}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Toys", "Toys\Toys.csproj", "{807E70CE-0235-466F-A7EE-432302EB0AED}"
 EndProject

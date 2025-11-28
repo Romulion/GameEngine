@@ -11,6 +11,7 @@ namespace ModelViewer
 {
     public partial class ControllWindow : Form
     {
+        public bool IsClosing { get; internal set; }
         public Scene mainScene;
         List<Button> sceneNodes;
         OpenFileDialog ofg;
@@ -58,6 +59,7 @@ namespace ModelViewer
 
             //clean list before filling
             flowLayoutPanelComponent.Controls.Clear();
+            flowLayoutPanelData.Controls.Clear();
             int yOffset = 36;
             foreach (var component in node.GetAllComponents())
             {
@@ -156,6 +158,7 @@ namespace ModelViewer
 
         void DrawMorphList(Morph[] morphs)
         {
+            panel1.Controls.Clear();
             int y = 0;
             foreach (var morph in morphs)
             {

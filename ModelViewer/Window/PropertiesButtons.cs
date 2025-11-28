@@ -38,7 +38,7 @@ namespace ModelViewer
                 PutVectorInput(component, field, panel, ref offset);
             else if (field.PropertyType == typeof(Vector4))
                 PutVectorInput(component, field, panel, ref offset);
-            else if (field.PropertyType == typeof(IVector4))
+            else if (field.PropertyType == typeof(Vector4i))
                 PutVectorInput(component, field, panel, ref offset);
 
         }
