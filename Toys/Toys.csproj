@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.17763.0</TargetFramework>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>Library</OutputType>
     <RootNamespace>Toys</RootNamespace>
@@ -152,12 +152,12 @@
       <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="OpenTK">
-      <Version>4.9.3</Version>
+      <Version>4.9.4</Version>
     </PackageReference>
-    <PackageReference Include="Pfim" Version="0.11.3" />
+    <PackageReference Include="Pfim" Version="0.11.4" />
     <PackageReference Include="SharpFont" Version="4.0.1" />
     <PackageReference Include="SharpFont.Dependencies.x64" Version="2.6.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.9" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Engine\Graphics\OutlineData.cs" />

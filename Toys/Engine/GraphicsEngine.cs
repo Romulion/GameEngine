@@ -49,7 +49,7 @@ namespace Toys
 #if !LITE
             TextRender = new TextRenderer();
 #endif
-            CoreEngine.MainScene.GetLight.BindShadowMap();
+            //CoreEngine.MainScene.GetLight.BindShadowMap();
 
             UniformBufferManager ubm = UniformBufferManager.GetInstance;
             system = (UniformBufferSystem)ubm.GetBuffer("system");

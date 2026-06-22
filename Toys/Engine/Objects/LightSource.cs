@@ -28,7 +28,6 @@ namespace Toys
 			shadowBuffer = GL.GenFramebuffer();
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, shadowBuffer);
 			shadowMap = Texture2D.CreateShadowMap(width,heigth);
-			//shadowMap.BindTexture();
 			GL.DrawBuffer(DrawBufferMode.None);
 			GL.ReadBuffer(ReadBufferMode.None);
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
@@ -48,11 +47,14 @@ namespace Toys
             ubo = (UniformBufferSkeleton) ubm.GetBuffer("skeleton");
 			ubs = (UniformBufferSpace)ubm.GetBuffer("space");
             ubl = (UniformBufferLight)ubm.GetBuffer("light");
-		}
+
+			//BindShadowMap();
+        }
 
 		public void RenderShadow(MeshDrawer[] meshes)
 		{
-			SetLightVars();
+            BindShadowMap();
+            SetLightVars();
 
 			direction = Matrix4.LookAt(pos, look, new Vector3(0f, 1f, 0f));
 			GL.Viewport(0, 0, width, heigth);
