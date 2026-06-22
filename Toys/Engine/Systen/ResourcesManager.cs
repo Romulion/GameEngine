@@ -63,18 +63,22 @@ namespace Toys
                 IModelLoader model = ModelLoader.Load(stream, path);
                 asset = model?.GetModel;
             }
+            /*
             else if (tp == typeof(AudioClip))
             {
                 asset = new AudioClip(stream, path);
             }
+            */
             else if (tp == typeof(Animation))
             {
                 asset = AnimationLoader.Load(stream, path);
             }
+            /*
             else if (tp == typeof(VideoClip))
             {
                 asset = new VideoClip(stream, path);
             }
+            */
             else {
                 Logger.Error("Type not supported " + tp + " for " + path, "Loader");
             }

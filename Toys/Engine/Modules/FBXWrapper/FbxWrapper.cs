@@ -7,12 +7,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Toys;
-using FbxWrapper.FbxInterop;
+using FbxTools.FbxInterop;
 using OpenTK.Mathematics;
 using System.Drawing.Drawing2D;
 using OpenTK.Windowing.Common.Input;
+using System.ComponentModel.DataAnnotations;
+using Valve.VR;
 
-namespace FbxWrapper
+namespace FbxTools
 {
     public class FbxWrapper : IDisposable
     {
@@ -29,6 +31,7 @@ namespace FbxWrapper
         readonly List<FbxNode> bonesSorted = new List<FbxNode>();
         readonly List<FbxNode> bonesUnsorted = new List<FbxNode>();
         readonly List<Matrix4> bonesMatrices = new List<Matrix4>();
+        readonly Dictionary<string, FbxNode> boneMap = new Dictionary<string, FbxNode>();
         public string WorkingDir { get; private set; }
         private FbxDataScene dataScene;
         public FbxWrapper(string fileName)
@@ -47,7 +50,8 @@ namespace FbxWrapper
             }
             MapScene();
         }
-        
+
+
         ~FbxWrapper()
         {
             Dispose(false);
@@ -140,13 +144,11 @@ namespace FbxWrapper
                 }
             }
 
-            /*
-            int n = 0;
+            
             foreach (var bone in bonesSorted)
             {
-                Console.WriteLine($"{bone.GetName()} {n++}");
+                boneMap.Add(GetNodePath(bone), bone);
             }
-            */
         }
 
 
@@ -191,7 +193,6 @@ namespace FbxWrapper
             var drawler = new MeshDrawer(mesh, materials);
             return drawler;
         }
-        
 
         Material CreateMaterial(string Name, int offset, int count, string fileTexture, FbxDataMaterial mat = null) {
             Texture2D textureDiffuse = Texture2D.LoadEmpty();
@@ -285,6 +286,7 @@ namespace FbxWrapper
             }
             else
             {
+                //Clear root node from old model
                 root = rootList[0];
                 foreach (var child in root.GetChilds())
                 {
@@ -301,6 +303,7 @@ namespace FbxWrapper
                 sNode.SetParent(root);
             }
         }
+
 
         MeshDrawer ConvertMesh(FbxDataMesh dataMesh, FbxDataScene scene)
         {
@@ -381,15 +384,128 @@ namespace FbxWrapper
             }
         }
 
+        MeshDrawerRigged ConvertMeshRigged(FbxDataMesh dataMesh, FbxDataScene scene, BoneController bController)
+        {
+            var meshData = new VertexRigged3D[dataMesh.VertexList.Count];
+            for (int i = 0; i < meshData.Length; i++)
+            {
+                var vert = dataMesh.VertexList[i];
+                Vector2 uv = Vector2.Zero;
+                if (dataMesh.HasUV[0])
+                {
+                    uv = vert.UV[0];
+                    uv.Y = 1 - uv.Y;
+                }
+                var weight = Vector4.Zero;
+                for (int j = 0; j < vert.Weights.Length; j++)
+                {
+                    weight[j] = vert.Weights[j];
+                }
+                var boneindeces = Vector4i.Zero;
+                for (int j = 0; j < vert.BoneIndices.Length; j++)
+                {
+                    boneindeces[j] = vert.BoneIndices[j];
+                } 
+                meshData[i] = new VertexRigged3D(vert.Position, vert.Normal, uv, boneindeces, weight);
+            }
+            var indecesMerged = new List<int>();
+            foreach (var elem in dataMesh.SubmeshList)
+                indecesMerged.AddRange(elem.Indeces);
+
+            var mesh = new Mesh(meshData, indecesMerged.ToArray());
+            var materials = new Material[dataMesh.SubmeshList.Count];
+            int offset = 0;
+            for (int n = 0; n < materials.Length; n++)
+            {
+                var subMesh = dataMesh.SubmeshList[n];
+                var mat = scene.MaterialList.Find(m => m.Name == subMesh.Material);
+                if (mat != null)
+                {
+                    var tex = mat.Textures.Find(t => t.Type == FbxTextureType.Diffuse);
+                    string texturePath = "";
+                    if (tex != null)
+                        texturePath = tex.Name;
+                    materials[n] = CreateMaterial(mat.Name, offset, subMesh.Indeces.Length, texturePath, mat);
+                    var material = (MaterialCustom)materials[n];
+                    material.UniformManager.Set("ambient_color", Color2Vec3(mat.Ambient));
+                    material.UniformManager.Set("diffuse_color", Color2Vec3(mat.Diffuse));
+                    material.UniformManager.Set("specular_color", Color2Vec3(mat.Specular));
+                    material.UniformManager.Set("specular_power", mat.Shininess);
+                }
+                else
+                    materials[n] = CreateMaterial("empty", offset, subMesh.Indeces.Length, "");
+                offset += subMesh.Indeces.Length;
+            }
+
+            List<Morph> morphList = null;
+            var morphesData = scene.MorphList.Find(ml => ml.Path == dataMesh.Path);
+            if (morphesData != null)
+            {
+                morphList = new List<Morph>();
+                foreach (var channel in morphesData.Channels)
+                {
+                    var keyframe = channel.KeyframeList[0];
+                    var morph = new MorphVertex(channel.Name, channel.Name, keyframe.VertexList.Count, mesh.GetMorpher);
+                    //Console.WriteLine($"{channel.Name} {keyframe.VertexList.Count}");
+                    for (int i = 0; i < keyframe.VertexList.Count; i++)
+                    {
+                        var vert = keyframe.VertexList[i];
+
+                        var vertPos = dataMesh.VertexList[(int)vert.Index];
+                        morph.AddVertex(vert.Vertex.Position - vertPos.Position, (int)vert.Index);
+
+                        //if (channel.Name == "Mouth_Open01")
+                        //    Console.WriteLine($"{vert.Vertex.Position - vertPos.Position} {(int)vert.Index}");
+                    }
+                    morphList.Add(morph);
+                }
+
+            }
+
+            
+
+            var drawler = new MeshDrawerRigged(mesh, materials, bController, morphList);
+            return drawler;
+
+
+            Vector3 Color2Vec3(Color4 color)
+            {
+                return new Vector3(color.R, color.G, color.B);
+            }
+        }
+
+        BoneController CreateBoneController(FbxDataScene scene)
+        {
+            var bones = new List<Bone>();
+            for (int i = 0; i < scene.BonesOrdered.Count; i++)
+            {
+                if (!boneMap.TryGetValue(scene.BonesOrdered[i], out var boneNode))
+                    continue;
+                var parIndex = bonesSorted.IndexOf(boneNode.GetParent());
+
+                Matrix4 boneLocal2Parent = new Matrix4();
+                if (parIndex >= 0)
+                    boneLocal2Parent = scene.BonesMatrices[i] * scene.BonesMatrices[parIndex].Inverted();
+                else
+                    boneLocal2Parent = scene.BonesMatrices[i];
+                var bone = new Bone(boneNode.GetName(), boneLocal2Parent, parIndex);
+                bones.Add(bone);
+                
+            }
+            return new BoneController(bones.ToArray(), true);
+        }
 
         public List<SceneNode> GetSceneNodes()
         {
+            var bController = CreateBoneController(dataScene);
             var nodes = new List<SceneNode>();
             foreach (var node in meshNodes)
-            {
+            { 
                 var sNode = new SceneNode();
                 sNode.Name = node.GetName();
-                var mesh = ConvertMesh(node.GetFbxMesh());
+                sNode.AddComponent(new Animator(bController));
+                var path = GetNodePath(node);
+                var mesh = ConvertMeshRigged(dataScene.MeshList.FirstOrDefault(m => m.Path == path), dataScene, bController);
                 sNode.AddComponent(mesh);
                 var trans = sNode.GetTransform;
                 trans.Scale = node.GetScale;
@@ -694,7 +810,6 @@ namespace FbxWrapper
             path = path.Remove(0, path.IndexOf('/') + 1);
             return path;
         }
-
 
         public void ExportScene(FbxDataScene dataScene, string filePath)
         {

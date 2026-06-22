@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FbxWrapper;
+using FbxTools;
 using OpenTK.Mathematics;
 
 namespace Toys.Mod3DMigotoReconstructor

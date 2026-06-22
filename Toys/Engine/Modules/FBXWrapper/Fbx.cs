@@ -1,15 +1,15 @@
 ﻿/// Original code from https://github.com/RazTools/Studio/
 /// 
 
-using FbxWrapper.FbxInterop;
-using FbxWrapper.PInvoke;
+using FbxTools.FbxInterop;
+using FbxTools.PInvoke;
 using System.IO;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace FbxWrapper
+namespace FbxTools
 {
     public static partial class Fbx
     {

@@ -1,5 +1,4 @@
-﻿using FbxWrapper.FbxInterop;
-using NAudio.MediaFoundation;
+﻿using FbxTools.FbxInterop;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FbxWrapper
+namespace FbxTools
 {
     class FbxMaterial
     {

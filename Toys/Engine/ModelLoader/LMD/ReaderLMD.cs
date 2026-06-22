@@ -13,7 +13,7 @@ namespace Toys
         Reader reader;
         Dictionary<string, Material> materialTable = new Dictionary<string, Material>();
         Mesh[] meshRigged = new Mesh[0];
-        MeshDrawer[] mesDrawlers = new MeshDrawer[0];
+        MeshDrawer[] meshDrawer = new MeshDrawer[0];
         Bone[] bones = null;
         BoneController boneControll = null;
         Dictionary<string, Texture2D> texturesDict = new Dictionary<string, Texture2D>();
@@ -91,11 +91,11 @@ namespace Toys
                 meshPos[i] = (int)reader.BaseStream.Position + reader.ReadInt32();
             }
 
-            mesDrawlers = new MeshDrawer[meshCount];
+            meshDrawer = new MeshDrawer[meshCount];
             for (int i = 0; i < meshCount; i++)
             {
-                mesDrawlers[i] = ReadMeshChunk(meshPos[i]);
-                mesDrawlers[i].OutlineDrawing = true;
+                meshDrawer[i] = ReadMeshChunk(meshPos[i]);
+                meshDrawer[i].OutlineDrawing = true;
             }
         }
 
@@ -343,9 +343,8 @@ namespace Toys
             get
             {
                 List<Component> comps = new List<Component>();
-                foreach (MeshDrawerRigged mesh in mesDrawlers)
+                foreach (MeshDrawerRigged mesh in meshDrawer)
                 {
-
                     comps.Add(mesh);
                 }
                 comps.Add(new Animator(boneControll));
@@ -354,6 +353,20 @@ namespace Toys
             }
         }
 
+        public SceneNode[] GetScene
+        {
+            get
+            {
+                var node = new SceneNode();
+                for (int i = 0; i < meshDrawer.Length; i++)
+                {
+                    node.AddComponent(meshDrawer[i]);
+                }
+                node.AddComponent(new Animator(boneControll)); 
+                node.AddComponent(new ScriptChangeExpression());
+                return new [] { node };
+            }
+        }
         public Morph[] GetMorphes
         {
             get

@@ -2,9 +2,9 @@
 /// 
 
 using System.Runtime.InteropServices;
-using FbxWrapper.FbxInterop;
+using FbxTools.FbxInterop;
 
-namespace FbxWrapper
+namespace FbxTools
 {
     partial class Fbx
     {

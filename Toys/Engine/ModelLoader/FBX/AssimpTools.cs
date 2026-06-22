@@ -1,11 +1,11 @@
-﻿using System;
+﻿/*
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Mathematics;
 using Assimp;
-using NAudio.CoreAudioApi.Interfaces;
 
 namespace Toys
 {
@@ -144,6 +144,7 @@ namespace Toys
             foreach (var bone in bonesOrdered)
                 Console.WriteLine($"{bone.Name} {k++}");
             */
+/*
             return bonesOrdered;
         }
 
@@ -262,3 +263,4 @@ namespace Toys
         }
     }
 }
+*/

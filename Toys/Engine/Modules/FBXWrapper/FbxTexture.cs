@@ -1,11 +1,11 @@
-﻿using FbxWrapper.FbxInterop;
+﻿using FbxTools.FbxInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using OpenTK.Mathematics;
 
-namespace FbxWrapper
+namespace FbxTools
 {
     public enum FbxTextureType
     {

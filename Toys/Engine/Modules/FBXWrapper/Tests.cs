@@ -6,12 +6,12 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using FbxWrapper.FbxInterop;
+using FbxTools.FbxInterop;
 using static System.Net.Mime.MediaTypeNames;
 using OpenTK.Mathematics;
 using Valve.VR;
 
-namespace FbxWrapper
+namespace FbxTools
 {
     public class Tests
     {

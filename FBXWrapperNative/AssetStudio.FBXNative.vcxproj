@@ -86,13 +86,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetExt>.dll</TargetExt>
-    <OutDir>..\bin\Debug\net8.0-windows7.0\$(Platform)</OutDir>
+    <OutDir>..\bin\Debug\$(PlatformTarget)</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.dll</TargetExt>
-    <OutDir>..\bin\Release\net8.0-windows7.0\$(Platform)</OutDir>
+    <OutDir>..\bin\Release\$(PlatformTarget)</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

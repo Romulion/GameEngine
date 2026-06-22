@@ -1,4 +1,4 @@
-﻿using FbxWrapper.FbxInterop;
+﻿using FbxTools.FbxInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL;
 
-namespace FbxWrapper
+namespace FbxTools
 {
     class FbxShape
     {

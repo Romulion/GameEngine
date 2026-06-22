@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OpenTK.Graphics.OpenGL;
 
 namespace Toys
 {
@@ -740,6 +741,20 @@ namespace Toys
 				comps.Add(new Animator(md.skeleton, md.Morphes));
 				comps.Add(new PhysicsManager(rigitBodies, joints, md.skeleton));
 				return new ModelPrefab(comps); 
+			}
+		}
+
+		public SceneNode[] GetScene
+		{
+			get
+			{
+				MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, boneController, morphs.ToList());
+				md.OutlineDrawing = true;
+				var node = new SceneNode();
+				node.AddComponent(md);
+				node.AddComponent(new Animator(md.skeleton, md.Morphes));
+				node.AddComponent(new PhysicsManager(rigitBodies, joints, md.skeleton));
+                return new SceneNode[] { node };
 			}
 		}
 

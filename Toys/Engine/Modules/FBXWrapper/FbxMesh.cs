@@ -1,11 +1,11 @@
-﻿using FbxWrapper.FbxInterop;
+﻿using FbxTools.FbxInterop;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using OpenTK.Mathematics;
 using System.Collections.Specialized;
 
-namespace FbxWrapper
+namespace FbxTools
 {
     class FbxMesh
     {

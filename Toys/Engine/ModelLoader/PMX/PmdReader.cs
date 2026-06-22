@@ -570,6 +570,21 @@ namespace Toys
             }
         }
 
+        public SceneNode[] GetScene
+        {
+            get
+            {
+                var node = new SceneNode();
+                MeshDrawerRigged md = new MeshDrawerRigged(meshRigged, mats, new BoneController(bones, boneOrder), morphs.ToList<Morph>());
+                md.OutlineDrawing = true;
+                node.AddComponent(md);
+                node.AddComponent(new Animator(md.skeleton, md.Morphes));
+                if (rigitBodies != null)
+                    node.AddComponent(new PhysicsManager(rigitBodies, joints, md.skeleton));
+                return new SceneNode[] { node };
+            }
+        }
+
         public Morph[] GetMorphes
         {
             get

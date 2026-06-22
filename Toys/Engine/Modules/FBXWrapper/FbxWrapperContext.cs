@@ -6,10 +6,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using FFmpeg.AutoGen;
 using OpenTK.Mathematics;
 
-namespace FbxWrapper.FbxInterop
+namespace FbxTools.FbxInterop
 {
     internal sealed partial class FbxWrapperContext : IDisposable
     {
@@ -72,7 +71,6 @@ namespace FbxWrapper.FbxInterop
         {
             return AsFbxImportScene(_pContext, fileName);
         }
-
 
         public bool ExportToFile(string fileName)
         {

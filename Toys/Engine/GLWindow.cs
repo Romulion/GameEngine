@@ -72,7 +72,7 @@ namespace Toys
                 {
                     GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Point);
                 }
-
+                /*
                 if (KeyboardState.IsKeyDown(Keys.O) && !pauseKey)
                 {
                     pause = !pause;
@@ -80,7 +80,7 @@ namespace Toys
                 }
                 else if (!KeyboardState.IsKeyDown(Keys.O) && pauseKey)
                     pauseKey = false;
-
+                */
                 if (KeyboardState.IsKeyDown(Keys.V) && !visibleKey)
                 {
                     IsVisible = !IsVisible;

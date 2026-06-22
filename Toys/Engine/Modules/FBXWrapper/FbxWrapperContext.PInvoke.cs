@@ -5,7 +5,7 @@ using System;
 using System.Runtime.InteropServices;
 using OpenTK.Mathematics;
 
-namespace FbxWrapper.FbxInterop
+namespace FbxTools.FbxInterop
 {
     partial class FbxWrapperContext
     {

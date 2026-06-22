@@ -218,6 +218,28 @@ namespace Toys
             }
 		}
 
+        public SceneNode[] GetScene
+        {
+            get
+            {
+                var node = new SceneNode();
+                for (int i = 0; i < mesh.Length; i++)
+                    if (bones.Count > 0)
+                    {
+                        MeshDrawerRigged md = new MeshDrawerRigged(mesh[i], mats[i], new BoneController(bones.ToArray(), true));
+                        md.OutlineDrawing = true;
+                        node.AddComponent(md);
+                        node.AddComponent(new Animator(md.skeleton, md.Morphes));
+                    }
+                    else
+                    {
+                        MeshDrawer md = new MeshDrawer(mesh[i], mats[i]);
+                        node.AddComponent(md);
+                    }
+                return new [] { node };
+            }
+        }
+
         //no morphes support
         public Morph[] GetMorphes
         {

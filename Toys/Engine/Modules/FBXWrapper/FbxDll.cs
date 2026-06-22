@@ -1,7 +1,7 @@
 ﻿/// Original code from https://github.com/RazTools/Studio/
 /// 
 
-namespace FbxWrapper.FbxInterop
+namespace FbxTools.FbxInterop
 {
     internal static class FbxDll
     {

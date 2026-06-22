@@ -1,4 +1,4 @@
-﻿using FbxWrapper.FbxInterop;
+﻿using FbxTools.FbxInterop;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-namespace FbxWrapper
+namespace FbxTools
 {
 
     class FbxCluster

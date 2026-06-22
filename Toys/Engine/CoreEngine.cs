@@ -57,6 +57,7 @@ namespace Toys
 				PhysEngine = new PhysicsEngine();
                 ScriptingEngine = new ScriptingEngine();
                 InptHandler = new InputHandler();
+
 #if !LITE
                 //AudioEngine = new SoundEngine();
 #endif

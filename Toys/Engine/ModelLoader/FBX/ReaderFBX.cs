@@ -1,31 +1,89 @@
-﻿using BulletSharp;
+﻿
+using BulletSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Assimp;
+//using Assimp;
 using System.Runtime.CompilerServices;
 using System.IO;
 using static System.Net.Mime.MediaTypeNames;
 using OpenTK.Mathematics;
 using System.Drawing;
 using System.Xml.Linq;
+using FbxTools;
 
 namespace Toys
 {
     public class ReaderFBX : IModelLoader
     {
         List<Mesh> meshes = new List<Mesh>();
-        List<Node> sceneNodes = new List<Node>();
+        List<SceneNode> sceneNodes = new List<SceneNode>();
         List<Bone> bones = new List<Bone>();
-        AssimpTools Tools = new AssimpTools();
+        
 
         Material[] materials;
         MeshDrawerRigged[] MeshDrawer = null;
         BoneController boneControll;
         string dir = "";
         float sizeMultiplier = 1f;
+        FbxWrapper wrapper = null;
+        FbxDataScene scene = null;
+
+        
+
+        public ReaderFBX(string path)
+        {
+            wrapper = new FbxWrapper(path);
+
+            dir = Path.GetDirectoryName(path) + @"\";
+        }
+
+        public ReaderFBX(Stream fs, string path)
+        {
+            int indx = path.LastIndexOf('\\');
+            if (indx >= 0)
+                dir = path.Substring(0, indx) + '\\';
+            else
+                dir = "";
+
+            wrapper = new FbxWrapper(path);
+            scene = wrapper.ReadImportedScene();
+        }
+
+        void ReadMeshes()
+        {
+        }
+
+        void ReadBones()
+        {
+            //TODO
+        }
+
+        public ModelPrefab GetModel
+        {
+            get
+            {
+                var node = wrapper.GetSceneNodes().FirstOrDefault();
+                List<Component> comps = new List<Component>();
+                foreach (var component in node.GetComponents())
+                {
+                    comps.Add(component);
+                }
+                return new ModelPrefab(comps);
+            }
+        }
+
+        public SceneNode[] GetScene
+        {
+            get { return wrapper.GetSceneNodes().ToArray(); }
+        }
+
+        public Morph[] GetMorphes { 
+            get { return null; } }
+        /*
+        AssimpTools Tools = new AssimpTools();
         public ReaderFBX(string path) 
         { 
             AssimpContext importer = new AssimpContext();
@@ -270,5 +328,6 @@ namespace Toys
                 return null;
             }
         }
+        */
     }
 }

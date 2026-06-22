@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace FbxWrapper.PInvoke
+namespace FbxTools.PInvoke
 {
     public static class DllLoader
     {
@@ -15,7 +15,7 @@ namespace FbxWrapper.PInvoke
         public static void PreloadDll(string dllName)
         {
             var dllDir = GetDirectedDllDirectory();
-
+            
             // Not using OperatingSystem.Platform.
             // See: https://www.mono-project.com/docs/faq/technical/#how-to-detect-the-execution-platform
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
