@@ -20,15 +20,16 @@ namespace Toys
         private bool mousePressed;
 
         //camera space
-        const float R = 3.5f;
+        const float R = 2.5f;
         float r;
         Vector3 cameraUp = new Vector3(0.0f, 1.0f, 0.0f);
-        Vector3 cameraOffset = new Vector3(0.0f, 0.5f, 0.0f);
+        public Vector3 cameraOffset = new Vector3(0.0f, 0.5f, 0.0f);
+        Vector3 cameraOffsetDef = new Vector3(0, 1, 0);
 
         void Awake()
         {
             transform = Node.GetTransform;
-            r = 3.5f;
+            r = R;
             game = GLWindow.gLWindow;
             camera = Node.GetComponent<Camera>();
             var pos = CalcPos(r, phi, theta);
@@ -86,7 +87,11 @@ namespace Toys
             }
 
             transform.Position = CalcPos(r, phi, theta);
-            camera.Target = (new Vector4(cameraOffset, 1) * transform.GlobalTransform.Inverted()).Xyz;
+            //camera.Target = (new Vector4(cameraOffset, 1) * transform.GlobalTransform.Inverted()).Xyz;
+            camera.Target = cameraOffset;
+
+
+            //Console.WriteLine($"{transform.Position}  {camera.Target}");
         }
 
         //setuping camera movement
@@ -97,49 +102,43 @@ namespace Toys
             // camera strafe
             if (game.IsFocused)
             {
-                if (keyState.IsKeyDown(Keys.PageUp))
-                {
-                    cameraOffset += speed * cameraUp;
-                    //transform.Position += speed * cameraUp;
-                }
-
-                if (keyState.IsKeyDown(Keys.PageDown))
-                {
-                    cameraOffset -= speed * cameraUp;
-                    //transform.Position -= speed * cameraUp;
-                }
 
                 Vector3 front = camera.Target - transform.Position;
                 Vector3 left = Vector3.Cross(front,cameraUp);
                 //movment
-                
-                /*
-                if (keyState.IsKeyDown(Keys.W))
+                if (!keyState.IsKeyDown(Keys.LeftControl))
                 {
-                    camera.Target += speed * front;
-                    transform.Position += speed * front;
+                    if (keyState.IsKeyDown(Keys.W))
+                    {
+                        cameraOffset += speed * cameraUp;
+                        //camera.Target += speed * cameraUp;
+                    }
+
+                    if (keyState.IsKeyDown(Keys.A))
+                    {
+                        cameraOffset -= speed * left;
+                        //camera.Target -= speed * left;
+                    }
+
+                    if (keyState.IsKeyDown(Keys.S))
+                    {
+                        cameraOffset -= speed * cameraUp;
+                        //camera.Target -= speed * cameraUp;
+                    }
+
+                    if (keyState.IsKeyDown(Keys.D))
+                    {
+                        cameraOffset += speed * left;
+                        //camera.Target += speed * left;
+                    }
+                }
+                if (keyState.IsKeyPressed(Keys.Q))
+                {
+                    //Console.WriteLine($" {transform.Position} {(new Vector4(camera.Target, 1) * Node.GetTransform.GlobalTransform).Xyz}");
+                    Console.WriteLine($"r {r} p {phi} t {theta} co {cameraOffset}");
                 }
                 
-                if (keyState.IsKeyDown(Keys.A))
-                {
-                    camera.Target -= speed * left;
-                    transform.Position -= speed * left;
-                }
-               
-                if (keyState.IsKeyDown(Keys.S))
-                {
-                    camera.Target -= speed * front;
-                    transform.Position -= speed * front;
-                }
-                
-                if (keyState.IsKeyDown(Keys.D))
-                {
-                    camera.Target += speed * left;
-                    transform.Position += speed * left;
-                }
-                */
-                
-                if (keyState.IsKeyDown(Keys.R))
+                if (keyState.IsKeyPressed(Keys.R))
                 {
                     transform.Position = new Vector3(0f, 1f, 0f);
                     phi = 90;
@@ -147,8 +146,25 @@ namespace Toys
                     r = R;
                     camera.Target = Vector3.UnitY;
                     transform.Position += CalcPos(r, phi, theta);
+
+                    cameraOffset = cameraOffsetDef;
                 }
             }
+        }
+
+        public void SetPhi(int phi)
+        {
+            this.phi = phi % 360;
+        }
+
+        public void SetTheta(int theta) 
+        {
+            this.theta = theta % 360;
+        }
+
+        public void SetR(float r)
+        {
+            this.r = r;
         }
 
         //calculate decarth coords from spherical
